@@ -2,6 +2,9 @@
 
 Proyek ini adalah template MVP full-stack yang dibangun dengan Next.js 14, React, TailwindCSS, TypeScript, dan Prisma ORM dengan PostgreSQL.
 
+## Video Demo
+https://github.com/user-attachments/assets/74bd4d46-a017-4a51-ad69-2966b29a57b3
+
 ## Prasyarat (Dependencies)
 
 Pastikan Anda memiliki hal-hal berikut terinstal:
