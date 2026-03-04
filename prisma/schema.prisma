@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Mengapa: Tabel User membedakan role untuk RBAC.
+// Kolom password_hash digunakan khusus untuk NextAuth Credentials provider yang menuntut string tersandi demi keamanan.
+model User {
+  id            String     @id @default(uuid())
+  username      String     @unique
+  password_hash String     // Diubah dari password menjadi password_hash sesuai spesifikasi
+  role          String     // Hanya berisi 'admin' (God Account), 'author' (Moderator/Penulis), atau 'user' (Reader)
+  display_name  String
+  
+  // Relasi
+  karya_upload  Karya[]    // Karya yang diunggah oleh author/admin
+  ratings       Rating[]   
+  comments      Comment[]  
+  bookmarks     Bookmark[] // Epic 7: Simpan karya (Library)
+  reviews       Review[]   // Epic 8: Review formal karya
+}
+
+// Epic 6: Categorization
+model Genre {
+  id    String  @id @default(uuid())
+  name  String  @unique
+  karya Karya[] // Relasi N:M implisit ke Karya
+}
+
+// Mengapa: Entitas Karya menampung judul dan metadata buku.
+model Karya {
+  id            String     @id @default(uuid())
+  title         String
+  penulis_alias String     // Statis: Diinput manual author
+  uploader_id   String   
+  uploader      User       @relation(fields: [uploader_id], references: [id])
+  avg_rating    Float      @default(0) // Optimasi fetch
+  total_views   Int        @default(0) // Optimasi fetch
+  
+  // Relasi
+  bab           Bab[]    
+  ratings       Rating[] 
+  genres        Genre[]    // Epic 6: Filter Genre
+  bookmarks     Bookmark[] // Epic 7: Library
+  reviews       Review[]   // Epic 8: Review panjang
+}
+
+// Mengapa: Menyimpan isi cerita. 
+model Bab {
+  id         String    @id @default(uuid())
+  karya_id   String    
+  karya      Karya     @relation(fields: [karya_id], references: [id], onDelete: Cascade)
+  chapter_no Int       
+  content    String    @db.Text
+  created_at DateTime  @default(now())
+  comments   Comment[] 
+  
+  @@unique([karya_id, chapter_no]) // Composite Unique Index
+}
+
+// Epic 7: Library / Bookmark (Read History)
+model Bookmark {
+  id           String   @id @default(uuid())
+  user_id      String
+  user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  karya_id     String
+  karya        Karya    @relation(fields: [karya_id], references: [id], onDelete: Cascade)
+  last_chapter Int      @default(1) // Menyimpan posisi bab terakhir dibaca
+  updated_at   DateTime @updatedAt
+  
+  @@unique([user_id, karya_id]) // User hanya bisa mem-bookmark karya 1 kali
+}
+
+// Mengapa: Sistem rating bintang (Cepat)
+model Rating {
+  id       String @id @default(uuid())
+  user_id  String 
+  user     User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  karya_id String 
+  karya    Karya  @relation(fields: [karya_id], references: [id], onDelete: Cascade)
+  score    Int    
+  
+  @@unique([user_id, karya_id]) // Unique Constraint
+}
+
+// Epic 8: Review Berformat Teks Panjang (Ditampilkan di halaman depan Karya)
+model Review {
+  id         String   @id @default(uuid())
+  user_id    String 
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  karya_id   String 
+  karya      Karya    @relation(fields: [karya_id], references: [id], onDelete: Cascade)
+  content    String   @db.Text
+  rating     Int      // Bisa disinkronkan dengan Rating sistem
+  created_at DateTime @default(now())
+  
+  @@unique([user_id, karya_id]) // 1 user = 1 review per karya
+}
+
+// Mengapa: Komentar diletakkan di bawah Bab spesifik. 
+model Comment {
+  id         String    @id @default(uuid())
+  user_id    String   
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  bab_id     String   
+  bab        Bab       @relation(fields: [bab_id], references: [id], onDelete: Cascade)
+  content    String    @db.Text
+  created_at DateTime  @default(now())
+  
+  // Epic 8: Threaded / Nested Comments
+  parent_id  String?   // Boleh kosong jika ini adalah root comment
+  parent     Comment?  @relation("Thread", fields: [parent_id], references: [id], onDelete: Cascade)
+  replies    Comment[] @relation("Thread")
+}

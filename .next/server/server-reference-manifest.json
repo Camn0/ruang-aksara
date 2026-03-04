@@ -1,0 +1,136 @@
+{
+  "node": {
+    "0c691cec91d31eabe682d0d9a58fcfde62ede282": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "0f031e9919d7492fc5a127b9fb590b39e37a5a68": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "212b167cc4f8ae0ea60a4006794a3e3ed863a4dd": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "3b0e724fb482b6fb016e8d3fdf96c6e185583942": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "534eabd0bbf599832ccc5a4f72954cd2dea43bd9": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "5b40212334a5b3b0dbffda2494d5522def88ef14": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "6c678350c86978f1f2b63056cb45ab23e719c983": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "8dba6cd3a25e3d85f02b369d4a39811a5ebed81a": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "b4f578ea99347f6931e0db45102f357c0403822a": {
+      "workers": {
+        "app/admin/dashboard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!",
+        "app/admin/karya/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cadmin.ts%22%2C%5B%22deleteGenre%22%2C%22createBab%22%2C%22createKarya%22%2C%22createGenre%22%2C%22registerAuthor%22%2C%22deleteBab%22%2C%22editKarya%22%2C%22editBab%22%2C%22deleteKarya%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/dashboard/page": "action-browser",
+        "app/admin/karya/[karyaId]/page": "action-browser"
+      }
+    },
+    "1787cc4e9bc217ff95d1193974dd55767a910386": {
+      "workers": {
+        "app/novel/[karyaId]/[chapterNo]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!",
+        "app/novel/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/novel/[karyaId]/[chapterNo]/page": "action-browser",
+        "app/novel/[karyaId]/page": "action-browser"
+      }
+    },
+    "28f2e5a89f3eb74bcd1a7dd976cc899b28a1ca4e": {
+      "workers": {
+        "app/novel/[karyaId]/[chapterNo]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!",
+        "app/novel/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/novel/[karyaId]/[chapterNo]/page": "action-browser",
+        "app/novel/[karyaId]/page": "action-browser"
+      }
+    },
+    "614ba35be91c7cd6cae29040d62be76261414d1c": {
+      "workers": {
+        "app/novel/[karyaId]/[chapterNo]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!",
+        "app/novel/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/novel/[karyaId]/[chapterNo]/page": "action-browser",
+        "app/novel/[karyaId]/page": "action-browser"
+      }
+    },
+    "bf9503ddef3797913cfbdca82e7f8583c904bc2d": {
+      "workers": {
+        "app/novel/[karyaId]/[chapterNo]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!",
+        "app/novel/[karyaId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22D%3A%5C%5CCodes%5C%5Cruang-aksara%5C%5Capp%5C%5Cactions%5C%5Cuser.ts%22%2C%5B%22deleteComment%22%2C%22submitRating%22%2C%22submitReview%22%2C%22submitComment%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/novel/[karyaId]/[chapterNo]/page": "action-browser",
+        "app/novel/[karyaId]/page": "action-browser"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "CccOK9MK2K6K+9QzTwPGKqk1niHwXbcV+HBT1W8PuBI="
+}

@@ -1,0 +1,9 @@
+{
+  "/admin/karya/[karyaId]/page": "app/admin/karya/[karyaId]/page.js",
+  "/page": "app/page.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/novel/[karyaId]/[chapterNo]/page": "app/novel/[karyaId]/[chapterNo]/page.js",
+  "/novel/[karyaId]/page": "app/novel/[karyaId]/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/novel/page": "app/novel/page.js"
+}
