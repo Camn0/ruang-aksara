@@ -1,11 +1,10 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
 // Mengapa: Instansiasi klien Prisma secara global untuk menekan over-connection akibat proses dev (hot reload)
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // ==============================================================================
 // 1. MUTASI USER (READER): MENGUNGGAH KOMENTAR

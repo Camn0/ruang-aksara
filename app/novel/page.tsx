@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 import { redis } from "@/lib/redis";
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // Mengapa: Memaksa Next.js mengevaluasi halaman ini dinamis pada setiap request 
 // agar parameter query (searchParams) dapat ditangkap dengan tepat.

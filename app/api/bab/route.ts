@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // Di sini kita mendefinisikan fungsi POST untuk menghandle penambahan bab baru.
 export async function POST(request: Request) {

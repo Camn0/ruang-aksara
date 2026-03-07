@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import { redis } from '@/lib/redis';
 import { NextResponse } from 'next/server';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // Mengapa: Endpoint ini didesain sebagai "Cron Job" yang bisa dipanggil secara berkala
 // (misal via Vercel Cron atau scheduler eksternal) untuk mensinkronkan data view dari Redis 

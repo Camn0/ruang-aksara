@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // Fungsi GET dengan dynamic routing args untuk mengambil spesifik SATU bab.
 // Mengapa: Fetch per bab sangat krusial untuk optimasi performa agar server tidak membebani memori dengan mengambil ratusan bab sekaligus.

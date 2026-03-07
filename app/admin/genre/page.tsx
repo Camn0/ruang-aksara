@@ -1,11 +1,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 import { GenreForm, DeleteGenreButton } from "./GenreClient";
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export default async function AdminGenrePage() {
     const session = await getServerSession(authOptions);

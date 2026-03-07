@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // Di sini kita mendefinisikan metode POST untuk API Route Next.js (App Router)
 // Mengapa: Kita menggunakan POST karena ini adalah operasi Create dalam CRUD untuk menyimpan data karya baru ke dalam database.

@@ -1,13 +1,10 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import DOMPurify from 'isomorphic-dompurify';
 import bcrypt from 'bcryptjs';
-
-// Mengapa: Me-reuse instance Prisma Client untuk mencegah "too many connections" selama hot-reloading lokal.
-const prisma = new PrismaClient();
 
 // ==============================================================================
 // 1. MUTASI ADMIN: MEMBUAT KARYA BARU
@@ -30,11 +27,24 @@ export async function createKarya(formData: FormData) {
         // Mengapa: Membaca isi objek FormData bawaan web API standar.
         const title = formData.get('title') as string;
         const penulis_alias = formData.get('penulis_alias') as string;
+        const deskripsi = formData.get('deskripsi') as string || null;
+        const cover_url = formData.get('cover_url') as string || null;
         const genreIds = formData.getAll('genres') as string[]; // Menerima array genre dari HTML checkboxes
 
         // [C] Validasi Kelengkapan Input
         if (!title || !penulis_alias) {
             return { error: "Bad Request: Judul dan Penulis Alias wajib diisi." };
+        }
+
+        // [C.2] Validasi Sesi Stale (Mencegah Error P2003 / Foreign Key Constraint)
+        // Mengapa: Jika DB baru saja di-reset, cookie sesi di browser masih menyimpan UUID lama
+        // yang sudah tidak ada di DB, menyebabkan error saat insert.
+        const existingUser = await prisma.user.findUnique({
+            where: { id: session.user.id }
+        });
+
+        if (!existingUser) {
+            return { error: "Sesi Anda sudah kedaluwarsa atau tidak valid (Terjadi indikasi reset database). Silakan Logout dan Login kembali." };
         }
 
         // [D] Mutasi Database
@@ -43,6 +53,8 @@ export async function createKarya(formData: FormData) {
             data: {
                 title,
                 penulis_alias,
+                deskripsi,
+                cover_url,
                 uploader_id: session.user.id,
                 genres: {
                     connect: genreIds.map((id) => ({ id }))
@@ -208,6 +220,9 @@ export async function editKarya(formData: FormData) {
         const id = formData.get('id') as string;
         const title = formData.get('title') as string;
         const penulis_alias = formData.get('penulis_alias') as string;
+        const deskripsi = formData.get('deskripsi') as string || null;
+        const cover_url = formData.get('cover_url') as string || null;
+        const is_completed = formData.get('is_completed') === 'true'; // Toggle Selesai
         const genreIds = formData.getAll('genres') as string[];
 
         if (!id || !title || !penulis_alias) {
@@ -227,6 +242,9 @@ export async function editKarya(formData: FormData) {
             data: {
                 title,
                 penulis_alias,
+                deskripsi,
+                cover_url,
+                is_completed,
                 genres: {
                     set: genreIds.map((gId) => ({ id: gId }))
                 }

@@ -16,6 +16,7 @@ model User {
   password_hash String     // Diubah dari password menjadi password_hash sesuai spesifikasi
   role          String     // Hanya berisi 'admin' (God Account), 'author' (Moderator/Penulis), atau 'user' (Reader)
   display_name  String
+  avatar_url    String?    // URL foto profil pengguna
   
   // Relasi
   karya_upload  Karya[]    // Karya yang diunggah oleh author/admin
@@ -23,6 +24,24 @@ model User {
   comments      Comment[]  
   bookmarks     Bookmark[] // Epic 7: Simpan karya (Library)
   reviews       Review[]   // Epic 8: Review formal karya
+
+  // Epic 12: Sistem Follow (Relasi Self-referential Many-to-Many lewat model join explicit)
+  followers     Follow[]   @relation("FollowingUser") // Orang-orang yang mengikuti user ini
+  following     Follow[]   @relation("FollowerUser")  // Orang-orang yang diikuti oleh user ini
+}
+
+// Epic 12: Tabel relasional untuk sistem Follow
+model Follow {
+  id          String   @id @default(uuid())
+  follower_id String   // ID user yang melakukan follow
+  follower    User     @relation("FollowerUser", fields: [follower_id], references: [id], onDelete: Cascade)
+  
+  following_id String  // ID user yang di-follow (Author/Admin)
+  following    User    @relation("FollowingUser", fields: [following_id], references: [id], onDelete: Cascade)
+
+  created_at  DateTime @default(now())
+
+  @@unique([follower_id, following_id]) // Tidak boleh follow 2 kali
 }
 
 // Epic 6: Categorization
@@ -41,6 +60,11 @@ model Karya {
   uploader      User       @relation(fields: [uploader_id], references: [id])
   avg_rating    Float      @default(0) // Optimasi fetch
   total_views   Int        @default(0) // Optimasi fetch
+  
+  // Epic 12: Tambahan Metadata UI Mobile
+  cover_url     String?    // URL gambar cover cerita
+  deskripsi     String?    @db.Text // Sinopsis cerita
+  is_completed  Boolean    @default(false) // Status TAMAT / ONGOING
   
   // Relasi
   bab           Bab[]    

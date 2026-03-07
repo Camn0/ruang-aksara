@@ -1,24 +1,19 @@
-import { PrismaClient } from '@prisma/client';
 import { notFound } from 'next/navigation';
 import CommentForm from './CommentForm';
 import DeleteCommentButton from './DeleteCommentButton';
 import { redis } from '@/lib/redis';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import Link from 'next/link';
+import { ArrowLeft, Settings, ChevronLeft, ChevronRight, List } from 'lucide-react';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
-// Mengapa: Ini adalah halaman dinamis RSC (React Server Component).
-// Di Next.js 14, props 'params' dikirim secara default untuk menangkap segmen URL.
 export default async function NovelChapterPage({
     params,
 }: {
     params: { karyaId: string; chapterNo: string };
 }) {
-    // [A] Fetching Data Paralel Lanjut (Pencarian Bab dan Relasinya)
-    // Mengapa: Kita menggunakan include untuk *eager loading*, menarik 1 Bab lengkap
-    // beserta parent (Karya-nya untuk judul) dan sekumpulan anaknya (Comment-nya).
-    // Ini mencegah *N+1 query problem*, mengurangi beban komunikasi antara Node Server dan Database Server.
     const bab = await prisma.bab.findUnique({
         where: {
             karya_id_chapter_no: {
@@ -29,7 +24,7 @@ export default async function NovelChapterPage({
         include: {
             karya: true,
             comments: {
-                where: { parent_id: null }, // Mengapa: Hanya fetch Root Comments.
+                where: { parent_id: null },
                 include: {
                     user: true,
                     replies: {
@@ -42,25 +37,18 @@ export default async function NovelChapterPage({
         },
     });
 
-    // Mengapa: Pendekatan _Fail Fast_. Jika God Account belum mengunggah bab tersebut,
-    // langsung tampilkan halaman 404 (Not Found) yang bersih.
     if (!bab) {
         notFound();
     }
 
-    // [B] Background Job: Increment View Counter di Redis
-    // Mengapa: Menambah view langsung ke PostgreSQL setiap kali dibaca akan membebani database.
-    // Kita menampungnya sementara di Redis yang jauh lebih cepat untuk caching in-memory.
     try {
         await redis.incr(`views:karya:${params.karyaId}`);
     } catch (e) {
-        console.error("Redis Error: Gagal increment views", e);
+        console.error("Redis Error", e);
     }
 
-    // [C] Navigasi Bab (Next/Prev)
     const currentNo = Number(params.chapterNo);
 
-    // Cari bab selanjutnya (jika nomornya melompat misal 1 -> 3)
     const nextBab = await prisma.bab.findFirst({
         where: { karya_id: params.karyaId, chapter_no: { gt: currentNo } },
         orderBy: { chapter_no: 'asc' }
@@ -71,9 +59,6 @@ export default async function NovelChapterPage({
         orderBy: { chapter_no: 'desc' }
     });
 
-    // [D] Epic 7: Auto-Bookmark / Riwayat Baca
-    // Mengapa: Saat user membaca halaman ini, kita langsung catat di database
-    // sehingga riwayatnya akan muncul di dashboard mereka nanti.
     const session = await getServerSession(authOptions);
     if (session?.user?.id) {
         try {
@@ -97,130 +82,141 @@ export default async function NovelChapterPage({
     }
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] text-gray-800 font-serif">
-            <div className="max-w-3xl mx-auto px-6 py-12">
+        <div className="min-h-screen bg-[#FDFBF7] text-gray-900 pb-28">
+            {/* Header Sticky Atas */}
+            <header className="px-4 h-14 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-gray-200 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+                <Link href={`/novel/${params.karyaId}`} className="p-2 -ml-2 text-gray-900 active:bg-gray-200 rounded-full transition-colors">
+                    <ArrowLeft className="w-6 h-6" />
+                </Link>
+                <div className="text-center">
+                    <h1 className="font-bold text-sm text-gray-900 leading-tight">Bab {bab.chapter_no}</h1>
+                    <p className="text-[10px] text-gray-500 truncate max-w-[200px]">{bab.karya.title}</p>
+                </div>
+                <button className="p-2 -mr-2 text-gray-900 active:bg-gray-200 rounded-full transition-colors">
+                    <Settings className="w-5 h-5" />
+                </button>
+            </header>
 
-                {/* Header Bab */}
-                <header className="mb-12 text-center border-b pb-8 relative">
-                    <a href={`/novel/${params.karyaId}`} className="absolute left-0 top-0 text-gray-400 hover:text-indigo-600 text-sm font-sans tracking-wide">
-                        &larr; Daftar Isi
-                    </a>
-                    <h1 className="text-sm tracking-widest text-gray-500 uppercase mb-3 mt-6 sm:mt-0">
-                        {bab.karya.title}
-                    </h1>
-                    <h2 className="text-4xl font-bold font-sans text-gray-900 leading-tight">
-                        Bab {bab.chapter_no}
-                    </h2>
-                </header>
-
-                {/* Konten Utama Novel */}
-                {/* Mengapa: text-xl (Epic 7) memberikan UX membaca yang lebih baik untuk mata, seperti e-reader profesional */}
-                <article className="prose prose-xl prose-indigo mx-auto text-justify leading-relaxed whitespace-pre-wrap text-gray-800">
+            {/* Konten Membaca Utama */}
+            <main className="px-6 py-8 sm:px-12 md:max-w-2xl md:mx-auto">
+                <article
+                    className="prose prose-lg prose-indigo mx-auto text-justify leading-loose whitespace-pre-wrap text-[#2c2c2c] font-serif"
+                    style={{ fontSize: '18px' }}
+                >
                     {bab.content}
                 </article>
+            </main>
 
-                {/* Navigasi Bab */}
-                <div className="flex justify-between items-center mt-16 pt-8 border-t border-gray-200 font-sans">
-                    {prevBab ? (
-                        <a href={`/novel/${params.karyaId}/${prevBab.chapter_no}`} className="flex flex-col items-start hover:text-indigo-600 transition-colors">
-                            <span className="text-xs text-gray-400 uppercase tracking-widest">Bab Sebelumnya</span>
-                            <span className="font-bold text-lg">Bab {prevBab.chapter_no}</span>
-                        </a>
+            {/* Navigasi Footer Tetap (Bottom Bar) */}
+            <nav className="fixed bottom-0 inset-x-0 h-20 bg-white border-t border-gray-200 flex items-center justify-between px-6 z-30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:max-w-md md:left-1/2 md:-translate-x-1/2 md:rounded-t-3xl md:border-x">
+                {prevBab ? (
+                    <Link href={`/novel/${params.karyaId}/${prevBab.chapter_no}`} className="flex flex-col items-center gap-1 p-2 text-indigo-600 hover:text-indigo-800 transition-colors active:scale-95">
+                        <ChevronLeft className="w-6 h-6" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Prev</span>
+                    </Link>
+                ) : (
+                    <div className="flex flex-col items-center gap-1 p-2 text-gray-300">
+                        <ChevronLeft className="w-6 h-6" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Prev</span>
+                    </div>
+                )}
+
+                <Link href={`/novel/${params.karyaId}`} className="flex flex-col items-center gap-1 p-4 bg-indigo-600 text-white rounded-full -mt-8 shadow-lg shadow-indigo-200 active:scale-95 transition-all border-4 border-[#FDFBF7]">
+                    <List className="w-6 h-6" />
+                </Link>
+
+                {nextBab ? (
+                    <Link href={`/novel/${params.karyaId}/${nextBab.chapter_no}`} className="flex flex-col items-center gap-1 p-2 text-indigo-600 hover:text-indigo-800 transition-colors active:scale-95">
+                        <ChevronRight className="w-6 h-6" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Next</span>
+                    </Link>
+                ) : (
+                    <div className="flex flex-col items-center gap-1 p-2 text-gray-300">
+                        <ChevronRight className="w-6 h-6" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Next</span>
+                    </div>
+                )}
+            </nav>
+
+            {/* Bagian Komentar */}
+            <section className="px-6 py-8 bg-gray-50 border-t border-gray-200 md:max-w-2xl md:mx-auto md:rounded-t-3xl mt-8">
+                <h3 className="font-bold text-lg mb-6 text-gray-900 border-b border-gray-200 pb-4">
+                    Komentar Pembaca ({bab.comments.length})
+                </h3>
+
+                <div className="space-y-6">
+                    {bab.comments.length === 0 ? (
+                        <p className="text-gray-500 italic text-sm text-center py-8">
+                            Jadilah yang pertama berkomentar di bab ini.
+                        </p>
                     ) : (
-                        <div></div>
-                    )}
+                        bab.comments.map((rootComment) => (
+                            <div key={rootComment.id} className="flex flex-col gap-3">
+                                <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-2 relative">
+                                    <div className="flex justify-between items-center pb-2 border-b border-gray-50">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-[10px]">
+                                                {rootComment.user.display_name.substring(0, 2).toUpperCase()}
+                                            </div>
+                                            <strong className="text-gray-900 font-bold text-sm">{rootComment.user.display_name}</strong>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <time className="text-[10px] text-gray-400">
+                                                {new Date(rootComment.created_at).toLocaleDateString('id-ID')}
+                                            </time>
+                                            {(session?.user?.id === rootComment.user_id || session?.user?.role === 'admin') && (
+                                                <DeleteCommentButton commentId={rootComment.id} />
+                                            )}
+                                        </div>
+                                    </div>
+                                    <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed">
+                                        {rootComment.content}
+                                    </p>
+                                    <div className="text-right">
+                                        <CommentForm babId={bab.id} parentId={rootComment.id} isReply={true} />
+                                    </div>
+                                </div>
 
-                    <a href={`/novel/${params.karyaId}`} className="px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full font-bold text-sm transition-colors">
-                        Daftar Isi
-                    </a>
-
-                    {nextBab ? (
-                        <a href={`/novel/${params.karyaId}/${nextBab.chapter_no}`} className="flex flex-col items-end hover:text-indigo-600 transition-colors">
-                            <span className="text-xs text-gray-400 uppercase tracking-widest">Bab Selanjutnya</span>
-                            <span className="font-bold text-lg">Bab {nextBab.chapter_no}</span>
-                        </a>
-                    ) : (
-                        <div className="flex flex-col items-end text-gray-300 cursor-not-allowed">
-                            <span className="text-xs uppercase tracking-widest">Bab Selanjutnya</span>
-                            <span className="font-bold text-lg">Belum Tersedia</span>
-                        </div>
+                                {rootComment.replies && rootComment.replies.length > 0 && (
+                                    <div className="pl-6 border-l-2 border-indigo-100 space-y-3 ml-2">
+                                        {rootComment.replies.map((reply: any) => (
+                                            <div key={reply.id} className="bg-gray-100/50 p-3 rounded-xl border border-gray-100 flex flex-col gap-1.5 relative">
+                                                <div className="flex justify-between items-center pb-1">
+                                                    <strong className="text-gray-600 font-bold text-xs">↳ {reply.user.display_name}</strong>
+                                                    <div className="flex items-center gap-2">
+                                                        <time className="text-[10px] text-gray-400">
+                                                            {new Date(reply.created_at).toLocaleDateString('id-ID')}
+                                                        </time>
+                                                        {(session?.user?.id === reply.user_id || session?.user?.role === 'admin') && (
+                                                            <DeleteCommentButton commentId={reply.id} />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <p className="text-gray-600 whitespace-pre-wrap text-xs">
+                                                    {reply.content}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))
                     )}
                 </div>
 
-                <hr className="my-16 border-gray-300" />
-
-                {/* Bagian Komentar */}
-                <section>
-                    <h3 className="font-sans font-bold text-2xl mb-6 text-gray-800">
-                        Ruang Diskusi Pembaca ({bab.comments.length})
-                    </h3>
-
-                    {/* Render List Komentar yang sudah ditarik secara Server-Side */}
-                    <div className="space-y-6">
-                        {bab.comments.length === 0 ? (
-                            <p className="text-gray-500 italic font-sans text-sm pb-4">
-                                Jadilah yang pertama memberikan apresiasi pada bab ini.
-                            </p>
-                        ) : (
-                            bab.comments.map((rootComment) => (
-                                <div key={rootComment.id} className="flex flex-col gap-4">
-                                    {/* Root Comment */}
-                                    <div className="bg-white p-5 rounded border shadow-sm font-sans flex flex-col gap-2">
-                                        <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                                            <strong className="text-indigo-600 font-semibold">{rootComment.user.display_name}</strong>
-                                            <div className="flex items-center">
-                                                <time className="text-xs text-gray-400">
-                                                    {new Date(rootComment.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                                </time>
-                                                {(session?.user?.id === rootComment.user_id || session?.user?.role === 'admin') && (
-                                                    <DeleteCommentButton commentId={rootComment.id} />
-                                                )}
-                                            </div>
-                                        </div>
-                                        <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed mt-1">
-                                            {rootComment.content}
-                                        </p>
-                                        <div className="mt-2 text-right">
-                                            <CommentForm babId={bab.id} parentId={rootComment.id} isReply={true} />
-                                        </div>
-                                    </div>
-
-                                    {/* Replies (Nested) */}
-                                    {rootComment.replies && rootComment.replies.length > 0 && (
-                                        <div className="pl-8 border-l-2 border-indigo-100 space-y-4">
-                                            {rootComment.replies.map((reply: any) => (
-                                                <div key={reply.id} className="bg-gray-50 p-4 rounded border border-gray-200 shadow-sm font-sans flex flex-col gap-2">
-                                                    <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                                                        <strong className="text-gray-700 font-semibold text-sm">↳ {reply.user.display_name}</strong>
-                                                        <div className="flex items-center">
-                                                            <time className="text-xs text-gray-400">
-                                                                {new Date(reply.created_at).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })}
-                                                            </time>
-                                                            {(session?.user?.id === reply.user_id || session?.user?.role === 'admin') && (
-                                                                <DeleteCommentButton commentId={reply.id} />
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <p className="text-gray-600 whitespace-pre-wrap text-sm mt-1">
-                                                        {reply.content}
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            ))
-                        )}
+                {session ? (
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                        <h4 className="font-bold text-sm mb-4 text-gray-900">Tulis Komentar</h4>
+                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                            <CommentForm babId={bab.id} />
+                        </div>
                     </div>
-
-                    {/* Mengapa: Form Utama di Bawah */}
-                    <div className="mt-12 pt-8 border-t border-gray-200">
-                        <h4 className="font-bold font-sans text-lg mb-4">Tulis Komentar Baru</h4>
-                        <CommentForm babId={bab.id} />
+                ) : (
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl text-center text-sm text-indigo-700">
+                        <Link href="/onboarding" className="font-bold underline">Masuk</Link> untuk ikut berdiskusi.
                     </div>
-                </section>
-
-            </div>
+                )}
+            </section>
         </div>
     );
 }
