@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { submitComment } from '@/app/actions/user';
 import { useRouter } from 'next/navigation';
 
-export default function CommentForm({ babId, parentId, isReply = false }: { babId: string, parentId?: string, isReply?: boolean }) {
+export default function CommentForm({ babId, parentId, isReply = false, replyToUsername }: { babId: string, parentId?: string, isReply?: boolean, replyToUsername?: string }) {
     const [isPending, setIsPending] = useState(false);
     const [isOpen, setIsOpen] = useState(!isReply);
     const router = useRouter();
@@ -42,20 +42,21 @@ export default function CommentForm({ babId, parentId, isReply = false }: { babI
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition shadow-sm bg-indigo-50 border border-indigo-100 px-3 py-1.5 rounded"
+                className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition shadow-sm bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 px-3 py-1.5 rounded"
             >
-                Balas Komentar
+                {replyToUsername ? 'Balas ini' : 'Balas Komentar'}
             </button>
         );
     }
 
     return (
-        <form id={parentId ? `comment-form-${parentId}` : "comment-form"} action={handleCommentSubmit} className={`${isReply ? 'mt-3 border-l-2 border-indigo-300 pl-4 py-2' : 'mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200'}`}>
-            {!isReply && <h3 className="font-semibold text-lg mb-4 text-gray-800">Tinggalkan Komentar</h3>}
+        <form id={parentId ? `comment-form-${parentId}` : "comment-form"} action={handleCommentSubmit} className={`${isReply ? 'mt-3 border-l-2 border-indigo-300 dark:border-indigo-700 pl-4 py-2' : 'mt-8 bg-gray-50 dark:bg-slate-900 p-6 rounded-lg border border-gray-200 dark:border-slate-800'}`}>
+            {!isReply && <h3 className="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-200">Tinggalkan Komentar</h3>}
 
             <textarea
                 name="content"
-                className={`w-full border p-3 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 ${isReply ? 'min-h-[60px] text-sm' : 'min-h-[100px]'}`}
+                defaultValue={replyToUsername ? `@${replyToUsername} ` : ""}
+                className={`w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-3 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 ${isReply ? 'min-h-[60px] text-sm' : 'min-h-[100px]'}`}
                 placeholder={isReply ? "Tulis balasan Anda..." : "Tuliskan analisis atau apresiasi Anda di sini..."}
                 required
             />
@@ -64,7 +65,7 @@ export default function CommentForm({ babId, parentId, isReply = false }: { babI
                 <button
                     type="submit"
                     disabled={isPending}
-                    className={`bg-indigo-600 text-white font-medium px-6 rounded hover:bg-indigo-700 transition disabled:opacity-50 ${isReply ? 'py-1.5 text-xs' : 'py-2'}`}
+                    className={`bg-indigo-600 dark:bg-indigo-500 text-white font-medium px-6 rounded hover:bg-indigo-700 dark:hover:bg-indigo-600 transition disabled:opacity-50 ${isReply ? 'py-1.5 text-xs' : 'py-2'}`}
                 >
                     {isPending ? 'Mengirim...' : (isReply ? 'Kirim Balasan' : 'Kirim Komentar')}
                 </button>
@@ -73,7 +74,7 @@ export default function CommentForm({ babId, parentId, isReply = false }: { babI
                     <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="bg-gray-200 text-gray-700 font-medium py-1.5 px-4 rounded text-xs hover:bg-gray-300 transition"
+                        className="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium py-1.5 px-4 rounded text-xs hover:bg-gray-300 dark:hover:bg-slate-600 transition"
                     >
                         Batal
                     </button>

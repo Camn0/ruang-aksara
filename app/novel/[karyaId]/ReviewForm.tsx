@@ -32,8 +32,8 @@ export default function ReviewForm({ karyaId, existingReview }: { karyaId: strin
     }
 
     return (
-        <form onSubmit={handleSubmit} className="mt-8 bg-gray-50 border border-gray-200 p-6 rounded-xl">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <form onSubmit={handleSubmit} className="mt-8 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800 p-6 rounded-xl transition-colors duration-300">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                 ✎ Tulis Ulasan Resmi
             </h3>
 
@@ -41,14 +41,14 @@ export default function ReviewForm({ karyaId, existingReview }: { karyaId: strin
             <input type="hidden" name="rating" value={score} />
 
             <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Penilaian Anda (1-5 Bintang)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Penilaian Anda (1-5 Bintang)</label>
                 <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map(star => (
                         <button
                             key={star}
                             type="button"
                             onClick={() => setScore(star)}
-                            className={`text-2xl transition-transform hover:scale-110 ${star <= score ? 'text-yellow-400' : 'text-gray-300'}`}
+                            className={`text-2xl transition-transform hover:scale-110 ${star <= score ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
                         >
                             ★
                         </button>
@@ -57,21 +57,21 @@ export default function ReviewForm({ karyaId, existingReview }: { karyaId: strin
             </div>
 
             <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Isi Ulasan Mendalam</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Isi Ulasan Mendalam</label>
                 <textarea
                     name="content"
                     required
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Bagaimana pendapat Anda tentang pengembangan karakter, alur cerita, atau gaya bahasa novel ini? (Minimal 50 kata sangat disarankan)"
-                    className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none min-h-[120px]"
+                    className="w-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none min-h-[120px] transition-colors"
                 ></textarea>
             </div>
 
             <button
                 type="submit"
                 disabled={isPending}
-                className="bg-indigo-600 text-white font-medium py-2 px-6 rounded hover:bg-indigo-700 disabled:opacity-50 transition"
+                className="bg-indigo-600 dark:bg-indigo-500 text-white font-medium py-2 px-6 rounded hover:bg-indigo-700 dark:hover:bg-indigo-400 disabled:opacity-50 transition"
             >
                 {isPending ? 'Menyimpan...' : (existingReview ? 'Update Ulasan' : 'Publikasi Ulasan')}
             </button>

@@ -16,9 +16,9 @@ export default function FollowButton({ targetUserId, initialIsFollowing }: { tar
         <button
             onClick={handleFollow}
             disabled={isPending}
-            className={`w-full py-2.5 rounded-full font-bold text-sm transition-all focus:outline-none focus:ring-4 disabled:opacity-50 ${initialIsFollowing
-                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-200'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200 focus:ring-indigo-100'
+            className={`w-max px-6 py-1.5 rounded-full font-bold text-[11px] uppercase tracking-wider transition-all focus:outline-none focus:ring-2 disabled:opacity-50 ${initialIsFollowing
+                ? 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 focus:ring-gray-200 dark:focus:ring-slate-700 border border-transparent dark:border-slate-700'
+                : 'bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-400 shadow-sm shadow-indigo-200 dark:shadow-none focus:ring-indigo-100 dark:focus:ring-indigo-900 border border-transparent'
                 }`}
         >
             {isPending ? 'Memproses...' : (initialIsFollowing ? 'Mengikuti' : 'Ikuti')}

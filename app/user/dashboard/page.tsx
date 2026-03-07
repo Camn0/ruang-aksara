@@ -65,26 +65,26 @@ export default async function UserDashboardPage() {
 
     // Dummy helper untuk cover kosong
     const CoverPlaceholder = ({ title }: { title: string }) => (
-        <div className="w-28 h-40 bg-gray-200 rounded-lg flex items-center justify-center p-2 text-center text-xs text-gray-500 shadow-sm shrink-0">
+        <div className="w-28 h-40 bg-gray-200 dark:bg-slate-800 rounded-lg flex items-center justify-center p-2 text-center text-xs text-gray-500 dark:text-gray-400 shadow-sm shrink-0">
             {title}
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-white">
-            <header className="px-6 pt-12 pb-4 flex justify-between items-center bg-white sticky top-0 z-10">
+        <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
+            <header className="px-6 pt-12 pb-4 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-10 border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black italic">
                         RA
                     </div>
                     <div>
-                        <h1 className="text-xl font-black text-gray-900 leading-none">Ruang Aksara</h1>
-                        <p className="text-sm text-gray-500">Hai, {(session.user.name || 'Pembaca').split(' ')[0]}</p>
+                        <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 leading-none">Ruang Aksara</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Hai, {(session.user.name || 'Pembaca').split(' ')[0]}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Link href={`/profile/${session.user.id}`}>
-                        <UserCircle2 className="w-8 h-8 text-gray-400 hover:text-indigo-600 transition-colors" />
+                        <UserCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" />
                     </Link>
                     <LogoutButton />
                 </div>
@@ -96,32 +96,32 @@ export default async function UserDashboardPage() {
                 <section>
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                            <History className="w-5 h-5 text-indigo-600" />
-                            <h2 className="text-lg font-bold text-gray-900">Lanjutkan Membaca</h2>
+                            <History className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Lanjutkan Membaca</h2>
                         </div>
-                        <Link href="/library" className="text-xs font-bold text-indigo-600">Lihat Semua</Link>
+                        <Link href="/library" className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Semua</Link>
                     </div>
 
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
                         {bookmarks.length === 0 ? (
-                            <div className="w-full p-6 border-2 border-dashed border-gray-100 rounded-2xl text-center text-gray-400 text-sm">
+                            <div className="w-full p-6 border-2 border-dashed border-gray-100 dark:border-slate-800 rounded-2xl text-center text-gray-400 dark:text-gray-500 text-sm">
                                 Belum ada riwayat.
                             </div>
                         ) : (
                             bookmarks.slice(0, 5).map(b => (
                                 <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="snap-start shrink-0 w-32 flex flex-col gap-2">
-                                    <div className="relative aspect-[2/3] w-32 rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                                    <div className="relative aspect-[2/3] w-32 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800">
                                         {(b.karya as any).cover_url ? (
                                             <img src={(b.karya as any).cover_url} alt={b.karya.title} className="w-full h-full object-cover" />
                                         ) : (
-                                            <div className="w-full h-full bg-gray-100 flex items-center justify-center p-2 text-center text-[10px] text-gray-500">{b.karya.title}</div>
+                                            <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400">{b.karya.title}</div>
                                         )}
-                                        <div className="absolute bottom-0 inset-x-0 h-1 bg-gray-200">
-                                            <div className="h-full bg-indigo-600" style={{ width: '60%' }}></div>
+                                        <div className="absolute bottom-0 inset-x-0 h-1 bg-gray-200 dark:bg-slate-700">
+                                            <div className="h-full bg-indigo-600 dark:bg-indigo-500" style={{ width: '60%' }}></div>
                                         </div>
                                     </div>
-                                    <h3 className="text-sm font-bold text-gray-900 line-clamp-1">{b.karya.title}</h3>
-                                    <p className="text-[10px] font-bold text-indigo-600 bg-indigo-50 self-start px-2 py-0.5 rounded">Bab {b.last_chapter}</p>
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-1">{b.karya.title}</h3>
+                                    <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/40 self-start px-2 py-0.5 rounded">Bab {b.last_chapter}</p>
                                 </Link>
                             ))
                         )}
@@ -132,7 +132,7 @@ export default async function UserDashboardPage() {
                 <section>
                     <div className="flex items-center gap-2 mb-4">
                         <Flame className="w-5 h-5 text-orange-500" />
-                        <h2 className="text-lg font-bold text-gray-900">Favorit Hari Ini</h2>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Favorit Hari Ini</h2>
                     </div>
 
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
@@ -142,16 +142,16 @@ export default async function UserDashboardPage() {
                                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                                     <span>{f.avg_rating.toFixed(1)}</span>
                                 </div>
-                                <div className="aspect-[2/3] w-32 rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                                <div className="aspect-[2/3] w-32 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800">
                                     {(f as any).cover_url ? (
                                         <img src={(f as any).cover_url} alt={f.title} className="w-full h-full object-cover group-hover:scale-105 transition-all" />
                                     ) : (
-                                        <div className="w-full h-full bg-gray-100 flex items-center justify-center p-2 text-center text-[10px] text-gray-500">
+                                        <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400">
                                             {f.title}
                                         </div>
                                     )}
                                 </div>
-                                <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mt-1">{f.title}</h3>
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">{f.title}</h3>
                             </Link>
                         ))}
                     </div>
@@ -161,22 +161,22 @@ export default async function UserDashboardPage() {
                 {bookmarks.length > 0 && (
                     <section>
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-gray-900">Koleksi Bookmark</h2>
-                            <Link href="/library" className="text-xs font-bold text-indigo-600">Terbaru Disimpan</Link>
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Koleksi Bookmark</h2>
+                            <Link href="/library" className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Terbaru Disimpan</Link>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                             {bookmarks.slice(0, 4).map(b => (
-                                <Link key={b.id} href={`/novel/${b.karya.id}`} className="bg-white border border-gray-100 rounded-2xl p-3 flex gap-3 shadow-sm active:scale-95 transition-all">
+                                <Link key={b.id} href={`/novel/${b.karya.id}`} className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-500/50 rounded-2xl p-3 flex gap-3 shadow-sm active:scale-95 transition-all group">
                                     <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0">
                                         {(b.karya as any).cover_url ? (
-                                            <img src={(b.karya as any).cover_url} alt={b.karya.title} className="w-full h-full object-cover" />
+                                            <img src={(b.karya as any).cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-105 transition-all" />
                                         ) : (
-                                            <div className="w-full h-full bg-gray-100" />
+                                            <div className="w-full h-full bg-gray-100 dark:bg-slate-800" />
                                         )}
                                     </div>
                                     <div className="min-w-0">
-                                        <h4 className="text-[12px] font-bold text-gray-900 line-clamp-2 leading-tight">{b.karya.title}</h4>
-                                        <p className="text-[10px] text-gray-400 mt-1">{b.karya.penulis_alias}</p>
+                                        <h4 className="text-[12px] font-bold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{b.karya.title}</h4>
+                                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">{b.karya.penulis_alias}</p>
                                     </div>
                                 </Link>
                             ))}
@@ -187,13 +187,13 @@ export default async function UserDashboardPage() {
                 {/* Section: Rekomendasi / Yg Kamu Follow */}
                 <section>
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-bold text-gray-900">Dari Penulis Favoritmu</h2>
-                        <Link href="/search" className="text-sm text-indigo-600 font-medium">Lihat Semua</Link>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Dari Penulis Favoritmu</h2>
+                        <Link href="/search" className="text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:underline">Lihat Semua</Link>
                     </div>
 
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
                         {recommendations.length === 0 ? (
-                            <div className="w-full p-4 bg-gray-50 rounded-xl text-center text-gray-500 text-sm">
+                            <div className="w-full p-4 bg-gray-50 dark:bg-slate-800 rounded-xl text-center text-gray-500 dark:text-gray-400 text-sm">
                                 Kamu belum mengikuti penulis manapun.
                             </div>
                         ) : (
@@ -204,7 +204,7 @@ export default async function UserDashboardPage() {
                                     ) : (
                                         <CoverPlaceholder title={r.title} />
                                     )}
-                                    <h3 className="text-sm font-bold text-gray-900 line-clamp-2">{r.title}</h3>
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-2">{r.title}</h3>
                                 </Link>
                             ))
                         )}

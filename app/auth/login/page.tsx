@@ -45,22 +45,22 @@ function LoginForm() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-white">
+        <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
             <div className="p-6 relative z-10">
-                <Link href="/onboarding" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors">
+                <Link href="/onboarding" className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                     <ArrowLeft className="w-6 h-6 mr-2" />
                     <span>Kembali</span>
                 </Link>
             </div>
 
             <div className="flex-1 flex flex-col items-center justify-center p-8 -mt-20">
-                <h1 className="text-4xl font-black text-gray-900 mb-12 tracking-wide font-serif">
+                <h1 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-12 tracking-wide font-serif">
                     {title}
                 </h1>
 
                 <form onSubmit={handleSubmit} className="w-full space-y-6">
                     {error && (
-                        <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-center font-medium text-sm animate-in fade-in slide-in-from-top-2">
+                        <div className="p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-2xl text-center font-medium text-sm animate-in fade-in slide-in-from-top-2">
                             {error}
                         </div>
                     )}
@@ -72,7 +72,7 @@ function LoginForm() {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 placeholder="Username"
-                                className="w-full py-4 px-6 rounded-full border-2 border-gray-900 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all text-lg"
+                                className="w-full py-4 px-6 rounded-full border-2 border-gray-900 dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-500/30 transition-all text-lg"
                                 required
                             />
                         </div>
@@ -83,7 +83,7 @@ function LoginForm() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Password"
-                                className="w-full py-4 px-6 rounded-full border-2 border-gray-900 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all text-lg"
+                                className="w-full py-4 px-6 rounded-full border-2 border-gray-900 dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-500/30 transition-all text-lg"
                                 required
                             />
                         </div>
@@ -92,17 +92,17 @@ function LoginForm() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full mt-8 py-4 bg-transparent border-2 border-gray-900 text-gray-900 rounded-full font-bold text-lg hover:bg-gray-900 hover:text-white transition-all active:scale-95 disabled:opacity-50"
+                        className="w-full mt-8 py-4 bg-transparent border-2 border-gray-900 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-full font-bold text-lg hover:bg-gray-900 dark:hover:bg-slate-800 hover:text-white dark:hover:text-white transition-all active:scale-95 disabled:opacity-50"
                     >
                         {isLoading ? "Memproses..." : `Login ${title}`}
                     </button>
 
                     {isReader && (
-                        <div className="mt-8 text-center pt-8 border-t border-gray-100">
-                            <p className="text-gray-500 mb-4">Pengguna Baru?</p>
+                        <div className="mt-8 text-center pt-8 border-t border-gray-100 dark:border-slate-800">
+                            <p className="text-gray-500 dark:text-gray-400 mb-4">Pengguna Baru?</p>
                             <Link
                                 href="/auth/register"
-                                className="text-indigo-600 font-bold hover:underline"
+                                className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
                             >
                                 Daftar Akun Pembaca
                             </Link>

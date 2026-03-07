@@ -45,13 +45,13 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-24">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
             {/* Header / Navigasi */}
-            <header className="px-6 h-14 bg-white border-b border-gray-100 flex items-center justify-between sticky top-0 z-20">
-                <Link href="/admin/dashboard" className="p-2 -ml-2 text-gray-900 active:bg-gray-100 rounded-full transition-colors">
+            <header className="px-6 h-14 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
+                <Link href="/admin/dashboard" className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors">
                     <span className="font-bold text-lg">&larr;</span>
                 </Link>
-                <h1 className="font-bold text-lg text-gray-900 absolute left-1/2 -translate-x-1/2 w-48 text-center truncate">
+                <h1 className="font-bold text-lg text-gray-900 dark:text-gray-100 absolute left-1/2 -translate-x-1/2 w-48 text-center truncate">
                     {karya.title}
                 </h1>
                 <DeleteKaryaButton karyaId={karya.id} />
@@ -59,15 +59,15 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
 
             <div className="p-6 space-y-6">
                 {/* Info Card */}
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                    <p className="text-xs text-gray-500 uppercase font-black tracking-wider mb-2">Manajemen Karya</p>
-                    <h2 className="text-2xl font-black text-gray-900 leading-tight mb-1">{karya.title}</h2>
-                    <p className="text-sm text-gray-600 mb-4">Oleh {karya.penulis_alias}</p>
+                <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-black tracking-wider mb-2">Manajemen Karya</p>
+                    <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-1">{karya.title}</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Oleh {karya.penulis_alias}</p>
                     <div className="flex flex-wrap gap-2 mb-6">
                         {karya.genres.map(g => (
-                            <span key={g.id} className="bg-gray-100 text-gray-600 text-[10px] uppercase font-bold px-2 py-1 rounded">{g.name}</span>
+                            <span key={g.id} className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[10px] uppercase font-bold px-2 py-1 rounded">{g.name}</span>
                         ))}
-                        {karya.is_completed && <span className="bg-green-100 text-green-700 text-[10px] uppercase font-bold px-2 py-1 rounded">Tamat</span>}
+                        {karya.is_completed && <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-bold px-2 py-1 rounded">Tamat</span>}
                     </div>
 
                     {/* Form Kelola Meta & Gambar */}
@@ -75,29 +75,29 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
                 </div>
 
                 {/* Section Bab */}
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100">
-                        <h3 className="font-black text-lg text-gray-900 mb-4">Daftar Isi Lengkap</h3>
+                <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-colors duration-300">
+                    <div className="p-6 border-b border-gray-100 dark:border-slate-800">
+                        <h3 className="font-black text-lg text-gray-900 dark:text-gray-100 mb-4">Daftar Isi Lengkap</h3>
                         <CreateBabForm karyaId={karya.id} />
                     </div>
 
                     <div className="p-6">
                         {karya.bab.length === 0 ? (
                             <div className="text-center py-8">
-                                <p className="text-gray-500 text-sm">Belum ada bab yang dirilis.</p>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm">Belum ada bab yang dirilis.</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-3">
                                 {karya.bab.map((chapter) => (
-                                    <div key={chapter.id} className="border border-gray-100 bg-gray-50 rounded-2xl p-4 flex flex-col gap-4">
+                                    <div key={chapter.id} className="border border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-950/50 rounded-2xl p-4 flex flex-col gap-4 transition-colors duration-300">
                                         <div className="flex justify-between items-start">
                                             <div className="flex items-center gap-3">
-                                                <div className="bg-indigo-600 text-white font-black rounded-lg w-10 h-10 flex items-center justify-center shrink-0">
+                                                <div className="bg-indigo-600 dark:bg-indigo-500 text-white font-black rounded-lg w-10 h-10 flex items-center justify-center shrink-0">
                                                     {chapter.chapter_no}
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-bold text-gray-900">Bab {chapter.chapter_no}</h4>
-                                                    <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                                                    <h4 className="font-bold text-gray-900 dark:text-gray-100">Bab {chapter.chapter_no}</h4>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
                                                         {chapter.content.replace(/<[^>]*>?/gm, '').substring(0, 50)}...
                                                     </p>
                                                 </div>
@@ -113,7 +113,7 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
                                             </div>
                                             <Link
                                                 href={`/novel/${karya.id}/${chapter.chapter_no}`}
-                                                className="px-4 py-2 border border-gray-200 text-gray-700 bg-white rounded-xl font-bold text-sm hover:bg-gray-50 transition flex items-center justify-center shrink-0 shadow-sm"
+                                                className="px-4 py-2 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-900 rounded-xl font-bold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition flex items-center justify-center shrink-0 shadow-sm"
                                             >
                                                 Baca
                                             </Link>

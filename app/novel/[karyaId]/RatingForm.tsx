@@ -37,8 +37,8 @@ export default function RatingForm({ karyaId, defaultScore = 0 }: { karyaId: str
     }
 
     return (
-        <div className="flex flex-col items-center bg-white p-6 rounded-2xl border border-yellow-100 shadow-sm">
-            <h3 className="text-gray-900 font-semibold mb-3">Berikan Penilaian Anda</h3>
+        <div className="flex flex-col items-center bg-white dark:bg-slate-900 p-6 rounded-2xl border border-yellow-100 dark:border-slate-800 shadow-sm transition-colors duration-300">
+            <h3 className="text-gray-900 dark:text-gray-100 font-semibold mb-3">Berikan Penilaian Anda</h3>
             <div className="flex gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -47,7 +47,7 @@ export default function RatingForm({ karyaId, defaultScore = 0 }: { karyaId: str
                         onMouseEnter={() => setIsHovering(star)}
                         onMouseLeave={() => setIsHovering(0)}
                         onClick={() => handleRatingSubmit(star)}
-                        className={`text-4xl transition-all duration-200 focus:outline-none ${isPending ? 'opacity-50 cursor-not-allowed' : 'hover:scale-125'} ${star <= (isHovering || score) ? 'text-yellow-400' : 'text-gray-200'
+                        className={`text-4xl transition-all duration-200 focus:outline-none ${isPending ? 'opacity-50 cursor-not-allowed' : 'hover:scale-125'} ${star <= (isHovering || score) ? 'text-yellow-400' : 'text-gray-200 dark:text-gray-700'
                             }`}
                         title={`Beri rating ${star} bintang`}
                     >
@@ -56,7 +56,7 @@ export default function RatingForm({ karyaId, defaultScore = 0 }: { karyaId: str
                 ))}
             </div>
             {score > 0 && (
-                <p className="text-sm text-green-600 mt-3 font-medium animate-pulse">
+                <p className="text-sm text-green-600 dark:text-green-500 mt-3 font-medium animate-pulse">
                     Anda memberikan {score} bintang.
                 </p>
             )}

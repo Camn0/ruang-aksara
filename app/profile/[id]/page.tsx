@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, UserCircle2, Settings, TrendingUp, BookMarked, Star } from "lucide-react";
+import { ArrowLeft, UserCircle2, Settings, TrendingUp, BookMarked, Star, MessageSquare } from "lucide-react";
 import FollowButton from "./FollowButton";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
 export default async function ProfilePage({ params }: { params: { id: string } }) {
     const session = await getServerSession(authOptions);
@@ -28,10 +29,10 @@ export default async function ProfilePage({ params }: { params: { id: string } }
     if (!userProfileRaw) {
         if (session?.user?.id === params.id || session?.user?.role === 'admin') {
             return (
-                <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
-                    <UserCircle2 className="w-20 h-20 text-gray-300 mb-4" />
-                    <h1 className="text-xl font-black text-gray-900 mb-2">Sesi Tidak Valid</h1>
-                    <p className="text-sm text-gray-500 mb-8 max-w-sm mx-auto">
+                <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center transition-colors duration-300">
+                    <UserCircle2 className="w-20 h-20 text-gray-300 dark:text-gray-600 mb-4" />
+                    <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-2">Sesi Tidak Valid</h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
                         Profil Anda sudah tidak ditemukan di database (Kemungkinan database telah di-reset).
                         Silakan logout dan login kembali.
                     </p>
@@ -99,42 +100,49 @@ export default async function ProfilePage({ params }: { params: { id: string } }
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-24">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
             {/* Navigasi Atas - Mirip header Instagram */}
-            <header className="px-4 h-14 bg-white border-b border-gray-100 flex items-center justify-between sticky top-0 z-20">
-                <Link href="/" className="p-2 -ml-2 text-gray-900 active:bg-gray-100 rounded-full transition-colors">
+            <header className="px-4 h-14 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
+                <Link href="/" className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="font-bold text-lg text-gray-900 absolute left-1/2 -translate-x-1/2">{userProfile.username}</h1>
-                {isOwnProfile && (
-                    <Link href="/profile/settings" className="p-2 -mr-2 text-gray-900 active:bg-gray-100 rounded-full transition-colors block">
-                        <Settings className="w-6 h-6" />
-                    </Link>
-                )}
+                <div className="absolute left-1/2 -translate-x-1/2 text-center">
+                    <h1 className="font-bold text-lg text-gray-900 dark:text-gray-100">{userProfile.display_name}</h1>
+                    <p className="text-[10px] text-gray-500 font-medium">@{userProfile.username}</p>
+                </div>
+
+                <div className="flex items-center gap-1">
+                    <ThemeToggle />
+                    {isOwnProfile && (
+                        <Link href="/profile/settings" className="p-2 -mr-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors block">
+                            <Settings className="w-6 h-6" />
+                        </Link>
+                    )}
+                </div>
             </header>
 
             {/* Info Profil Utama */}
             {/* Info Profil Utama dengan Banner */}
-            <div className="bg-white border-b border-gray-100 relative">
+            <div className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 relative transition-colors duration-300">
                 {/* Banner Area */}
-                <div className="h-40 bg-gradient-to-r from-gray-200 to-indigo-100 w-full relative">
+                <div className="h-40 bg-gradient-to-r from-gray-200 dark:from-slate-800 to-indigo-100 dark:to-indigo-900/40 w-full relative">
                     {/* Opsional: Jika user punya cover profil bisa dirender di sini, untuk sekarang placeholder warna gradien */}
                 </div>
 
                 <div className="px-6 pb-6 pt-4 relative">
                     {/* Avatar overlap */}
-                    <div className="absolute -top-16 w-32 h-32 overflow-hidden bg-white rounded-full flex items-center justify-center shrink-0 border-4 border-white shadow-xl shadow-indigo-100/50">
+                    <div className="absolute -top-16 w-32 h-32 overflow-hidden bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shrink-0 border-4 border-white dark:border-slate-900 shadow-xl shadow-indigo-100/50 dark:shadow-none">
                         {userProfile.avatar_url ? (
                             <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                            <UserCircle2 className="w-24 h-24 text-indigo-300" strokeWidth={1} />
+                            <UserCircle2 className="w-24 h-24 text-indigo-300 dark:text-indigo-400" strokeWidth={1} />
                         )}
                     </div>
 
                     {/* Right-aligned Action Button - Closer to top section */}
                     <div className="flex justify-end mb-4">
                         {isOwnProfile ? (
-                            <Link href="/profile/edit" className="px-6 py-2 rounded-full border border-gray-200 font-bold text-xs text-gray-900 hover:bg-gray-50 transition-colors shadow-sm bg-white">
+                            <Link href="/profile/edit" className="px-6 py-2 rounded-full border border-gray-200 dark:border-slate-700 font-bold text-xs text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm bg-white dark:bg-slate-900">
                                 Edit Profil
                             </Link>
                         ) : session ? (
@@ -148,29 +156,29 @@ export default async function ProfilePage({ params }: { params: { id: string } }
 
                     {/* Stats & Info */}
                     <div className="mt-4">
-                        <h2 className="text-2xl font-black text-gray-900 leading-tight mb-1">{userProfile.display_name}</h2>
-                        <span className="inline-block px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase tracking-wider mb-4">
+                        <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-1">{userProfile.display_name}</h2>
+                        <span className="inline-block px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold uppercase tracking-wider mb-4">
                             {userProfile.role === 'admin' ? 'Author & Admin' : userProfile.role}
                         </span>
 
                         {/* Stats Row */}
                         <div className="flex gap-8 mb-2">
                             <div>
-                                <p className="text-xl font-black text-gray-900 leading-none">{userProfile._count.followers}</p>
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Pengikut</p>
+                                <p className="text-xl font-black text-gray-900 dark:text-gray-100 leading-none">{userProfile._count.followers}</p>
+                                <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-1">Pengikut</p>
                             </div>
                             <div>
-                                <p className="text-xl font-black text-gray-900 leading-none">{userProfile._count.following}</p>
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Mengikuti</p>
+                                <p className="text-xl font-black text-gray-900 dark:text-gray-100 leading-none">{userProfile._count.following}</p>
+                                <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-1">Mengikuti</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Tab Konten */}
-                <div className="mt-2 bg-white min-h-[50vh]">
-                    <div className="flex border-b border-gray-200">
-                        <button className="flex-1 py-4 font-bold text-sm text-indigo-600 border-b-2 border-indigo-600">
+                <div className="mt-2 bg-white dark:bg-slate-900 min-h-[50vh] transition-colors duration-300">
+                    <div className="flex border-b border-gray-200 dark:border-slate-800">
+                        <button className="flex-1 py-4 font-bold text-sm text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400">
                             {isAuthor ? 'Karya' : 'Aktivitas'}
                         </button>
                     </div>
@@ -180,14 +188,22 @@ export default async function ProfilePage({ params }: { params: { id: string } }
                         {isAuthor ? (
                             <div className="grid grid-cols-3 gap-1">
                                 {userWorks.length === 0 ? (
-                                    <div className="col-span-3 text-center py-20 text-gray-400 text-sm">Belum ada karya.</div>
+                                    <div className="col-span-3 text-center py-20 px-8 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl bg-gray-50 dark:bg-slate-900/50 mt-4 mx-4 transition-colors duration-300">
+                                        <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 mx-auto shadow-sm">
+                                            <BookMarked className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+                                        </div>
+                                        <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Belum Menerbitkan Karya</h2>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            Penulis ini masih meracik mahakaryanya dalam diam.
+                                        </p>
+                                    </div>
                                 ) : (
                                     userWorks.map(karya => (
-                                        <Link key={karya.id} href={`/novel/${karya.id}`} className="aspect-[2/3] relative group bg-gray-100 block overflow-hidden">
+                                        <Link key={karya.id} href={`/novel/${karya.id}`} className="aspect-[2/3] relative group bg-gray-100 dark:bg-slate-800 block overflow-hidden">
                                             {karya.cover_url ? (
                                                 <img src={karya.cover_url} alt={karya.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center p-2 text-center text-[10px] text-gray-500">
+                                                <div className="w-full h-full flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400">
                                                     {karya.title}
                                                 </div>
                                             )}
@@ -205,19 +221,27 @@ export default async function ProfilePage({ params }: { params: { id: string } }
                             </div>
                         ) : (
                             /* Render Aktivitas Jika Pembaca */
-                            <div className="divide-y divide-gray-100">
+                            <div className="divide-y divide-gray-100 dark:divide-slate-800">
                                 {recentComments.length === 0 ? (
-                                    <div className="text-center py-20 text-gray-400 text-sm">Belum ada komentar.</div>
+                                    <div className="text-center py-20 px-8 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl bg-gray-50 dark:bg-slate-900/50 mt-4 transition-colors duration-300">
+                                        <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 mx-auto shadow-sm">
+                                            <MessageSquare className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+                                        </div>
+                                        <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Belum Ada Aktivitas</h2>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            Pembaca ini belum meninggalkan jejak atau komentar apapun.
+                                        </p>
+                                    </div>
                                 ) : (
                                     recentComments.map(comment => (
                                         <div key={comment.id} className="p-6">
                                             <div className="flex justify-between items-start mb-2">
-                                                <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-xs font-bold text-indigo-600 hover:underline">
+                                                <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                                                     # {comment.bab.karya.title} - Bab {comment.bab.chapter_no}
                                                 </Link>
-                                                <span className="text-[10px] text-gray-400">{comment.created_at.toLocaleDateString('id-ID')}</span>
+                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{comment.created_at.toLocaleDateString('id-ID')}</span>
                                             </div>
-                                            <p className="text-gray-800 text-sm bg-gray-50 p-4 rounded-xl rounded-tl-none border border-gray-100">
+                                            <p className="text-gray-800 dark:text-gray-200 text-sm bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl rounded-tl-none border border-gray-100 dark:border-slate-800">
                                                 "{comment.content}"
                                             </p>
                                         </div>

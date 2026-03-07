@@ -26,14 +26,14 @@ export async function createKarya(formData: FormData) {
         // [B] Ekstraksi Data Input
         // Mengapa: Membaca isi objek FormData bawaan web API standar.
         const title = formData.get('title') as string;
-        const penulis_alias = formData.get('penulis_alias') as string;
+        const input_penulis_alias = formData.get('penulis_alias') as string;
         const deskripsi = formData.get('deskripsi') as string || null;
         const cover_url = formData.get('cover_url') as string || null;
         const genreIds = formData.getAll('genres') as string[]; // Menerima array genre dari HTML checkboxes
 
         // [C] Validasi Kelengkapan Input
-        if (!title || !penulis_alias) {
-            return { error: "Bad Request: Judul dan Penulis Alias wajib diisi." };
+        if (!title) {
+            return { error: "Bad Request: Judul karya wajib diisi." };
         }
 
         // [C.2] Validasi Sesi Stale (Mencegah Error P2003 / Foreign Key Constraint)
@@ -47,12 +47,18 @@ export async function createKarya(formData: FormData) {
             return { error: "Sesi Anda sudah kedaluwarsa atau tidak valid (Terjadi indikasi reset database). Silakan Logout dan Login kembali." };
         }
 
+        // Gabungkan alias buatan user dan username asli. Jika kosong, pakai username saja.
+        const cleanAlias = input_penulis_alias?.replace(/\s\([^)]+\)$/, '').trim();
+        const final_penulis_alias = cleanAlias
+            ? `${cleanAlias} (${existingUser.username})`
+            : existingUser.username;
+
         // [D] Mutasi Database
         // Mengapa: relasi foreign key disambungkan berdasarkan ID user pelog-in 
         const karyaBaru = await prisma.karya.create({
             data: {
                 title,
-                penulis_alias,
+                penulis_alias: final_penulis_alias,
                 deskripsi,
                 cover_url,
                 uploader_id: session.user.id,
@@ -219,15 +225,27 @@ export async function editKarya(formData: FormData) {
 
         const id = formData.get('id') as string;
         const title = formData.get('title') as string;
-        const penulis_alias = formData.get('penulis_alias') as string;
+        const input_penulis_alias = formData.get('penulis_alias') as string;
         const deskripsi = formData.get('deskripsi') as string || null;
         const cover_url = formData.get('cover_url') as string || null;
         const is_completed = formData.get('is_completed') === 'true'; // Toggle Selesai
         const genreIds = formData.getAll('genres') as string[];
 
-        if (!id || !title || !penulis_alias) {
+        if (!id || !title) {
             return { error: "Data tidak lengkap." };
         }
+
+        // Fetch user untuk sinkronisasi nama penulis
+        const existingUser = await prisma.user.findUnique({
+            where: { id: session.user.id }
+        });
+
+        if (!existingUser) return { error: "Sesi tidak valid." };
+
+        const cleanAlias = input_penulis_alias?.replace(/\s\([^)]+\)$/, '').trim();
+        const final_penulis_alias = cleanAlias
+            ? `${cleanAlias} (${existingUser.username})`
+            : existingUser.username;
 
         // Cek Kepemilikan Jika Author
         const existingKarya = await prisma.karya.findUnique({ where: { id } });
@@ -241,7 +259,7 @@ export async function editKarya(formData: FormData) {
             where: { id },
             data: {
                 title,
-                penulis_alias,
+                penulis_alias: final_penulis_alias,
                 deskripsi,
                 cover_url,
                 is_completed,

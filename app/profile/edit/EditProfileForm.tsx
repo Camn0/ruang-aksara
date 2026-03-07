@@ -30,27 +30,27 @@ export default function EditProfileForm({ initialData }: { initialData: { displa
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Nama Tampilan</label>
+                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">Nama Tampilan</label>
                 <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-all"
                     required
                 />
-                <p className="text-[10px] text-gray-500 mt-2">Nama ini akan dlihat oleh publik di halaman Anda dan pada tiap komentar yang Anda buat.</p>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-2">Nama ini akan dlihat oleh publik di halaman Anda dan pada tiap komentar yang Anda buat.</p>
             </div>
 
             <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">URL Foto Profil (Opsional)</label>
+                <label className="block text-sm font-bold text-gray-900 dark:text-gray-100 mb-2">URL Foto Profil (Opsional)</label>
                 <input
                     type="url"
                     value={avatarUrl}
                     onChange={(e) => setAvatarUrl(e.target.value)}
                     placeholder="https://..."
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
-                <p className="text-[10px] text-gray-500 mt-2">Masukkan tautan gambar. Kosongkan untuk menggunakan avatar bawaan.</p>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-2">Masukkan tautan gambar. Kosongkan untuk menggunakan avatar bawaan.</p>
             </div>
 
             {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
@@ -58,7 +58,7 @@ export default function EditProfileForm({ initialData }: { initialData: { displa
             <button
                 type="submit"
                 disabled={loading || !name.trim()}
-                className="w-full py-3.5 bg-indigo-600 text-white rounded-full font-bold text-sm shadow-xl shadow-indigo-200 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full font-bold text-sm shadow-xl shadow-indigo-200 dark:shadow-none active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
                 <Save className="w-4 h-4" />
                 {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
