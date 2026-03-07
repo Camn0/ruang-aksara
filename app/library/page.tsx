@@ -16,7 +16,7 @@ export default async function LibraryPage() {
     }
 
     // Ambil riwayat bookmark (yang juga berfungsi sebagai history)
-    const bookmarksRaw = await prisma.bookmark.findMany({
+    const bookmarksRaw = await (prisma as any).bookmark.findMany({
         where: { user_id: session.user.id },
         include: {
             karya: {

@@ -17,7 +17,7 @@ export default async function UserDashboardPage() {
 
     // Parallel data fetching for better performance
     const [bookmarksRaw, favoritesRaw, follows] = await Promise.all([
-        prisma.bookmark.findMany({
+        (prisma as any).bookmark.findMany({
             where: { user_id: session.user.id },
             include: {
                 karya: {
@@ -27,11 +27,11 @@ export default async function UserDashboardPage() {
             orderBy: { updated_at: 'desc' },
             take: 5
         }),
-        prisma.karya.findMany({
+        (prisma as any).karya.findMany({
             orderBy: [{ avg_rating: 'desc' }, { total_views: 'desc' }],
             take: 5
         }),
-        prisma.follow.findMany({
+        (prisma as any).follow.findMany({
             where: { follower_id: session.user.id },
             select: { following_id: true }
         })
@@ -51,8 +51,8 @@ export default async function UserDashboardPage() {
         cover_url: string | null;
     })[];
 
-    const followingIds = follows.map(f => f.following_id);
-    const recommendationsRaw = await prisma.karya.findMany({
+    const followingIds = follows.map((f: any) => f.following_id);
+    const recommendationsRaw = await (prisma as any).karya.findMany({
         where: { uploader_id: { in: followingIds } },
         orderBy: { total_views: 'desc' },
         take: 5
@@ -107,7 +107,7 @@ export default async function UserDashboardPage() {
                                 Belum ada riwayat.
                             </div>
                         ) : (
-                            bookmarks.slice(0, 5).map(b => (
+                            bookmarks.slice(0, 5).map((b: any) => (
                                 <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="snap-start shrink-0 w-32 flex flex-col gap-2">
                                     <div className="relative aspect-[2/3] w-32 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                                         {(b.karya as any).cover_url ? (
@@ -135,7 +135,7 @@ export default async function UserDashboardPage() {
                     </div>
 
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
-                        {favorites.map(f => (
+                        {favorites.map((f: any) => (
                             <Link key={f.id} href={`/novel/${f.id}`} className="snap-start shrink-0 w-32 flex flex-col gap-2 relative group">
                                 <div className="absolute top-2 right-2 bg-black/60 backdrop-blur text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 z-10 font-bold">
                                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
@@ -164,7 +164,7 @@ export default async function UserDashboardPage() {
                             <Link href="/library" className="text-xs font-bold text-indigo-600">Terbaru Disimpan</Link>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                            {bookmarks.slice(0, 4).map(b => (
+                            {bookmarks.slice(0, 4).map((b: any) => (
                                 <Link key={b.id} href={`/novel/${b.karya.id}`} className="bg-white border border-gray-100 rounded-2xl p-3 flex gap-3 shadow-sm active:scale-95 transition-all">
                                     <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0">
                                         {(b.karya as any).cover_url ? (
@@ -196,7 +196,7 @@ export default async function UserDashboardPage() {
                                 Kamu belum mengikuti penulis manapun.
                             </div>
                         ) : (
-                            recommendations.map(r => (
+                            recommendations.map((r: any) => (
                                 <Link key={r.id} href={`/novel/${r.id}`} className="snap-start shrink-0 w-28 flex flex-col gap-2">
                                     {r.cover_url ? (
                                         <img src={r.cover_url} alt={r.title} className="w-28 h-40 object-cover rounded-xl shadow-sm" />

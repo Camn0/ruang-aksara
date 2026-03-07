@@ -7,6 +7,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote } from "lucide-react";
 
+import { prisma } from '@/lib/prisma';
+
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function KaryaDetailsPage({ params }: { params: { karyaId: string } }) {
@@ -105,7 +107,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                         </div>
 
                         <div className="flex flex-wrap gap-1.5 mb-4">
-                            {karya.genres.map(g => (
+                            {karya.genres.map((g: any) => (
                                 <span key={g.id} className="bg-gray-100 text-gray-600 text-[10px] uppercase font-bold px-2 py-1 rounded">
                                     {g.name}
                                 </span>
@@ -177,7 +179,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                             Belum ada bab yang dirilis.
                         </div>
                     ) : (
-                        karya.bab.map((chapter) => (
+                        karya.bab.map((chapter: any) => (
                             <Link
                                 key={chapter.id}
                                 href={`/novel/${karya.id}/${chapter.chapter_no}`}
@@ -225,7 +227,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
             {karya.reviews.length > 0 && (
                 <div className="bg-white mt-2 border-y border-gray-100 p-6">
                     <div className="space-y-4">
-                        {karya.reviews.map(r => (
+                        {karya.reviews.map((r: any) => (
                             <div key={r.id} className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex gap-2 items-center">
