@@ -12,8 +12,8 @@ export default async function SearchPage({
     const filter = searchParams.filter || "terpopuler";
     const genreId = searchParams.genreId || "";
 
-    // Ambil daftar genre untuk filter
-    const allGenres = await prisma.genre.findMany({
+    // Setup query untuk filter genre
+    const genresPromise = prisma.genre.findMany({
         orderBy: { name: 'asc' }
     });
 
@@ -56,7 +56,7 @@ export default async function SearchPage({
         delete where.AND;
     }
 
-    const resultsRaw = await prisma.karya.findMany({
+    const resultsRawPromise = prisma.karya.findMany({
         where,
         orderBy,
         include: {
@@ -64,6 +64,9 @@ export default async function SearchPage({
         },
         take: 50
     });
+
+    // Eksekusi semua query secara paralel
+    const [allGenres, resultsRaw] = await Promise.all([genresPromise, resultsRawPromise]);
 
     // Cast to include all schema fields that may be missing from stale Prisma types
     const results = resultsRaw as (typeof resultsRaw[0] & {

@@ -6,8 +6,6 @@ import { ArrowLeft, BookMarked, Settings, History as HistoryIcon } from "lucide-
 
 import { prisma } from '@/lib/prisma';
 
-export const revalidate = 60; // Revalidate every 60 seconds
-
 export default async function LibraryPage() {
     const session = await getServerSession(authOptions);
 
@@ -16,7 +14,7 @@ export default async function LibraryPage() {
     }
 
     // Ambil riwayat bookmark (yang juga berfungsi sebagai history)
-    const bookmarksRaw = await (prisma as any).bookmark.findMany({
+    const bookmarksRaw = await prisma.bookmark.findMany({
         where: { user_id: session.user.id },
         include: {
             karya: {

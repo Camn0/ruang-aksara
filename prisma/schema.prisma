@@ -72,6 +72,11 @@ model Karya {
   genres        Genre[]    // Epic 6: Filter Genre
   bookmarks     Bookmark[] // Epic 7: Library
   reviews       Review[]   // Epic 8: Review panjang
+
+  // Indeks untuk Optimasi Query yang sering digunakan (Home, Search, Dashboard)
+  @@index([total_views(sort: Desc)])
+  @@index([avg_rating(sort: Desc)])
+  @@index([uploader_id])
 }
 
 // Mengapa: Menyimpan isi cerita. 
@@ -85,6 +90,7 @@ model Bab {
   comments   Comment[] 
   
   @@unique([karya_id, chapter_no]) // Composite Unique Index
+  @@index([karya_id, chapter_no(sort: Asc)]) // Mengurutkan bab berdasarkan chapter_no
 }
 
 // Epic 7: Library / Bookmark (Read History)
@@ -98,6 +104,7 @@ model Bookmark {
   updated_at   DateTime @updatedAt
   
   @@unique([user_id, karya_id]) // User hanya bisa mem-bookmark karya 1 kali
+  @@index([user_id, updated_at(sort: Desc)]) // Optimasi untuk memuat library pengguna terbaru
 }
 
 // Mengapa: Sistem rating bintang (Cepat)
@@ -140,4 +147,6 @@ model Comment {
   parent_id  String?   // Boleh kosong jika ini adalah root comment
   parent     Comment?  @relation("Thread", fields: [parent_id], references: [id], onDelete: Cascade)
   replies    Comment[] @relation("Thread")
+
+  @@index([bab_id, created_at(sort: Desc)]) // Sort performa
 }

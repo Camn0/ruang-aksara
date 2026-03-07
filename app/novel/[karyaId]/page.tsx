@@ -9,8 +9,6 @@ import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote } from "lucid
 
 import { prisma } from '@/lib/prisma';
 
-export const revalidate = 60; // Revalidate every 60 seconds
-
 export default async function KaryaDetailsPage({ params }: { params: { karyaId: string } }) {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
@@ -42,11 +40,11 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
     }
 
     let userPreviousRating = 0;
-    let userPreviousReview: any = null;
+    let userPreviousReview = null;
     let isBookmarked = false;
 
     if (userId) {
-        const [ratingContext, reviewContext, bookmarkContext] = await Promise.all([
+        const [ratingContext, prevReview, bookmarkContext] = await Promise.all([
             prisma.rating.findUnique({
                 where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
             }),
@@ -59,7 +57,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
         ]);
 
         if (ratingContext) userPreviousRating = ratingContext.score;
-        userPreviousReview = reviewContext;
+        userPreviousReview = prevReview;
         if (bookmarkContext) isBookmarked = true;
     }
 
@@ -107,7 +105,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                         </div>
 
                         <div className="flex flex-wrap gap-1.5 mb-4">
-                            {karya.genres.map((g: any) => (
+                            {karya.genres.map(g => (
                                 <span key={g.id} className="bg-gray-100 text-gray-600 text-[10px] uppercase font-bold px-2 py-1 rounded">
                                     {g.name}
                                 </span>
@@ -179,7 +177,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                             Belum ada bab yang dirilis.
                         </div>
                     ) : (
-                        karya.bab.map((chapter: any) => (
+                        karya.bab.map((chapter) => (
                             <Link
                                 key={chapter.id}
                                 href={`/novel/${karya.id}/${chapter.chapter_no}`}
@@ -227,7 +225,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
             {karya.reviews.length > 0 && (
                 <div className="bg-white mt-2 border-y border-gray-100 p-6">
                     <div className="space-y-4">
-                        {karya.reviews.map((r: any) => (
+                        {karya.reviews.map(r => (
                             <div key={r.id} className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex gap-2 items-center">

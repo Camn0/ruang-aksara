@@ -19,8 +19,8 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="id">
-            <body className={`${inter.className} bg-white md:bg-gray-100 min-h-screen flex justify-center text-gray-900`}>
-                <div className="w-full md:max-w-3xl lg:max-w-4xl mx-auto bg-white min-h-screen md:shadow-2xl relative flex flex-col overflow-x-hidden">
+            <body className={`${inter.className} bg-gray-100 min-h-screen flex justify-center text-gray-900`}>
+                <div className="w-full sm:max-w-md md:max-w-4xl mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col overflow-x-hidden">
                     <AuthProvider>
                         {/* Navbar desktop/old hidden di mobile if we want, but let's keep for now */}
                         <main className="flex-grow flex flex-col relative pb-20">
