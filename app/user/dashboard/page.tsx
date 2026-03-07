@@ -6,6 +6,8 @@ import Link from "next/link";
 import { UserCircle2, Flame, History, Star } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
 
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export default async function UserDashboardPage() {
     const session = await getServerSession(authOptions);
 
@@ -13,17 +15,27 @@ export default async function UserDashboardPage() {
         redirect('/onboarding');
     }
 
-    // Ambil riwayat bookmark (karya yang pernah dibaca beserta bab terakhirnya)
-    const bookmarksRaw = await prisma.bookmark.findMany({
-        where: { user_id: session.user.id },
-        include: {
-            karya: {
-                select: { title: true, penulis_alias: true, id: true, deskripsi: true, cover_url: true }
-            }
-        },
-        orderBy: { updated_at: 'desc' },
-        take: 5
-    });
+    // Parallel data fetching for better performance
+    const [bookmarksRaw, favoritesRaw, follows] = await Promise.all([
+        prisma.bookmark.findMany({
+            where: { user_id: session.user.id },
+            include: {
+                karya: {
+                    select: { title: true, penulis_alias: true, id: true, deskripsi: true, cover_url: true }
+                }
+            },
+            orderBy: { updated_at: 'desc' },
+            take: 5
+        }),
+        prisma.karya.findMany({
+            orderBy: [{ avg_rating: 'desc' }, { total_views: 'desc' }],
+            take: 5
+        }),
+        prisma.follow.findMany({
+            where: { follower_id: session.user.id },
+            select: { following_id: true }
+        })
+    ]);
 
     const bookmarks = bookmarksRaw as (typeof bookmarksRaw[0] & {
         karya: {
@@ -35,21 +47,9 @@ export default async function UserDashboardPage() {
         }
     })[];
 
-    // Ambil favorit hari ini (karya dengan rating tertinggi/terpopuler)
-    const favoritesRaw = await prisma.karya.findMany({
-        orderBy: [{ avg_rating: 'desc' }, { total_views: 'desc' }],
-        take: 5
-    });
-
     const favorites = favoritesRaw as (typeof favoritesRaw[0] & {
         cover_url: string | null;
     })[];
-
-    // Ambil karya dari penulis yang di-follow (Rekomendasi)
-    const follows = await prisma.follow.findMany({
-        where: { follower_id: session.user.id },
-        select: { following_id: true }
-    });
 
     const followingIds = follows.map(f => f.following_id);
     const recommendationsRaw = await prisma.karya.findMany({

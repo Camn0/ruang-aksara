@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote } from "lucide-react";
 
-import { prisma } from '@/lib/prisma';
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function KaryaDetailsPage({ params }: { params: { karyaId: string } }) {
     const session = await getServerSession(authOptions);
@@ -40,22 +40,24 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
     }
 
     let userPreviousRating = 0;
-    let userPreviousReview = null;
+    let userPreviousReview: any = null;
     let isBookmarked = false;
 
     if (userId) {
-        const ratingContext = await prisma.rating.findUnique({
-            where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
-        });
+        const [ratingContext, reviewContext, bookmarkContext] = await Promise.all([
+            prisma.rating.findUnique({
+                where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
+            }),
+            prisma.review.findUnique({
+                where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
+            }),
+            prisma.bookmark.findUnique({
+                where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
+            })
+        ]);
+
         if (ratingContext) userPreviousRating = ratingContext.score;
-
-        userPreviousReview = await prisma.review.findUnique({
-            where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
-        });
-
-        const bookmarkContext = await prisma.bookmark.findUnique({
-            where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
-        });
+        userPreviousReview = reviewContext;
         if (bookmarkContext) isBookmarked = true;
     }
 

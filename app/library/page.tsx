@@ -6,6 +6,8 @@ import { ArrowLeft, BookMarked, Settings, History as HistoryIcon } from "lucide-
 
 import { prisma } from '@/lib/prisma';
 
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export default async function LibraryPage() {
     const session = await getServerSession(authOptions);
 
