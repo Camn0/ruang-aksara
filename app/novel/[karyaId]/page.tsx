@@ -36,7 +36,6 @@ const fetchKaryaDetail = unstable_cache(
                         id: true,
                         chapter_no: true,
                         created_at: true,
-                        // content: false  <-- CRITICAL: Jangan tarik konten bab di sini!
                     }
                 },
                 genres: true,
@@ -56,17 +55,17 @@ const fetchKaryaDetail = unstable_cache(
             }
         });
     },
-    ['karya-detail-main'],
+    ['karya-detail-v2'], // Unique prefix
     {
-        tags: ['karya-global'], // Tags will be added dynamically in the page call if needed, or just use global
+        tags: ['karya-global'],
         revalidate: 3600
     }
 );
 
 /**
  * Wrapper to ensure ID-specific tags are applied.
- * Next.js unstable_cache doesn't easily support dynamic tags based on args yet,
- * so we use a consistent tag or accept the revalidate.
+ * Mengapa: Kita memisahkan pemanggilan agar Next.js bisa meng-cache per-ID secara otomatis
+ * lewat argumen fungsi fetchKaryaDetail.
  */
 const getCachedKarya = (id: string) => fetchKaryaDetail(id);
 
@@ -103,55 +102,28 @@ function parseMentions(text: string) {
 }
 
 export default async function KaryaDetailsPage({ params }: { params: { karyaId: string } }) {
-    const session = await getServerSession(authOptions);
+    // [A] Initial Parallel Fetching (Avoid Waterfall)
+    // Megambil Public Data (Cached) & User Session secara serentak.
+    const [karyaRaw, session] = await Promise.all([
+        getCachedKarya(params.karyaId),
+        getServerSession(authOptions)
+    ]);
+
     const userId = session?.user?.id;
+    const karya = karyaRaw as any; // Type Assertion for brevity
 
-    // [A] Data Fetching - Load Karya Details via Cache
-    const karyaRaw = await getCachedKarya(params.karyaId);
+    if (!karya) notFound();
 
-    // [B] Type Guard & Assertions
-    // Mengapa: Menjamin property seperti cover_url dan avg_rating tersedia bagi UI.
-    const karya = karyaRaw as (typeof karyaRaw & {
-        cover_url: string | null;
-        is_completed: boolean;
-        deskripsi: string | null;
-        bab: any[];
-        genres: any[];
-        reviews: (any & {
-            user: any;
-            _count: { upvotes: number; comments: number };
-            upvotes?: any[];
-            comments?: any[];
-        })[];
-    }) | null;
-
-    if (!karya) {
-        notFound();
-    }
-
-    // [C] Load User Interaction State
+    // [B] User-Specific Interaction Fetching (Parallel)
+    // Mengapa: Data ini TIDAK boleh di-cache global (karena unik per user).
+    // Kita jalankan semua check (Bookmark, Rating, Review, Upvotes) dalam satu kloter.
     let userPreviousRating = 0;
     let userPreviousReview = null;
     let isBookmarked = false;
-
-    // [D] Fetching User Interaksi - Upvoted status
-    // Mengapa: Karena 'karya' di-cache secara global (shared), kita fetch status upvote user
-    // secara terpisah agar cache tidak bocor antar user.
     let userUpvotedReviews: string[] = [];
-    if (session?.user?.id && karya?.reviews) {
-        const upvotes = await (prisma as any).reviewUpvote.findMany({
-            where: {
-                user_id: session.user.id,
-                review_id: { in: karya.reviews.map((r: any) => r.id) }
-            },
-            select: { review_id: true }
-        });
-        userUpvotedReviews = upvotes.map((u: { review_id: string }) => u.review_id);
-    }
 
-    if (userId && karya) {
-        // Parallel fetching untuk menghemat waktu (Request Waterfall Avoidance)
-        const [ratingContext, prevReview, bookmarkContext] = await Promise.all([
+    if (userId) {
+        const [ratingContext, prevReview, bookmarkContext, upvotes] = await Promise.all([
             prisma.rating.findUnique({
                 where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
             }),
@@ -160,12 +132,20 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
             }),
             prisma.bookmark.findUnique({
                 where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
+            }),
+            (prisma as any).reviewUpvote.findMany({
+                where: {
+                    user_id: userId,
+                    review_id: { in: karya.reviews?.map((r: any) => r.id) || [] }
+                },
+                select: { review_id: true }
             })
         ]);
 
         if (ratingContext) userPreviousRating = ratingContext.score;
         userPreviousReview = prevReview;
         if (bookmarkContext) isBookmarked = true;
+        userUpvotedReviews = upvotes.map((u: any) => u.review_id);
     }
 
     const CoverPlaceholder = () => (

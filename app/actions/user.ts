@@ -274,6 +274,22 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
 
         const userId = session.user.id;
 
+        // [1] Optimisasi: Cek apakah data sudah sama sebelum update berat
+        const existing = await prisma.bookmark.findUnique({
+            where: {
+                user_id_karya_id: {
+                    user_id: userId,
+                    karya_id: karyaId
+                }
+            }
+        });
+
+        if (existing && existing.last_chapter === chapterNo) {
+            // Jika sudah di bab yang sama, tidak perlu update DB & Revalidate (Hemat Request)
+            return { success: true, cached: true };
+        }
+
+        // [2] Lakukan Update (Upsert)
         await prisma.bookmark.upsert({
             where: {
                 user_id_karya_id: {
@@ -283,7 +299,7 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
             },
             update: {
                 last_chapter: chapterNo,
-                updated_at: new Date() // Paksa update timestamp
+                updated_at: new Date()
             },
             create: {
                 user_id: userId,
@@ -292,7 +308,7 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
             }
         });
 
-        // Revalidate library & dashboard agar history ter-update
+        // [3] Revalidate library & dashboard agar history ter-update
         revalidateTag(`library-${userId}`);
 
         return { success: true };
