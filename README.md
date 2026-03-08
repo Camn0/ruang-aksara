@@ -5,26 +5,25 @@
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-Database-green?style=for-the-badge&logo=supabase&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-Upstash-red?style=for-the-badge&logo=redis&logoColor=white)
 
-This project is a premium digital literary platform built with **Next.js 14** and **Prisma**. Designed for seamless storytelling and community engagement, it features a mobile-first UI, immersive reading modes, real-time analytics, and a full author-reader ecosystem.
+Ruang Aksara is a platform for publishing and reading digital literature. Built with **Next.js 14** and **Prisma**, it features an automated reading progress system, author publication tools, a personal library for readers, and a community interaction system including reviews and threaded discussions.
 
-<img width="1365" height="644" alt="Home Screen" src="https://via.placeholder.com/1365x644?text=Ruang+Aksara+Home+Screen+Preview" />
+<img width="1365" height="644" alt="Home Screen" src="https://via.placeholder.com/1365x644?text=Ruang+Aksara+Main+Dashboard" />
 
 ## System Overview
 
-The application utilizes the Next.js App Router with Server Components for optimal performance and SEO, coupled with Prisma ORM for database management.
+The application utilizes the Next.js App Router for frontend and server-side logic, integrated with Supabase for the database and Redis for real-time tracking.
 
 | Component | Technology / Description |
 | :--- | :--- |
 | **Framework** | Next.js 14 (App Router, Server Components). |
-| **Language** | TypeScript for strict typing and code safety. |
-| **Styling** | Tailwind CSS + Custom Animations for a premium feel. |
-| **Database** | PostgreSQL (managed by Supabase) with Prisma. |
-| **Authentication** | NextAuth.js (Credentials & RBAC system). |
-| **Caching** | Redis (Upstash) for real-time view counting. |
-| **PWA** | `next-pwa` for an installable mobile experience. |
-| **State** | React Context & Server Actions for light-weight state. |
+| **Language** | TypeScript for static typing and safety. |
+| **Styling** | Tailwind CSS + Custom CSS for responsive layout. |
+| **Database** | PostgreSQL (managed by Supabase) + Prisma ORM. |
+| **Authentication** | NextAuth.js (Credentials Provider with RBAC). |
+| **Caching** | Redis (Upstash) for real-time view counts. |
+| **PWA** | Progressive Web App support for mobile installation. |
+| **State** | Server Actions and LocalStorage for user preferences. |
 
 ---
 
@@ -32,62 +31,56 @@ The application utilizes the Next.js App Router with Server Components for optim
 
 ### 1. Project Structure
 
-The project follows a modular structure, separating business logic, UI components, and backend utilities.
+The project follows a modular structure separating mutations, UI components, and relational configuration.
 
 ```bash
 ruang-aksara/
 ├── app/
-│   ├── actions/               # Server actions (Mutations & Logic)
-│   ├── admin/                 # Editor & Admin management hub
-│   ├── novel/                 # Reader interface & Story details
-│   ├── profile/               # User profiles & Community boards
-│   ├── library/               # Bookshelf (History & Favorites)
-│   └── layout.tsx             # Root layout & PWA configuration
-├── components/                # Reusable UI (Navbar, BottomNav, etc.)
-├── lib/                       # Third-party clients (Prisma, Redis)
-├── prisma/                    # Database schema and migrations
-└── types/                     # Shared TypeScript interfaces
+│   ├── actions/               # Server actions (Mutations)
+│   ├── admin/                 # Editor and Moderator dashboards
+│   ├── library/               # Bookshelf (History, Favorites, Finished)
+│   ├── novel/                 # Reader interface and Story details
+│   ├── profile/               # User profiles and Community posts
+│   └── search/                # Content discovery and Filtering
+├── components/                # Reusable UI elements
+├── lib/                       # API clients (Prisma, Redis)
+└── prisma/                    # Schema and data modeling
+
 ```
 
 ### 2. Database Schema
 
-The backend relies on a sophisticated relational schema to handle literary works and social interactions.
+The backend uses a relational schema to handle users, their creative works, and community interactions.
 
-```prisma
--- Prisma Schema Overview
--- Profiles Table
-model User {
-  id            String     @id @default(uuid())
-  username      String     @unique
-  role          String     @default("user") // admin, author, user
-  display_name  String
-  avatar_url    String?
-  karya_upload  Karya[]
-  reviews       Review[]
-  author_posts  AuthorPost[]
-}
+```sql
+-- Core User and Content Tables
+CREATE TABLE User (
+  id TEXT PRIMARY KEY,
+  username TEXT UNIQUE,
+  role TEXT, -- admin, author, user
+  display_name TEXT
+);
 
--- Posts Table (Author Announcements)
-model AuthorPost {
-  id         String   @id @default(uuid())
-  author_id  String
-  author     User     @relation(fields: [author_id], references: [id])
-  content    String   @db.Text
-  created_at TIMESTAMP @default(now())
-}
+CREATE TABLE Karya (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  total_views INTEGER DEFAULT 0,
+  is_completed BOOLEAN DEFAULT FALSE,
+  uploader_id TEXT REFERENCES User(id)
+);
 
--- Interactions (Likes)
-model PostLike {
-  id         String     @id @default(uuid())
-  user_id    String
-  post_id    String
-  UNIQUE(user_id, post_id)
-}
+CREATE TABLE AuthorPost (
+  id TEXT PRIMARY KEY,
+  author_id TEXT REFERENCES User(id),
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 ```
 
 ### 3. Server Actions
 
-Data mutations are handled exclusively through Next.js Server Actions to ensure security and progressive enhancement.
+Data mutations are handled via Server Actions to manage state changes across the application.
 
 ```typescript
 // app/actions/post.ts example
@@ -96,9 +89,9 @@ export async function createAuthorPost(formData: FormData) {
   const session = await getServerSession(authOptions)
   if (!session) return { error: "Unauthorized" }
   
-  // validation and database insertion via Prisma
-  await (prisma as any).authorPost.create({
-      data: { content, author_id: session.user.id }
+  const content = formData.get('content') as string
+  await prisma.authorPost.create({
+    data: { content, author_id: session.user.id }
   })
   revalidatePath('/profile/[id]')
 }
@@ -108,70 +101,76 @@ export async function createAuthorPost(formData: FormData) {
 
 ## Visual Tour & Features
 
-The interface is designed to evoke a modern literary feel with high responsiveness.
+The interface focuses on content delivery and social engagement for literary enthusiasts.
 
-### 1. Library & Reading History
-Users can track their progress through interactive tabs. Profiles include display names, reading history, and bookmarks.
+### 1. Reader & Personalization
 
-<img width="500" height="300" alt="Library View" src="https://via.placeholder.com/500x300?text=Library+Progress+Bars+Preview" />
-<img width="500" height="300" alt="Reading History" src="https://via.placeholder.com/500x300?text=Reading+History+Tab+Preview" />
+The reader interface includes controls for font size adjustment and theme switching. It uses an immersive layout that prioritizes text by hiding navigation elements during active reading.
 
-### 2. Author Community & Posts
-Authors can start announcements and engage with fans. The system handles likes and comments on author postings.
+<img width="1365" height="400" alt="Reader Interface" src="https://via.placeholder.com/1365x400?text=Reader+Interface+and+Controls" />
 
-<img width="1365" height="634" alt="Author Board" src="https://via.placeholder.com/1365x634?text=Author+Community+Board+Preview" />
+### 2. Library (Personal Bookshelf)
 
-### 3. Interaction (Reviews, Replies, Upvotes)
-The platform supports nested replies, a helpfulness upvote system for reviews, and pure discussion ulasans.
+The Library is divided into functional tabs for managing a user's reading list.
+
+| Tab | Description |
+| --- | --- |
+| **History** | Recently read books with progress bars and timestamps. |
+| **Favorites** | Bookmarked works that the user follows. |
+| **Finished** | Works completed by the user or marked as finished. |
+
+<img width="1365" height="500" alt="Library View" src="https://via.placeholder.com/1365x500?text=Library+Tabs+Preview" />
+
+### 3. Community Interaction
+
+Engagement is facilitated through threaded comments on chapters, formal reviews on story pages, and author updates.
 
 | Feature | Preview |
 | --- | --- |
-| **Reviewing** | <img width="441" height="150" alt="Review Interface" src="https://via.placeholder.com/441x150?text=Advanced+Review+UI" /> |
-| **Upvoting** | <img width="430" height="150" alt="Upvote Button" src="https://via.placeholder.com/430x150?text=Review+Voting+System" /> |
-| **Nested Comments** | <img width="439" height="150" alt="Nested Comments" src="https://via.placeholder.com/439x150?text=Threaded+Comment+Section" /> |
+| **Threading** | <img width="441" height="150" alt="Comments" src="https://via.placeholder.com/441x150?text=Nested+Comments+Interface" /> |
+| **Reviewing** | <img width="430" height="150" alt="Reviews" src="https://via.placeholder.com/430x150?text=Review+and+Upvote+System" /> |
+| **Posting** | <img width="439" height="150" alt="Author Posts" src="https://via.placeholder.com/439x150?text=Author+Community+Board" /> |
 
-### 4. Smart Palette & Dark Mode
-The theme is achieved using a harmonious palette for both light and dark modes.
+### 4. Color Palette
 
-| Color | Hex | Usage |
+The platform uses a standardized Indigo-based theme for consistent visual identification.
+
+| Element | Hex Code | Usage |
 | --- | --- | --- |
-| **Primary** | `#4f46e5` | Indigo branding and buttons |
-| **Background** | `#f9fafb` | Main page background (Light) |
-| **Dark BG** | `#020617` | Slate background (Dark Mode) |
-| **Accent** | `#fbbf24` | Amber for star ratings |
+| **Primary** | `#4f46e5` | Active UI and buttons |
+| **Background** | `#f9fafb` | Primary light background |
+| **Slate** | `#020617` | Dark mode background |
+| **Amber** | `#fbbf24` | Review stars and highlighting |
 
 ---
 
 ## Getting Started
 
-Follow these steps to set up the project locally.
-
 ### 1. Installation
 
 ```bash
-# 1. Clone the repository
+# Clone the repository
 git clone https://github.com/Camn0/ruang-aksara/
 cd ruang-aksara
 
-# 2. Install dependencies
+# Install dependencies
 npm install
-
 ```
 
 ### 2. Environment Setup
 
-Create a `.env` file in the root directory. Get these credentials from your Supabase and Redis project settings.
+Create a `.env` file in the root directory and provide the following credentials:
 
 ```env
 DATABASE_URL="postgresql://..."
-NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_SECRET="..."
 UPSTASH_REDIS_REST_URL="..."
 UPSTASH_REDIS_REST_TOKEN="..."
 ```
 
 ### 3. Database Sync
 
-To sync your database with the Prisma schema, execute the following:
+Synchronize the database using Prisma:
 
 ```bash
 npx prisma db push
@@ -180,8 +179,8 @@ npx prisma db push
 ### 4. Running the App
 
 ```bash
-# Run the development server
+# Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+The application is accessible at [http://localhost:3000](http://localhost:3000).
