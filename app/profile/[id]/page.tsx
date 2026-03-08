@@ -313,7 +313,7 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                                                 </Link>
                                                 <span className="text-[10px] text-gray-400 dark:text-gray-500">{comment.created_at.toLocaleDateString('id-ID')}</span>
                                             </div>
-                                            <p className="text-gray-800 dark:text-gray-200 text-sm bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl rounded-tl-none border border-gray-100 dark:border-slate-800">
+                                            <p className="text-gray-800 dark:text-gray-200 text-sm bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl rounded-tl-none border border-gray-100 dark:border-slate-800 whitespace-pre-wrap">
                                                 "{comment.content}"
                                             </p>
                                         </div>

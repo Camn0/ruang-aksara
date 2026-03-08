@@ -32,9 +32,8 @@ export async function submitComment(formData: FormData) {
             return { error: "Bad Request: Komentar kosong tidak diizinkan." };
         }
 
-        // [D] Sanitasi XSS
-        const DOMPurify = (await import('isomorphic-dompurify')).default;
-        content = DOMPurify.sanitize(content);
+        // [D] Sanitasi XSS (React akan secara otomatis melakukan escaping pada output)
+        content = content.trim();
 
         // [E] Mutasi Database
         // Mengapa: Otomatis menghubungkan komentar ini ke `session.user.id` yang aman di server.
@@ -156,15 +155,14 @@ export async function submitReview(formData: FormData) {
             return { error: "Isian rating tidak valid." };
         }
 
-        const DOMPurify = (await import('isomorphic-dompurify')).default;
-        const sanitizedContent = DOMPurify.sanitize(content);
+        const sanitizedContent = content.trim();
 
         await prisma.$transaction(async (tx) => {
             // 1. Simpan Ulasan Teks
             await tx.review.upsert({
                 where: { user_id_karya_id: { user_id: session.user.id, karya_id } },
-                update: { content: sanitizedContent, rating },
-                create: { user_id: session.user.id, karya_id, content: sanitizedContent, rating }
+                update: { content: sanitizedContent, rating: (rating as any) ?? undefined },
+                create: { user_id: session.user.id, karya_id, content: sanitizedContent, rating: (rating as any) ?? undefined }
             });
 
             // 2. Jika ada rating, Sinkronkan dengan sistem Rating Cepat

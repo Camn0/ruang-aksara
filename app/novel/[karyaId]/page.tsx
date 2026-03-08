@@ -271,7 +271,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                                         </div>
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">"{parseMentions(r.content)}"</p>
+                                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic whitespace-pre-wrap">"{parseMentions(r.content)}"</p>
                                 <ReviewInteraction
                                     reviewId={r.id}
                                     initialUpvotes={r._count.upvotes}

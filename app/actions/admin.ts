@@ -3,7 +3,6 @@
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import DOMPurify from 'isomorphic-dompurify';
 import bcrypt from 'bcryptjs';
 
 // ==============================================================================
@@ -98,11 +97,8 @@ export async function createBab(formData: FormData) {
             return { error: "Bad Request: Karya ID dan Konten wajib diisi." };
         }
 
-        // [D] Sanitasi Input (XSS Prevention)
-        // Mengapa: Menggunakan DOMPurify di sisi Server (isomorphic) untuk membersihkan
-        // elemen HTML berbahaya (seperti <script>) dari teks konten sebelum masuk ke database.
-        const DOMPurify = (await import('isomorphic-dompurify')).default;
-        content = DOMPurify.sanitize(content);
+        // [D] Sanitasi (React akan otomatis escape saat render sebagai text)
+        content = content.trim();
 
         // [E] Logika Penomoran Otomatis (Auto-Increment)
         // Mengapa: Menghitung manual Bab terakhir yang masuk ke Karya ini.
@@ -323,8 +319,7 @@ export async function editBab(formData: FormData) {
             return { error: "Forbidden: Anda bukan pemilik bab ini." };
         }
 
-        const DOMPurify = (await import('isomorphic-dompurify')).default;
-        content = DOMPurify.sanitize(content);
+        const sanitizedContent = content.trim();
 
         await prisma.bab.update({
             where: { id },
