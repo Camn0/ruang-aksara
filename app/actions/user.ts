@@ -254,3 +254,50 @@ export async function deleteComment(id: string) {
         return { error: "Sistem gagal menghapus komentar." };
     }
 }
+
+// ==============================================================================
+// 5. MUTASI USER: UPDATE PROGRES MEMBACA (BOOKMARK)
+// ==============================================================================
+/**
+ * Server Action: Mencatat progres membaca terakhir pembaca.
+ * 
+ * Mengapa: Dipisahkan dari request GET halaman agar tidak memicu write DB
+ * yang berlebihan saat sistem melakukan "prefetch" (automasi link).
+ * 
+ * @param karyaId - ID Karya yang sedang dibaca.
+ * @param chapterNo - Nomor bab yang sedang dibaca.
+ */
+export async function updateReadingProgress(karyaId: string, chapterNo: number) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+
+        const userId = session.user.id;
+
+        await prisma.bookmark.upsert({
+            where: {
+                user_id_karya_id: {
+                    user_id: userId,
+                    karya_id: karyaId
+                }
+            },
+            update: {
+                last_chapter: chapterNo,
+                updated_at: new Date() // Paksa update timestamp
+            },
+            create: {
+                user_id: userId,
+                karya_id: karyaId,
+                last_chapter: chapterNo
+            }
+        });
+
+        // Revalidate library & dashboard agar history ter-update
+        revalidateTag(`library-${userId}`);
+
+        return { success: true };
+    } catch (error) {
+        console.error("[updateReadingProgress] Error:", error);
+        return { success: false, error: "Database Error" };
+    }
+}

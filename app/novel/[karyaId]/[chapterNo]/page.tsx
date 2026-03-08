@@ -9,10 +9,11 @@ import { ChevronLeft, ChevronRight, List } from 'lucide-react';
 import ReadingInterface from './ReadingInterface';
 
 import { prisma } from '@/lib/prisma';
+import { unstable_cache } from 'next/cache';
+import ReadingProgressTracker from './ReadingProgressTracker';
 
 function parseMentions(text: string) {
     if (!text) return text;
-    // Split text by @ symbols followed by word characters (alphanumeric & underscore)
     const parts = text.split(/(@\w+)/g);
     return parts.map((part, i) => {
         if (part.match(/^@\w+$/)) {
@@ -28,96 +29,80 @@ function parseMentions(text: string) {
 }
 
 /**
- * Halaman Baca Bab Novel (Server Component).
- * 
- * Logic Highlights:
- *   1. Data Fetching: Mengambil detail Bab beserta relasi Karya dan Komentar (threaded).
- *   2. Statistik: Increment views di Redis (Upstash) setiap kali halaman diakses.
- *   3. Bookmarking: Otomatis memperbarui 'last_chapter' di tabel Bookmark milik user.
- * 
- * DEBUG TIPS:
- *   - Jika halaman 404, pastikan URL parameter `chapterNo` valid (number).
- *   - Redis error ditangani secara senyap (silently) agar tidak mematikan pengalaman membaca.
+ * Cached Chapter Content
  */
+const getCachedChapter = (karyaId: string, chapterNo: number) => unstable_cache(
+    async () => {
+        return prisma.bab.findUnique({
+            where: {
+                karya_id_chapter_no: {
+                    karya_id: karyaId,
+                    chapter_no: chapterNo,
+                },
+            },
+            include: {
+                karya: true,
+                comments: {
+                    where: { parent_id: null },
+                    include: {
+                        user: true,
+                        replies: {
+                            include: { user: true },
+                            orderBy: { created_at: 'asc' }
+                        }
+                    },
+                    orderBy: { created_at: 'asc' },
+                },
+            },
+        });
+    },
+    [`chapter-${karyaId}-${chapterNo}`],
+    { revalidate: 3600, tags: [`karya-${karyaId}`] }
+)();
+
+/**
+ * Cached Navigation Info
+ */
+const getCachedNavigation = (karyaId: string, currentNo: number) => unstable_cache(
+    async () => {
+        const [next, prev] = await Promise.all([
+            prisma.bab.findFirst({
+                where: { karya_id: karyaId, chapter_no: { gt: currentNo } },
+                orderBy: { chapter_no: 'asc' }
+            }),
+            prisma.bab.findFirst({
+                where: { karya_id: karyaId, chapter_no: { lt: currentNo } },
+                orderBy: { chapter_no: 'desc' }
+            })
+        ]);
+        return { next, prev };
+    },
+    [`nav-${karyaId}-${currentNo}`],
+    { revalidate: 3600, tags: [`karya-${karyaId}`] }
+)();
 
 export default async function NovelChapterPage({
     params,
 }: {
     params: { karyaId: string; chapterNo: string };
 }) {
-    // [A] Data Fetching - Load bab dan komentar
-    // Mengapa findUnique: Kita menggunakan composite unique key [karya_id, chapter_no] dari skema Prisma.
-    const bab = await prisma.bab.findUnique({
-        where: {
-            karya_id_chapter_no: {
-                karya_id: params.karyaId,
-                chapter_no: Number(params.chapterNo),
-            },
-        },
-        include: {
-            karya: true,
-            comments: {
-                where: { parent_id: null }, // Load hanya komentar utama (Root)
-                include: {
-                    user: true,
-                    replies: {
-                        include: { user: true },
-                        orderBy: { created_at: 'asc' }
-                    }
-                },
-                orderBy: { created_at: 'asc' },
-            },
-        },
-    });
+    const chapterNoNum = Number(params.chapterNo);
 
-    // Validasi eksistensi data
-    if (!bab) {
-        notFound();
-    }
+    // [A] Data Fetching via Cache
+    const [bab, nav, session] = await Promise.all([
+        getCachedChapter(params.karyaId, chapterNoNum),
+        getCachedNavigation(params.karyaId, chapterNoNum),
+        getServerSession(authOptions)
+    ]);
 
-    // [B] Analytics - Update Views
-    // Mengapa: Tidak di-await agar tidak menghambat respon ke pembaca (Fire & Forget).
+    if (!bab) notFound();
+
+    // [B] Analytics - Fire & Forget
     try {
         redis.incr(`views:karya:${params.karyaId}`);
-    } catch (e) {
-        // Silently fail analytics
-    }
+    } catch (e) { }
 
-    const currentNo = Number(params.chapterNo);
-
-    // [C] Navigasi Relatif - Cari bab selanjutnya & sebelumnya
-    const nextBab = await prisma.bab.findFirst({
-        where: { karya_id: params.karyaId, chapter_no: { gt: currentNo } },
-        orderBy: { chapter_no: 'asc' }
-    });
-
-    const prevBab = await prisma.bab.findFirst({
-        where: { karya_id: params.karyaId, chapter_no: { lt: currentNo } },
-        orderBy: { chapter_no: 'desc' }
-    });
-
-    // [D] Auto-Bookmark - Catat progres membaca user yang login
-    const session = await getServerSession(authOptions);
-    if (session?.user?.id) {
-        try {
-            await prisma.bookmark.upsert({
-                where: {
-                    user_id_karya_id: {
-                        user_id: session.user.id,
-                        karya_id: params.karyaId
-                    }
-                },
-                update: { last_chapter: currentNo },
-                create: {
-                    user_id: session.user.id,
-                    karya_id: params.karyaId,
-                    last_chapter: currentNo
-                }
-            });
-        } catch (e) {
-            console.error("⚠️ [Prisma] Gagal update bookmark:", e);
-        }
-    }
+    const { next: nextBab, prev: prevBab } = nav;
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 text-gray-900 dark:text-gray-100 pb-28">
@@ -126,6 +111,12 @@ export default async function NovelChapterPage({
                 chapterNo={bab.chapter_no}
                 title={bab.karya.title}
                 content={bab.content}
+            />
+
+            <ReadingProgressTracker
+                karyaId={params.karyaId}
+                chapterNo={bab.chapter_no}
+                userId={session?.user?.id}
             />
 
             {/* Navigasi Footer Tetap (Bottom Bar) */}
