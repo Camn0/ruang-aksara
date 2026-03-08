@@ -19,11 +19,16 @@ model User {
   avatar_url    String?    // URL foto profil pengguna
   
   // Relasi
-  karya_upload  Karya[]    // Karya yang diunggah oleh author/admin
-  ratings       Rating[]   
-  comments      Comment[]  
-  bookmarks     Bookmark[] // Epic 7: Simpan karya (Library)
-  reviews       Review[]   // Epic 8: Review formal karya
+  karya_upload   Karya[]    // Karya yang diunggah oleh author/admin
+  ratings        Rating[]   
+  comments       Comment[]  
+  bookmarks      Bookmark[] // Epic 7: Simpan karya (Library)
+  reviews        Review[]   // Epic 8: Review formal karya
+  review_upvotes ReviewUpvote[]
+  review_comments ReviewComment[]
+  author_posts   AuthorPost[]
+  post_likes     PostLike[]
+  post_comments  PostComment[]
 
   // Epic 12: Sistem Follow (Relasi Self-referential Many-to-Many lewat model join explicit)
   followers     Follow[]   @relation("FollowingUser") // Orang-orang yang mengikuti user ini
@@ -127,10 +132,34 @@ model Review {
   karya_id   String 
   karya      Karya    @relation(fields: [karya_id], references: [id], onDelete: Cascade)
   content    String   @db.Text
-  rating     Int      // Bisa disinkronkan dengan Rating sistem
+  rating     Int?     // Opsi tanpa rating (null) = hanya komentar diskusi
   created_at DateTime @default(now())
   
+  upvotes    ReviewUpvote[]
+  comments   ReviewComment[]
+
   @@unique([user_id, karya_id]) // 1 user = 1 review per karya
+}
+
+model ReviewUpvote {
+  id         String   @id @default(uuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  review_id  String
+  review     Review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+
+  @@unique([user_id, review_id])
+}
+
+model ReviewComment {
+  id         String   @id @default(uuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  review_id  String
+  review     Review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
+  content    String   @db.Text
+  created_at DateTime @default(now())
 }
 
 // Mengapa: Komentar diletakkan di bawah Bab spesifik. 
@@ -149,4 +178,40 @@ model Comment {
   replies    Comment[] @relation("Thread")
 
   @@index([bab_id, created_at(sort: Desc)]) // Sort performa
+}
+
+// Epic 19 & 22: Author Post (Papan Pengumuman Penulis)
+model AuthorPost {
+  id         String   @id @default(uuid())
+  author_id  String
+  author     User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  content    String   @db.Text
+  image_url  String?
+  created_at DateTime @default(now())
+
+  likes      PostLike[]
+  comments   PostComment[]
+
+  @@index([author_id, created_at(sort: Desc)])
+}
+
+model PostLike {
+  id         String     @id @default(uuid())
+  user_id    String
+  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post_id    String
+  post       AuthorPost @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  created_at DateTime   @default(now())
+
+  @@unique([user_id, post_id])
+}
+
+model PostComment {
+  id         String     @id @default(uuid())
+  user_id    String
+  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post_id    String
+  post       AuthorPost @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  content    String     @db.Text
+  created_at DateTime   @default(now())
 }

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export default function ReviewForm({ karyaId, existingReview }: { karyaId: string, existingReview?: any }) {
     const [isPending, setIsPending] = useState(false);
-    const [score, setScore] = useState(existingReview?.rating || 5);
+    const [score, setScore] = useState(existingReview?.rating || 0);
     const [content, setContent] = useState(existingReview?.content || "");
     const router = useRouter();
 
@@ -41,18 +41,25 @@ export default function ReviewForm({ karyaId, existingReview }: { karyaId: strin
             <input type="hidden" name="rating" value={score} />
 
             <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Penilaian Anda (1-5 Bintang)</label>
-                <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map(star => (
-                        <button
-                            key={star}
-                            type="button"
-                            onClick={() => setScore(star)}
-                            className={`text-2xl transition-transform hover:scale-110 ${star <= score ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
-                        >
-                            ★
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Penilaian Anda (Opsional)</label>
+                <div className="flex items-center gap-4">
+                    <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map(star => (
+                            <button
+                                key={star}
+                                type="button"
+                                onClick={() => setScore(star)}
+                                className={`text-2xl transition-transform hover:scale-110 ${star <= score ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+                            >
+                                ★
+                            </button>
+                        ))}
+                    </div>
+                    {score > 0 && (
+                        <button type="button" onClick={() => setScore(0)} className="text-xs text-gray-500 hover:text-red-500 transition-colors">
+                            Batal Bintang (Tanpa Rating)
                         </button>
-                    ))}
+                    )}
                 </div>
             </div>
 

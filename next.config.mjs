@@ -1,3 +1,12 @@
+import withPWAInit from "next-pwa";
+
+const withPWA = withPWAInit({
+    dest: "public",
+    disable: process.env.NODE_ENV === "development",
+    register: true,
+    skipWaiting: true,
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     // Mengapa: Optimasi transmisi data dengan mengaktifkan Gzip/Brotli compression bawaan server Next.js.
@@ -5,4 +14,4 @@ const nextConfig = {
     compress: true,
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);

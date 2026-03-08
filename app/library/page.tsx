@@ -120,6 +120,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                                             <span>{b.karya._count.bab > 0 ? Math.round((b.last_chapter / b.karya._count.bab) * 100) : 0}% selesai</span>
                                             <span>{b.karya._count.bab} Bab Tersedia</span>
                                         </div>
+                                        <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1">Terakhir dibaca: {b.updated_at.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                                     </div>
                                     <div className="self-center bg-gray-50 dark:bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-200 dark:border-slate-700">
                                         <ArrowLeft className="w-4 h-4 text-gray-400 dark:text-gray-500 rotate-180" />

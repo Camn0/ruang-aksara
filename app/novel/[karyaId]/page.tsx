@@ -3,6 +3,7 @@ import Link from "next/link";
 import RatingForm from "./RatingForm";
 import ReviewForm from "./ReviewForm";
 import BookmarkButton from "./BookmarkButton";
+import ReviewInteraction from "./ReviewInteraction";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote } from "lucide-react";
@@ -37,7 +38,11 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
             },
             genres: true,
             reviews: {
-                include: { user: true },
+                include: {
+                    user: true,
+                    _count: { select: { upvotes: true, comments: true } },
+                    ...(session?.user ? { upvotes: { where: { user_id: session.user.id } } } : {})
+                },
                 orderBy: { created_at: 'desc' },
                 take: 5
             }
@@ -49,6 +54,13 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
         cover_url: string | null;
         is_completed: boolean;
         deskripsi: string | null;
+        bab: any[];
+        genres: any[];
+        reviews: (any & {
+            user: any;
+            _count: { upvotes: number; comments: number };
+            upvotes?: any[];
+        })[];
     }) | null;
 
     if (!karya) {
@@ -245,19 +257,28 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                             <div key={r.id} className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 transition-colors">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex gap-2 items-center">
-                                        <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-xs">
+                                        <Link href={`/profile/${r.user.username}`} className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-xs ring-2 ring-transparent hover:ring-indigo-300 transition-all shrink-0">
                                             {r.user.display_name.substring(0, 2).toUpperCase()}
-                                        </div>
+                                        </Link>
                                         <div>
-                                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-none">{r.user.display_name}</p>
+                                            <Link href={`/profile/${r.user.username}`} className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-none hover:underline">{r.user.display_name}</Link>
                                             <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">{r.created_at.toLocaleDateString('id-ID')}</p>
                                         </div>
                                     </div>
-                                    <div className="flex text-yellow-500 dark:text-yellow-400 fill-yellow-500 dark:fill-yellow-400">
-                                        {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
-                                    </div>
+                                    {r.rating !== null && r.rating > 0 && (
+                                        <div className="flex text-yellow-500 dark:text-yellow-400 fill-yellow-500 dark:fill-yellow-400">
+                                            {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                                        </div>
+                                    )}
                                 </div>
                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">"{parseMentions(r.content)}"</p>
+                                <ReviewInteraction
+                                    reviewId={r.id}
+                                    initialUpvotes={r._count.upvotes}
+                                    initialUpvoted={session ? r.upvotes && r.upvotes.length > 0 : false}
+                                    replyCount={r._count.comments}
+                                    currentPath={`/novel/${karya.id}`}
+                                />
                             </div>
                         ))}
                     </div>

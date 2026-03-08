@@ -146,10 +146,14 @@ export async function submitReview(formData: FormData) {
 
         const karya_id = formData.get('karya_id') as string;
         const content = formData.get('content') as string;
-        const rating = parseInt(formData.get('rating') as string, 10);
+        const ratingStr = formData.get('rating') as string;
+        const rating = ratingStr && ratingStr !== '0' ? parseInt(ratingStr, 10) : null;
 
-        if (!karya_id || !content || rating < 1 || rating > 5) {
+        if (!karya_id || !content) {
             return { error: "Isian review tidak valid." };
+        }
+        if (rating !== null && (rating < 1 || rating > 5)) {
+            return { error: "Isian rating tidak valid." };
         }
 
         const DOMPurify = (await import('isomorphic-dompurify')).default;
@@ -163,22 +167,25 @@ export async function submitReview(formData: FormData) {
                 create: { user_id: session.user.id, karya_id, content: sanitizedContent, rating }
             });
 
-            // 2. Sinkronkan dengan sistem Rating Cepat
-            await tx.rating.upsert({
-                where: { user_id_karya_id: { user_id: session.user.id, karya_id } },
-                update: { score: rating },
-                create: { user_id: session.user.id, karya_id, score: rating }
-            });
+            // 2. Jika ada rating, Sinkronkan dengan sistem Rating Cepat
+            if (rating !== null) {
+                const finalRating = Number(rating);
+                await tx.rating.upsert({
+                    where: { user_id_karya_id: { user_id: session.user.id, karya_id } },
+                    update: { score: finalRating },
+                    create: { user_id: session.user.id, karya_id, score: finalRating }
+                });
 
-            // 3. Rekalkulasi Rata-Rata
-            const aggr = await tx.rating.aggregate({
-                where: { karya_id },
-                _avg: { score: true }
-            });
-            await tx.karya.update({
-                where: { id: karya_id },
-                data: { avg_rating: aggr._avg.score || 0 }
-            });
+                // Rekalkulasi Rata-Rata
+                const aggr = await tx.rating.aggregate({
+                    where: { karya_id },
+                    _avg: { score: true }
+                });
+                await tx.karya.update({
+                    where: { id: karya_id },
+                    data: { avg_rating: aggr._avg.score || 0 }
+                });
+            }
         });
 
         return { success: true };
@@ -188,7 +195,6 @@ export async function submitReview(formData: FormData) {
     }
 }
 
-// ==============================================================================
 // 4. MUTASI USER/ADMIN: HAPUS KOMENTAR (MODERASI)
 // ==============================================================================
 export async function deleteComment(id: string) {

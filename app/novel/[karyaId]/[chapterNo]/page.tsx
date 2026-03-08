@@ -159,7 +159,9 @@ export default async function NovelChapterPage({
                                             <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-bold text-[10px]">
                                                 {rootComment.user.display_name.substring(0, 2).toUpperCase()}
                                             </div>
-                                            <strong className="text-gray-900 dark:text-gray-200 font-bold text-sm">{rootComment.user.display_name}</strong>
+                                            <Link href={`/profile/${rootComment.user.username}`} className="text-gray-900 dark:text-gray-200 font-bold text-sm hover:underline">
+                                                {rootComment.user.display_name}
+                                            </Link>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <time className="text-[10px] text-gray-400 dark:text-gray-500">
@@ -188,7 +190,12 @@ export default async function NovelChapterPage({
                                             {rootComment.replies.map((reply: any) => (
                                                 <div key={reply.id} className="bg-gray-100/50 dark:bg-slate-800/50 p-3 rounded-xl border border-gray-100 dark:border-slate-700/50 flex flex-col gap-1.5 relative">
                                                     <div className="flex justify-between items-center pb-1">
-                                                        <strong className="text-gray-600 dark:text-gray-400 font-bold text-xs">↳ {reply.user.display_name}</strong>
+                                                        <div className="flex items-center gap-1">
+                                                            <span className="text-gray-400 text-xs">↳</span>
+                                                            <Link href={`/profile/${reply.user.username}`} className="text-gray-600 dark:text-gray-400 font-bold text-xs hover:underline">
+                                                                {reply.user.display_name}
+                                                            </Link>
+                                                        </div>
                                                         <div className="flex items-center gap-2">
                                                             <time className="text-[10px] text-gray-400 dark:text-gray-500">
                                                                 {new Date(reply.created_at).toLocaleDateString('id-ID')}
