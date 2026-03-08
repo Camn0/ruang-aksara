@@ -82,6 +82,9 @@ export async function createKarya(formData: FormData) {
             }
         });
 
+        // Invalidate global list (Home/Dashboard)
+        revalidateTag('karya-global');
+
         return { success: true, data: karyaBaru };
 
     } catch (error) {

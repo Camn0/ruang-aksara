@@ -9,17 +9,17 @@ import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote } from "lucid
 import type { Metadata } from "next";
 
 import { prisma } from '@/lib/prisma';
-import { unstable_cache } from 'next/cache';
-import { revalidateTag } from 'next/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
+import ContinueReadingButton from "./ContinueReadingButton";
 
 /**
  * Halaman Detail Karya (Novel/Buku) (Server Component).
  * 
  * Logic Highlights:
- *   1. Search Engine Optimization (SEO): Metadata dinamis berdasarkan judul & penulis.
- *   2. Complex Fetching: Menarik data Karya, Bab, Review, serta Aggregated Counts dalam satu request.
- *   3. Type Casting: Mengatasi kendala model Prisma yang mungkin tertinggal (stale) dari schema sebenarnya.
- *   4. User Context: Mengambil status rating & bookmark user jika sedang login.
+ * 1. Search Engine Optimization(SEO): Metadata dinamis berdasarkan judul & penulis.
+ * 2. Complex Fetching: Menarik data Karya, Bab, Review, serta Aggregated Counts dalam satu request.
+ * 3. Type Casting: Mengatasi kendala model Prisma yang mungkin tertinggal(stale) dari schema sebenarnya.
+ * 4. User Context: Mengambil status rating & bookmark user jika sedang login.
  */
 
 /**
@@ -27,36 +27,41 @@ import { revalidateTag } from 'next/cache';
  * Mengapa: Mengurangi load ke database dengan menyimpan hasil query di memori server (Vercel Cache).
  * Data akan di-invalidate secara on-demand via tag 'karya-[id]'.
  */
-const getCachedKarya = (karyaId: string) => unstable_cache(
-    async () => {
-        const karyaRaw = await (prisma as any).karya.findUnique({
-            where: { id: karyaId },
-            include: {
-                bab: {
-                    orderBy: { chapter_no: 'asc' },
-                    select: { id: true, chapter_no: true, created_at: true, content: true }
-                },
-                genres: true,
-                reviews: {
-                    include: {
-                        user: true,
-                        _count: { select: { upvotes: true, comments: true } },
-                        comments: {
-                            include: { user: true },
-                            orderBy: { created_at: 'asc' },
-                            take: 5
-                        }
+const getCachedKarya = (karyaId: string) => {
+    return unstable_cache(
+        async () => {
+            const karyaRaw = await (prisma as any).karya.findUnique({
+                where: { id: karyaId },
+                include: {
+                    bab: {
+                        orderBy: { chapter_no: 'asc' },
+                        select: { id: true, chapter_no: true, created_at: true, content: true }
                     },
-                    orderBy: { created_at: 'desc' },
-                    take: 5
+                    genres: true,
+                    reviews: {
+                        include: {
+                            user: true,
+                            _count: { select: { upvotes: true, comments: true } },
+                            comments: {
+                                include: { user: true },
+                                orderBy: { created_at: 'asc' },
+                                take: 5
+                            }
+                        },
+                        orderBy: { created_at: 'desc' },
+                        take: 5
+                    }
                 }
-            }
-        });
-        return karyaRaw;
-    },
-    [`karya-${karyaId}`],
-    { tags: [`karya-${karyaId}`], revalidate: 3600 } // Cache selama 1 jam, atau invalidate manual
-)();
+            });
+            return karyaRaw;
+        },
+        [`karya-detail-${karyaId}`],
+        {
+            tags: [`karya-${karyaId}`, 'karya-global'],
+            revalidate: 3600
+        }
+    )();
+};
 
 export async function generateMetadata({ params }: { params: { karyaId: string } }): Promise<Metadata> {
     const karya = await prisma.karya.findUnique({
@@ -249,34 +254,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                 </div>
 
                 {/* EPIC 7: Quick Continue (Client-Side Instant UX) */}
-                <div id="continue-reading-container" className="hidden mt-4">
-                    <Link id="continue-reading-link" href="#" className="flex items-center justify-between p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/30 rounded-2xl group transition-all">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white shadow-lg">
-                                <BookOpen className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Lanjutkan Membaca</p>
-                                <p className="text-sm font-black text-gray-900 dark:text-gray-100">Bab <span id="continue-chapter-no"></span></p>
-                            </div>
-                        </div>
-                        <ArrowLeft className="w-5 h-5 text-indigo-600 rotate-180 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                </div>
-                <script dangerouslySetInnerHTML={{
-                    __html: `
-                    (function() {
-                        try {
-                            const b = JSON.parse(localStorage.getItem('ra-bookmarks') || '{}');
-                            const last = b['${karya.id}'];
-                            if (last && last != 1) {
-                                document.getElementById('continue-reading-container').classList.remove('hidden');
-                                document.getElementById('continue-reading-link').href = '/novel/${karya.id}/' + last;
-                                document.getElementById('continue-chapter-no').innerText = last;
-                            }
-                        } catch(e) {}
-                    })()
-                `}} />
+                <ContinueReadingButton karyaId={karya.id} />
             </div>
 
             {/* Sinopsis */}

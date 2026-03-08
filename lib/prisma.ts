@@ -12,8 +12,8 @@ import { PrismaClient } from '@prisma/client';
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 export const prisma = globalForPrisma.prisma || new PrismaClient({
-    // Tambahkan log di dev agar kita bisa memantau query yang lambat
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    // Hanya log error dan warn agar terminal tidak penuh (kecuali saat debug query)
+    log: ['error', 'warn'],
 });
 
 // Simpan instansi ke global object hanya jika bukan di production

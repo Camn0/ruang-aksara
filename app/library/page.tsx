@@ -5,6 +5,30 @@ import Link from "next/link";
 import { ArrowLeft, BookMarked, Settings, History as HistoryIcon } from "lucide-react";
 
 import { prisma } from '@/lib/prisma';
+import { unstable_cache } from 'next/cache';
+
+/**
+ * Cached Bookmarks for Library
+ */
+const getCachedLibrary = (userId: string) => unstable_cache(
+    async () => {
+        return prisma.bookmark.findMany({
+            where: { user_id: userId },
+            include: {
+                karya: {
+                    select: {
+                        title: true, penulis_alias: true, id: true, cover_url: true,
+                        is_completed: true, deskripsi: true, avg_rating: true,
+                        _count: { select: { bab: true } }
+                    }
+                }
+            },
+            orderBy: { updated_at: 'desc' }
+        });
+    },
+    [`library-${userId}`],
+    { revalidate: 60, tags: [`library-${userId}`] }
+)();
 
 export default async function LibraryPage({ searchParams }: { searchParams: { tab?: string } }) {
     const session = await getServerSession(authOptions);
@@ -13,16 +37,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
         redirect('/onboarding');
     }
 
-    // Ambil riwayat bookmark (yang juga berfungsi sebagai history)
-    const bookmarksRaw = await prisma.bookmark.findMany({
-        where: { user_id: session.user.id },
-        include: {
-            karya: {
-                select: { title: true, penulis_alias: true, id: true, cover_url: true, is_completed: true, deskripsi: true, avg_rating: true, _count: { select: { bab: true } } }
-            }
-        },
-        orderBy: { updated_at: 'desc' }
-    });
+    // Ambil riwayat bookmark via Cache
+    const bookmarksRaw = await getCachedLibrary(session.user.id);
 
     // Cast as per other pages to avoid stale type issues
     const bookmarks = bookmarksRaw as (typeof bookmarksRaw[0] & {
@@ -120,7 +136,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                                             <span>{b.karya._count.bab > 0 ? Math.round((b.last_chapter / b.karya._count.bab) * 100) : 0}% selesai</span>
                                             <span>{b.karya._count.bab} Bab Tersedia</span>
                                         </div>
-                                        <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1">Terakhir dibaca: {b.updated_at.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                        <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1">Terakhir dibaca: {new Date(b.updated_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                                     </div>
                                     <div className="self-center bg-gray-50 dark:bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-200 dark:border-slate-700">
                                         <ArrowLeft className="w-4 h-4 text-gray-400 dark:text-gray-500 rotate-180" />

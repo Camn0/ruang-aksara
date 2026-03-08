@@ -30,13 +30,13 @@ export default function InstantLoadingBar() {
 
     // [New Logic] Threshold Visibility
     // Mengapa: Menghindari flicker pada load instan (cache). 
-    // Bar hanya muncul jika loading > 200ms.
+    // Bar hanya muncul jika loading > 50ms.
     useEffect(() => {
         let timer: NodeJS.Timeout;
         if (loading) {
             timer = setTimeout(() => {
                 setVisible(true);
-            }, 200);
+            }, 50);
         } else {
             setVisible(false);
         }
@@ -50,15 +50,15 @@ export default function InstantLoadingBar() {
             setProgress(10);
             interval = setInterval(() => {
                 setProgress((prev) => {
-                    if (prev >= 90) return 90;
-                    return prev + 5;
+                    if (prev >= 90) return 94; // Slow down but don't stop
+                    return prev + 2; // More gradual
                 });
             }, 100);
         }
         return () => clearInterval(interval);
     }, [loading]);
 
-    // Listener global klik link
+    // Listener global klik link & submit form
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
@@ -68,13 +68,33 @@ export default function InstantLoadingBar() {
                 anchor.href &&
                 anchor.href.startsWith(window.location.origin) &&
                 !anchor.target &&
-                anchor.href !== window.location.href) {
+                anchor.href !== window.location.href &&
+                !anchor.href.includes('#')) {
                 setLoading(true);
             }
         };
 
+        const handleSubmit = (e: SubmitEvent) => {
+            const form = e.target as HTMLFormElement;
+            const action = form.getAttribute('action');
+            if (action && (action.startsWith('/') || action.startsWith(window.location.origin))) {
+                // Hanya aktifkan jika bukan ke URL yang sama persis (untuk pencarian repetitif)
+                setLoading(true);
+            }
+        };
+
+        const handlePopState = () => {
+            setLoading(true);
+        };
+
         document.addEventListener('click', handleClick);
-        return () => document.removeEventListener('click', handleClick);
+        document.addEventListener('submit', handleSubmit);
+        window.addEventListener('popstate', handlePopState);
+        return () => {
+            document.removeEventListener('click', handleClick);
+            document.removeEventListener('submit', handleSubmit);
+            window.removeEventListener('popstate', handlePopState);
+        };
     }, []);
 
     if (!visible && progress === 0) return null;
@@ -82,7 +102,7 @@ export default function InstantLoadingBar() {
     return (
         <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none">
             <div
-                className={`h-1 bg-indigo-600 transition-all duration-300 ease-out shadow-[0_0_10px_rgba(79,70,229,0.5)] ${visible ? 'opacity-100' : 'opacity-0'}`}
+                className={`h-[3px] bg-indigo-600 dark:bg-indigo-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(79,70,229,0.8)] ${visible ? 'opacity-100 animate-pulse' : 'opacity-0'}`}
                 style={{ width: `${progress}%` }}
             />
         </div>

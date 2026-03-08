@@ -76,11 +76,11 @@ export default async function NovelChapterPage({
     }
 
     // [B] Analytics - Update Views
-    // Menggunakan key format 'views:karya:[ID]' agar mudah di-trace.
+    // Mengapa: Tidak di-await agar tidak menghambat respon ke pembaca (Fire & Forget).
     try {
-        await redis.incr(`views:karya:${params.karyaId}`);
+        redis.incr(`views:karya:${params.karyaId}`);
     } catch (e) {
-        console.error("⚠️ [Redis] Gagal increment views:", e);
+        // Silently fail analytics
     }
 
     const currentNo = Number(params.chapterNo);

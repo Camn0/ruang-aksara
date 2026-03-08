@@ -11,6 +11,10 @@ import { unstable_cache } from "next/cache";
  * Global cache untuk daftar karya terpopuler.
  * Mengapa: Data ini sama untuk semua pembaca, jadi cukup di-fetch sekali per jam.
  */
+/**
+ * Global cache untuk daftar karya terpopuler.
+ * Mengapa: Data ini sama untuk semua pembaca, jadi cukup di-fetch sekali per jam.
+ */
 const getCachedFavorites = unstable_cache(
     async () => {
         return prisma.karya.findMany({
@@ -22,6 +26,34 @@ const getCachedFavorites = unstable_cache(
     { revalidate: 3600, tags: ['karya-global'] }
 );
 
+/**
+ * User-specific Bookmarks Cache
+ */
+const getCachedUserBookmarks = (userId: string) => unstable_cache(
+    async () => prisma.bookmark.findMany({
+        where: { user_id: userId },
+        include: {
+            karya: { select: { title: true, penulis_alias: true, id: true, deskripsi: true, cover_url: true, _count: { select: { bab: true } } } }
+        },
+        orderBy: { updated_at: 'desc' },
+        take: 5
+    }),
+    [`dashboard-bookmarks-${userId}`],
+    { revalidate: 60, tags: [`library-${userId}`] }
+)();
+
+/**
+ * User-specific Follows Cache
+ */
+const getCachedUserFollows = (userId: string) => unstable_cache(
+    async () => prisma.follow.findMany({
+        where: { follower_id: userId },
+        select: { following_id: true }
+    }),
+    [`dashboard-follows-${userId}`],
+    { revalidate: 300, tags: [`follows-${userId}`] }
+)();
+
 export default async function UserDashboardPage() {
     const session = await getServerSession(authOptions);
 
@@ -29,26 +61,11 @@ export default async function UserDashboardPage() {
         redirect('/onboarding');
     }
 
-    // Paralelkan pengambilan data awal untuk mempercepat load page
+    // Paralelkan pengambilan data via Cache
     const [bookmarksRaw, favoritesRaw, follows] = await Promise.all([
-        // Ambil riwayat bookmark (karya yang pernah dibaca beserta bab terakhirnya)
-        prisma.bookmark.findMany({
-            where: { user_id: session.user.id },
-            include: {
-                karya: {
-                    select: { title: true, penulis_alias: true, id: true, deskripsi: true, cover_url: true, _count: { select: { bab: true } } }
-                }
-            },
-            orderBy: { updated_at: 'desc' },
-            take: 5
-        }),
-        // Ambil favorit hari ini via Cache
+        getCachedUserBookmarks(session.user.id),
         getCachedFavorites(),
-        // Ambil karya dari penulis yang di-follow (Rekomendasi)
-        prisma.follow.findMany({
-            where: { follower_id: session.user.id },
-            select: { following_id: true }
-        })
+        getCachedUserFollows(session.user.id)
     ]);
 
     const bookmarks = bookmarksRaw as (typeof bookmarksRaw[0] & {

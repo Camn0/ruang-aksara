@@ -290,7 +290,7 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                                                         </div>
                                                         <div>
                                                             <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{userProfile.display_name}</p>
-                                                            <p className="text-[10px] text-gray-500 dark:text-gray-400">{post.created_at.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+                                                            <p className="text-[10px] text-gray-500 dark:text-gray-400">{new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -346,7 +346,7 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                                                 <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                                                     # {comment.bab.karya.title} - Bab {comment.bab.chapter_no}
                                                 </Link>
-                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{comment.created_at.toLocaleDateString('id-ID')}</span>
+                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{new Date(comment.created_at).toLocaleDateString('id-ID')}</span>
                                             </div>
                                             <p className="text-gray-800 dark:text-gray-200 text-sm bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl rounded-tl-none border border-gray-100 dark:border-slate-800 whitespace-pre-wrap">
                                                 "{comment.content}"

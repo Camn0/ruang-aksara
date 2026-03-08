@@ -2,6 +2,67 @@ import Link from "next/link";
 import { Search as SearchIcon, Star, TrendingUp } from "lucide-react";
 
 import { prisma } from '@/lib/prisma';
+import { unstable_cache } from 'next/cache';
+
+/**
+ * Caching Genres (Global)
+ */
+const getCachedGenres = unstable_cache(
+    async () => prisma.genre.findMany({ orderBy: { name: 'asc' } }),
+    ['global-genres'],
+    { revalidate: 86400, tags: ['genres'] }
+);
+
+/**
+ * Caching Search Results
+ * Mengapa: Hasil pencarian yang sama tidak perlu hit DB terus menerus.
+ */
+const getCachedSearchResults = (q: string, filter: string, genreId: string) => unstable_cache(
+    async () => {
+        let orderBy: any = {};
+        let where: any = { AND: [] };
+
+        if (q) {
+            const terms = q.trim().split(/\s+/).filter(t => t.length > 0);
+            if (terms.length > 0) {
+                where.AND.push({
+                    AND: terms.map(term => ({
+                        OR: [
+                            { title: { contains: term, mode: 'insensitive' } },
+                            { penulis_alias: { contains: term, mode: 'insensitive' } }
+                        ]
+                    }))
+                });
+            }
+        }
+
+        if (genreId) {
+            where.AND.push({ genres: { some: { id: genreId } } });
+        }
+
+        if (filter === "terbaru") {
+            orderBy = { id: 'desc' };
+        } else if (filter === "rating") {
+            orderBy = { avg_rating: 'desc' };
+        } else if (filter === "selesai") {
+            where.is_completed = true;
+            orderBy = { total_views: 'desc' };
+        } else {
+            orderBy = { total_views: 'desc' };
+        }
+
+        if (where.AND.length === 0) delete where.AND;
+
+        return prisma.karya.findMany({
+            where,
+            orderBy,
+            include: { genres: true },
+            take: 50
+        });
+    },
+    [`search-${q}-${filter}-${genreId}`],
+    { revalidate: 300, tags: ['karya-global'] } // Cache 5 menit
+)();
 
 export default async function SearchPage({
     searchParams
@@ -12,71 +73,13 @@ export default async function SearchPage({
     const filter = searchParams.filter || "terpopuler";
     const genreId = searchParams.genreId || "";
 
-    // Setup query untuk filter genre
-    const genresPromise = prisma.genre.findMany({
-        orderBy: { name: 'asc' }
-    });
+    // Eksekusi query secara paralel via Cache
+    const [allGenres, resultsRaw] = await Promise.all([
+        getCachedGenres(),
+        getCachedSearchResults(q, filter, genreId)
+    ]);
 
-    // Susun argumen query prisma
-    let orderBy: any = {};
-    let where: any = {
-        AND: []
-    };
-
-    if (q) {
-        // Pencarian "Fuzzy" ringan berbasis kata (Multi-term)
-        const terms = q.trim().split(/\s+/).filter(t => t.length > 0);
-
-        if (terms.length > 0) {
-            where.AND.push({
-                AND: terms.map(term => ({
-                    OR: [
-                        { title: { contains: term, mode: 'insensitive' } },
-                        { penulis_alias: { contains: term, mode: 'insensitive' } }
-                    ]
-                }))
-            });
-        }
-    }
-
-    if (genreId) {
-        where.AND.push({
-            genres: {
-                some: { id: genreId }
-            }
-        });
-    }
-
-    if (filter === "terbaru") {
-        orderBy = { id: 'desc' };
-    } else if (filter === "rating") {
-        orderBy = { avg_rating: 'desc' };
-    } else if (filter === "selesai") {
-        where.is_completed = true;
-        orderBy = { total_views: 'desc' };
-    } else {
-        orderBy = { total_views: 'desc' };
-    }
-
-    // Jika AND kosong, hapus property-nya agar tidak error di Prisma
-    if (where.AND.length === 0) {
-        delete where.AND;
-    }
-
-    const resultsRawPromise = prisma.karya.findMany({
-        where,
-        orderBy,
-        include: {
-            genres: true
-        },
-        take: 50
-    });
-
-    // Eksekusi semua query secara paralel
-    const [allGenres, resultsRaw] = await Promise.all([genresPromise, resultsRawPromise]);
-
-    // Cast to include all schema fields that may be missing from stale Prisma types
-    const results = resultsRaw as (typeof resultsRaw[0] & {
+    const results = resultsRaw as (any & {
         cover_url: string | null;
         is_completed: boolean;
         deskripsi: string | null;
