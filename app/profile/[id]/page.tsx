@@ -8,6 +8,7 @@ import FollowButton from "./FollowButton";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import CreatePostForm from "./CreatePostForm";
 import PostLikeButton from "./PostLikeButton";
+import PostCommentSection from "./PostCommentSection";
 
 export default async function ProfilePage({ params, searchParams }: { params: { id: string }, searchParams: { tab?: string } }) {
     const session = await getServerSession(authOptions);
@@ -101,7 +102,12 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                 orderBy: { created_at: 'desc' },
                 include: {
                     _count: { select: { likes: true, comments: true } },
-                    ...(session?.user ? { likes: { where: { user_id: session.user.id } } } : {})
+                    ...(session?.user ? { likes: { where: { user_id: session.user.id } } } : {}),
+                    comments: {
+                        include: { user: true },
+                        orderBy: { created_at: 'asc' },
+                        take: 5
+                    }
                 }
             });
         }
@@ -274,7 +280,14 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <p className="text-sm text-gray-800 dark:text-gray-200 mb-4 whitespace-pre-wrap">{post.content}</p>
+                                                <p className="text-sm text-gray-800 dark:text-gray-200 mb-3 whitespace-pre-wrap">{post.content}</p>
+
+                                                {/* Post Image */}
+                                                {post.image_url && (
+                                                    <div className="mb-3 rounded-xl overflow-hidden border border-gray-100 dark:border-slate-800">
+                                                        <img src={post.image_url} alt="Post" className="w-full max-h-96 object-cover" />
+                                                    </div>
+                                                )}
 
                                                 <div className="flex items-center gap-4 pt-3 border-t border-gray-50 dark:border-slate-800 text-gray-500 dark:text-gray-400">
                                                     <PostLikeButton
@@ -286,6 +299,14 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                                                         <MessageSquare className="w-4 h-4" /> {post._count.comments}
                                                     </button>
                                                 </div>
+
+                                                <PostCommentSection
+                                                    postId={post.id}
+                                                    initialComments={post.comments || []}
+                                                    commentCount={post._count.comments}
+                                                    currentUserId={session?.user?.id}
+                                                    currentUserRole={session?.user?.role}
+                                                />
                                             </div>
                                         ))
                                     )}

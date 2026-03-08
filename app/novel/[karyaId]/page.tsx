@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import RatingForm from "./RatingForm";
 import ReviewForm from "./ReviewForm";
 import BookmarkButton from "./BookmarkButton";
 import ReviewInteraction from "./ReviewInteraction";
@@ -30,7 +29,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
 
-    const karyaRaw = await prisma.karya.findUnique({
+    const karyaRaw = await (prisma as any).karya.findUnique({
         where: { id: params.karyaId },
         include: {
             bab: {
@@ -41,7 +40,12 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                 include: {
                     user: true,
                     _count: { select: { upvotes: true, comments: true } },
-                    ...(session?.user ? { upvotes: { where: { user_id: session.user.id } } } : {})
+                    ...(session?.user ? { upvotes: { where: { user_id: session.user.id } } } : {}),
+                    comments: {
+                        include: { user: true },
+                        orderBy: { created_at: 'asc' },
+                        take: 5
+                    }
                 },
                 orderBy: { created_at: 'desc' },
                 take: 5
@@ -60,6 +64,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
             user: any;
             _count: { upvotes: number; comments: number };
             upvotes?: any[];
+            comments?: any[];
         })[];
     }) | null;
 
@@ -133,7 +138,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                         </div>
 
                         <div className="flex flex-wrap gap-1.5 mb-4">
-                            {karya.genres.map(g => (
+                            {karya.genres.map((g: any) => (
                                 <span key={g.id} className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[10px] uppercase font-bold px-2 py-1 rounded transition-colors">
                                     {g.name}
                                 </span>
@@ -205,7 +210,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                             Belum ada bab yang dirilis.
                         </div>
                     ) : (
-                        karya.bab.map((chapter) => (
+                        karya.bab.map((chapter: any) => (
                             <Link
                                 key={chapter.id}
                                 href={`/novel/${karya.id}/${chapter.chapter_no}`}
@@ -234,9 +239,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
 
                 {session ? (
                     <div className="space-y-6">
-                        <RatingForm karyaId={karya.id} defaultScore={userPreviousRating} />
-                        <hr className="border-gray-100 dark:border-slate-800" />
-                        <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} />
+                        <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
                     </div>
                 ) : (
                     <div className="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-2xl text-center border border-indigo-100 dark:border-indigo-900/30 transition-colors">
@@ -253,7 +256,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
             {karya.reviews.length > 0 && (
                 <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
                     <div className="space-y-4">
-                        {karya.reviews.map(r => (
+                        {karya.reviews.map((r: any) => (
                             <div key={r.id} className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 transition-colors">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex gap-2 items-center">
@@ -279,6 +282,23 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                                     replyCount={r._count.comments}
                                     currentPath={`/novel/${karya.id}`}
                                 />
+
+                                {/* Review Comments */}
+                                {r.comments && r.comments.length > 0 && (
+                                    <div className="mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 space-y-2">
+                                        {r.comments.map((c: any) => (
+                                            <div key={c.id} className="flex gap-2 items-start">
+                                                <div className="w-5 h-5 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-bold text-gray-500 shrink-0">
+                                                    {c.user?.display_name?.substring(0, 2).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs"><Link href={`/profile/${c.user?.username}`} className="font-bold text-gray-900 dark:text-gray-100 hover:underline">{c.user?.display_name}</Link> <span className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{c.content}</span></p>
+                                                    <p className="text-[10px] text-gray-400 dark:text-gray-500">{c.created_at?.toLocaleDateString('id-ID')}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

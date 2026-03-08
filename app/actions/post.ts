@@ -11,6 +11,8 @@ export async function createAuthorPost(formData: FormData) {
         if (!session) return { error: "Unauthorized." };
 
         const content = formData.get('content') as string;
+        const image_url = formData.get('image_url') as string | null;
+
         if (!content || content.trim().length === 0) {
             return { error: "Konten tidak boleh kosong." };
         }
@@ -19,8 +21,9 @@ export async function createAuthorPost(formData: FormData) {
 
         await (prisma as any).authorPost.create({
             data: {
-                content,
-                author_id
+                content: content.trim(),
+                author_id,
+                ...(image_url && image_url.trim() ? { image_url: image_url.trim() } : {})
             }
         });
 
@@ -62,5 +65,57 @@ export async function togglePostLike(postId: string) {
     } catch (e) {
         console.error(e);
         return { error: "Gagal memproses like." };
+    }
+}
+
+// Komentar pada Author Post
+export async function submitPostComment(formData: FormData) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) return { error: "Unauthorized." };
+
+        const post_id = formData.get('post_id') as string;
+        const content = formData.get('content') as string;
+
+        if (!post_id || !content || content.trim().length === 0) {
+            return { error: "Komentar tidak boleh kosong." };
+        }
+
+        const newComment = await (prisma as any).postComment.create({
+            data: {
+                user_id: session.user.id,
+                post_id,
+                content: content.trim()
+            },
+            include: { user: true }
+        });
+
+        revalidatePath('/profile/[id]', 'page');
+        return { success: true, data: newComment };
+    } catch (e) {
+        console.error(e);
+        return { error: "Gagal mengirim komentar." };
+    }
+}
+
+// Hapus Komentar pada Author Post
+export async function deletePostComment(commentId: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) return { error: "Unauthorized." };
+
+        const existing = await (prisma as any).postComment.findUnique({ where: { id: commentId } });
+        if (!existing) return { error: "Komentar tidak ditemukan." };
+
+        if (existing.user_id !== session.user.id && session.user.role !== 'admin') {
+            return { error: "Forbidden." };
+        }
+
+        await (prisma as any).postComment.delete({ where: { id: commentId } });
+        revalidatePath('/profile/[id]', 'page');
+        return { success: true };
+    } catch (e) {
+        console.error(e);
+        return { error: "Gagal menghapus komentar." };
     }
 }
