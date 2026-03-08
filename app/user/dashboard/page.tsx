@@ -20,7 +20,7 @@ export default async function UserDashboardPage() {
             where: { user_id: session.user.id },
             include: {
                 karya: {
-                    select: { title: true, penulis_alias: true, id: true, deskripsi: true, cover_url: true }
+                    select: { title: true, penulis_alias: true, id: true, deskripsi: true, cover_url: true, _count: { select: { bab: true } } }
                 }
             },
             orderBy: { updated_at: 'desc' },
@@ -117,7 +117,7 @@ export default async function UserDashboardPage() {
                                             <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400">{b.karya.title}</div>
                                         )}
                                         <div className="absolute bottom-0 inset-x-0 h-1 bg-gray-200 dark:bg-slate-700">
-                                            <div className="h-full bg-indigo-600 dark:bg-indigo-500" style={{ width: '60%' }}></div>
+                                            <div className="h-full bg-indigo-600 dark:bg-indigo-500" style={{ width: `${(b.karya as any)._count?.bab > 0 ? Math.round((b.last_chapter / (b.karya as any)._count.bab) * 100) : 0}%` }}></div>
                                         </div>
                                     </div>
                                     <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-1">{b.karya.title}</h3>

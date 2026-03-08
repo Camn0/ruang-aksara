@@ -181,7 +181,7 @@ export default async function NovelChapterPage({
                                 </div>
 
                                 {rootComment.replies && rootComment.replies.length > 0 && (
-                                    <details className="pl-6 border-l-2 border-indigo-100 dark:border-indigo-900/40 ml-2 group" open>
+                                    <details className="pl-6 border-l-2 border-indigo-100 dark:border-indigo-900/40 ml-2 group">
                                         <summary className="text-xs font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer list-none mb-3 hover:underline focus:outline-none select-none inline-flex items-center gap-1">
                                             <span className="group-open:hidden flex items-center gap-1">Lihat {rootComment.replies.length} balasan ▼</span>
                                             <span className="hidden group-open:flex items-center gap-1">Sembunyikan balasan ▲</span>

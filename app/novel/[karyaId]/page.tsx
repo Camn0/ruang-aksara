@@ -6,8 +6,22 @@ import ReviewInteraction from "./ReviewInteraction";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote } from "lucide-react";
+import type { Metadata } from "next";
 
 import { prisma } from '@/lib/prisma';
+
+export async function generateMetadata({ params }: { params: { karyaId: string } }): Promise<Metadata> {
+    const karya = await prisma.karya.findUnique({
+        where: { id: params.karyaId },
+        select: { title: true, penulis_alias: true, deskripsi: true }
+    });
+    if (!karya) return { title: 'Karya Tidak Ditemukan — Ruang Aksara' };
+    const desc = karya.deskripsi ? karya.deskripsi.substring(0, 160) : `Baca ${karya.title} oleh ${karya.penulis_alias} di Ruang Aksara.`;
+    return {
+        title: `${karya.title} — Ruang Aksara`,
+        description: desc,
+    };
+}
 
 function parseMentions(text: string) {
     if (!text) return text;

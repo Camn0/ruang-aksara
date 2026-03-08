@@ -1,33 +1,58 @@
-import { Redis } from 'ioredis';
+// Redis client — gracefully optional.
+// Jika REDIS_URL di-set, gunakan @upstash/redis (REST, ~8KB, edge-compatible).
+// Jika tidak di-set, semua operasi jadi no-op (return null, tidak error).
 
-// Mengapa: Konfigurasi Client Redis Singleton.
-// Dalam mode development Next.js, HMR (Hot Module Replacement) sering merestart file,
-// pembuatan koneksi berulang ke server Redis dapat menyebabkan "Too many connections".
-// globalThis mencegah inisialisasi ulang koneksi pada setiap refresh dev-server.
+interface RedisLike {
+    get(key: string): Promise<string | null>;
+    setex(key: string, seconds: number, value: string): Promise<void>;
+    keys(pattern: string): Promise<string[]>;
+    del(key: string): Promise<void>;
+    incr(key: string): Promise<number>;
+}
 
-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-
-const globalForRedis = globalThis as unknown as {
-    redis: Redis | undefined;
+const noopRedis: RedisLike = {
+    get: async () => null,
+    setex: async () => { },
+    keys: async () => [],
+    del: async () => { },
+    incr: async () => 0,
 };
 
-export const redis = globalForRedis.redis ?? new Redis(redisUrl, {
-    // Mengapa: Membatasi retry koneksi berlebih jika server Redis lokal mati.
-    // Ini mencegah console spam "ECONNREFUSED" di mode development.
-    retryStrategy(times) {
-        if (times > 3) return null; // Berhenti retry setelah 3 kali gagal
-        return Math.min(times * 200, 1000);
-    },
-    maxRetriesPerRequest: 1
-});
+function createRedisClient(): RedisLike {
+    const url = process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-// Tangkap event error secara eksplisit agar proses Node.js tidak *crash*
-redis.on('error', (err: any) => {
-    if (err.code === 'ECONNREFUSED') {
-        console.warn('⚠️ [Redis] Koneksi gagal. Pastikan Redis berjalan di latar belakang (Fallback mode aktif).');
-    } else {
-        console.error('⚠️ [Redis] Error:', err.message);
+    if (!url || !token) {
+        // Tidak ada Redis yang dikonfigurasi — semua operasi jadi no-op
+        return noopRedis;
     }
-});
 
-if (process.env.NODE_ENV !== 'production') globalForRedis.redis = redis;
+    // Lightweight REST wrapper — tidak perlu library eksternal
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+    async function command(...args: string[]): Promise<any> {
+        try {
+            const res = await fetch(`${url}`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(args),
+            });
+            if (!res.ok) return null;
+            const data = await res.json();
+            return data.result;
+        } catch (e) {
+            console.warn('⚠️ [Redis] Request failed, using fallback.');
+            return null;
+        }
+    }
+
+    return {
+        get: (key) => command('GET', key),
+        setex: async (key, seconds, value) => { await command('SETEX', key, String(seconds), value); },
+        keys: async (pattern) => (await command('KEYS', pattern)) || [],
+        del: async (key) => { await command('DEL', key); },
+        incr: async (key) => (await command('INCR', key)) || 0,
+    };
+}
+
+export const redis = createRedisClient();

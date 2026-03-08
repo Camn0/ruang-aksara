@@ -2,14 +2,12 @@
 
 import { useState } from 'react';
 import { submitReview, submitRating } from '@/app/actions/user';
-import { useRouter } from 'next/navigation';
 
 export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }: { karyaId: string, existingReview?: any, defaultScore?: number }) {
     const [isPending, setIsPending] = useState(false);
     const [score, setScore] = useState(existingReview?.rating || defaultScore || 0);
     const [content, setContent] = useState(existingReview?.content || "");
     const [success, setSuccess] = useState('');
-    const router = useRouter();
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -26,7 +24,6 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                     alert(result.error);
                 } else {
                     setSuccess('Ulasan berhasil dipublikasikan!');
-                    router.refresh();
                     setTimeout(() => setSuccess(''), 3000);
                 }
             } else if (score > 0) {
@@ -39,7 +36,6 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                     alert(result.error);
                 } else {
                     setSuccess('Rating berhasil disimpan!');
-                    router.refresh();
                     setTimeout(() => setSuccess(''), 3000);
                 }
             } else {

@@ -4,7 +4,6 @@ import { useState, useRef } from 'react';
 import { submitPostComment, deletePostComment } from '@/app/actions/post';
 import { Send, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 interface Comment {
     id: string;
@@ -29,7 +28,6 @@ export default function PostCommentSection({ postId, initialComments, commentCou
     const [success, setSuccess] = useState('');
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const formRef = useRef<HTMLFormElement>(null);
-    const router = useRouter();
 
     async function handleSubmit(formData: FormData) {
         if (isPending) return;
@@ -45,7 +43,6 @@ export default function PostCommentSection({ postId, initialComments, commentCou
             } else {
                 setSuccess('Komentar dikirim!');
                 formRef.current?.reset();
-                router.refresh();
                 setTimeout(() => setSuccess(''), 2000);
             }
         } catch (error) {
@@ -62,7 +59,6 @@ export default function PostCommentSection({ postId, initialComments, commentCou
         try {
             const res = await deletePostComment(commentId);
             if (res.error) alert(res.error);
-            else router.refresh();
         } catch {
             alert("Gagal menghapus.");
         } finally {
