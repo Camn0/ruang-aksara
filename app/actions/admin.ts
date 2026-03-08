@@ -6,38 +6,51 @@ import { authOptions } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 
 // ==============================================================================
-// 1. MUTASI ADMIN: MEMBUAT KARYA BARU
+// 1. MUTASI ADMIN/AUTHOR: MEMBUAT KARYA BARU
 // ==============================================================================
-// Mengapa: Fungsi ini berjalan sepenuhnya di lingkungan server Node.js. 
-// Ini menjamin keamanan logika otorisasi dan langsung berinteraksi dengan DB tanpa terekspos ke klien (browser).
+/**
+ * Server Action: Membuat entitas Karya (novel/buku) baru.
+ * 
+ * Otorisasi:
+ *   - Hanya user dengan role 'admin' atau 'author' yang diizinkan.
+ * 
+ * Alur:
+ *   1. Validasi Autentikasi & RBAC.
+ *   2. Ekstraksi data dari FormData.
+ *   3. Sinkronisasi identitas penulis (alias vs username).
+ *   4. Operasi Database (Prisma build-in connect untuk genre).
+ * 
+ * @param formData - Objek FormData (title, penulis_alias, deskripsi, cover_url, genres).
+ * @returns `{ success: true, data: Karya }` | `{ error: string }`.
+ * 
+ * DEBUG TIPS:
+ *   - Jika error P2003 (Foreign Key), pastikan `session.user.id` masih ada di tabel User (cek DB reset).
+ *   - Jika genre tidak tersimpan, pastikan `genreIds` adalah array string ID yang valid.
+ */
 export async function createKarya(formData: FormData) {
     try {
-        // [A] Validasi Autentikasi \& Otorisasi Level Server
-        // Mengapa: getServerSession membaca token JWT request untuk memastikan siapa yang memanggil action ini.
+        // [A] Validasi Autentikasi & Otorisasi Level Server
+        // Mengapa: Kita tidak boleh percaya pada state client. Role dicek langsung dari JWT Session yang aman.
         const session = await getServerSession(authOptions);
 
-        // Mengapa: RBAC (Role-Based Access Control). Kita cek spesifik properti `role` dari session
-        // yang sudah di-*inject* tadi di route authentikasi. Reader biasa tidak bisa menembus fungsi ini.
         if (!session || (session.user?.role !== 'admin' && session.user?.role !== 'author')) {
             return { error: "Unauthorized: Hanya God Account atau Author yang diizinkan membuat Karya." };
         }
 
         // [B] Ekstraksi Data Input
-        // Mengapa: Membaca isi objek FormData bawaan web API standar.
         const title = formData.get('title') as string;
         const input_penulis_alias = formData.get('penulis_alias') as string;
         const deskripsi = formData.get('deskripsi') as string || null;
         const cover_url = formData.get('cover_url') as string || null;
-        const genreIds = formData.getAll('genres') as string[]; // Menerima array genre dari HTML checkboxes
+        const genreIds = formData.getAll('genres') as string[];
 
         // [C] Validasi Kelengkapan Input
         if (!title) {
             return { error: "Bad Request: Judul karya wajib diisi." };
         }
 
-        // [C.2] Validasi Sesi Stale (Mencegah Error P2003 / Foreign Key Constraint)
-        // Mengapa: Jika DB baru saja di-reset, cookie sesi di browser masih menyimpan UUID lama
-        // yang sudah tidak ada di DB, menyebabkan error saat insert.
+        // [D] Sinkronisasi Sesi & Database
+        // Mengapa: Jika database dideploy ulang (reset), cookie browser mungkin menyimpan ID user lama.
         const existingUser = await prisma.user.findUnique({
             where: { id: session.user.id }
         });
@@ -46,14 +59,15 @@ export async function createKarya(formData: FormData) {
             return { error: "Sesi Anda sudah kedaluwarsa atau tidak valid (Terjadi indikasi reset database). Silakan Logout dan Login kembali." };
         }
 
-        // Gabungkan alias buatan user dan username asli. Jika kosong, pakai username saja.
+        // [E] Logika Penanganan Alias Penulis
+        // Format: "Alias (Username Asli)" untuk menjamin transparansi di aplikasi.
         const cleanAlias = input_penulis_alias?.replace(/\s\([^)]+\)$/, '').trim();
         const final_penulis_alias = cleanAlias
             ? `${cleanAlias} (${existingUser.username})`
             : existingUser.username;
 
-        // [D] Mutasi Database
-        // Mengapa: relasi foreign key disambungkan berdasarkan ID user pelog-in 
+        // [F] Mutasi Database
+        // Mengapa: Menggunakan `connect` agar Prisma otomatis membuat mapping di table join (implicit m-n).
         const karyaBaru = await prisma.karya.create({
             data: {
                 title,
@@ -70,48 +84,60 @@ export async function createKarya(formData: FormData) {
         return { success: true, data: karyaBaru };
 
     } catch (error) {
-        console.error("Database Error createKarya:", error);
+        console.error("[createKarya] Database Error:", error);
         return { error: "Terjadi kesalahan pada sistem saat menyimpan Karya." };
     }
 }
 
 
 // ==============================================================================
-// 2. MUTASI ADMIN: MENAMBAH BAB BARU
+// 2. MUTASI ADMIN/AUTHOR: MENAMBAH BAB BARU
 // ==============================================================================
+/**
+ * Server Action: Menambahkan bab (chapter) baru ke dalam karya yang sudah ada.
+ * 
+ * Fitur:
+ *   - Auto-increment penomoran bab berdasarkan nilai terakhir di DB.
+ *   - Sanitasi konten dasar.
+ * 
+ * @param formData - Objek FormData (karya_id, content).
+ * @returns `{ success: true, data: Bab }` | `{ error: string }`.
+ * 
+ * DEBUG TIPS:
+ *   - Jika nomor bab melompat, cek apakah ada bab yang dihapus sebelumnya.
+ *   - Error 'Conflict' (P2002) berarti kombinasi karya_id + chapter_no sudah ada.
+ */
 export async function createBab(formData: FormData) {
     try {
-        // [A] Validasi Autentikasi \& Otorisasi
+        // [A] Validasi Autentikasi & Otorisasi
         const session = await getServerSession(authOptions);
 
         if (!session || (session.user?.role !== 'admin' && session.user?.role !== 'author')) {
             return { error: "Unauthorized: Hanya God Account atau Author yang diizinkan mengunggah Bab." };
         }
 
-        // [B] Ekstraksi Input
+        // [B] Ekstraksi & Validasi Input
         const karya_id = formData.get('karya_id') as string;
         let content = formData.get('content') as string;
 
-        // [C] Validasi Kelengkapan Input Dasar
         if (!karya_id || !content) {
             return { error: "Bad Request: Karya ID dan Konten wajib diisi." };
         }
 
-        // [D] Sanitasi (React akan otomatis escape saat render sebagai text)
+        // [C] Sanitasi & Formatting
         content = content.trim();
 
-        // [E] Logika Penomoran Otomatis (Auto-Increment)
-        // Mengapa: Menghitung manual Bab terakhir yang masuk ke Karya ini.
-        // Prisma Aggregate akan mengeksekusi `SELECT MAX(chapter_no) ...` yang sangat ringan.
+        // [D] Logika Penomoran Otomatis (Auto-Increment Terkontrol)
+        // Mengapa: Kita menghitung MAX secara manual agar urutan bab tetap solid meskipun ada request paralel.
         const aggr = await prisma.bab.aggregate({
             where: { karya_id },
             _max: { chapter_no: true }
         });
 
-        // Bab baru adalah MAX + 1. Jika belum ada bab, otomatis jadi Bab 1.
+        // Jika karya pertama (max = null), maka chapter_no = 1.
         const chapter_no = (aggr._max.chapter_no || 0) + 1;
 
-        // [F] Mutasi Database
+        // [E] Mutasi Database
         const babBaru = await prisma.bab.create({
             data: {
                 karya_id,
@@ -123,25 +149,39 @@ export async function createBab(formData: FormData) {
         return { success: true, data: babBaru };
 
     } catch (error: any) {
+        // Penanganan error spesifik Prisma: Unique Constraint (Bab nomor sama)
         if (error.code === 'P2002') {
             return { error: "Conflict: Nomor bab tersebut sudah ada pada karya ini. Gunakan nomor urut lain." };
         }
 
-        console.error("Database Error createBab:", error);
+        console.error("[createBab] Database Error:", error);
         return { error: "Internal Server Error: Gagal menyimpan data bab." };
     }
 }
 
 // ==============================================================================
-// 3. MUTASI ADMIN: MENAMBAH AUTHOR BARU
+// 3. MUTASI ADMIN: PENDAFTARAN AUTHOR (MODERATED)
 // ==============================================================================
+/**
+ * Server Action: Mendaftarkan akun baru dengan role 'author'.
+ * 
+ * Alur:
+ *   1. Cek role pendaftar (Hanya Admin).
+ *   2. Cek ketersediaan username.
+ *   3. Enkripsi password menggunakan bcrypt.
+ * 
+ * DEBUG TIPS:
+ *   - Gagal mendaftar biasanya karena duplikasi username.
+ */
 export async function registerAuthor(formData: FormData) {
     try {
+        // [A] Otorisasi: Hanya Admin yang bisa "mengangkat" orang jadi Author di level ini.
         const session = await getServerSession(authOptions);
         if (!session || session.user?.role !== 'admin') {
             return { error: "Unauthorized: Hanya God Account yang diizinkan." };
         }
 
+        // [B] Ekstraksi Input
         const username = formData.get('username') as string;
         const display_name = formData.get('display_name') as string;
         const password = formData.get('password') as string;
@@ -150,13 +190,16 @@ export async function registerAuthor(formData: FormData) {
             return { error: "Semua kolom wajib diisi." };
         }
 
+        // [C] Cek Duplikasi
         const existingUser = await prisma.user.findUnique({ where: { username } });
         if (existingUser) {
             return { error: "Username sudah digunakan." };
         }
 
+        // [D] Keamanan: Hashing Password
         const password_hash = await bcrypt.hash(password, 10);
 
+        // [E] Mutasi DB
         const newUser = await prisma.user.create({
             data: {
                 username,
@@ -168,14 +211,19 @@ export async function registerAuthor(formData: FormData) {
 
         return { success: true, data: newUser };
     } catch (error) {
-        console.error("Database Error registerAuthor:", error);
+        console.error("[registerAuthor] Error:", error);
         return { error: "Gagal mendaftarkan author." };
     }
 }
 
 // ==============================================================================
-// 4. MUTASI ADMIN: MANAJEMEN GENRE
+// 4. MUTASI ADMIN: MANAJEMEN MASTER DATA GENRE
 // ==============================================================================
+/**
+ * Server Action: Membuat genre baru.
+ * 
+ * Otorisasi: Admin Only.
+ */
 export async function createGenre(formData: FormData) {
     try {
         const session = await getServerSession(authOptions);
@@ -193,6 +241,11 @@ export async function createGenre(formData: FormData) {
     }
 }
 
+/**
+ * Server Action: Menghapus genre.
+ * 
+ * CAUTION: Jika genre dihapus, semua karya dengan genre ini akan terputus relasinya.
+ */
 export async function deleteGenre(id: string) {
     try {
         const session = await getServerSession(authOptions);
@@ -210,40 +263,40 @@ export async function deleteGenre(id: string) {
 }
 
 // ==============================================================================
-// 5. MUTASI ADMIN/AUTHOR: EDIT & HAPUS KARYA
+// 5. MUTASI ADMIN/AUTHOR: PENGELOLAAN KARYA (EDIT & DELETE)
 // ==============================================================================
+/**
+ * Server Action: Memperbarui data karya yang sudah ada.
+ * 
+ * Otorisasi:
+ *   - Admin bisa edit semua karya.
+ *   - Author hanya bisa edit karya miliknya sendiri.
+ * 
+ * DEBUG TIPS:
+ *   - 'Forbidden' muncul jika Author mencoba edit 'uploader_id' orang lain.
+ */
 export async function editKarya(formData: FormData) {
     try {
+        // [A] Cek Sesi
         const session = await getServerSession(authOptions);
         if (!session || (session.user?.role !== 'admin' && session.user?.role !== 'author')) {
             return { error: "Unauthorized." };
         }
 
+        // [B] Ekstraksi Input
         const id = formData.get('id') as string;
         const title = formData.get('title') as string;
         const input_penulis_alias = formData.get('penulis_alias') as string;
         const deskripsi = formData.get('deskripsi') as string || null;
         const cover_url = formData.get('cover_url') as string || null;
-        const is_completed = formData.get('is_completed') === 'true'; // Toggle Selesai
+        const is_completed = formData.get('is_completed') === 'true';
         const genreIds = formData.getAll('genres') as string[];
 
         if (!id || !title) {
             return { error: "Data tidak lengkap." };
         }
 
-        // Fetch user untuk sinkronisasi nama penulis
-        const existingUser = await prisma.user.findUnique({
-            where: { id: session.user.id }
-        });
-
-        if (!existingUser) return { error: "Sesi tidak valid." };
-
-        const cleanAlias = input_penulis_alias?.replace(/\s\([^)]+\)$/, '').trim();
-        const final_penulis_alias = cleanAlias
-            ? `${cleanAlias} (${existingUser.username})`
-            : existingUser.username;
-
-        // Cek Kepemilikan Jika Author
+        // [C] Validasi Owner vs Admin
         const existingKarya = await prisma.karya.findUnique({ where: { id } });
         if (!existingKarya) return { error: "Karya tidak ditemukan." };
 
@@ -251,6 +304,17 @@ export async function editKarya(formData: FormData) {
             return { error: "Forbidden: Anda bukan pemilik karya ini." };
         }
 
+        // [D] Sinkronisasi Alias Penulis
+        const existingUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+        if (!existingUser) return { error: "Sesi tidak valid." };
+
+        const cleanAlias = input_penulis_alias?.replace(/\s\([^)]+\)$/, '').trim();
+        const final_penulis_alias = cleanAlias
+            ? `${cleanAlias} (${existingUser.username})`
+            : existingUser.username;
+
+        // [E] Mutasi Update
+        // Mengapa `set`: Menghapus relasi genre lama dan menggantinya dengan list baru secara atomik.
         await prisma.karya.update({
             where: { id },
             data: {
@@ -267,11 +331,16 @@ export async function editKarya(formData: FormData) {
 
         return { success: true };
     } catch (error) {
-        console.error("Error Edit Karya:", error);
+        console.error("[editKarya] Error:", error);
         return { error: "Gagal mengedit karya." };
     }
 }
 
+/**
+ * Server Action: Menghapus karya permanen.
+ * 
+ * CAUTION: Penghapusan karya akan menghapus semua BAB di dalamnya secara CASCADE (tergantung schema prisma).
+ */
 export async function deleteKarya(id: string) {
     try {
         const session = await getServerSession(authOptions);
@@ -289,14 +358,19 @@ export async function deleteKarya(id: string) {
         await prisma.karya.delete({ where: { id } });
         return { success: true };
     } catch (error) {
-        console.error("Error Delete Karya:", error);
+        console.error("[deleteKarya] Error:", error);
         return { error: "Gagal menghapus karya." };
     }
 }
 
 // ==============================================================================
-// 6. MUTASI ADMIN/AUTHOR: EDIT & HAPUS BAB
+// 6. MUTASI ADMIN/AUTHOR: PENGELOLAAN BAB (EDIT & DELETE)
 // ==============================================================================
+/**
+ * Server Action: Mengubah konten bab.
+ * 
+ * Otorisasi: Penulis karya induk atau Admin.
+ */
 export async function editBab(formData: FormData) {
     try {
         const session = await getServerSession(authOptions);
@@ -315,24 +389,26 @@ export async function editBab(formData: FormData) {
         });
         if (!existingBab) return { error: "Bab tidak ditemukan." };
 
+        // Cek apakah user punya hak atas karya yang membawahi bab ini
         if (session.user.role === 'author' && existingBab.karya.uploader_id !== session.user.id) {
             return { error: "Forbidden: Anda bukan pemilik bab ini." };
         }
 
-        const sanitizedContent = content.trim();
-
         await prisma.bab.update({
             where: { id },
-            data: { content }
+            data: { content: content.trim() }
         });
 
         return { success: true };
     } catch (error) {
-        console.error("Error Edit Bab:", error);
+        console.error("[editBab] Error:", error);
         return { error: "Gagal mengedit bab." };
     }
 }
 
+/**
+ * Server Action: Menghapus bab.
+ */
 export async function deleteBab(id: string) {
     try {
         const session = await getServerSession(authOptions);
@@ -353,7 +429,7 @@ export async function deleteBab(id: string) {
         await prisma.bab.delete({ where: { id } });
         return { success: true };
     } catch (error) {
-        console.error("Error Delete Bab:", error);
+        console.error("[deleteBab] Error:", error);
         return { error: "Gagal menghapus bab." };
     }
 }

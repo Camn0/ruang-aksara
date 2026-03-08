@@ -2,42 +2,49 @@
 
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-
-// Mengapa: Instansiasi klien Prisma secara global untuk menekan over-connection akibat proses dev (hot reload)
 import { prisma } from '@/lib/prisma';
 
 // ==============================================================================
-// 1. MUTASI USER (READER): MENGUNGGAH KOMENTAR
+// 1. MUTASI USER (READER): MENGUNGGAH KOMENTAR PADA BAB
 // ==============================================================================
-// Mengapa: Server Action dikhususkan untuk Reader agar interaksi datanya terlindungi
-// dari serangan injeksi XSS form klien langsung.
+/**
+ * Server Action: Mengirim komentar baru atau balasan pada sebuah bab novel.
+ * 
+ * Fitur:
+ *   - Mendukung threading (nested comments) lewat `parent_id`.
+ *   - Terlindungi oleh autentikasi server-side.
+ * 
+ * @param formData - Objek FormData (bab_id, content, parent_id?).
+ * @returns `{ success: true, data: Comment }` | `{ error: string }`.
+ * 
+ * DEBUG TIPS:
+ *   - Jika komentar tidak muncul, pastikan `bab_id` valid dan bukan ID karya.
+ *   - Jika `parent_id` tidak null, komentar akan dianggap sebagai balasan.
+ */
 export async function submitComment(formData: FormData) {
     try {
         // [A] Validasi Autentikasi Level Server
+        // Mengapa: Kita menggunakan server action agar session dibaca langsung dari kuki terenkripsi.
         const session = await getServerSession(authOptions);
 
-        // Mengapa: Tidak ada filter role eksplisit ('user'), karena di dunia nyata admin
-        // mungkin saja ingin berpartisipasi dalam ruang komentar. Yang penting harus login.
         if (!session || !session.user?.id) {
             return { error: "Unauthorized: Anda harus login untuk memberikan komentar." };
         }
 
-        // [B] Ekstraksi Input
+        // [B] Ekstraksi & Validasi Input
         const bab_id = formData.get('bab_id') as string;
         let content = formData.get('content') as string;
         const parent_id = formData.get('parent_id') as string | null;
 
-        // [C] Validasi Input Kosong
         if (!bab_id || !content || content.trim() === '') {
             return { error: "Bad Request: Komentar kosong tidak diizinkan." };
         }
 
-        // [D] Sanitasi XSS (React akan secara otomatis melakukan escaping pada output)
+        // [C] Sanitasi Konten
         content = content.trim();
 
-        // [E] Mutasi Database
-        // Mengapa: Otomatis menghubungkan komentar ini ke `session.user.id` yang aman di server.
-        // Jika parent_id ada, ini berarti balasan dari komentar lain (Threaded).
+        // [D] Mutasi Database
+        // Mengapa: Kita membiarkan Prisma menangani relasi parent_id secara opsional.
         const newComment = await prisma.comment.create({
             data: {
                 user_id: session.user.id,
@@ -47,21 +54,35 @@ export async function submitComment(formData: FormData) {
             }
         });
 
-        // Mengembalikan object murni bagi React state
+        // Mengembalikan object murni bagi sinkronisasi state React
         return { success: true, data: newComment };
 
     } catch (error) {
-        console.error("Database Error submitComment:", error);
+        console.error("[submitComment] Database Error:", error);
         return { error: "Internal Server Error: Gagal menyimpan komentar." };
     }
 }
 
 
 // ==============================================================================
-// 2. MUTASI USER (READER): MENGUBAH / MENAMBAH RATING (UPSERT)
+// 2. MUTASI USER (READER): RATING CEPAT (UPSERT TRANSACTION)
 // ==============================================================================
-// Mengapa: Operasi Server Action ini paling krusial secara performa, karena melibatkan  
-// transaksi (Transaction) atomik dua buah statement agar skor konsisten (tidak menggantung di proses parsing).
+/**
+ * Server Action: Mengirim rating (skor 1-5) untuk sebuah karya.
+ * 
+ * Logic Highlights:
+ *   1. Menggunakan `upsert` untuk efisiensi (Update jika sudah ada, Create jika baru).
+ *   2. Menjalankan `$transaction` atomik untuk sinkronisasi skor rata-rata (`avg_rating`) ke tabel Karya.
+ * 
+ * Mengapa Transaksi?: Agar tidak terjadi inkonsistensi data jika server mati di tengah proses update.
+ * 
+ * @param formData - Objek FormData (karya_id, score).
+ * @returns `{ success: true, data: Rating }` | `{ error: string }`.
+ * 
+ * DEBUG TIPS:
+ *   - 'score berbohong' muncul jika manipulasi DOM mengirim nilai di luar 1-5.
+ *   - Periksa `avg_rating` di tabel Karya jika skor rata-rata tidak berubah.
+ */
 export async function submitRating(formData: FormData) {
     try {
         // [A] Validasi Autentikasi
@@ -71,25 +92,22 @@ export async function submitRating(formData: FormData) {
             return { error: "Unauthorized: Anda harus login untuk memberikan rating." };
         }
 
-        // [B] Ekstraksi Variabel \& Konversi String -> Number (Score)
+        // [B] Ekstraksi & Konversi Tipe Data
         const karya_id = formData.get('karya_id') as string;
         const score = Number(formData.get('score'));
         const userId = session.user.id;
 
-        // [C] Security Boundary Skoring
-        // Mengapa: Menghindari skenario form manipulasi DOM di klien
-        // (Contoh: value dikirim 10.0 atau -20 lewat devtools browser, jadi harus kita cegah di backend).
+        // [C] Security Boundary: Skoring Berintegritas
         if (!karya_id || isNaN(score) || score < 1 || score > 5) {
             return { error: "Bad Request: Karya ID tidak valid atau skor berbohong (harus 1 sampai 5)." };
         }
 
         // [D] DB Transaction Logics 
-        // Mengapa: Memakai `$transaction` agar tiga hal ini gagal-atau-sukses secara paralel (all-or-nothing).
+        // Mengapa: Memakai `$transaction` agar tiga operasi ini berjalan sebagai satu unit kerja (atomic).
         const resultTransaction = await prisma.$transaction(async (tx: any) => {
 
             // Tahap 1: UPSERT Data Rating
-            // Mengapa: Memakai "Where komposit `[user_id, karya_id]`" milik skema rating.
-            // Metode Upsert ini sangat efisien. UPDATE jika ada, CREATE baru jika user belum pernah rating.
+            // Mengapa: Memakai composite key `[user_id, karya_id]` agar 1 user hanya punya 1 record rating per karya.
             const ratingUpserted = await tx.rating.upsert({
                 where: {
                     user_id_karya_id: {
@@ -97,47 +115,53 @@ export async function submitRating(formData: FormData) {
                         karya_id: karya_id,
                     }
                 },
-                update: {
-                    score: score, // Menimpa input baru
-                },
+                update: { score: score },
                 create: {
                     user_id: userId,
                     karya_id: karya_id,
-                    score: score, // Baris initial
+                    score: score,
                 }
             });
 
             // Tahap 2: MENGHITUNG ulang agregat di keseluruhan table
-            // Mengapa: Agar aplikasi kencang di kemudian hari, server Next menghitung Rata-rata sekarang (_avg),
-            // ketimbang membebani Client melakukan Array.reduce() atas memuat ratusan/ribuan baris dari request tunggal.
+            // Mengapa: Melakukan rerata di DB (_avg) jauh lebih cepat daripada memuat semua baris ke Node.js.
             const databaseAggregate = await tx.rating.aggregate({
                 where: { karya_id: karya_id },
-                _avg: { score: true } // True berarti perintahkan DB engine hanya me-return nilai float reratanya saja
+                _avg: { score: true }
             });
 
             const rerataNilai = databaseAggregate._avg.score || 0;
 
-            // Tahap 3: SIMPAN Cache Value Denormalisasi (avg_rating) Karya Tersebut
+            // Tahap 3: DENORMALISASI Caching Value
+            // Mengapa: Menyimpan hasil rerata di tabel Karya agar pencarian/pengurutan 'Top Rated' instan.
             await tx.karya.update({
                 where: { id: karya_id },
                 data: { avg_rating: rerataNilai }
             });
 
-            // Kita kembalikan hasil UPSERT 
             return ratingUpserted;
         });
 
         return { success: true, data: resultTransaction };
 
     } catch (error) {
-        console.error("Database Rating Transaction Error:", error);
-        return { error: "Internal Server Error: Sistem gagal memproses rating. Coba lagi." };
+        console.error("[submitRating] Transaction Error:", error);
+        return { error: "Internal Server Error: Sistem gagal memproses rating." };
     }
 }
 
 // ==============================================================================
-// 3. MUTASI USER: MENULIS REVIEW RESMI (EPIC 8)
+// 3. MUTASI USER: MENULIS REVIEW RESMI (TEXT + RATING)
 // ==============================================================================
+/**
+ * Server Action: Mengirim ulasan tekstual beserta rating.
+ * 
+ * Perbedaan dengan `submitRating`: 
+ *   - Review berisi konten teks dan bersifat publik/terlihat di halaman detail.
+ *   - Jika review membawa rating, sistem otomatis sinkron ke tabel Rating Cepat.
+ * 
+ * @param formData - Objek FormData (karya_id, content, rating).
+ */
 export async function submitReview(formData: FormData) {
     try {
         const session = await getServerSession(authOptions);
@@ -151,6 +175,8 @@ export async function submitReview(formData: FormData) {
         if (!karya_id || !content) {
             return { error: "Isian review tidak valid." };
         }
+
+        // Validasi boundary rating jika ada
         if (rating !== null && (rating < 1 || rating > 5)) {
             return { error: "Isian rating tidak valid." };
         }
@@ -158,14 +184,14 @@ export async function submitReview(formData: FormData) {
         const sanitizedContent = content.trim();
 
         await prisma.$transaction(async (tx) => {
-            // 1. Simpan Ulasan Teks
+            // 1. Simpan/Update Ulasan Teks
             await tx.review.upsert({
                 where: { user_id_karya_id: { user_id: session.user.id, karya_id } },
                 update: { content: sanitizedContent, rating: (rating as any) ?? undefined },
                 create: { user_id: session.user.id, karya_id, content: sanitizedContent, rating: (rating as any) ?? undefined }
             });
 
-            // 2. Jika ada rating, Sinkronkan dengan sistem Rating Cepat
+            // 2. Sinkronisasi dengan Sistem Rating Global (jika user memberikan rating di form review)
             if (rating !== null) {
                 const finalRating = Number(rating);
                 await tx.rating.upsert({
@@ -174,7 +200,7 @@ export async function submitReview(formData: FormData) {
                     create: { user_id: session.user.id, karya_id, score: finalRating }
                 });
 
-                // Rekalkulasi Rata-Rata
+                // Rekalkulasi denormalisasi rating di tabel Karya
                 const aggr = await tx.rating.aggregate({
                     where: { karya_id },
                     _avg: { score: true }
@@ -188,13 +214,21 @@ export async function submitReview(formData: FormData) {
 
         return { success: true };
     } catch (error) {
-        console.error("Review Error:", error);
+        console.error("[submitReview] Error:", error);
         return { error: "Sistem gagal menyimpan review." };
     }
 }
 
-// 4. MUTASI USER/ADMIN: HAPUS KOMENTAR (MODERASI)
 // ==============================================================================
+// 4. MUTASI USER/ADMIN: MODERASI KOMENTAR
+// ==============================================================================
+/**
+ * Server Action: Menghapus komentar di bab.
+ * 
+ * Aturan Otorisasi:
+ *   - Penulis komentar asli boleh menghapus.
+ *   - Admin boleh menghapus (moderasi).
+ */
 export async function deleteComment(id: string) {
     try {
         const session = await getServerSession(authOptions);
@@ -203,7 +237,7 @@ export async function deleteComment(id: string) {
         const existingComment = await prisma.comment.findUnique({ where: { id } });
         if (!existingComment) return { error: "Komentar tidak ditemukan." };
 
-        // Hanya penulis komentar aslinya, atau admin, atau author (tapi MVP: author mungkin tidak bisa hapus komen unless he owns the work. we'll stick to admin & owner of comment)
+        // [Security Check]
         if (existingComment.user_id !== session.user.id && session.user.role !== 'admin') {
             return { error: "Forbidden: Anda tidak memiliki hak akses menghapus komentar ini." };
         }
@@ -211,7 +245,7 @@ export async function deleteComment(id: string) {
         await prisma.comment.delete({ where: { id } });
         return { success: true };
     } catch (error) {
-        console.error("Delete Comment Error:", error);
+        console.error("[deleteComment] Error:", error);
         return { error: "Sistem gagal menghapus komentar." };
     }
 }

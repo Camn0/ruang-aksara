@@ -10,11 +10,19 @@ import CreatePostForm from "./CreatePostForm";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentSection from "./PostCommentSection";
 
+/**
+ * Halaman Profil Pengguna (Server Component).
+ * 
+ * Logic Highlights:
+ *   1. Dual Lookup: Mencari user berdasarkan ID (UUID) atau Username (@handle).
+ *   2. Staleness Guard: Menangani kasus database reset di mana user session masih ada tapi record DB hilang.
+ *   3. Tabbed Content: Fetching data conditional (Karya vs Post vs Aktivitas) untuk efisiensi.
+ */
 export default async function ProfilePage({ params, searchParams }: { params: { id: string }, searchParams: { tab?: string } }) {
     const session = await getServerSession(authOptions);
 
-    // Ambil user berdasarkan ID (bisa juga di-extend cari berdasarkan username)
-    // Untuk purwarupa kita asumsikan params.id adalah user_id
+    // [A] Resolving Identity (Polymorphic Params)
+    // Mengapa OR: Kita mendukung URL /profile/id-uuid atau /profile/username.
     const userProfileRaw = await prisma.user.findFirst({
         where: {
             OR: [
@@ -29,6 +37,8 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
         }
     });
 
+    // [B] Staleness Guard
+    // Jika database di-reset, kuki user mungkin masih punya ID lama yang sudah invalid.
     if (!userProfileRaw) {
         if (session?.user?.id === params.id || session?.user?.role === 'admin') {
             return (
@@ -48,7 +58,7 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
         return notFound();
     }
 
-    // Cast as per other pages to avoid stale type issues
+    // [C] Type Assertion for Stale Prisma Client
     const userProfile = userProfileRaw as (typeof userProfileRaw & {
         avatar_url: string | null;
         _count: { followers: number; following: number; };
@@ -56,10 +66,10 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
 
     const isOwnProfile = session?.user?.id === userProfile.id;
 
-    // Cek apakah user as-logged-in mengikuti profil ini
+    // [D] Fetching Follow Status
     let isFollowing = false;
     if (session?.user && !isOwnProfile) {
-        // Use any cast if Follow model is missing from types
+        // Mengapa (prisma as any): Digunakan jika tabel 'follow' belum ter-sync ke client types.
         const followRecord = await (prisma as any).follow.findUnique({
             where: {
                 follower_id_following_id: {
@@ -71,7 +81,7 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
         isFollowing = !!followRecord;
     }
 
-    // Ambil konten profil berdasarkan role
+    // [E] Role-Based Logic
     const isAuthor = ['admin', 'author'].includes(userProfile.role);
 
     let userWorks: any[] = [];
@@ -80,6 +90,8 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
 
     const activeTab = searchParams.tab || 'karya';
 
+    // [F] Conditional Data Fetching
+    // Mengapa: Kita hanya load data berat (seperti list bab/postingan) jika tab tersebut aktif.
     if (isAuthor) {
         const worksRaw = await prisma.karya.findMany({
             where: { uploader_id: userProfile.id },
@@ -102,6 +114,7 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                 orderBy: { created_at: 'desc' },
                 include: {
                     _count: { select: { likes: true, comments: true } },
+                    // Conditional include: Upvoted by me
                     ...(session?.user ? { likes: { where: { user_id: session.user.id } } } : {}),
                     comments: {
                         include: { user: true },
@@ -112,6 +125,7 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
             });
         }
     } else {
+        // Reader profile hanya menampilkan list aktivitas komentar terbaru
         recentComments = await prisma.comment.findMany({
             where: { user_id: userProfile.id },
             include: {

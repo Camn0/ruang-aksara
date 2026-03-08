@@ -1,27 +1,36 @@
 import { withAuth } from "next-auth/middleware";
 
-// Mengapa: Kita menggunakan NextAuth middleware. Middleware ini berjalan *di Edge*
-// sebelum React request/render cycle dimulai.
-// Ini adalah layer pertahanan terkuat untuk memastikan halaman admin tidak bisa ditembus 
-// pengakses anonim atau reader biasa.
+/**
+ * Middleware Otorisasi (Edge Runtime).
+ * 
+ * Mengapa middleware?:
+ * Memblokir akses ke rute administratif (`/admin/*`) sebelum request mencapai server/rendering logic.
+ * Ini adalah layer keamanan tercepat dan paling efisien.
+ * 
+ * Mekanisme:
+ * menggunakan `next-auth/middleware` untuk memeriksa keberadaan JWT/Session.
+ */
 
 export default withAuth(
-    // `withAuth` meningkatkan (augments) objek `Request` dengan token user yang aktif.
+    // Fungsi ini dipanggil hanya jika checkbox 'authorized' mengembalikan true
     function middleware(req) {
-        // Logging internal bisa ditambahkan di sini jika dibutuhkan
+        // Bisa digunakan untuk logging audit request admin di sini
     },
     {
         callbacks: {
+            /**
+             * Kontrol akses utama.
+             * @returns `true` jika diizinkan, `false` akan mere-direct ke login page.
+             */
             authorized: ({ token }) => {
-                // Return `true` jika diizinkan masuk rute yang di-protect.
-                // Mengapa: Karena rute yang dicover matcher hanya rute `/admin`,
-                // kita memblokir siapapun yang *role*-nya bukan 'admin' atau 'author'.
+                // Rule: Hanya user dengan role 'admin' atau 'author' yang boleh masuk rute matcher.
                 return token?.role === "admin" || token?.role === "author";
             },
         },
     }
 );
 
-// Mengapa: Mengaktifkan middleware ini secara eksklusif hanya untuk path admin.
-// Dengan begini performa reader biasa di halaman depan tidak terbebani pengecekan ini.
+/**
+ * Konfigurasi Matcher: Membatasi jalannya middleware agar tidak membebani rute publik.
+ */
 export const config = { matcher: ["/admin/:path*"] };

@@ -10,6 +10,16 @@ import type { Metadata } from "next";
 
 import { prisma } from '@/lib/prisma';
 
+/**
+ * Halaman Detail Karya (Novel/Buku) (Server Component).
+ * 
+ * Logic Highlights:
+ *   1. Search Engine Optimization (SEO): Metadata dinamis berdasarkan judul & penulis.
+ *   2. Complex Fetching: Menarik data Karya, Bab, Review, serta Aggregated Counts dalam satu request.
+ *   3. Type Casting: Mengatasi kendala model Prisma yang mungkin tertinggal (stale) dari schema sebenarnya.
+ *   4. User Context: Mengambil status rating & bookmark user jika sedang login.
+ */
+
 export async function generateMetadata({ params }: { params: { karyaId: string } }): Promise<Metadata> {
     const karya = await prisma.karya.findUnique({
         where: { id: params.karyaId },
@@ -23,6 +33,9 @@ export async function generateMetadata({ params }: { params: { karyaId: string }
     };
 }
 
+/**
+ * Mencari mention '@username' dan mengubahnya menjadi link profil.
+ */
 function parseMentions(text: string) {
     if (!text) return text;
     const parts = text.split(/(@\w+)/g);
@@ -43,6 +56,9 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
 
+    // [A] Data Fetching - Load Karya Details
+    // Mengapa (prisma as any): Digunakan jika ada field baru di schema yang belum ter-generate 
+    // ke @prisma/client (stale types).
     const karyaRaw = await (prisma as any).karya.findUnique({
         where: { id: params.karyaId },
         include: {
@@ -54,6 +70,7 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                 include: {
                     user: true,
                     _count: { select: { upvotes: true, comments: true } },
+                    // Conditional include: Cek upvotes milik user pelogin saja
                     ...(session?.user ? { upvotes: { where: { user_id: session.user.id } } } : {}),
                     comments: {
                         include: { user: true },
@@ -67,7 +84,8 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
         }
     });
 
-    // Cast to include all schema fields that may be missing from stale Prisma types
+    // [B] Type Guard & Assertions
+    // Mengapa: Menjamin property seperti cover_url dan avg_rating tersedia bagi UI.
     const karya = karyaRaw as (typeof karyaRaw & {
         cover_url: string | null;
         is_completed: boolean;
@@ -86,11 +104,13 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
         notFound();
     }
 
+    // [C] Load User Interaction State
     let userPreviousRating = 0;
     let userPreviousReview = null;
     let isBookmarked = false;
 
     if (userId) {
+        // Parallel fetching untuk menghemat waktu (Request Waterfall Avoidance)
         const [ratingContext, prevReview, bookmarkContext] = await Promise.all([
             prisma.rating.findUnique({
                 where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }

@@ -27,11 +27,26 @@ function parseMentions(text: string) {
     });
 }
 
+/**
+ * Halaman Baca Bab Novel (Server Component).
+ * 
+ * Logic Highlights:
+ *   1. Data Fetching: Mengambil detail Bab beserta relasi Karya dan Komentar (threaded).
+ *   2. Statistik: Increment views di Redis (Upstash) setiap kali halaman diakses.
+ *   3. Bookmarking: Otomatis memperbarui 'last_chapter' di tabel Bookmark milik user.
+ * 
+ * DEBUG TIPS:
+ *   - Jika halaman 404, pastikan URL parameter `chapterNo` valid (number).
+ *   - Redis error ditangani secara senyap (silently) agar tidak mematikan pengalaman membaca.
+ */
+
 export default async function NovelChapterPage({
     params,
 }: {
     params: { karyaId: string; chapterNo: string };
 }) {
+    // [A] Data Fetching - Load bab dan komentar
+    // Mengapa findUnique: Kita menggunakan composite unique key [karya_id, chapter_no] dari skema Prisma.
     const bab = await prisma.bab.findUnique({
         where: {
             karya_id_chapter_no: {
@@ -42,7 +57,7 @@ export default async function NovelChapterPage({
         include: {
             karya: true,
             comments: {
-                where: { parent_id: null },
+                where: { parent_id: null }, // Load hanya komentar utama (Root)
                 include: {
                     user: true,
                     replies: {
@@ -55,18 +70,22 @@ export default async function NovelChapterPage({
         },
     });
 
+    // Validasi eksistensi data
     if (!bab) {
         notFound();
     }
 
+    // [B] Analytics - Update Views
+    // Menggunakan key format 'views:karya:[ID]' agar mudah di-trace.
     try {
         await redis.incr(`views:karya:${params.karyaId}`);
     } catch (e) {
-        console.error("Redis Error", e);
+        console.error("⚠️ [Redis] Gagal increment views:", e);
     }
 
     const currentNo = Number(params.chapterNo);
 
+    // [C] Navigasi Relatif - Cari bab selanjutnya & sebelumnya
     const nextBab = await prisma.bab.findFirst({
         where: { karya_id: params.karyaId, chapter_no: { gt: currentNo } },
         orderBy: { chapter_no: 'asc' }
@@ -77,6 +96,7 @@ export default async function NovelChapterPage({
         orderBy: { chapter_no: 'desc' }
     });
 
+    // [D] Auto-Bookmark - Catat progres membaca user yang login
     const session = await getServerSession(authOptions);
     if (session?.user?.id) {
         try {
@@ -95,7 +115,7 @@ export default async function NovelChapterPage({
                 }
             });
         } catch (e) {
-            console.error("Bookmark Error:", e);
+            console.error("⚠️ [Prisma] Gagal update bookmark:", e);
         }
     }
 
