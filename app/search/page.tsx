@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Search as SearchIcon, Star, TrendingUp } from "lucide-react";
-
 import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
+import SearchBar from "./SearchBar";
 
 /**
  * Caching Genres (Global)
@@ -15,7 +15,6 @@ const getCachedGenres = unstable_cache(
 
 /**
  * Caching Search Results
- * Mengapa: Hasil pencarian yang sama tidak perlu hit DB terus menerus.
  */
 const getCachedSearchResults = (q: string, filter: string, genreId: string) => unstable_cache(
     async () => {
@@ -61,7 +60,7 @@ const getCachedSearchResults = (q: string, filter: string, genreId: string) => u
         });
     },
     [`search-${q}-${filter}-${genreId}`],
-    { revalidate: 300, tags: ['karya-global'] } // Cache 5 menit
+    { revalidate: 300, tags: ['karya-global'] }
 )();
 
 export default async function SearchPage({
@@ -95,19 +94,7 @@ export default async function SearchPage({
         <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
             {/* Header / Search Bar */}
             <header className="px-6 pt-12 pb-4 bg-white dark:bg-slate-900 sticky top-0 z-10 border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
-                <form className="relative" action="/search" method="GET">
-                    <input type="hidden" name="filter" value={filter} />
-                    <input type="hidden" name="genreId" value={genreId} />
-                    <input
-                        type="text"
-                        name="q"
-                        defaultValue={q}
-                        placeholder="Cari judul atau penulis..."
-                        className="w-full pl-12 pr-4 py-3.5 bg-gray-100 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white dark:focus:bg-slate-900 transition-all"
-                    />
-                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
-                    <button type="submit" className="hidden">Cari</button>
-                </form>
+                <SearchBar initialQ={q} filter={filter} genreId={genreId} />
 
                 {/* Main Filter Pills */}
                 <div className="flex gap-2 mt-4 overflow-x-auto pb-2 snap-x hide-scrollbar border-b border-gray-50 dark:border-slate-800/50 mb-3">

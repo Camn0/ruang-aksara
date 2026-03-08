@@ -6,5 +6,12 @@ import { SessionProvider } from 'next-auth/react';
 // Karena app/layout.tsx di App Router by default adalah Server Component,
 // kita membungkus SessionProvider ke dalam komponen klien terpisah (AuthProvider).
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
-    return <SessionProvider>{children}</SessionProvider>;
+    return (
+        <SessionProvider
+            refetchOnWindowFocus={false}
+            refetchInterval={0}
+        >
+            {children}
+        </SessionProvider>
+    );
 }
