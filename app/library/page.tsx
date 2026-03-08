@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, BookMarked, Settings, History as HistoryIcon } from "lucide-react";
+import RemoveBookmarkButton from './RemoveBookmarkButton';
 
 import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
@@ -118,7 +119,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                     bookmarks.length === 0 ? renderEmptyState("Belum ada riwayat baca", "Buku yang kamu baca akan otomatis muncul di sini.") : (
                         <div className="space-y-4 flex flex-col gap-3">
                             {bookmarks.map(b => (
-                                <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-3 shadow-sm hover:border-indigo-200 dark:hover:border-indigo-500/50 transition-all flex gap-4 h-full">
+                                <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="group relative bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-3 shadow-sm hover:border-indigo-200 dark:hover:border-indigo-500/50 transition-all flex gap-4 h-full">
+                                    <RemoveBookmarkButton karyaId={b.karya.id} />
                                     {b.karya.cover_url ? (
                                         <img src={b.karya.cover_url} alt={b.karya.title} className="w-20 h-28 object-cover rounded-lg shrink-0 shadow-sm" />
                                     ) : (
@@ -152,26 +154,29 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                     bookmarks.length === 0 ? renderEmptyState("Rak bukumu masih kosong", "Mulai simpan karya favoritmu untuk dibaca nanti.") : (
                         <div className="grid grid-cols-3 gap-3">
                             {bookmarks.map(b => (
-                                <Link key={b.id} href={`/novel/${b.karya.id}`} className="group flex flex-col gap-1.5 h-full">
-                                    <div className="aspect-[2/3] relative rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800">
-                                        {b.karya.cover_url ? (
-                                            <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-105 transition-all" />
-                                        ) : (
-                                            <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[8px] text-gray-500 dark:text-gray-400">{b.karya.title}</div>
-                                        )}
-                                        {b.karya.is_completed && (
-                                            <span className="absolute top-1 right-1 bg-green-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-sm">TAMAT</span>
-                                        )}
-                                        <div className="absolute font-bold bottom-1 left-1 bg-black/50 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1">
-                                            <span>★ {b.karya.avg_rating.toFixed(1)}</span>
+                                <div key={b.id} className="group relative flex flex-col gap-1.5 h-full">
+                                    <RemoveBookmarkButton karyaId={b.karya.id} />
+                                    <Link href={`/novel/${b.karya.id}`} className="flex flex-col gap-1.5 h-full">
+                                        <div className="aspect-[2/3] relative rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800">
+                                            {b.karya.cover_url ? (
+                                                <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-105 transition-all" />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[8px] text-gray-500 dark:text-gray-400">{b.karya.title}</div>
+                                            )}
+                                            {b.karya.is_completed && (
+                                                <span className="absolute top-1 right-1 bg-green-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-sm">TAMAT</span>
+                                            )}
+                                            <div className="absolute font-bold bottom-1 left-1 bg-black/50 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1">
+                                                <span>★ {b.karya.avg_rating.toFixed(1)}</span>
+                                            </div>
+                                            {/* Progress Bar Favorit */}
+                                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-900/50">
+                                                <div className="h-full bg-indigo-500" style={{ width: `${b.karya._count.bab > 0 ? Math.min((b.last_chapter / b.karya._count.bab) * 100, 100) : 0}%` }}></div>
+                                            </div>
                                         </div>
-                                        {/* Progress Bar Favorit */}
-                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-900/50">
-                                            <div className="h-full bg-indigo-500" style={{ width: `${b.karya._count.bab > 0 ? Math.min((b.last_chapter / b.karya._count.bab) * 100, 100) : 0}%` }}></div>
-                                        </div>
-                                    </div>
-                                    <h3 className="text-[11px] font-bold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{b.karya.title}</h3>
-                                </Link>
+                                        <h3 className="text-[11px] font-bold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{b.karya.title}</h3>
+                                    </Link>
+                                </div>
                             ))}
                         </div>
                     )

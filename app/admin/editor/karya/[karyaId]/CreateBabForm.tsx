@@ -67,9 +67,22 @@ export default function CreateBabForm({ karyaId }: { karyaId: string }) {
             )}
 
             <div className="mb-4">
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Judul Bab <span className="text-gray-400 dark:text-gray-500 font-normal">(opsional)</span>
+                </label>
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors"
+                    placeholder="contoh: Perkenalan Sang Tokoh"
+                />
+            </div>
+
+            <div className="mb-4">
                 <div className="flex justify-between items-end mb-1">
                     <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Konten Bab (Teks Polos / HTML yang akan disanitasi)
+                        Konten Bab
                     </label>
                     {lastSaved && (
                         <div className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-500 font-medium">

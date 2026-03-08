@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { UserCircle2, Flame, History, Star } from "lucide-react";
+import { UserCircle2, Sparkles, History, Star, BookOpen } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
 import { unstable_cache } from "next/cache";
 
@@ -12,18 +12,26 @@ import { unstable_cache } from "next/cache";
  * Mengapa: Data ini sama untuk semua pembaca, jadi cukup di-fetch sekali per jam.
  */
 /**
- * Global cache untuk daftar karya terpopuler.
- * Mengapa: Data ini sama untuk semua pembaca, jadi cukup di-fetch sekali per jam.
+ * Global cache untuk daftar karya yang baru diupdate.
+ * Mengapa: Menampilkan karya yang benar-benar aktif, bukan statis berdasarkan rating.
  */
-const getCachedFavorites = unstable_cache(
+const getCachedRecentlyUpdated = unstable_cache(
     async () => {
         return prisma.karya.findMany({
-            orderBy: [{ avg_rating: 'desc' }, { total_views: 'desc' }],
-            take: 5
+            where: { bab: { some: {} } },
+            include: {
+                bab: {
+                    orderBy: { created_at: 'desc' },
+                    take: 1,
+                    select: { created_at: true }
+                }
+            },
+            orderBy: { bab: { _count: 'desc' } },
+            take: 10
         });
     },
-    ['global-favorites'],
-    { revalidate: 3600, tags: ['karya-global'] }
+    ['global-recently-updated'],
+    { revalidate: 600, tags: ['karya-global'] }
 );
 
 /**
@@ -62,9 +70,9 @@ export default async function UserDashboardPage() {
     }
 
     // Paralelkan pengambilan data via Cache
-    const [bookmarksRaw, favoritesRaw, follows] = await Promise.all([
+    const [bookmarksRaw, recentlyUpdatedRaw, follows] = await Promise.all([
         getCachedUserBookmarks(session.user.id),
-        getCachedFavorites(),
+        getCachedRecentlyUpdated(),
         getCachedUserFollows(session.user.id)
     ]);
 
@@ -78,9 +86,12 @@ export default async function UserDashboardPage() {
         }
     })[];
 
-    const favorites = favoritesRaw as (typeof favoritesRaw[0] & {
-        cover_url: string | null;
-    })[];
+    // Sort by latest bab created_at, then take top 5
+    const recentlyUpdated = (recentlyUpdatedRaw as any[]).sort((a, b) => {
+        const aDate = a.bab?.[0]?.created_at ? new Date(a.bab[0].created_at).getTime() : 0;
+        const bDate = b.bab?.[0]?.created_at ? new Date(b.bab[0].created_at).getTime() : 0;
+        return bDate - aDate;
+    }).slice(0, 5);
 
     const followingIds = follows.map(f => f.following_id);
     const recommendationsRaw = await prisma.karya.findMany({
@@ -158,32 +169,43 @@ export default async function UserDashboardPage() {
                     </div>
                 </section>
 
-                {/* Section: Favorit Hari Ini */}
+                {/* Section: Baru Diupdate */}
                 <section>
                     <div className="flex items-center gap-2 mb-4">
-                        <Flame className="w-5 h-5 text-orange-500" />
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Favorit Hari Ini</h2>
+                        <Sparkles className="w-5 h-5 text-amber-500" />
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Baru Diupdate</h2>
                     </div>
 
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
-                        {favorites.map(f => (
-                            <Link key={f.id} href={`/novel/${f.id}`} className="snap-start shrink-0 w-32 flex flex-col gap-2 relative group">
-                                <div className="absolute top-2 right-2 bg-black/60 backdrop-blur text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 z-10 font-bold">
-                                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                    <span>{f.avg_rating.toFixed(1)}</span>
-                                </div>
-                                <div className="aspect-[2/3] w-32 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800">
-                                    {(f as any).cover_url ? (
-                                        <img src={(f as any).cover_url} alt={f.title} className="w-full h-full object-cover group-hover:scale-105 transition-all" />
-                                    ) : (
-                                        <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400">
-                                            {f.title}
-                                        </div>
+                        {recentlyUpdated.length === 0 ? (
+                            <div className="w-full p-6 border-2 border-dashed border-gray-100 dark:border-slate-800 rounded-2xl text-center text-gray-400 dark:text-gray-500 text-sm">
+                                Belum ada karya yang diupdate.
+                            </div>
+                        ) : (
+                            recentlyUpdated.map((f: any) => (
+                                <Link key={f.id} href={`/novel/${f.id}`} className="snap-start shrink-0 w-32 flex flex-col gap-2 relative group">
+                                    <div className="absolute top-2 right-2 bg-black/60 backdrop-blur text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 z-10 font-bold">
+                                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                        <span>{f.avg_rating.toFixed(1)}</span>
+                                    </div>
+                                    <div className="aspect-[2/3] w-32 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800">
+                                        {f.cover_url ? (
+                                            <img src={f.cover_url} alt={f.title} className="w-full h-full object-cover group-hover:scale-105 transition-all" />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400">
+                                                {f.title}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">{f.title}</h3>
+                                    {f.bab?.[0]?.created_at && (
+                                        <p className="text-[9px] text-gray-400 dark:text-gray-500 font-medium">
+                                            {new Date(f.bab[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                                        </p>
                                     )}
-                                </div>
-                                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">{f.title}</h3>
-                            </Link>
-                        ))}
+                                </Link>
+                            ))
+                        )}
                     </div>
                 </section>
 

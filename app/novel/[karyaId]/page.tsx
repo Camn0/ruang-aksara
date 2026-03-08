@@ -197,9 +197,13 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                                     {g.name}
                                 </span>
                             ))}
-                            {karya.is_completed && (
+                            {karya.is_completed ? (
                                 <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-black px-2 py-1 rounded transition-colors">
                                     Tamat
+                                </span>
+                            ) : (
+                                <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-[10px] uppercase font-black px-2 py-1 rounded transition-colors">
+                                    Ongoing
                                 </span>
                             )}
                         </div>

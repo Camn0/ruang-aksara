@@ -55,7 +55,7 @@ const getCachedSearchResults = (q: string, filter: string, genreId: string) => u
         return prisma.karya.findMany({
             where,
             orderBy,
-            include: { genres: true },
+            include: { genres: true, _count: { select: { bab: true } } },
             take: 50
         });
     },
@@ -177,6 +177,9 @@ export default async function SearchPage({
                                     {item.is_completed && (
                                         <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] uppercase font-black px-1.5 py-0.5 rounded shadow-sm">Tamat</span>
                                     )}
+                                    {!item.is_completed && (
+                                        <span className="absolute top-2 left-2 bg-blue-500 text-white text-[9px] uppercase font-black px-1.5 py-0.5 rounded shadow-sm">Ongoing</span>
+                                    )}
                                 </div>
 
                                 <div className="flex-1 min-w-0 p-3.5 flex flex-col justify-between">
@@ -206,6 +209,9 @@ export default async function SearchPage({
                                         </span>
                                         <span className="flex items-center gap-1">
                                             <TrendingUp className="w-3.5 h-3.5" /> {item.total_views} Views
+                                        </span>
+                                        <span className="flex items-center gap-1 bg-gray-50 dark:bg-slate-800 px-1.5 py-0.5 rounded">
+                                            {(item as any)._count?.bab || 0} Bab
                                         </span>
                                     </div>
                                 </div>

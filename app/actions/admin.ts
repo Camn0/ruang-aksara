@@ -123,6 +123,7 @@ export async function createBab(formData: FormData) {
         // [B] Ekstraksi & Validasi Input
         const karya_id = formData.get('karya_id') as string;
         let content = formData.get('content') as string;
+        const title = (formData.get('title') as string)?.trim() || null;
 
         if (!karya_id || !content) {
             return { error: "Bad Request: Karya ID dan Konten wajib diisi." };
@@ -146,6 +147,7 @@ export async function createBab(formData: FormData) {
             data: {
                 karya_id,
                 chapter_no,
+                title,
                 content,
             }
         });

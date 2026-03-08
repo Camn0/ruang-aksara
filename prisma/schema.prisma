@@ -90,6 +90,7 @@ model Bab {
   karya_id   String    
   karya      Karya     @relation(fields: [karya_id], references: [id], onDelete: Cascade)
   chapter_no Int       
+  title      String?   // Judul bab opsional, fallback ke "Bab N" jika null
   content    String    @db.Text
   created_at DateTime  @default(now())
   comments   Comment[] 

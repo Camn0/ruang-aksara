@@ -125,15 +125,25 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
             });
         }
     } else {
-        // Reader profile hanya menampilkan list aktivitas komentar terbaru
-        recentComments = await prisma.comment.findMany({
-            where: { user_id: userProfile.id },
-            include: {
-                bab: { include: { karya: true } }
-            },
-            orderBy: { created_at: 'desc' },
-            take: 10
-        });
+        // Reader profile: tampilkan aktivitas yang bermakna
+        const [commentsData, reviewsData, bookmarkCount] = await Promise.all([
+            prisma.comment.findMany({
+                where: { user_id: userProfile.id },
+                include: { bab: { include: { karya: true } } },
+                orderBy: { created_at: 'desc' },
+                take: 10
+            }),
+            prisma.review.findMany({
+                where: { user_id: userProfile.id },
+                include: { karya: { select: { id: true, title: true } } },
+                orderBy: { created_at: 'desc' },
+                take: 10
+            }),
+            prisma.bookmark.count({ where: { user_id: userProfile.id } })
+        ]);
+        recentComments = commentsData;
+        (userProfile as any)._readerReviews = reviewsData;
+        (userProfile as any)._readerBookmarkCount = bookmarkCount;
     }
 
     return (
@@ -328,33 +338,71 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                             )
                         ) : (
                             /* Render Aktivitas Jika Pembaca */
-                            <div className="divide-y divide-gray-100 dark:divide-slate-800">
-                                {recentComments.length === 0 ? (
-                                    <div className="text-center py-20 px-8 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl bg-gray-50 dark:bg-slate-900/50 mt-4 transition-colors duration-300">
-                                        <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 mx-auto shadow-sm">
-                                            <MessageSquare className="w-8 h-8 text-gray-400 dark:text-gray-500" />
-                                        </div>
-                                        <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Belum Ada Aktivitas</h2>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                                            Pembaca ini belum meninggalkan jejak atau komentar apapun.
-                                        </p>
-                                    </div>
-                                ) : (
-                                    recentComments.map(comment => (
-                                        <div key={comment.id} className="p-6">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
-                                                    # {comment.bab.karya.title} - Bab {comment.bab.chapter_no}
+                            <>
+                                {/* Reader Stats Strip */}
+                                <div className="flex gap-4 px-4 py-3 border-b border-gray-100 dark:border-slate-800 text-xs font-bold text-gray-500 dark:text-gray-400">
+                                    <span>{(userProfile as any)._readerBookmarkCount || 0} karya disimpan</span>
+                                    <span>·</span>
+                                    <span>{((userProfile as any)._readerReviews || []).length} ulasan</span>
+                                    <span>·</span>
+                                    <span>{recentComments.length} komentar</span>
+                                </div>
+
+                                {/* Reader Reviews */}
+                                {((userProfile as any)._readerReviews || []).length > 0 && (
+                                    <div className="px-4 pt-4">
+                                        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">Ulasan</h3>
+                                        <div className="space-y-3">
+                                            {((userProfile as any)._readerReviews || []).map((review: any) => (
+                                                <Link key={review.id} href={`/novel/${review.karya.id}`} className="block bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-3 hover:border-indigo-200 dark:hover:border-indigo-500/50 transition-all">
+                                                    <div className="flex justify-between items-start mb-1">
+                                                        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">{review.karya.title}</span>
+                                                        {review.rating && (
+                                                            <span className="text-[10px] font-bold text-yellow-600 dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 px-1.5 py-0.5 rounded">
+                                                                ★ {review.rating}/5
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{review.content}</p>
+                                                    <span className="text-[9px] text-gray-400 dark:text-gray-500 mt-1 block">{new Date(review.created_at).toLocaleDateString('id-ID')}</span>
                                                 </Link>
-                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{new Date(comment.created_at).toLocaleDateString('id-ID')}</span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Reader Comments */}
+                                <div className="px-4 pt-4">
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">Komentar Terbaru</h3>
+                                </div>
+                                <div className="divide-y divide-gray-100 dark:divide-slate-800">
+                                    {recentComments.length === 0 ? (
+                                        <div className="text-center py-20 px-8 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl bg-gray-50 dark:bg-slate-900/50 mt-4 transition-colors duration-300">
+                                            <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 mx-auto shadow-sm">
+                                                <MessageSquare className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                                             </div>
-                                            <p className="text-gray-800 dark:text-gray-200 text-sm bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl rounded-tl-none border border-gray-100 dark:border-slate-800 whitespace-pre-wrap">
-                                                "{comment.content}"
+                                            <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Belum Ada Aktivitas</h2>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                                Pembaca ini belum meninggalkan jejak atau komentar apapun.
                                             </p>
                                         </div>
-                                    ))
-                                )}
-                            </div>
+                                    ) : (
+                                        recentComments.map(comment => (
+                                            <div key={comment.id} className="p-6">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                                                        # {comment.bab.karya.title} - Bab {comment.bab.chapter_no}
+                                                    </Link>
+                                                    <span className="text-[10px] text-gray-400 dark:text-gray-500">{new Date(comment.created_at).toLocaleDateString('id-ID')}</span>
+                                                </div>
+                                                <p className="text-gray-800 dark:text-gray-200 text-sm bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl rounded-tl-none border border-gray-100 dark:border-slate-800 whitespace-pre-wrap">
+                                                    &quot;{comment.content}&quot;
+                                                </p>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>
