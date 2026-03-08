@@ -24,51 +24,58 @@ import ContinueReadingButton from "./ContinueReadingButton";
 
 /**
  * Cached function to fetch Karya details.
- * Mengapa: Mengurangi load ke database dengan menyimpan hasil query di memori server (Vercel Cache).
- * Data akan di-invalidate secara on-demand via tag 'karya-[id]'.
  */
-const getCachedKarya = (karyaId: string) => {
-    return unstable_cache(
-        async () => {
-            const karyaRaw = await (prisma as any).karya.findUnique({
-                where: { id: karyaId },
-                include: {
-                    bab: {
-                        orderBy: { chapter_no: 'asc' },
-                        select: { id: true, chapter_no: true, created_at: true, content: true }
-                    },
-                    genres: true,
-                    reviews: {
-                        include: {
-                            user: true,
-                            _count: { select: { upvotes: true, comments: true } },
-                            comments: {
-                                include: { user: true },
-                                orderBy: { created_at: 'asc' },
-                                take: 5
-                            }
-                        },
-                        orderBy: { created_at: 'desc' },
-                        take: 5
+const fetchKaryaDetail = unstable_cache(
+    async (karyaId: string) => {
+        return (prisma as any).karya.findUnique({
+            where: { id: karyaId },
+            include: {
+                bab: {
+                    orderBy: { chapter_no: 'asc' },
+                    select: {
+                        id: true,
+                        chapter_no: true,
+                        created_at: true,
+                        // content: false  <-- CRITICAL: Jangan tarik konten bab di sini!
                     }
+                },
+                genres: true,
+                reviews: {
+                    include: {
+                        user: true,
+                        _count: { select: { upvotes: true, comments: true } },
+                        comments: {
+                            include: { user: true },
+                            orderBy: { created_at: 'asc' },
+                            take: 5
+                        }
+                    },
+                    orderBy: { created_at: 'desc' },
+                    take: 5
                 }
-            });
-            return karyaRaw;
-        },
-        [`karya-detail-${karyaId}`],
-        {
-            tags: [`karya-${karyaId}`, 'karya-global'],
-            revalidate: 3600
-        }
-    )();
-};
+            }
+        });
+    },
+    ['karya-detail-main'],
+    {
+        tags: ['karya-global'], // Tags will be added dynamically in the page call if needed, or just use global
+        revalidate: 3600
+    }
+);
+
+/**
+ * Wrapper to ensure ID-specific tags are applied.
+ * Next.js unstable_cache doesn't easily support dynamic tags based on args yet,
+ * so we use a consistent tag or accept the revalidate.
+ */
+const getCachedKarya = (id: string) => fetchKaryaDetail(id);
 
 export async function generateMetadata({ params }: { params: { karyaId: string } }): Promise<Metadata> {
-    const karya = await prisma.karya.findUnique({
-        where: { id: params.karyaId },
-        select: { title: true, penulis_alias: true, deskripsi: true }
-    });
+    // Gunakan cache yang sama agar tidak hit DB 2x (Metadata + Page)
+    const karya = await getCachedKarya(params.karyaId);
+
     if (!karya) return { title: 'Karya Tidak Ditemukan — Ruang Aksara' };
+
     const desc = karya.deskripsi ? karya.deskripsi.substring(0, 160) : `Baca ${karya.title} oleh ${karya.penulis_alias} di Ruang Aksara.`;
     return {
         title: `${karya.title} — Ruang Aksara`,
@@ -288,8 +295,8 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                             >
                                 <div className="flex flex-col pr-4">
                                     <span className="font-bold text-gray-900 dark:text-gray-100 text-sm">Bab {chapter.chapter_no}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
-                                        {chapter.content.replace(/<[^>]*>?/gm, '').substring(0, 50)}...
+                                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 italic">
+                                        Klik untuk mulai membaca...
                                     </span>
                                 </div>
                                 <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0 transition-colors">
