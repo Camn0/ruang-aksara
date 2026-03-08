@@ -3,6 +3,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { revalidateTag } from 'next/cache';
 
 // ==============================================================================
 // 1. MUTASI USER (READER): MENGUNGGAH KOMENTAR PADA BAB
@@ -142,6 +143,9 @@ export async function submitRating(formData: FormData) {
             return ratingUpserted;
         });
 
+        // Invalidate cache hlm detail agar rating terbaru muncul
+        revalidateTag(`karya-${karya_id}`);
+
         return { success: true, data: resultTransaction };
 
     } catch (error) {
@@ -212,6 +216,7 @@ export async function submitReview(formData: FormData) {
             }
         });
 
+        revalidateTag(`karya-${karya_id}`);
         return { success: true };
     } catch (error) {
         console.error("[submitReview] Error:", error);

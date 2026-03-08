@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
+import { revalidateTag } from 'next/cache';
 
 // ==============================================================================
 // 1. MUTASI ADMIN/AUTHOR: MEMBUAT KARYA BARU
@@ -145,6 +146,9 @@ export async function createBab(formData: FormData) {
                 content,
             }
         });
+
+        // Invalidate cache detail karya agar daftar bab terbaru muncul instan
+        revalidateTag(`karya-${karya_id}`);
 
         return { success: true, data: babBaru };
 
@@ -329,6 +333,8 @@ export async function editKarya(formData: FormData) {
             }
         });
 
+        revalidateTag(`karya-${id}`);
+
         return { success: true };
     } catch (error) {
         console.error("[editKarya] Error:", error);
@@ -356,6 +362,9 @@ export async function deleteKarya(id: string) {
         }
 
         await prisma.karya.delete({ where: { id } });
+
+        revalidateTag(`karya-${id}`);
+
         return { success: true };
     } catch (error) {
         console.error("[deleteKarya] Error:", error);

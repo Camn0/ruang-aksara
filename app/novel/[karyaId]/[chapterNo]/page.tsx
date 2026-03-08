@@ -254,6 +254,15 @@ export default async function NovelChapterPage({
                     </div>
                 )}
             </section>
+            {/* Epic 7: Auto-Bookmark Tracker (Client Side Sync for "Instancy") */}
+            <script dangerouslySetInnerHTML={{
+                __html: `
+                try {
+                    const bookmarks = JSON.parse(localStorage.getItem('ra-bookmarks') || '{}');
+                    bookmarks['${params.karyaId}'] = ${params.chapterNo};
+                    localStorage.setItem('ra-bookmarks', JSON.stringify(bookmarks));
+                } catch(e) {}
+            `}} />
         </div>
     );
 }

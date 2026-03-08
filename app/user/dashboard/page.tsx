@@ -5,6 +5,22 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { UserCircle2, Flame, History, Star } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
+import { unstable_cache } from "next/cache";
+
+/**
+ * Global cache untuk daftar karya terpopuler.
+ * Mengapa: Data ini sama untuk semua pembaca, jadi cukup di-fetch sekali per jam.
+ */
+const getCachedFavorites = unstable_cache(
+    async () => {
+        return prisma.karya.findMany({
+            orderBy: [{ avg_rating: 'desc' }, { total_views: 'desc' }],
+            take: 5
+        });
+    },
+    ['global-favorites'],
+    { revalidate: 3600, tags: ['karya-global'] }
+);
 
 export default async function UserDashboardPage() {
     const session = await getServerSession(authOptions);
@@ -26,11 +42,8 @@ export default async function UserDashboardPage() {
             orderBy: { updated_at: 'desc' },
             take: 5
         }),
-        // Ambil favorit hari ini (karya dengan rating tertinggi/terpopuler)
-        prisma.karya.findMany({
-            orderBy: [{ avg_rating: 'desc' }, { total_views: 'desc' }],
-            take: 5
-        }),
+        // Ambil favorit hari ini via Cache
+        getCachedFavorites(),
         // Ambil karya dari penulis yang di-follow (Rekomendasi)
         prisma.follow.findMany({
             where: { follower_id: session.user.id },

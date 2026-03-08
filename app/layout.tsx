@@ -5,6 +5,8 @@ import AuthProvider from "./components/AuthProvider";
 import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 import { ThemeProvider } from "./components/ThemeProvider";
+import InstantLoadingBar from "./components/InstantLoadingBar";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +32,9 @@ export default function RootLayout({
         <html lang="id">
             <body className={`${inter.className} bg-gray-100 dark:bg-slate-900 min-h-screen flex justify-center text-gray-900 dark:text-gray-100`}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                    <Suspense fallback={null}>
+                        <InstantLoadingBar />
+                    </Suspense>
                     <div className="w-full sm:max-w-md md:max-w-4xl mx-auto bg-white dark:bg-slate-950 min-h-screen shadow-2xl relative flex flex-col overflow-x-hidden transition-colors duration-300">
                         <AuthProvider>
                             {/* Navbar desktop/old hidden di mobile if we want, but let's keep for now */}
