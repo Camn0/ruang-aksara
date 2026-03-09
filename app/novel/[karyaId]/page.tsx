@@ -17,6 +17,7 @@ import ReviewSortToggle from "./ReviewSortToggle";
 import PinReviewButton from "./PinReviewButton";
 import CollapsibleReviewSection from "./CollapsibleReviewSection";
 import DeleteReviewButton from "./DeleteReviewButton";
+import ReviewCommentSection from "./ReviewCommentSection";
 
 /**
  * Halaman Detail Karya (Novel/Buku) (Server Component).
@@ -370,31 +371,13 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                 currentPath={`/novel/${karya.id}`}
                             />
 
-                            {review.comments && review.comments.length > 0 && (
-                                <div className="mt-4 pt-4 border-t border-gray-50 dark:border-slate-800/50 space-y-4">
-                                    {review.comments.map((c: any) => (
-                                        <div key={c.id} className="flex gap-3 items-start pl-4 border-l-2 border-gray-50 dark:border-slate-800">
-                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 shrink-0 border border-white dark:border-slate-950">
-                                                {c.user?.avatar_url ? (
-                                                    <img src={c.user.avatar_url} alt="" className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <UserCircle2 className="w-full h-full text-gray-300" />
-                                                )}
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <Link href={`/profile/${c.user?.username}`} className="text-xs font-black text-gray-900 dark:text-gray-100 hover:text-indigo-600 transition-colors uppercase tracking-tight">{c.user?.display_name}</Link>
-                                                    {c.user?.id === (karya as any).uploader_id && (
-                                                        <span className="text-[7px] font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-sm uppercase tracking-tighter">Penulis</span>
-                                                    )}
-                                                    <span className="text-[9px] font-bold text-gray-400 truncate tracking-tighter">{new Date(c.created_at).toLocaleDateString('id-ID')}</span>
-                                                </div>
-                                                <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap leading-relaxed font-medium">{c.content}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                            <ReviewCommentSection
+                                comments={review.comments}
+                                karyaUploaderId={karya.uploader_id}
+                                currentUser={session?.user}
+                                path={`/novel/${karya.id}`}
+                                reviewId={review.id}
+                            />
                         </div>
                     ))}
                 </div>

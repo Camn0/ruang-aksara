@@ -36,6 +36,7 @@ export default function ReadingInterface({
 }: ReadingInterfaceProps) {
     const [fontSize, setFontSize] = useState(18); // default 18px
     const [showSettings, setShowSettings] = useState(false);
+    const [isOpenPicker, setIsOpenPicker] = useState(false);
     const [mounted, setMounted] = useState(false);
     const { theme, setTheme } = useTheme();
     const router = useRouter();
@@ -144,9 +145,19 @@ export default function ReadingInterface({
                 <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-200 dark:active:bg-slate-800 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <div className="text-center">
-                    <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100 leading-tight">Bab {chapterNo}</h1>
-                    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[200px]">{chapterTitle || novelTitle}</p>
+                <div className="flex-1 px-4">
+                    <button
+                        onClick={() => setIsOpenPicker(true)}
+                        className="w-full group focus:outline-none"
+                    >
+                        <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[8px] font-black uppercase tracking-[0.2em] mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <List className="w-2 h-2" /> Daftar Isi
+                            </div>
+                            <h1 className="font-black text-sm text-gray-900 dark:text-gray-100 leading-none group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Bab {chapterNo}</h1>
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[180px] mx-auto font-medium">{chapterTitle || novelTitle}</p>
+                        </div>
+                    </button>
                 </div>
                 <div className="relative">
                     <button
@@ -253,9 +264,18 @@ export default function ReadingInterface({
                 </div>
             </main>
 
-            {/* Bottom Floating Navigation - LOWER POSITION (bottom-4) */}
-            <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-300">
-                <div className="flex bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-gray-100 dark:border-slate-800 p-1.5 rounded-full shadow-2xl items-center gap-1.5 transition-colors">
+            {/* Chapter Picker Overlay (Now more prominent) */}
+            <ChapterPicker
+                karyaId={karyaId}
+                currentChapterNo={chapterNo}
+                chapters={allChapters}
+                isOpen={isOpenPicker}
+                onClose={() => setIsOpenPicker(false)}
+            />
+
+            {/* Bottom Floating Navigation - Adjusted Position (bottom-6) */}
+            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-300">
+                <div className="flex bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-gray-100 dark:border-slate-800 p-1.5 rounded-full shadow-2xl items-center gap-2 transition-colors">
                     {/* Prev Chapter */}
                     {prevChapter ? (
                         <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-2.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-full transition-all active:scale-90" title="Bab Sebelumnya">
@@ -269,12 +289,20 @@ export default function ReadingInterface({
 
                     <div className="w-[1px] h-6 bg-gray-100 dark:bg-slate-800" />
 
-                    {/* Quick Access Menu */}
                     <Link href={`/novel/${karyaId}`} className="p-2.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-full transition-all active:scale-90" title="Kembali ke Detail Novel">
                         <Home className="w-5 h-5" />
                     </Link>
 
-                    <ChapterPicker karyaId={karyaId} currentChapterNo={chapterNo} chapters={allChapters} />
+                    <button
+                        onClick={() => setIsOpenPicker(true)}
+                        className={`p-2.5 border-2 border-white dark:border-slate-950 rounded-full shadow-sm hover:scale-110 active:scale-90 transition-all font-black ${prevChapter
+                                ? 'bg-indigo-600 text-white shadow-indigo-200 dark:shadow-none'
+                                : 'bg-gray-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400'
+                            }`}
+                        title="Daftar Isi"
+                    >
+                        <List className="w-5 h-5 shadow-sm" />
+                    </button>
 
                     <div className="w-[1px] h-6 bg-gray-100 dark:bg-slate-800" />
 

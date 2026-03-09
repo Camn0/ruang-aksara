@@ -152,3 +152,37 @@ export async function deleteReview(reviewId: string, path: string) {
         return { error: "Gagal menghapus ulasan." };
     }
 }
+
+/**
+ * Server Action: Menghapus komentar pada Review.
+ */
+export async function deleteReviewComment(commentId: string, path: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) return { error: "Unauthorized." };
+
+        const comment = await (prisma as any).reviewComment.findUnique({
+            where: { id: commentId },
+            include: { review: { include: { karya: { select: { uploader_id: true } } } } }
+        });
+
+        if (!comment) return { error: "Komentaran tidak ditemukan." };
+
+        // Cek izin: Creator komentar, Uploader karya, atau Admin
+        const isAdmin = session.user.role === 'admin';
+        const isCreator = session.user.id === comment.user_id;
+        const isAuthor = session.user.id === comment.review.karya.uploader_id;
+
+        if (!isAdmin && !isCreator && !isAuthor) {
+            return { error: "Tidak memiliki izin untuk menghapus komentar ini." };
+        }
+
+        await (prisma as any).reviewComment.delete({ where: { id: commentId } });
+
+        revalidatePath(path);
+        return { success: true };
+    } catch (e) {
+        console.error("[deleteReviewComment] Error:", e);
+        return { error: "Gagal menghapus komentar." };
+    }
+}

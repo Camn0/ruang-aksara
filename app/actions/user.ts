@@ -46,14 +46,12 @@ export async function submitComment(formData: FormData) {
         content = content.trim();
 
         // [D] Mutasi Database
-        // Mengapa: Kita membiarkan Prisma menangani relasi parent_id secara opsional.
         const newComment = await (prisma.comment as any).create({
             data: {
                 user_id: session.user.id,
                 bab_id,
                 content,
-                parent_id: parent_id || null,
-                rating: rating
+                parent_id: parent_id || null
             }
         });
 

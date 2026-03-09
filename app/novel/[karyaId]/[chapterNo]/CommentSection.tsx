@@ -110,7 +110,7 @@ export default function CommentSection({
                         <p className="text-gray-400 dark:text-gray-500 text-sm font-black uppercase tracking-widest">Belum Ada Suara</p>
                     </div>
                 ) : (
-                    sortedComments.map((comment) => (
+                    sortedComments.map((comment, index) => (
                         <CommentItem
                             key={comment.id}
                             comment={comment}
@@ -122,6 +122,7 @@ export default function CommentSection({
                             isPinning={isPinning}
                             isInitiallyCollapsed={true}
                             path={pathname}
+                            isLast={index === sortedComments.length - 1}
                         />
                     ))
                 )}

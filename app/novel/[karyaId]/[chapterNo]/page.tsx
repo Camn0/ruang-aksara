@@ -90,25 +90,34 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
         })
     ]);
 
-    // Fetch comments for the chapter with vote counts
-    const rawComments = await prisma.comment.findMany({
-        where: { bab_id: chapter.id, parent_id: null },
+    // Fetch ALL comments for the chapter to build a recursive tree
+    const allRawComments = await prisma.comment.findMany({
+        where: { bab_id: chapter.id },
         include: {
             user: true,
             _count: { select: { votes: true } },
             votes: session?.user?.id ? { where: { user_id: session.user.id } } : false,
-            replies: {
-                include: {
-                    user: true,
-                    _count: { select: { votes: true } },
-                    votes: session?.user?.id ? { where: { user_id: session.user.id } } : false,
-                },
-                orderBy: { created_at: 'asc' }
-            }
         },
-        orderBy: { created_at: 'desc' },
-        take: 30
+        orderBy: { created_at: 'asc' }
     });
+
+    // Helper: Build recursive tree structure
+    function buildCommentTree(flatComments: any[], parentId: string | null = null): any[] {
+        return flatComments
+            .filter(c => c.parent_id === parentId)
+            .map(c => ({
+                ...c,
+                userVote: c.votes?.[0]?.type || 0,
+                replies: buildCommentTree(flatComments, c.id)
+            }))
+            // Sort top-level comments by newest/score if needed, root comments sorted by newest here
+            .sort((a, b) => {
+                if (parentId === null) return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                return new Date(a.created_at).getTime() - new Date(b.created_at).getTime(); // Replies chronological
+            });
+    }
+
+    const comments = buildCommentTree(allRawComments);
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 text-gray-900 dark:text-gray-100 pb-28">
@@ -130,13 +139,13 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
                 <div className="flex items-center justify-between mb-8">
                     <h2 className="text-xl font-black italic">Komentar</h2>
                     <span className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full text-xs font-bold text-gray-500">
-                        {rawComments.length}
+                        {allRawComments.length}
                     </span>
                 </div>
 
                 <CommentSection
                     babId={chapter.id}
-                    initialComments={rawComments as any}
+                    initialComments={comments as any}
                     currentUserId={session?.user?.id}
                     currentUserRole={session?.user?.role}
                     authorId={(chapter as any).karya.uploader_id}

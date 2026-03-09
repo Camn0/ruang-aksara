@@ -98,7 +98,7 @@ export default async function SearchPage({
     searchParams: { q?: string; filter?: string; genreId?: string }
 }) {
     const q = searchParams.q || "";
-    const filter = searchParams.filter || "terpopuler";
+    const filter = searchParams.filter || "sedanghangat";
     const genreId = searchParams.genreId || "";
 
     // Eksekusi query secara paralel via Cache
@@ -128,10 +128,9 @@ export default async function SearchPage({
             <header className="px-6 pt-12 pb-4 bg-white dark:bg-slate-900 sticky top-0 z-10 border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
                 <SearchBar initialQ={q} filter={filter} genreId={genreId} />
 
-                {/* Main Filter Pills */}
                 <div className="flex gap-2 mt-4 overflow-x-auto pb-2 snap-x hide-scrollbar border-b border-gray-50 dark:border-slate-800/50 mb-3">
                     {[
-                        { id: 'terpopuler', label: 'Terpopuler' },
+                        { id: 'sedanghangat', label: 'Sedang Hangat' },
                         { id: 'terbaru', label: 'Terbaru' },
                         { id: 'rating', label: 'Rating Tertinggi' },
                         { id: 'selesai', label: 'Tamat' },
