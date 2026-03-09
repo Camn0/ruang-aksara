@@ -17,6 +17,8 @@ model User {
   role          String     // Hanya berisi 'admin' (God Account), 'author' (Moderator/Penulis), atau 'user' (Reader)
   display_name  String
   avatar_url    String?    // URL foto profil pengguna
+  bio           String?    @db.Text // Deskripsi diri pengguna
+  social_links  Json?      // Tautan sosial (Instagram, Twitter, dll)
   
   // Relasi
   karya_upload   Karya[]    // Karya yang diunggah oleh author/admin
@@ -29,6 +31,11 @@ model User {
   author_posts   AuthorPost[]
   post_likes     PostLike[]
   post_comments  PostComment[]
+  
+  // New Epic 12 relations
+  reactions     ChapterReaction[]
+  comment_votes CommentVote[]
+  stats           UserStats?
 
   // Epic 12: Sistem Follow (Relasi Self-referential Many-to-Many lewat model join explicit)
   followers     Follow[]   @relation("FollowingUser") // Orang-orang yang mengikuti user ini
@@ -94,6 +101,7 @@ model Bab {
   content    String    @db.Text
   created_at DateTime  @default(now())
   comments   Comment[] 
+  reactions  ChapterReaction[]
   
   @@unique([karya_id, chapter_no]) // Composite Unique Index
   @@index([karya_id, chapter_no(sort: Asc)]) // Mengurutkan bab berdasarkan chapter_no
@@ -134,6 +142,7 @@ model Review {
   karya      Karya    @relation(fields: [karya_id], references: [id], onDelete: Cascade)
   content    String   @db.Text
   rating     Int?     // Opsi tanpa rating (null) = hanya komentar diskusi
+  is_pinned  Boolean? @default(false) // Review yang disematkan oleh author/admin
   created_at DateTime @default(now())
   
   upvotes    ReviewUpvote[]
@@ -163,7 +172,7 @@ model ReviewComment {
   created_at DateTime @default(now())
 }
 
-// Mengapa: Komentar diletakkan di bawah Bab spesifik. 
+// Epic 8: Threaded / Nested Comments
 model Comment {
   id         String    @id @default(uuid())
   user_id    String   
@@ -173,12 +182,52 @@ model Comment {
   content    String    @db.Text
   created_at DateTime  @default(now())
   
-  // Epic 8: Threaded / Nested Comments
   parent_id  String?   // Boleh kosong jika ini adalah root comment
   parent     Comment?  @relation("Thread", fields: [parent_id], references: [id], onDelete: Cascade)
   replies    Comment[] @relation("Thread")
+  is_pinned  Boolean?  @default(false)
+  score      Int       @default(0)
+  
+  votes      CommentVote[]
 
-  @@index([bab_id, created_at(sort: Desc)]) // Sort performa
+  @@index([bab_id, score(sort: Desc), created_at(sort: Desc)])
+}
+
+// Epic 12: Comment Voting (Reddit-style)
+model CommentVote {
+  id         String   @id @default(uuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  comment_id String
+  comment    Comment  @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+  type       Int      // 1 for upvote, -1 for downvote
+  created_at DateTime @default(now())
+
+  @@unique([user_id, comment_id])
+}
+
+// Epic 12: Independent Chapter Reaction (Emoji-style)
+model ChapterReaction {
+  id            String   @id @default(uuid())
+  user_id       String
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  bab_id        String
+  bab           Bab      @relation(fields: [bab_id], references: [id], onDelete: Cascade)
+  reaction_type String   // 'LIKE', 'LOVE', 'FIRE', 'WOW', etc.
+  created_at    DateTime @default(now())
+
+  @@unique([user_id, bab_id])
+}
+
+// Epic 12: Reader Gamification & Stats
+model UserStats {
+  id                String   @id @default(uuid())
+  user_id           String   @unique
+  user              User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  total_chapters_read Int    @default(0)
+  reading_streak    Int      @default(0)
+  last_read_at      DateTime?
+  points            Int      @default(0)
 }
 
 // Epic 19 & 22: Author Post (Papan Pengumuman Penulis)

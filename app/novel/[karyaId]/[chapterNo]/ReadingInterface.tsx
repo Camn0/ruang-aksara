@@ -1,22 +1,78 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Settings, Plus, Minus, X, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Home, Settings, Type, List, RotateCcw, Plus, Minus, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import ChapterPicker from "./ChapterPicker";
 
 interface ReadingInterfaceProps {
     karyaId: string;
+    babId: string;
     chapterNo: number;
-    title: string;
+    novelTitle: string;
+    chapterTitle: string | null;
     content: string;
+    nextChapter?: number;
+    prevChapter?: number;
+    allChapters: { chapter_no: number; title: string | null }[];
+    userReaction?: string;
+    reactionStats?: { reaction_type: string; _count: { _all: number } }[];
 }
 
-export default function ReadingInterface({ karyaId, chapterNo, title, content }: ReadingInterfaceProps) {
+export default function ReadingInterface({
+    karyaId,
+    babId,
+    chapterNo,
+    novelTitle,
+    chapterTitle,
+    content,
+    nextChapter,
+    prevChapter,
+    allChapters,
+    userReaction: initialUserReaction,
+    reactionStats
+}: ReadingInterfaceProps) {
     const [fontSize, setFontSize] = useState(18); // default 18px
     const [showSettings, setShowSettings] = useState(false);
     const [mounted, setMounted] = useState(false);
     const { theme, setTheme } = useTheme();
+    const router = useRouter();
+    const [userReaction, setUserReaction] = useState(initialUserReaction);
+
+    const REACTIONS = [
+        { type: 'LIKE', emoji: '👍', label: 'Suka' },
+        { type: 'LOVE', emoji: '❤️', label: 'Cinta' },
+        { type: 'FIRE', emoji: '🔥', label: 'Mantap' },
+        { type: 'WOW', emoji: '😮', label: 'Wih' },
+    ];
+
+    const handleReaction = async (type: string) => {
+        const prev = userReaction;
+        const next = type === userReaction ? undefined : type;
+        setUserReaction(next);
+        const { submitChapterReaction } = await import('@/app/actions/chapter');
+        // @ts-ignore - Temporary until types sync
+        const res = await submitChapterReaction(babId, type, karyaId);
+        if (res.error) {
+            setUserReaction(prev);
+        }
+    };
+
+    // Keyboard Navigation
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowRight' && nextChapter) {
+                router.push(`/novel/${karyaId}/${nextChapter}`);
+            } else if (e.key === 'ArrowLeft' && prevChapter) {
+                router.push(`/novel/${karyaId}/${prevChapter}`);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [karyaId, nextChapter, prevChapter, router]);
 
     // Load from local storage and handle mounting function for theme
     useEffect(() => {
@@ -38,7 +94,7 @@ export default function ReadingInterface({ karyaId, chapterNo, title, content }:
                     top: Number(savedScroll),
                     behavior: 'smooth'
                 });
-            }, 300); // Allow some time for fonts and layout to shift before scrolling
+            }, 300);
         }
 
         let timeoutId: NodeJS.Timeout;
@@ -46,27 +102,22 @@ export default function ReadingInterface({ karyaId, chapterNo, title, content }:
 
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
-
-            // Immersive UI Logic (Hide on scroll down, show on scroll up)
             const header = document.querySelector('header');
             const nav = document.querySelector('nav');
 
             if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                // Scrolling down
                 header?.classList.add('-translate-y-full');
                 nav?.classList.add('translate-y-full', 'opacity-0');
             } else {
-                // Scrolling up
                 header?.classList.remove('-translate-y-full');
                 nav?.classList.remove('translate-y-full', 'opacity-0');
             }
             lastScrollY = currentScrollY;
 
-            // Scroll Tracking Storage
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
                 localStorage.setItem(scrollKey, window.scrollY.toString());
-            }, 1000); // Save scroll position every 1 second of inactivity while scrolling
+            }, 1000);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -76,7 +127,6 @@ export default function ReadingInterface({ karyaId, chapterNo, title, content }:
         };
     }, [karyaId, chapterNo]);
 
-    // Save to local storage
     const handleSetFontSize = (size: number) => {
         const newSize = Math.max(12, Math.min(32, size));
         setFontSize(newSize);
@@ -96,7 +146,7 @@ export default function ReadingInterface({ karyaId, chapterNo, title, content }:
                 </Link>
                 <div className="text-center">
                     <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100 leading-tight">Bab {chapterNo}</h1>
-                    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[200px]">{title}</p>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[200px]">{chapterTitle || novelTitle}</p>
                 </div>
                 <div className="relative">
                     <button
@@ -159,15 +209,89 @@ export default function ReadingInterface({ karyaId, chapterNo, title, content }:
                 <div className="fixed inset-0 z-30" onClick={() => setShowSettings(false)} />
             )}
 
-            {/* Konten Membaca Utama */}
-            <main className="px-6 py-8 sm:px-12 md:max-w-2xl md:mx-auto">
+            <main className="px-6 py-8 sm:px-12 md:max-w-2xl md:mx-auto min-h-[70vh]">
                 <article
                     className="prose prose-indigo dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-[#2c2c2c] dark:text-[#d4d4d4] font-serif max-w-none transition-all duration-200"
                     style={{ fontSize: `${fontSize}px` }}
                 >
                     {content}
                 </article>
+
+                {/* Reaction System */}
+                <div className="mt-20 pt-12 border-t border-gray-100 dark:border-slate-800 text-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                    <div className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-6">
+                        Hore! Selesai Membaca
+                    </div>
+                    <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-2 italic">Gimana bab ini?</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-xs mx-auto">Ekspresikan perasaanmu setelah membaca bab ini.</p>
+
+                    <div className="flex items-center justify-center gap-4 mb-8">
+                        {REACTIONS.map((r) => {
+                            const count = reactionStats?.find(s => s.reaction_type === r.type)?._count._all || 0;
+                            const isActive = userReaction === r.type;
+
+                            return (
+                                <button
+                                    key={r.type}
+                                    onClick={() => handleReaction(r.type)}
+                                    className={`flex flex-col items-center gap-2 transition-all active:scale-90 group`}
+                                >
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-all border-2 ${isActive
+                                        ? 'bg-indigo-600 border-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none scale-110'
+                                        : 'bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 hover:border-indigo-200'
+                                        }`}>
+                                        {r.emoji}
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        <span className={`text-[10px] font-black uppercase tracking-tighter ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`}>{r.label}</span>
+                                        <span className="text-[10px] font-bold text-gray-300 dark:text-gray-600">{count}</span>
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
             </main>
+
+            {/* Bottom Floating Navigation - LOWER POSITION (bottom-4) */}
+            <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-300">
+                <div className="flex bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-gray-100 dark:border-slate-800 p-1.5 rounded-full shadow-2xl items-center gap-1.5 transition-colors">
+                    {/* Prev Chapter */}
+                    {prevChapter ? (
+                        <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-2.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-full transition-all active:scale-90" title="Bab Sebelumnya">
+                            <ArrowLeft className="w-5 h-5" />
+                        </Link>
+                    ) : (
+                        <div className="p-2.5 text-gray-300 dark:text-gray-700 cursor-not-allowed">
+                            <ArrowLeft className="w-5 h-5" />
+                        </div>
+                    )}
+
+                    <div className="w-[1px] h-6 bg-gray-100 dark:bg-slate-800" />
+
+                    {/* Quick Access Menu */}
+                    <Link href={`/novel/${karyaId}`} className="p-2.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-full transition-all active:scale-90" title="Kembali ke Detail Novel">
+                        <Home className="w-5 h-5" />
+                    </Link>
+
+                    <ChapterPicker karyaId={karyaId} currentChapterNo={chapterNo} chapters={allChapters} />
+
+                    <div className="w-[1px] h-6 bg-gray-100 dark:bg-slate-800" />
+
+                    {/* Next Chapter */}
+                    {nextChapter ? (
+                        <Link href={`/novel/${karyaId}/${nextChapter}`} className="p-2.5 bg-indigo-600 text-white rounded-full shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-90 flex items-center gap-1.5 pl-3 pr-4" title="Bab Selanjutnya">
+                            <span className="text-xs font-black uppercase">Lanjut</span>
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    ) : (
+                        <div className="p-2.5 pr-4 text-gray-400 dark:text-gray-600 flex items-center gap-1.5" title="Bab Terakhir">
+                            <span className="text-xs font-black uppercase tracking-wider">Tamat</span>
+                            <RotateCcw className="w-4 h-4 opacity-50" />
+                        </div>
+                    )}
+                </div>
+            </nav>
         </>
     );
 }

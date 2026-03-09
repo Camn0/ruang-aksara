@@ -448,3 +448,41 @@ export async function deleteBab(id: string) {
     }
 }
 
+// ==============================================================================
+// 7. MUTASI ADMIN/AUTHOR: PIN REVIEW
+// ==============================================================================
+/**
+ * Server Action: Menyematkan (pin) ulasan agar tampil paling atas.
+ */
+export async function togglePinReview(reviewId: string, karyaId: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session || (session.user?.role !== 'admin' && session.user?.role !== 'author')) {
+            return { error: "Unauthorized." };
+        }
+
+        const review = await prisma.review.findUnique({
+            where: { id: reviewId },
+            include: { karya: true }
+        });
+
+        if (!review) return { error: "Review tidak ditemukan." };
+
+        // Otorisasi: Admin atau Pemilik Karya
+        if (session.user.role === 'author' && review.karya.uploader_id !== session.user.id) {
+            return { error: "Forbidden: Anda bukan pemilik karya ini." };
+        }
+
+        // Toggle PIN
+        await (prisma.review as any).update({
+            where: { id: reviewId },
+            data: { is_pinned: !(review as any).is_pinned }
+        });
+
+        revalidateTag(`karya-${karyaId}`);
+        return { success: true };
+    } catch (error) {
+        console.error("[togglePinReview] Error:", error);
+        return { error: "Gagal memproses sematan ulasan." };
+    }
+}

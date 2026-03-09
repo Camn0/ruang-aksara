@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import { Search as SearchIcon } from 'lucide-react';
+import { useState, FormEvent, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Search as SearchIcon, X } from 'lucide-react';
 
 /**
  * SearchBar (Client Component)
@@ -14,6 +14,12 @@ import { Search as SearchIcon } from 'lucide-react';
 export default function SearchBar({ initialQ, filter, genreId }: { initialQ: string, filter: string, genreId: string }) {
     const [q, setQ] = useState(initialQ);
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Sync input with URL search params when they change
+    useEffect(() => {
+        setQ(searchParams.get('q') || '');
+    }, [searchParams]);
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
@@ -27,16 +33,34 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
         router.push(`/search?${params.toString()}`);
     };
 
+    const clearSearch = () => {
+        setQ('');
+        const params = new URLSearchParams();
+        if (filter) params.set('filter', filter);
+        if (genreId) params.set('genreId', genreId);
+        router.push(`/search?${params.toString()}`);
+    }
+
     return (
-        <form className="relative" onSubmit={handleSearch}>
+        <form className="relative group" onSubmit={handleSearch}>
             <input
                 type="text"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Cari judul atau penulis..."
-                className="w-full pl-12 pr-4 py-3.5 bg-gray-100 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white dark:focus:bg-slate-900 transition-all"
+                className="w-full pl-12 pr-12 py-3.5 bg-gray-100 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white dark:focus:bg-slate-900 transition-all shadow-sm"
             />
-            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400" />
+
+            {q && (
+                <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-all"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+            )}
             <button type="submit" className="hidden">Cari</button>
         </form>
     );

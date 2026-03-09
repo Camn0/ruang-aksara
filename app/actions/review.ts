@@ -118,3 +118,37 @@ export async function submitReviewComment(formData: FormData) {
         return { error: "Gagal mengirim komentar." };
     }
 }
+
+/**
+ * Server Action: Menghapus sebuah Review.
+ */
+export async function deleteReview(reviewId: string, path: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) return { error: "Unauthorized." };
+
+        const review = await prisma.review.findUnique({
+            where: { id: reviewId },
+            include: { karya: { select: { uploader_id: true } } }
+        });
+
+        if (!review) return { error: "Ulasan tidak ditemukan." };
+
+        // Cek izin: Creator ulasan, Uploader karya, atau Admin
+        const isAdmin = session.user.role === 'admin';
+        const isCreator = session.user.id === review.user_id;
+        const isAuthor = session.user.id === (review as any).karya.uploader_id;
+
+        if (!isAdmin && !isCreator && !isAuthor) {
+            return { error: "Tidak memiliki izin untuk menghapus ulasan ini." };
+        }
+
+        await prisma.review.delete({ where: { id: reviewId } });
+
+        revalidatePath(path);
+        return { success: true };
+    } catch (e) {
+        console.error("[deleteReview] Error:", e);
+        return { error: "Gagal menghapus ulasan." };
+    }
+}

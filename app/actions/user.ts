@@ -36,6 +36,7 @@ export async function submitComment(formData: FormData) {
         const bab_id = formData.get('bab_id') as string;
         let content = formData.get('content') as string;
         const parent_id = formData.get('parent_id') as string | null;
+        const rating = formData.get('rating') ? parseInt(formData.get('rating') as string, 10) : null;
 
         if (!bab_id || !content || content.trim() === '') {
             return { error: "Bad Request: Komentar kosong tidak diizinkan." };
@@ -46,12 +47,13 @@ export async function submitComment(formData: FormData) {
 
         // [D] Mutasi Database
         // Mengapa: Kita membiarkan Prisma menangani relasi parent_id secara opsional.
-        const newComment = await prisma.comment.create({
+        const newComment = await (prisma.comment as any).create({
             data: {
                 user_id: session.user.id,
                 bab_id,
                 content,
-                parent_id: parent_id || null
+                parent_id: parent_id || null,
+                rating: rating
             }
         });
 
@@ -316,4 +318,78 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
         console.error("[updateReadingProgress] Error:", error);
         return { success: false, error: "Database Error" };
     }
+}
+// = [6] MUTASI USER: UPDATE PROFIL (DISPLAY NAME & BIO)
+// ==============================================================================
+/**
+ * Server Action: Melakukan update profil dasar pengguna.
+ */
+export async function updateUserProfile(formData: FormData) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) return { error: "Unauthorized" };
+
+        const displayName = formData.get('displayName') as string;
+        const bio = formData.get('bio') as string;
+        const avatarUrl = formData.get('avatarUrl') as string | null;
+        const socialLinksStr = formData.get('socialLinks') as string;
+
+        let socialLinks = null;
+        try {
+            if (socialLinksStr) {
+                socialLinks = JSON.parse(socialLinksStr);
+            }
+        } catch (e) {
+            console.error("Invalid socialLinks JSON:", e);
+        }
+
+        await (prisma as any).user.update({
+            where: { id: session.user.id },
+            data: {
+                display_name: displayName,
+                bio: bio,
+                avatar_url: avatarUrl || undefined,
+                social_links: socialLinks
+            }
+        });
+
+        revalidateTag(`user-profile-${session.user.id}`);
+        return { success: true };
+    } catch (error) {
+        console.error("[updateUserProfile] Error:", error);
+        return { error: "Gagal memperbarui profil." };
+    }
+}
+// = [7] MUTASI USER: FOLLOW / UNFOLLOW
+// ==============================================================================
+export async function toggleFollow(targetUserId: string, revalidatePathStr?: string) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    const followerId = session.user.id;
+    if (followerId === targetUserId) throw new Error("Cannot follow yourself");
+
+    const existing = await prisma.follow.findFirst({
+        where: {
+            follower_id: followerId,
+            following_id: targetUserId
+        }
+    });
+
+    if (existing) {
+        await prisma.follow.delete({ where: { id: existing.id } });
+    } else {
+        await prisma.follow.create({
+            data: {
+                follower_id: followerId,
+                following_id: targetUserId
+            }
+        });
+    }
+
+    if (revalidatePathStr) {
+        revalidateTag(revalidatePathStr);
+    }
+    // Revalidate target user profile anyway
+    revalidateTag(`user-${targetUserId}`);
 }

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, UserCircle2, Settings, TrendingUp, BookMarked, Star, MessageSquare, Heart } from "lucide-react";
+import { ArrowLeft, UserCircle2, Settings, TrendingUp, BookMarked, Star, MessageSquare, Heart, Instagram, Twitter, Globe } from "lucide-react";
 import FollowButton from "./FollowButton";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import CreatePostForm from "./CreatePostForm";
@@ -207,6 +207,51 @@ export default async function ProfilePage({ params, searchParams }: { params: { 
                         <span className="inline-block px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold uppercase tracking-wider mb-4">
                             {userProfile.role === 'admin' ? 'Author & Admin' : userProfile.role}
                         </span>
+
+                        {(userProfile as any).bio && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4 max-w-lg">
+                                {(userProfile as any).bio}
+                            </p>
+                        )}
+
+                        {/* Social Links Row */}
+                        {(userProfile as any).social_links && (
+                            <div className="flex items-center gap-3 mb-6">
+                                {(userProfile as any).social_links.instagram && (
+                                    <a
+                                        href={(userProfile as any).social_links.instagram}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 bg-pink-50 dark:bg-pink-900/20 text-pink-600 rounded-lg hover:scale-110 transition-transform"
+                                        title="Instagram"
+                                    >
+                                        <Instagram className="w-4 h-4" />
+                                    </a>
+                                )}
+                                {(userProfile as any).social_links.twitter && (
+                                    <a
+                                        href={(userProfile as any).social_links.twitter}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 bg-slate-100 dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg hover:scale-110 transition-transform"
+                                        title="Twitter / X"
+                                    >
+                                        <Twitter className="w-4 h-4" />
+                                    </a>
+                                )}
+                                {(userProfile as any).social_links.website && (
+                                    <a
+                                        href={(userProfile as any).social_links.website}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 rounded-lg hover:scale-110 transition-transform"
+                                        title="Website / Portfolio"
+                                    >
+                                        <Globe className="w-4 h-4" />
+                                    </a>
+                                )}
+                            </div>
+                        )}
 
                         {/* Stats Row */}
                         <div className="flex gap-8 mb-2">

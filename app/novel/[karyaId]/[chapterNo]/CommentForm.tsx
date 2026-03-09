@@ -1,15 +1,44 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { submitComment } from '@/app/actions/user';
 import { useRouter } from 'next/navigation';
 
-export default function CommentForm({ babId, parentId, isReply = false, replyToUsername }: { babId: string, parentId?: string, isReply?: boolean, replyToUsername?: string }) {
+export default function CommentForm({
+    babId,
+    parentId,
+    isReply = false,
+    replyToUsername,
+    onSuccess,
+    autoFocus = false
+}: {
+    babId: string,
+    parentId?: string,
+    isReply?: boolean,
+    replyToUsername?: string,
+    onSuccess?: () => void,
+    autoFocus?: boolean
+}) {
     const [isPending, setIsPending] = useState(false);
-    const [isOpen, setIsOpen] = useState(!isReply);
+    const [isOpen, setIsOpen] = useState(!isReply || autoFocus);
+    const [rating, setRating] = useState(0);
+    const [hoveredRating, setHoveredRating] = useState(0);
     const [successMessage, setSuccessMessage] = useState('');
     const router = useRouter();
     const formRef = useRef<HTMLFormElement>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Auto focus logic
+    useEffect(() => {
+        if (autoFocus && isOpen && textAreaRef.current) {
+            textAreaRef.current.focus();
+            // Move cursor to end if there's mention
+            if (replyToUsername) {
+                const len = textAreaRef.current.value.length;
+                textAreaRef.current.setSelectionRange(len, len);
+            }
+        }
+    }, [autoFocus, isOpen, replyToUsername]);
 
     async function handleCommentSubmit(formData: FormData) {
         if (isPending) return; // Prevent double-click
@@ -19,6 +48,9 @@ export default function CommentForm({ babId, parentId, isReply = false, replyToU
         formData.append('bab_id', babId);
         if (parentId) {
             formData.append('parent_id', parentId);
+        }
+        if (rating > 0) {
+            formData.append('rating', rating.toString());
         }
 
         try {
@@ -38,6 +70,9 @@ export default function CommentForm({ babId, parentId, isReply = false, replyToU
 
                 // Background refresh for fresh data
                 router.refresh();
+
+                // Call onSuccess callback
+                if (onSuccess) onSuccess();
 
                 // Clear success message after a delay
                 setTimeout(() => setSuccessMessage(''), 2000);
@@ -65,7 +100,39 @@ export default function CommentForm({ babId, parentId, isReply = false, replyToU
         <form ref={formRef} id={parentId ? `comment-form-${parentId}` : "comment-form"} action={handleCommentSubmit} className={`${isReply ? 'mt-3 border-l-2 border-indigo-300 dark:border-indigo-700 pl-4 py-2' : ''}`}>
             {!isReply && <h3 className="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-200">Tinggalkan Komentar</h3>}
 
+            {!isReply && (
+                <div className="flex items-center gap-2 mb-4 bg-gray-50 dark:bg-slate-800/50 p-3 rounded-xl border border-gray-100 dark:border-slate-800">
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Rating Bab:</span>
+                    <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                                key={star}
+                                type="button"
+                                onClick={() => setRating(star)}
+                                onMouseEnter={() => setHoveredRating(star)}
+                                onMouseLeave={() => setHoveredRating(0)}
+                                className="transition-transform active:scale-90"
+                            >
+                                <svg
+                                    className={`w-6 h-6 ${(hoveredRating || rating) >= star ? 'text-yellow-400 fill-current' : 'text-gray-300 dark:text-slate-700'}`}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <textarea
+                ref={textAreaRef}
                 name="content"
                 defaultValue={replyToUsername ? `@${replyToUsername} ` : ""}
                 className={`w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-3 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 ${isReply ? 'min-h-[60px] text-sm' : 'min-h-[100px]'}`}

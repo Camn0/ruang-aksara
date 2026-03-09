@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { updateUserProfile } from '@/app/actions/user';
-import { Save, Instagram, Twitter, Globe, Link2, UserCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { Save, Instagram, Twitter, Globe, Link2 } from 'lucide-react';
 
 interface SocialLinks {
     instagram?: string;
@@ -11,37 +10,37 @@ interface SocialLinks {
     website?: string;
 }
 
-interface EditProfileFormProps {
+interface ProfileSettingsFormProps {
     initialDisplayName: string;
     initialBio: string | null;
     initialSocialLinks: SocialLinks | null;
-    initialAvatarUrl: string | null;
 }
 
-export default function EditProfileForm({ initialDisplayName, initialBio, initialSocialLinks, initialAvatarUrl }: EditProfileFormProps) {
+export default function ProfileSettingsForm({ initialDisplayName, initialBio, initialSocialLinks }: ProfileSettingsFormProps) {
     const [displayName, setDisplayName] = useState(initialDisplayName);
     const [bio, setBio] = useState(initialBio || '');
-    const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl || '');
     const [socials, setSocials] = useState<SocialLinks>(initialSocialLinks || {});
 
     const [isPending, setIsPending] = useState(false);
+    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setIsPending(true);
+        setMessage(null);
 
         const formData = new FormData();
         formData.append('displayName', displayName);
         formData.append('bio', bio);
-        formData.append('avatarUrl', avatarUrl);
         formData.append('socialLinks', JSON.stringify(socials));
 
         const res = await updateUserProfile(formData);
 
         if (res.error) {
-            toast.error(res.error);
+            setMessage({ type: 'error', text: res.error });
         } else {
-            toast.success('Profil berhasil diperbarui!');
+            setMessage({ type: 'success', text: 'Profil berhasil diperbarui!' });
+            setTimeout(() => setMessage(null), 3000);
         }
         setIsPending(false);
     }
@@ -53,30 +52,6 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-6">
-                {/* Avatar URL */}
-                <div>
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-2 block ml-1 flex items-center gap-2">
-                        <UserCircle2 className="w-3 h-3" /> URL Foto Profil
-                    </label>
-                    <div className="flex gap-4 items-center">
-                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 dark:bg-slate-800 border border-gray-100 dark:border-slate-800 shrink-0">
-                            {avatarUrl ? (
-                                <img src={avatarUrl} alt="Preview" className="w-full h-full object-cover" />
-                            ) : (
-                                <UserCircle2 className="w-full h-full text-gray-300 p-2" />
-                            )}
-                        </div>
-                        <input
-                            type="url"
-                            value={avatarUrl}
-                            onChange={(e) => setAvatarUrl(e.target.value)}
-                            className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-medium text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                            placeholder="https://example.com/avatar.jpg"
-                            disabled={isPending}
-                        />
-                    </div>
-                </div>
-
                 {/* Display Name */}
                 <div>
                     <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-2 block ml-1">
@@ -118,7 +93,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                         {/* Instagram */}
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-pink-600 shrink-0">
-                                <Instagram className="w-4 h-4" />
+                                <Instagram className="w-5 h-5" />
                             </div>
                             <input
                                 type="url"
@@ -133,7 +108,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                         {/* Twitter/X */}
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-slate-900/10 dark:bg-slate-800 flex items-center justify-center text-gray-900 dark:text-gray-100 shrink-0">
-                                <Twitter className="w-4 h-4" />
+                                <Twitter className="w-5 h-5" />
                             </div>
                             <input
                                 type="url"
@@ -148,7 +123,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                         {/* Website */}
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 shrink-0">
-                                <Globe className="w-4 h-4" />
+                                <Globe className="w-5 h-5" />
                             </div>
                             <input
                                 type="url"
@@ -162,6 +137,15 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     </div>
                 </div>
             </div>
+
+            {message && (
+                <div className={`p-3 rounded-xl text-xs font-bold animate-in fade-in slide-in-from-top-1 ${message.type === 'success'
+                    ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-900/30'
+                    : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30'
+                    }`}>
+                    {message.text}
+                </div>
+            )}
 
             <button
                 type="submit"

@@ -5,74 +5,66 @@ import BookmarkButton from "./BookmarkButton";
 import ReviewInteraction from "./ReviewInteraction";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote } from "lucide-react";
+import { Star, TrendingUp, BookOpen, ArrowLeft, MessageSquareQuote, UserCircle2, Pin } from "lucide-react";
 import type { Metadata } from "next";
 
 import { prisma } from '@/lib/prisma';
-import { unstable_cache, revalidateTag } from 'next/cache';
+import { unstable_cache } from 'next/cache';
 import ContinueReadingButton from "./ContinueReadingButton";
+import ShareButton from "./ShareButton";
+import FollowButton from "./FollowButton";
+import ReviewSortToggle from "./ReviewSortToggle";
+import PinReviewButton from "./PinReviewButton";
+import CollapsibleReviewSection from "./CollapsibleReviewSection";
+import DeleteReviewButton from "./DeleteReviewButton";
 
 /**
  * Halaman Detail Karya (Novel/Buku) (Server Component).
- * 
- * Logic Highlights:
- * 1. Search Engine Optimization(SEO): Metadata dinamis berdasarkan judul & penulis.
- * 2. Complex Fetching: Menarik data Karya, Bab, Review, serta Aggregated Counts dalam satu request.
- * 3. Type Casting: Mengatasi kendala model Prisma yang mungkin tertinggal(stale) dari schema sebenarnya.
- * 4. User Context: Mengambil status rating & bookmark user jika sedang login.
  */
 
-/**
- * Cached function to fetch Karya details.
- */
-const fetchKaryaDetail = unstable_cache(
-    async (karyaId: string) => {
-        return (prisma as any).karya.findUnique({
-            where: { id: karyaId },
-            include: {
-                bab: {
-                    orderBy: { chapter_no: 'asc' },
-                    select: {
-                        id: true,
-                        chapter_no: true,
-                        created_at: true,
-                    }
-                },
-                genres: true,
-                reviews: {
-                    include: {
-                        user: true,
-                        _count: { select: { upvotes: true, comments: true } },
-                        comments: {
-                            include: { user: true },
-                            orderBy: { created_at: 'asc' },
-                            take: 5
-                        }
+async function fetchKaryaDetail(karyaId: string, sort: string = 'new') {
+    return await unstable_cache(
+        async () => {
+            return await prisma.karya.findUnique({
+                where: { id: karyaId },
+                include: {
+                    uploader: { select: { id: true, username: true, display_name: true, avatar_url: true } },
+                    bab: {
+                        orderBy: { chapter_no: "asc" },
+                        select: { id: true, chapter_no: true, title: true, created_at: true }
                     },
-                    orderBy: { created_at: 'desc' },
-                    take: 5
+                    genres: true,
+                    reviews: {
+                        take: 20,
+                        include: {
+                            user: { select: { id: true, username: true, display_name: true, avatar_url: true } },
+                            _count: { select: { upvotes: true, comments: true } },
+                            comments: {
+                                include: { user: { select: { id: true, username: true, display_name: true, avatar_url: true } } },
+                                orderBy: { created_at: 'asc' },
+                                take: 5
+                            }
+                        },
+                        orderBy: [
+                            { is_pinned: 'desc' },
+                            sort === 'top'
+                                ? { upvotes: { _count: 'desc' } }
+                                : { created_at: 'desc' }
+                        ]
+                    },
+                    _count: {
+                        select: { bab: true, bookmarks: true, ratings: true, reviews: true }
+                    }
                 }
-            }
-        });
-    },
-    ['karya-detail-v2'], // Unique prefix
-    {
-        tags: ['karya-global'],
-        revalidate: 3600
-    }
-);
-
-/**
- * Wrapper to ensure ID-specific tags are applied.
- * Mengapa: Kita memisahkan pemanggilan agar Next.js bisa meng-cache per-ID secara otomatis
- * lewat argumen fungsi fetchKaryaDetail.
- */
-const getCachedKarya = (id: string) => fetchKaryaDetail(id);
+            });
+        },
+        [`karya-${karyaId}`, `sort-${sort}`],
+        { revalidate: 3600, tags: [`karya-${karyaId}`] }
+    )();
+}
 
 export async function generateMetadata({ params }: { params: { karyaId: string } }): Promise<Metadata> {
-    // Gunakan cache yang sama agar tidak hit DB 2x (Metadata + Page)
-    const karya = await getCachedKarya(params.karyaId);
-
+    const karya = await fetchKaryaDetail(params.karyaId);
     if (!karya) return { title: 'Karya Tidak Ditemukan — Ruang Aksara' };
 
     const desc = karya.deskripsi ? karya.deskripsi.substring(0, 160) : `Baca ${karya.title} oleh ${karya.penulis_alias} di Ruang Aksara.`;
@@ -82,9 +74,6 @@ export async function generateMetadata({ params }: { params: { karyaId: string }
     };
 }
 
-/**
- * Mencari mention '@username' dan mengubahnya menjadi link profil.
- */
 function parseMentions(text: string) {
     if (!text) return text;
     const parts = text.split(/(@\w+)/g);
@@ -101,25 +90,18 @@ function parseMentions(text: string) {
     });
 }
 
-export default async function KaryaDetailsPage({ params }: { params: { karyaId: string } }) {
-    // [A] Initial Parallel Fetching (Avoid Waterfall)
-    // Megambil Public Data (Cached) & User Session secara serentak.
-    const [karyaRaw, session] = await Promise.all([
-        getCachedKarya(params.karyaId),
-        getServerSession(authOptions)
-    ]);
-
+export default async function KaryaDetailsPage({ params, searchParams }: { params: { karyaId: string }, searchParams: { sort?: string } }) {
+    const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
-    const karya = karyaRaw as any; // Type Assertion for brevity
+    const sort = searchParams.sort || 'new';
 
+    const karya = await fetchKaryaDetail(params.karyaId, sort) as any;
     if (!karya) notFound();
 
-    // [B] User-Specific Interaction Fetching (Parallel)
-    // Mengapa: Data ini TIDAK boleh di-cache global (karena unik per user).
-    // Kita jalankan semua check (Bookmark, Rating, Review, Upvotes) dalam satu kloter.
     let userPreviousRating = 0;
     let userPreviousReview = null;
     let isBookmarked = false;
+    let isFollowing = false;
     let userUpvotedReviews: string[] = [];
 
     if (userId) {
@@ -139,14 +121,28 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                     review_id: { in: karya.reviews?.map((r: any) => r.id) || [] }
                 },
                 select: { review_id: true }
-            })
+            }) as { review_id: string }[]
         ]);
 
         if (ratingContext) userPreviousRating = ratingContext.score;
         userPreviousReview = prevReview;
         if (bookmarkContext) isBookmarked = true;
         userUpvotedReviews = upvotes.map((u: any) => u.review_id);
+
+        if (karya.uploader_id && userId !== karya.uploader_id) {
+            const followRecord = await (prisma as any).follow.findUnique({
+                where: {
+                    follower_id_following_id: {
+                        follower_id: userId,
+                        following_id: karya.uploader_id
+                    }
+                }
+            });
+            isFollowing = !!followRecord;
+        }
     }
+
+    const typedKarya = karya as any; // Temporary cast for relation access
 
     const CoverPlaceholder = () => (
         <div className="w-32 h-48 sm:w-40 sm:h-56 bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-2xl shadow-lg border border-indigo-100 flex items-center justify-center text-center p-4">
@@ -158,7 +154,6 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
-            {/* Header / Navigasi Atas */}
             <header className="px-6 h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
                 <Link href="/" className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
@@ -169,7 +164,6 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                 <div className="w-10"></div>
             </header>
 
-            {/* Bagian Hero Profil Buku */}
             <div className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 pt-8 pb-8 px-6 transition-colors duration-300">
                 <div className="flex gap-6 items-start">
                     {karya.cover_url ? (
@@ -183,19 +177,25 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                             {karya.title}
                         </h1>
                         <div className="flex items-center gap-2 mb-3">
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Oleh <Link href={`/profile/${karya.uploader_id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:underline font-bold transition-colors">{karya.penulis_alias}</Link></p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Oleh <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:underline font-bold transition-colors">{karya.penulis_alias}</Link></p>
                             {session && session.user.id !== karya.uploader_id && (
-                                <Link href={`/profile/${karya.uploader_id}`} className="px-2 py-0.5 rounded text-indigo-600 bg-indigo-50 border border-indigo-100 text-[10px] font-bold uppercase tracking-wider">
-                                    + Follow
-                                </Link>
+                                <FollowButton
+                                    targetUserId={karya.uploader_id}
+                                    initialIsFollowing={isFollowing}
+                                    karyaId={karya.id}
+                                />
                             )}
                         </div>
 
                         <div className="flex flex-wrap gap-1.5 mb-4">
-                            {karya.genres.map((g: any) => (
-                                <span key={g.id} className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[10px] uppercase font-bold px-2 py-1 rounded transition-colors">
+                            {(karya as any).genres?.map((g: any) => (
+                                <Link
+                                    key={g.id}
+                                    href={`/search?q=&genreId=${g.id}`}
+                                    className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[10px] uppercase font-bold px-2 py-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
+                                >
                                     {g.name}
-                                </span>
+                                </Link>
                             ))}
                             {karya.is_completed ? (
                                 <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-black px-2 py-1 rounded transition-colors">
@@ -225,7 +225,6 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                     </div>
                 </div>
 
-                {/* Tombol Aksi Utama Stack Horizontal */}
                 <div className="mt-8 flex gap-2">
                     {firstChapter ? (
                         <Link href={`/novel/${karya.id}/${firstChapter}`} className="flex-1 text-center py-3.5 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl font-black text-sm shadow-xl shadow-indigo-200 dark:shadow-none active:scale-95 transition-all flex items-center justify-center">
@@ -237,28 +236,15 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                         </button>
                     )}
 
-                    {session && (
-                        <div className="flex gap-2 shrink-0">
-                            <BookmarkButton karyaId={karya.id} isBookmarkedInitial={isBookmarked} />
-                        </div>
-                    )}
+                    <div className="flex gap-2 shrink-0">
+                        {session && <BookmarkButton karyaId={karya.id} isBookmarkedInitial={isBookmarked} />}
+                        <ShareButton title={karya.title} karyaId={karya.id} />
+                    </div>
                 </div>
 
-                {/* EPIC 7: Quick Continue (Client-Side Instant UX) */}
                 <ContinueReadingButton karyaId={karya.id} />
             </div>
 
-            {/* Sinopsis */}
-            {karya.deskripsi && (
-                <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
-                    <h2 className="text-base font-black text-gray-900 dark:text-gray-100 mb-3">Sinopsis</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
-                        {karya.deskripsi}
-                    </p>
-                </div>
-            )}
-
-            {/* Daftar Isi */}
             <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 transition-colors duration-300">
                 <div className="p-6 border-b border-gray-100 dark:border-slate-800">
                     <h2 className="text-base font-black text-gray-900 dark:text-gray-100">Daftar Isi</h2>
@@ -278,8 +264,8 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                                 className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 active:bg-gray-100 dark:active:bg-slate-800 transition-colors"
                             >
                                 <div className="flex flex-col pr-4">
-                                    <span className="font-bold text-gray-900 dark:text-gray-100 text-sm">Bab {chapter.chapter_no}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 italic">
+                                    <span className="font-bold text-gray-900 dark:text-gray-100 text-sm">Bab {chapter.chapter_no}{chapter.title ? `: ${chapter.title}` : ''}</span>
+                                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 italic text-left">
                                         Klik untuk mulai membaca...
                                     </span>
                                 </div>
@@ -292,79 +278,127 @@ export default async function KaryaDetailsPage({ params }: { params: { karyaId: 
                 </div>
             </div>
 
-            {/* Interaksi: Rating & Review */}
+            {karya.deskripsi && (
+                <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
+                    <h2 className="text-base font-black text-gray-900 dark:text-gray-100 mb-3">Sinopsis</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
+                        {karya.deskripsi}
+                    </p>
+                </div>
+            )}
+
             <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
-                <h2 className="text-base font-black text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
-                    <MessageSquareQuote className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> Tanggapan Pembaca
-                </h2>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-2 italic">
+                        <MessageSquareQuote className="w-5 h-5 text-indigo-600 dark:text-indigo-400 non-italic" />
+                        Tulis Ulasan
+                    </h2>
+                </div>
 
                 {session ? (
-                    <div className="space-y-6">
-                        <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
-                    </div>
+                    <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
                 ) : (
-                    <div className="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-2xl text-center border border-indigo-100 dark:border-indigo-900/30 transition-colors">
-                        <p className="text-sm font-bold text-indigo-900 dark:text-indigo-300 mb-2">Tertarik Berkomentar?</p>
-                        <p className="text-xs text-indigo-700 dark:text-indigo-400 mb-4 px-4 leading-relaxed">Masuk ke akunmu untuk meninggalkan jejak dan mendukung penulis ini.</p>
-                        <Link href="/onboarding" className="inline-block px-6 py-2.5 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full text-xs font-bold shadow-md shadow-indigo-200 dark:shadow-none transition-transform hover:scale-105">
+                    <div className="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-3xl text-center border border-indigo-100 dark:border-indigo-900/30 transition-colors">
+                        <p className="text-sm font-black text-indigo-900 dark:text-indigo-300 mb-2 uppercase tracking-widest">Tertarik Memberi Rating?</p>
+                        <p className="text-xs text-indigo-700 dark:text-indigo-400 mb-6 px-4 leading-relaxed font-bold">Masuk ke akunmu untuk meninggalkan jejak dan mendukung penulis ini.</p>
+                        <Link href="/onboarding" className="inline-block px-8 py-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 dark:shadow-none transition-transform active:scale-95">
                             Mulai Masuk
                         </Link>
                     </div>
                 )}
             </div>
 
-            {/* List Review Terbaik */}
-            {karya.reviews.length > 0 && (
-                <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
-                    <div className="space-y-4">
-                        {karya.reviews.map((r: any) => (
-                            <div key={r.id} className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 transition-colors">
-                                <div className="flex justify-between items-start mb-2">
-                                    <div className="flex gap-2 items-center">
-                                        <Link href={`/profile/${r.user.username}`} className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-xs ring-2 ring-transparent hover:ring-indigo-300 transition-all shrink-0">
-                                            {r.user.display_name.substring(0, 2).toUpperCase()}
-                                        </Link>
-                                        <div>
-                                            <Link href={`/profile/${r.user.username}`} className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-none hover:underline">{r.user.display_name}</Link>
-                                            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">{new Date(r.created_at).toLocaleDateString('id-ID')}</p>
-                                        </div>
+            <CollapsibleReviewSection count={karya._count.reviews}>
+                <div className="flex justify-end mb-6">
+                    <ReviewSortToggle karyaId={karya.id} />
+                </div>
+
+                <div className="space-y-4">
+                    {karya.reviews.map((review: any) => (
+                        <div key={review.id} className="p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-gray-100 dark:border-slate-800 shadow-sm transition-colors group">
+                            <div className="flex items-start justify-between gap-4 mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 border-2 border-white dark:border-slate-950 shadow-sm">
+                                        {review.user.avatar_url ? (
+                                            <img src={review.user.avatar_url} alt={review.user.display_name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <UserCircle2 className="w-full h-full text-gray-300" />
+                                        )}
                                     </div>
-                                    {r.rating !== null && r.rating > 0 && (
-                                        <div className="flex text-yellow-500 dark:text-yellow-400 fill-yellow-500 dark:fill-yellow-400">
-                                            {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
-                                        </div>
+                                    <div>
+                                        <p className="text-xs font-black text-gray-900 dark:text-gray-100">{review.user.display_name}</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {(session?.user?.role === 'admin' || session?.user?.id === karya.uploader_id) && (
+                                        <PinReviewButton
+                                            reviewId={review.id}
+                                            karyaId={karya.id}
+                                            initialIsPinned={(review as any).is_pinned}
+                                        />
+                                    )}
+                                    {(session?.user?.role === 'admin' || session?.user?.id === review.user_id || session?.user?.id === karya.uploader_id) && (
+                                        <DeleteReviewButton
+                                            reviewId={review.id}
+                                            path={`/novel/${karya.id}`}
+                                        />
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic whitespace-pre-wrap">"{parseMentions(r.content)}"</p>
-                                <ReviewInteraction
-                                    reviewId={r.id}
-                                    initialUpvotes={r._count.upvotes}
-                                    initialUpvoted={session ? r.upvotes && r.upvotes.length > 0 : false}
-                                    replyCount={r._count.comments}
-                                    currentPath={`/novel/${karya.id}`}
-                                />
-
-                                {/* Review Comments */}
-                                {r.comments && r.comments.length > 0 && (
-                                    <div className="mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 space-y-2">
-                                        {r.comments.map((c: any) => (
-                                            <div key={c.id} className="flex gap-2 items-start">
-                                                <div className="w-5 h-5 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-bold text-gray-500 shrink-0">
-                                                    {c.user?.display_name?.substring(0, 2).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs"><Link href={`/profile/${c.user?.username}`} className="font-bold text-gray-900 dark:text-gray-100 hover:underline">{c.user?.display_name}</Link> <span className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{c.content}</span></p>
-                                                    <p className="text-[10px] text-gray-400 dark:text-gray-500">{new Date(c.created_at).toLocaleDateString('id-ID')}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
                             </div>
-                        ))}
-                    </div>
+
+                            {review.is_pinned && (
+                                <div className="flex items-center gap-1.5 mb-4 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full w-fit uppercase tracking-[0.1em] border border-amber-100 dark:border-amber-900/40">
+                                    <Pin className="w-3 h-3 fill-amber-500" />
+                                    Review Pilihan Penulis
+                                </div>
+                            )}
+
+                            {review.rating !== null && review.rating > 0 && (
+                                <div className="flex text-amber-400 fill-amber-400 mb-3 drop-shadow-sm">
+                                    {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                                </div>
+                            )}
+                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium mb-4">"{parseMentions(review.content)}"</p>
+
+                            <ReviewInteraction
+                                reviewId={review.id}
+                                initialUpvotes={review._count.upvotes}
+                                initialUpvoted={userUpvotedReviews.includes(review.id)}
+                                replyCount={review._count.comments}
+                                currentPath={`/novel/${karya.id}`}
+                            />
+
+                            {review.comments && review.comments.length > 0 && (
+                                <div className="mt-4 pt-4 border-t border-gray-50 dark:border-slate-800/50 space-y-4">
+                                    {review.comments.map((c: any) => (
+                                        <div key={c.id} className="flex gap-3 items-start pl-4 border-l-2 border-gray-50 dark:border-slate-800">
+                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 shrink-0 border border-white dark:border-slate-950">
+                                                {c.user?.avatar_url ? (
+                                                    <img src={c.user.avatar_url} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <UserCircle2 className="w-full h-full text-gray-300" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <Link href={`/profile/${c.user?.username}`} className="text-xs font-black text-gray-900 dark:text-gray-100 hover:text-indigo-600 transition-colors uppercase tracking-tight">{c.user?.display_name}</Link>
+                                                    {c.user?.id === (karya as any).uploader_id && (
+                                                        <span className="text-[7px] font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-sm uppercase tracking-tighter">Penulis</span>
+                                                    )}
+                                                    <span className="text-[9px] font-bold text-gray-400 truncate tracking-tighter">{new Date(c.created_at).toLocaleDateString('id-ID')}</span>
+                                                </div>
+                                                <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap leading-relaxed font-medium">{c.content}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
-            )}
+            </CollapsibleReviewSection>
         </div>
     );
 }

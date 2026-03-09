@@ -1,0 +1,56 @@
+'use client';
+
+import { useState } from 'react';
+import { Trash2, Loader2 } from 'lucide-react';
+import { deleteReview } from '@/app/actions/review';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
+interface DeleteReviewButtonProps {
+    reviewId: string;
+    path: string;
+    isSmall?: boolean;
+}
+
+export default function DeleteReviewButton({ reviewId, path, isSmall = false }: DeleteReviewButtonProps) {
+    const [isDeleting, setIsDeleting] = useState(false);
+    const router = useRouter();
+
+    const handleDelete = async () => {
+        if (!confirm('Apakah Anda yakin ingin menghapus ulasan ini?')) return;
+
+        setIsDeleting(true);
+        try {
+            const res = await deleteReview(reviewId, path);
+            if (res.error) {
+                toast.error(res.error);
+            } else {
+                toast.success('Ulasan berhasil dihapus.');
+                router.refresh();
+            }
+        } catch (error) {
+            toast.error('Gagal menghapus ulasan. Silakan coba lagi.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    return (
+        <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className={`flex items-center gap-1.5 font-bold transition-colors ${isSmall
+                    ? 'text-[10px] text-gray-400 hover:text-red-500 uppercase tracking-widest'
+                    : 'p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-full'
+                }`}
+            title="Hapus Ulasan"
+        >
+            {isDeleting ? (
+                <Loader2 className={`${isSmall ? 'w-3 h-3' : 'w-4 h-4'} animate-spin`} />
+            ) : (
+                <Trash2 className={isSmall ? 'w-3 h-3' : 'w-4 h-4'} />
+            )}
+            {isSmall && (isDeleting ? 'Menghapus...' : 'Hapus')}
+        </button>
+    );
+}

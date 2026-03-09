@@ -26,15 +26,25 @@ export default async function EditProfilePage() {
                 <div className="w-10"></div>
             </header>
 
-            <div className="bg-white dark:bg-slate-900 px-6 py-8 border-b border-gray-100 dark:border-slate-800 mb-2 text-center transition-colors duration-300">
-                <div className="w-24 h-24 mx-auto bg-gradient-to-tr from-indigo-100 dark:from-indigo-900/40 to-indigo-50 dark:to-slate-800 rounded-full flex items-center justify-center shrink-0 border-4 border-white dark:border-slate-800 shadow-lg shadow-indigo-100/50 dark:shadow-none mb-4 transition-colors">
-                    <UserCircle2 className="w-16 h-16 text-indigo-300 dark:text-indigo-500" strokeWidth={1} />
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Ubah Foto Profil (Hanya purwarupa)</p>
-            </div>
+            <div className="p-6">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 mb-8 transition-colors duration-300">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                            <UserCircle2 className="w-7 h-7" />
+                        </div>
+                        <div>
+                            <h2 className="text-base font-black text-gray-900 dark:text-gray-100 italic">Identitas Publik</h2>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Atur bagaimana orang lain melihatmu</p>
+                        </div>
+                    </div>
 
-            <div className="bg-white dark:bg-slate-900 px-6 py-6 border-y border-gray-100 dark:border-slate-800 transition-colors duration-300">
-                <EditProfileForm initialData={{ display_name: userProfile.display_name, avatar_url: userProfile.avatar_url }} />
+                    <EditProfileForm
+                        initialDisplayName={userProfile.display_name}
+                        initialBio={(userProfile as any).bio}
+                        initialSocialLinks={(userProfile as any).social_links}
+                        initialAvatarUrl={(userProfile as any).avatar_url}
+                    />
+                </div>
             </div>
         </div>
     );
