@@ -296,8 +296,8 @@ export default function ReadingInterface({
                     <button
                         onClick={() => setIsOpenPicker(true)}
                         className={`p-2.5 border-2 border-white dark:border-slate-950 rounded-full shadow-sm hover:scale-110 active:scale-90 transition-all font-black ${prevChapter
-                                ? 'bg-indigo-600 text-white shadow-indigo-200 dark:shadow-none'
-                                : 'bg-gray-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400'
+                            ? 'bg-indigo-600 text-white shadow-indigo-200 dark:shadow-none'
+                            : 'bg-gray-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400'
                             }`}
                         title="Daftar Isi"
                     >

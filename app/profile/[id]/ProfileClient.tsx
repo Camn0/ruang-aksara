@@ -369,12 +369,12 @@ export default function ProfileClient({
                         </div>
 
                         {/* Quick Connection Stats */}
-                        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-gray-100 dark:border-slate-800 shadow-lg grid grid-cols-2 gap-px bg-gray-100 dark:bg-slate-800 overflow-hidden">
-                            <button onClick={() => handleTabChange('pengikut')} className="bg-white dark:bg-slate-900 p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-all group">
+                        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-gray-100 dark:border-slate-800 shadow-lg grid grid-cols-2 gap-3 bg-gray-50 dark:bg-slate-800/50 overflow-hidden">
+                            <button onClick={() => handleTabChange('pengikut')} className="bg-white dark:bg-slate-900 py-5 px-2 rounded-2xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all group border border-transparent hover:border-indigo-100 dark:hover:border-slate-700 flex flex-col items-center justify-center text-center">
                                 <p className="text-2xl font-black text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 transition-colors uppercase">{userProfile._count.followers}</p>
                                 <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">Pengikut</p>
                             </button>
-                            <button onClick={() => handleTabChange('mengikuti')} className="bg-white dark:bg-slate-900 p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-all group text-right">
+                            <button onClick={() => handleTabChange('mengikuti')} className="bg-white dark:bg-slate-900 py-5 px-2 rounded-2xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all group border border-transparent hover:border-indigo-100 dark:hover:border-slate-700 flex flex-col items-center justify-center text-center">
                                 <p className="text-2xl font-black text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 transition-colors uppercase">{userProfile._count.following}</p>
                                 <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">Mengikuti</p>
                             </button>
