@@ -35,7 +35,7 @@ export default function RootLayout({
                     <Suspense fallback={null}>
                         <InstantLoadingBar />
                     </Suspense>
-                    <div className="w-full sm:max-w-md md:max-w-4xl mx-auto bg-white dark:bg-slate-950 min-h-screen shadow-2xl relative flex flex-col overflow-x-hidden transition-colors duration-300">
+                    <div className="w-full mx-auto bg-white dark:bg-slate-950 min-h-screen shadow-2xl relative flex flex-col overflow-x-hidden transition-colors duration-300">
                         <AuthProvider>
                             {/* Navbar desktop/old hidden di mobile if we want, but let's keep for now */}
                             <main className="flex-grow flex flex-col relative pb-20">

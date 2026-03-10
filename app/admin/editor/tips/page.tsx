@@ -1,92 +1,69 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import Link from "next/link";
-import { ArrowLeft, Sparkles, Book, PenTool, TrendingUp, Heart, Star, Zap, Clock } from "lucide-react";
-import { redirect } from "next/navigation";
+import { Sparkles, PenTool, Users, Star, TrendingUp, Bookmark } from "lucide-react";
 
 export default async function TipsStudioPage() {
-    const session = await getServerSession(authOptions);
-    if (!session || !['admin', 'author'].includes(session.user?.role as string)) {
-        redirect('/');
-    }
+    const session = (await getServerSession(authOptions))!;
 
     const tips = [
         {
-            title: "Pancing dengan Bab Pertama",
-            content: "Buat pembaca penasaran dari bab pertama. Konflik harus diperkenalkan sejak dini untuk menarik minat pembaca.",
-            icon: <Zap className="w-6 h-6 text-yellow-500" />,
-            color: "yellow"
+            title: "Karakter yang Bernapas",
+            desc: "Berikan kelemahan pada karakter utamamu agar mereka terasa nyata.",
+            icon: Users,
+            color: "text-rose-500",
+            bg: "bg-rose-50 dark:bg-rose-900/20"
         },
         {
-            title: "Konsistensi adalah Kunci",
-            content: "Update secara rutin (misal: 2x seminggu) membantu membangun basis pembaca yang setia dan meningkatkan peringkat karya.",
-            icon: <Clock className="w-6 h-6 text-indigo-500" />,
-            color: "indigo"
+            title: "Alur yang Memikat",
+            desc: "Pastikan setiap bab memiliki 'pertanyaan' yang membuat pembaca ingin lanjut.",
+            icon: TrendingUp,
+            color: "text-indigo-500",
+            bg: "bg-indigo-50 dark:bg-indigo-900/20"
         },
         {
-            title: "Deskripsi yang Menghidupkan",
-            content: "Gunakan 'Show, Don't Tell'. Alih-alih mengatakan 'Dia marah', deskripsikan bagaimana tangannya mengepal dan wajahnya memerah.",
-            icon: <PenTool className="w-6 h-6 text-rose-500" />,
-            color: "rose"
+            title: "Dunia yang Hidup",
+            desc: "Tunjukkan, jangan katakan. Gambarkan suasana melalui panca indera.",
+            icon: Star,
+            color: "text-amber-500",
+            bg: "bg-amber-50 dark:bg-amber-900/20"
         },
         {
-            title: "Interaksi dengan Pembaca",
-            content: "Luangkan waktu untuk membalas komentar. Pembaca yang dihargai cenderung memberikan dukungan lebih banyak.",
-            icon: <Heart className="w-6 h-6 text-pink-500" />,
-            color: "pink"
-        },
-        {
-            title: "Tanda Baca & Tata Bahasa",
-            content: "Kualitas tulisan sangat dipengaruhi oleh kerapian PUEBI. Jangan ragu untuk melakukan proofread sebelum publish.",
-            icon: <Book className="w-6 h-6 text-emerald-500" />,
-            color: "emerald"
-        },
-        {
-            title: "Gunakan Metadata yang Tepat",
-            content: "Pilih genre dan tag yang relevan. Cover yang menarik juga sangat membantu menarik klik pertama pembaca.",
-            icon: <Sparkles className="w-6 h-6 text-violet-500" />,
-            color: "violet"
+            title: "Disiplin Menulis",
+            desc: "Tulislah setiap hari, meski hanya 100 kata. Konsistensi adalah kunci.",
+            icon: PenTool,
+            color: "text-emerald-500",
+            bg: "bg-emerald-50 dark:bg-emerald-900/20"
         }
     ];
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 pb-20 transition-colors duration-300">
-            <header className="bg-indigo-900 border-b border-indigo-800 p-8 text-white relative overflow-hidden text-left">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <div className="w-full px-4 sm:px-8 mx-auto relative z-10">
-                    <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-indigo-300 hover:text-white transition-colors text-[10px] sm:text-xs font-black uppercase tracking-widest mb-6">
-                        <ArrowLeft className="w-4 h-4" /> Kembali
-                    </Link>
-                    <h1 className="text-2xl sm:text-3xl font-black italic mb-2">Tips Studio</h1>
-                    <p className="text-indigo-300 font-bold text-[10px] sm:text-sm uppercase tracking-widest">Panduan Mengasah Pena</p>
-                </div>
-            </header>
+        <div className="pb-20">
+            <div className="px-4 sm:px-8 pt-6 sm:pt-10 mb-12 sm:mb-16">
+                <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic mb-2">Tips Studio</h1>
+                <p className="text-indigo-500 font-extrabold text-[10px] sm:text-xs uppercase tracking-widest leading-none">Panduan Mengasah Pena</p>
+            </div>
 
-            <main className="w-full mx-auto p-4 sm:p-8 -mt-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <main className="w-full mx-auto px-4 sm:px-8 -mt-6 sm:-mt-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
                     {tips.map((tip, idx) => (
-                        <div key={idx} className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100/50 dark:shadow-none hover:scale-[1.02] transition-all">
-                            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 ${tip.color === 'yellow' ? 'bg-amber-50 dark:bg-amber-900/20' :
-                                tip.color === 'indigo' ? 'bg-indigo-50 dark:bg-indigo-900/20' :
-                                    tip.color === 'rose' ? 'bg-rose-50 dark:bg-rose-900/20' :
-                                        tip.color === 'pink' ? 'bg-pink-50 dark:bg-pink-900/20' :
-                                            tip.color === 'emerald' ? 'bg-emerald-50 dark:bg-emerald-900/20' :
-                                                'bg-violet-50 dark:bg-violet-900/20'
-                                }`}>
-                                {tip.icon}
+                        <div key={idx} className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100/50 dark:shadow-none hover:scale-[1.02] transition-all group">
+                            <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${tip.bg} transition-transform group-hover:rotate-6`}>
+                                <tip.icon className={`w-5 h-5 sm:w-7 sm:h-7 ${tip.color}`} />
                             </div>
-                            <h3 className="text-lg font-black text-gray-900 dark:text-gray-100 mb-3 uppercase tracking-tight">{tip.title}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-medium">{tip.content}</p>
+                            <h3 className="text-sm sm:text-xl font-black text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 uppercase tracking-tight">{tip.title}</h3>
+                            <p className="text-[10px] sm:text-[13px] text-gray-500 dark:text-gray-400 font-bold leading-relaxed">{tip.desc}</p>
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-12 bg-indigo-600 rounded-[3rem] p-10 text-white text-center shadow-2xl shadow-indigo-100 dark:shadow-none">
-                    <h2 className="text-2xl font-black italic mb-4">Butuh Inspirasi Lebih?</h2>
-                    <p className="text-indigo-100 font-bold text-xs uppercase tracking-widest mb-8 px-10">Jangan takut untuk bereksperimen dengan berbagai aliran cerita. Teruslah menulis, karena setiap kata adalah progres.</p>
-                    <Link href="/admin/editor/karya" className="inline-block bg-white text-indigo-600 px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-xl">
-                        Ayo Mulai Menulis Sekarang
-                    </Link>
+                <div className="mt-8 sm:mt-12 bg-indigo-600 rounded-[2rem] sm:rounded-[4.5rem] p-6 sm:p-12 text-white text-center shadow-2xl shadow-indigo-500/20 relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] group-hover:scale-110 transition-transform duration-1000"></div>
+                    <div className="relative z-10 max-w-lg mx-auto">
+                        <Bookmark className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-4 sm:mb-6 opacity-50 group-hover:scale-110 transition-transform" />
+                        <h2 className="text-lg sm:text-2xl font-black italic mb-3 sm:mb-4">Siap Melangkah Lebih Jauh?</h2>
+                        <p className="text-[9px] sm:text-[11px] font-bold text-indigo-100 uppercase tracking-widest leading-relaxed mb-6 sm:mb-10 opacity-80">Kami sedang menyiapkan fitur bimbingan menulis langsung dari editor profesional.</p>
+                        <button className="bg-white text-indigo-600 px-6 sm:px-10 py-3 sm:py-4 rounded-full font-black text-[9px] sm:text-[11px] uppercase tracking-widest transition-all hover:scale-110 active:scale-95 shadow-xl">Kirim Saran Fitur</button>
+                    </div>
                 </div>
             </main>
         </div>

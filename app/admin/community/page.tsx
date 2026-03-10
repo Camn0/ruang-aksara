@@ -1,17 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { MessageSquare, ArrowLeft, Trash2, Clock, BookOpen, User } from "lucide-react";
-import { notFound, redirect } from "next/navigation";
+import { MessageSquare } from "lucide-react";
 
-export default async function ManajemenKomentarPage() {
-    const session = await getServerSession(authOptions);
-    if (!session || !['admin', 'author'].includes(session.user?.role as string)) {
-        redirect('/');
-    }
+export default async function CommentManagementPage() {
+    const session = (await getServerSession(authOptions))!;
 
-    // Fetch comments on the author's books
     const comments = await prisma.comment.findMany({
         where: {
             bab: {
@@ -20,6 +14,9 @@ export default async function ManajemenKomentarPage() {
                 }
             }
         },
+        orderBy: {
+            created_at: 'desc'
+        },
         include: {
             user: true,
             bab: {
@@ -27,70 +24,46 @@ export default async function ManajemenKomentarPage() {
                     karya: true
                 }
             }
-        },
-        orderBy: {
-            created_at: 'desc'
         }
     });
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-20 transition-colors duration-300">
-            <header className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 p-6 sticky top-0 z-10 shadow-sm">
-                <div className="w-full px-4 sm:px-8 mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3 sm:gap-4">
-                        <Link href="/admin/dashboard" className="p-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-full transition-all">
-                            <ArrowLeft className="w-5 h-5 text-gray-500" />
-                        </Link>
-                        <div>
-                            <h1 className="text-lg sm:text-xl font-black text-gray-900 dark:text-gray-100">Manajemen Komentar</h1>
-                            <p className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">Interaksi Pembaca</p>
-                        </div>
-                    </div>
-                    <div className="bg-indigo-50 dark:bg-indigo-900/30 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-indigo-100 dark:border-indigo-800">
-                        <span className="text-[9px] sm:text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{comments.length} Total</span>
-                    </div>
+        <div className="pb-20">
+            <div className="px-4 sm:px-8 pt-6 sm:pt-10 mb-6 sm:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic">Komentar</h1>
+                <div className="bg-indigo-50 dark:bg-indigo-900/30 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-indigo-100 dark:border-indigo-800">
+                    <span className="text-[10px] sm:text-[11px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{comments.length} Total</span>
                 </div>
-            </header>
+            </div>
 
-            <main className="w-full mx-auto p-4 sm:p-6 transition-all">
+            <main className="w-full mx-auto px-4 sm:px-8 transition-all">
                 {comments.length === 0 ? (
-                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[2.5rem] sm:rounded-[3rem] border border-dashed border-gray-200 dark:border-slate-800 px-6">
-                        <MessageSquare className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Belum ada komentar masuk</p>
+                    <div className="text-center py-16 sm:py-20 bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[3rem] border border-dashed border-gray-200 dark:border-slate-800 px-4 sm:px-6">
+                        <MessageSquare className="w-10 h-10 sm:w-12 sm:h-12 text-gray-200 mx-auto mb-3 sm:mb-4" />
+                        <h3 className="text-lg font-black text-gray-900 dark:text-gray-100 mb-1">Belum Ada Komentar</h3>
+                        <p className="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-widest leading-relaxed px-4">Interaksi pembaca pada karya Anda akan muncul di sini.</p>
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {comments.map((comment) => (
-                            <div key={comment.id} className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 overflow-hidden border border-gray-100 dark:border-slate-700">
-                                            {comment.user.avatar_url ? <img src={comment.user.avatar_url} className="w-full h-full object-cover" alt="" /> : <User className="w-5 h-5" />}
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight">{comment.user.display_name}</p>
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">@{comment.user.username}</p>
-                                        </div>
+                            <div key={comment.id} className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-slate-800 hover:border-indigo-100 dark:hover:border-indigo-900 transition-all shadow-sm group">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-slate-800 flex items-center justify-center text-xs font-black text-indigo-600">
+                                        {comment.user.display_name[0].toUpperCase()}
                                     </div>
-                                    <div className="flex items-center gap-2 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
-                                        <Clock className="w-3 h-3" /> {new Date(comment.created_at).toLocaleDateString()}
-                                    </div>
-                                </div>
-
-                                <div className="bg-gray-50/50 dark:bg-slate-800/50 p-4 rounded-2xl mb-4 border border-transparent group-hover:border-indigo-100 transition-colors">
-                                    <p className="text-sm text-gray-700 dark:text-gray-400 italic">"{comment.content}"</p>
-                                </div>
-
-                                <div className="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-slate-800">
-                                    <div className="flex items-center gap-2">
-                                        <BookOpen className="w-3.5 h-3.5 text-indigo-500" />
-                                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest truncate max-w-[200px]">
-                                            {comment.bab.karya.title} — Bab {comment.bab.chapter_no}
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-[11px] font-black text-gray-900 dark:text-gray-100 uppercase truncate">{comment.user.display_name}</p>
+                                        <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest">
+                                            {new Date(comment.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                         </p>
                                     </div>
-                                    <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
-                                        Lihat Konteks
-                                    </Link>
+                                </div>
+                                <div className="bg-gray-50/50 dark:bg-slate-800/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-transparent group-hover:border-indigo-50 transition-colors mb-3">
+                                    <p className="text-[12px] text-gray-600 dark:text-gray-400 leading-relaxed italic line-clamp-3">"{comment.content}"</p>
+                                </div>
+                                <div className="flex items-center gap-2 mt-auto pt-2 border-t border-gray-50 dark:border-slate-800/50">
+                                    <span className="text-[8px] font-black text-gray-300 dark:text-gray-600 uppercase tracking-widest">Pada:</span>
+                                    <span className="text-[9px] font-black text-indigo-500 truncate max-w-[150px] uppercase tracking-tight italic">{comment.bab.karya.title}</span>
                                 </div>
                             </div>
                         ))}
