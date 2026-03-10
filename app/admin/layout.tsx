@@ -1,3 +1,13 @@
+/**
+ * ADMIN LAYOUT (AUTHOR STUDIO)
+ * ----------------------------
+ * Ini adalah layout utama untuk seluruh area /admin (Author Studio).
+ * Fungsi Utama:
+ * 1. Proteksi Rute (RBAC): Memastikan hanya admin/author yang bisa masuk.
+ * 2. Navigasi Terpadu: Menyediakan Sidebar (Desktop) dan Header (Mobile).
+ * 3. User Context: Menampilkan profil user yang sedang login.
+ */
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -10,12 +20,18 @@ export default async function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
+    // [1] SECURITY CHECK: Server-side Session Validation
+    // Menggunakan getServerSession untuk keamanan maksimal (bukan check client-side).
     const session = await getServerSession(authOptions);
 
+    // [2] RBAC (Role Based Access Control)
+    // Jika tidak login atau role bukan admin/author, tendang ke homepage.
     if (!session || !['admin', 'author'].includes(session.user?.role as string)) {
         redirect('/');
     }
 
+    // [3] DYNAMIC NAVIGATION
+    // Menu dasar yang tersedia untuk Author maupun Admin.
     const navigation = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Karya', href: '/admin/editor/karya', icon: BookOpen },
@@ -23,14 +39,17 @@ export default async function AdminLayout({
         { name: 'Tips Studio', href: '/admin/editor/tips', icon: Sparkles },
     ];
 
+    // Menu khusus Administrator (Kelola Genre/User platform).
     if (session.user.role === 'admin') {
         navigation.push({ name: 'Genre', href: '/admin/genre', icon: Settings });
     }
 
     return (
         <div className="flex min-h-screen bg-[#FDFBF7] dark:bg-slate-950 transition-colors duration-500 w-full">
-            {/* Desktop Sidebar */}
+
+            {/* --- DESKTOP SIDEBAR --- */}
             <aside className="hidden lg:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-gray-100 dark:border-slate-800 sticky top-0 h-screen z-30 transition-colors">
+                {/* Brand / Logo Section */}
                 <div className="p-8">
                     <Link href="/" className="flex items-center gap-3 group">
                         <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-xl flex items-center justify-center text-white font-black italic shadow-lg shadow-indigo-100 dark:shadow-none transition-transform group-hover:scale-110">
@@ -40,6 +59,7 @@ export default async function AdminLayout({
                     </Link>
                 </div>
 
+                {/* Navigation Links */}
                 <nav className="flex-1 px-4 space-y-1">
                     {navigation.map((item) => (
                         <Link
@@ -53,6 +73,7 @@ export default async function AdminLayout({
                     ))}
                 </nav>
 
+                {/* Footer Sidebar: User Profile & Logout */}
                 <div className="p-6 border-t border-gray-50 dark:border-slate-800">
                     <div className="flex items-center gap-3 mb-6 px-2">
                         <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 shadow-sm">
@@ -67,8 +88,9 @@ export default async function AdminLayout({
                 </div>
             </aside>
 
-            {/* Mobile Header (Hidden on Desktop) */}
+            {/* --- MAIN CONTENT AREA --- */}
             <div className="flex-1 flex flex-col min-w-0">
+                {/* MOBILE HEADER: Hanya muncul di screen kecil (sm/md) */}
                 <header className="lg:hidden h-16 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between px-4 sticky top-0 z-30 transition-colors">
                     <Link href="/admin/dashboard" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-lg flex items-center justify-center text-white font-black italic shadow-md text-xs">
@@ -83,7 +105,7 @@ export default async function AdminLayout({
                     </div>
                 </header>
 
-                {/* Main Content Area */}
+                {/* Main Content Injector */}
                 <main className="flex-1 w-full max-w-full overflow-x-hidden">
                     {children}
                 </main>

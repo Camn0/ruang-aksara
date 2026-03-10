@@ -1,3 +1,13 @@
+/**
+ * ADMIN DASHBOARD PAGE
+ * --------------------
+ * Pusat kendali untuk Author dan Admin.
+ * Fungsi:
+ * 1. Agregasi Statistik: Menghitung total views, bookmarks, dan rating.
+ * 2. Manajemen Karya: List karya yang dimiliki oleh user (Author) atau seluruh platform (Admin).
+ * 3. Recent Activity: Menampilkan komentar terbaru dari pembaca.
+ */
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -5,10 +15,13 @@ import Link from "next/link";
 import { TrendingUp, Star, PenTool, Users, MessageSquare, BookOpen, Plus, ChevronRight, BarChart3, Bookmark, Sparkles } from "lucide-react";
 
 export default async function AdminDashboardPage() {
+    // [1] AUTHENTICATION & SESSION
+    // Mengambil session aktif. Non-null assertion (!) aman karena sudah divalidasi di parent layout.
     const session = (await getServerSession(authOptions))!;
 
-    // Ambil daftar karya
-    const daftarKaryaRaw = await prisma.karya.findMany({
+    // [2] DATA FETCHING: Daftar Karya
+    // Admin melihat semua, Author hanya melihat miliknya sendiri (Security barrier).
+    const daftarKarya = await prisma.karya.findMany({
         where: session.user.role === 'admin' ? undefined : { uploader_id: session.user.id },
         orderBy: { title: 'asc' },
         include: {
@@ -18,9 +31,8 @@ export default async function AdminDashboardPage() {
         }
     });
 
-    const daftarKarya = daftarKaryaRaw as any[];
-
-    // Hitung agregat statistik global
+    // [3] STATISTICAL AGGREGATION (Optimization: Done in memory after single query)
+    // Menjumlahkan views, bookmarks, dan menghitung rata-rata rating secara efisien.
     const totalViews = daftarKarya.reduce((acc, k) => acc + k.total_views, 0);
     const totalBookmarks = daftarKarya.reduce((acc, k) => acc + k._count.bookmarks, 0);
     const karyaWithRating = daftarKarya.filter(k => k.avg_rating > 0);
@@ -28,7 +40,8 @@ export default async function AdminDashboardPage() {
         ? karyaWithRating.reduce((acc, k) => acc + k.avg_rating, 0) / karyaWithRating.length
         : 0;
 
-    // Fetch latest comments for author's works (Community section)
+    // [4] DATA FETCHING: Community Interaction
+    // Mengambil komentar terbaru khusus untuk karya milik user yang sedang login.
     const latestComments = await prisma.comment.findMany({
         where: {
             bab: {
@@ -38,7 +51,7 @@ export default async function AdminDashboardPage() {
             }
         },
         orderBy: { created_at: 'desc' },
-        take: 3,
+        take: 3, // Performa: Hanya ambil 3 item terbaru.
         include: {
             user: true,
             bab: {
@@ -49,6 +62,7 @@ export default async function AdminDashboardPage() {
 
     return (
         <div className="pb-24">
+            {/* Header Dashboard: Info User & Role */}
             <div className="px-3 sm:px-6 pt-6 sm:pt-10 mb-6 sm:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic">Dashboard</h1>
                 <div className="flex items-center gap-2 px-1">
@@ -59,7 +73,9 @@ export default async function AdminDashboardPage() {
             </div>
 
             <div className="w-full mx-auto px-3 sm:px-6">
+                {/* --- TOP STATISTICS GRID --- */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10 sm:mb-16">
+                    {/* View Statistics */}
                     <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-indigo-500/10 transition-all duration-500">
                         <div className="p-2 sm:p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -70,6 +86,7 @@ export default async function AdminDashboardPage() {
                             <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase">Views</span>
                         </div>
                     </div>
+                    {/* Rating Statistics */}
                     <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-amber-500/10 transition-all duration-500">
                         <div className="p-2 sm:p-3 bg-amber-50 dark:bg-amber-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-amber-500 group-hover:text-white transition-all">
                             <Star className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -80,6 +97,7 @@ export default async function AdminDashboardPage() {
                             <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase">Stars</span>
                         </div>
                     </div>
+                    {/* Bookmark Statistics */}
                     <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-rose-500/10 transition-all duration-500">
                         <div className="p-2 sm:p-3 bg-rose-50 dark:bg-rose-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-rose-500 group-hover:text-white transition-all">
                             <Bookmark className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -90,6 +108,7 @@ export default async function AdminDashboardPage() {
                             <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase">Saves</span>
                         </div>
                     </div>
+                    {/* Catalog Statistics */}
                     <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-emerald-500/10 transition-all duration-500">
                         <div className="p-2 sm:p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                             <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -103,7 +122,7 @@ export default async function AdminDashboardPage() {
                 </div>
 
                 <div className="grid lg:grid-cols-12 gap-4 sm:gap-12">
-                    {/* Main Content: Story Management */}
+                    {/* --- MAIN CONTENT: STORY MANAGEMENT --- */}
                     <div className="lg:col-span-8 space-y-8 sm:space-y-12">
                         <section>
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 px-1 sm:px-4">
@@ -113,6 +132,7 @@ export default async function AdminDashboardPage() {
                                 </Link>
                             </div>
 
+                            {/* Empty State */}
                             {daftarKarya.length === 0 ? (
                                 <div className="text-center py-20 sm:py-32 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-[2.5rem] sm:rounded-[4rem] shadow-2xl shadow-gray-200/30 px-6">
                                     <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 dark:bg-slate-800 rounded-[2rem] sm:rounded-[2.5rem] flex items-center justify-center mb-6 sm:mb-8 mx-auto shadow-inner">
@@ -125,9 +145,11 @@ export default async function AdminDashboardPage() {
                                     </Link>
                                 </div>
                             ) : (
+                                /* Karya List Grid */
                                 <div className="grid gap-4 sm:gap-8">
                                     {daftarKarya.map((item) => (
                                         <Link key={item.id} href={`/admin/editor/karya/${item.id}`} className="group bg-white dark:bg-slate-900 p-3 sm:p-6 rounded-3xl sm:rounded-[3.5rem] border border-gray-100 dark:border-slate-800 hover:border-indigo-100 dark:hover:border-indigo-900 shadow-xl shadow-gray-200/20 dark:shadow-none transition-all flex flex-col sm:flex-row gap-4 sm:gap-8 items-start sm:items-center active:scale-[0.99] duration-500">
+                                            {/* Cover Thumbnail */}
                                             <div className="w-20 h-30 sm:w-28 sm:h-40 rounded-xl sm:rounded-[2.5rem] overflow-hidden shrink-0 shadow-2xl border-2 sm:border-4 border-white dark:border-slate-800 mx-auto sm:mx-0">
                                                 {item.cover_url ? (
                                                     <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
@@ -135,6 +157,7 @@ export default async function AdminDashboardPage() {
                                                     <div className="w-full h-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-3 text-center text-[10px] text-gray-400 font-black uppercase text-pretty">{item.title}</div>
                                                 )}
                                             </div>
+                                            {/* Karya Details */}
                                             <div className="flex-1 min-w-0 py-1 sm:py-2 text-center sm:text-left w-full">
                                                 <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-4 mb-1 sm:mb-3">
                                                     <h3 className="font-black text-gray-900 dark:text-gray-100 text-lg sm:text-2xl leading-tight line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{item.title}</h3>
@@ -142,6 +165,7 @@ export default async function AdminDashboardPage() {
                                                 </div>
                                                 <p className="text-[10px] sm:text-[13px] text-indigo-500 dark:text-indigo-400 font-extrabold mb-4 sm:mb-8 uppercase tracking-[0.15em]">{item.penulis_alias}</p>
 
+                                                {/* Meta Stats at Karya Level */}
                                                 <div className="flex justify-center sm:justify-start gap-4 sm:gap-6 items-center flex-wrap">
                                                     <div className="flex flex-col">
                                                         <span className="text-[8px] sm:text-[10px] font-black text-gray-300 dark:text-gray-600 uppercase tracking-[0.2em] mb-0.5 sm:mb-1.5">Views</span>
@@ -175,8 +199,9 @@ export default async function AdminDashboardPage() {
                         </section>
                     </div>
 
-                    {/* Sidebar: Insights & Recent Community */}
+                    {/* --- SIDEBAR: INSIGHTS & RECENT COMMUNITY --- */}
                     <div className="lg:col-span-4 space-y-8 sm:space-y-12">
+                        {/* Recent Comments Section */}
                         <section className="bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[4rem] p-6 sm:p-10 border border-gray-100 dark:border-slate-800 shadow-2xl shadow-gray-200/40 dark:shadow-none relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500 rounded-full blur-[100px] opacity-10 -mr-24 -mt-24"></div>
                             <div className="relative z-10">
@@ -190,6 +215,7 @@ export default async function AdminDashboardPage() {
                                         <p className="text-xs text-gray-400 font-black leading-relaxed uppercase tracking-[0.2em]">Belum ada <br />interaksi masuk</p>
                                     </div>
                                 ) : (
+                                    /* Comments List */
                                     <div className="space-y-10">
                                         {latestComments.map(c => (
                                             <div key={c.id} className="group cursor-default animate-in fade-in slide-in-from-right-4 duration-500">
@@ -216,6 +242,7 @@ export default async function AdminDashboardPage() {
                             </div>
                         </section>
 
+                        {/* Tips Studio Promotional Section */}
                         <section className="bg-indigo-900 rounded-3xl sm:rounded-[4rem] p-8 sm:p-12 text-white text-left relative overflow-hidden group shadow-3xl shadow-indigo-500/10">
                             <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] group-hover:scale-110 transition-transform duration-1000"></div>
                             <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left">

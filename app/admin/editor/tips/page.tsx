@@ -1,10 +1,24 @@
+/**
+ * TIPS STUDIO PAGE
+ * ----------------
+ * Halaman edukasi untuk para penulis (Author).
+ * Fungsi:
+ * 1. Edukasi: Memberikan tips menulis profesional (static content untuk saat ini).
+ * 2. Motivasi: CTA untuk fitur bimbingan di masa depan.
+ * 3. UI: Menggunakan kartu bertema warna (color-coded) untuk kemudahan navigasi visual.
+ */
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Sparkles, PenTool, Users, Star, TrendingUp, Bookmark } from "lucide-react";
 
 export default async function TipsStudioPage() {
+    // [1] AUTHENTICATION
+    // Cek session (non-null assertion aman karena layout protection).
     const session = (await getServerSession(authOptions))!;
 
+    // [2] CONTENT DATA: Tips Menulis
+    // List statis yang mendefinisikan icon, warna, dan isi tips.
     const tips = [
         {
             title: "Karakter yang Bernapas",
@@ -38,12 +52,14 @@ export default async function TipsStudioPage() {
 
     return (
         <div className="pb-20">
+            {/* Page Header: Title & Subtitle */}
             <div className="px-4 sm:px-8 pt-6 sm:pt-10 mb-12 sm:mb-16">
                 <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic mb-2">Tips Studio</h1>
                 <p className="text-indigo-500 font-extrabold text-[10px] sm:text-xs uppercase tracking-widest leading-none">Panduan Mengasah Pena</p>
             </div>
 
             <main className="w-full mx-auto px-4 sm:px-8 -mt-6 sm:-mt-8">
+                {/* Tips Grid: Menyajikan kartu tips dengan hover effect yang dinamis */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
                     {tips.map((tip, idx) => (
                         <div key={idx} className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100/50 dark:shadow-none hover:scale-[1.02] transition-all group">
@@ -56,6 +72,7 @@ export default async function TipsStudioPage() {
                     ))}
                 </div>
 
+                {/* Promotional Banner: Siapkan untuk fitur interaktif di masa depan */}
                 <div className="mt-8 sm:mt-12 bg-indigo-600 rounded-[2rem] sm:rounded-[4.5rem] p-6 sm:p-12 text-white text-center shadow-2xl shadow-indigo-500/20 relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] group-hover:scale-110 transition-transform duration-1000"></div>
                     <div className="relative z-10 max-w-lg mx-auto">
