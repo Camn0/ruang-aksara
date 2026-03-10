@@ -263,6 +263,5 @@ export default async function AdminDashboardPage() {
                 </div>
             </div>
         </div>
-        </div >
     );
 }
