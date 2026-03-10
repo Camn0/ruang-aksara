@@ -36,32 +36,32 @@ export default async function ManajemenKomentarPage() {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-20 transition-colors duration-300">
             <header className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 p-6 sticky top-0 z-10 shadow-sm">
-                <div className="w-full px-8 mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="w-full px-4 sm:px-8 mx-auto flex items-center justify-between">
+                    <div className="flex items-center gap-3 sm:gap-4">
                         <Link href="/admin/dashboard" className="p-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-full transition-all">
                             <ArrowLeft className="w-5 h-5 text-gray-500" />
                         </Link>
                         <div>
-                            <h1 className="text-xl font-black text-gray-900 dark:text-gray-100">Manajemen Komentar</h1>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Interaksi Pembaca pada Karya Anda</p>
+                            <h1 className="text-lg sm:text-xl font-black text-gray-900 dark:text-gray-100">Manajemen Komentar</h1>
+                            <p className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">Interaksi Pembaca</p>
                         </div>
                     </div>
-                    <div className="bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 rounded-xl border border-indigo-100 dark:border-indigo-800">
-                        <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{comments.length} Total Komentar</span>
+                    <div className="bg-indigo-50 dark:bg-indigo-900/30 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-indigo-100 dark:border-indigo-800">
+                        <span className="text-[9px] sm:text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{comments.length} Total</span>
                     </div>
                 </div>
             </header>
 
-            <main className="w-full mx-auto p-6 transition-all">
+            <main className="w-full mx-auto p-4 sm:p-6 transition-all">
                 {comments.length === 0 ? (
-                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[3rem] border border-dashed border-gray-200 dark:border-slate-800">
+                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[2.5rem] sm:rounded-[3rem] border border-dashed border-gray-200 dark:border-slate-800 px-6">
                         <MessageSquare className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Belum ada komentar masuk</p>
                     </div>
                 ) : (
                     <div className="space-y-4">
                         {comments.map((comment) => (
-                            <div key={comment.id} className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
+                            <div key={comment.id} className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 overflow-hidden border border-gray-100 dark:border-slate-700">

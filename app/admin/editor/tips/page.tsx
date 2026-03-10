@@ -53,20 +53,20 @@ export default async function TipsStudioPage() {
         <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 pb-20 transition-colors duration-300">
             <header className="bg-indigo-900 border-b border-indigo-800 p-8 text-white relative overflow-hidden text-left">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <div className="w-full px-8 mx-auto relative z-10">
-                    <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-indigo-300 hover:text-white transition-colors text-xs font-black uppercase tracking-widest mb-6">
-                        <ArrowLeft className="w-4 h-4" /> Kembali ke Studio
+                <div className="w-full px-4 sm:px-8 mx-auto relative z-10">
+                    <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-indigo-300 hover:text-white transition-colors text-[10px] sm:text-xs font-black uppercase tracking-widest mb-6">
+                        <ArrowLeft className="w-4 h-4" /> Kembali
                     </Link>
-                    <h1 className="text-3xl font-black italic mb-2">Tips Studio</h1>
-                    <p className="text-indigo-300 font-bold text-sm uppercase tracking-widest">Panduan Mengasah Pena & Meraih Pembaca Setia</p>
+                    <h1 className="text-2xl sm:text-3xl font-black italic mb-2">Tips Studio</h1>
+                    <p className="text-indigo-300 font-bold text-[10px] sm:text-sm uppercase tracking-widest">Panduan Mengasah Pena</p>
                 </div>
             </header>
 
-            <main className="w-full mx-auto p-8 -mt-8">
-                <div className="grid md:grid-cols-2 gap-6">
+            <main className="w-full mx-auto p-4 sm:p-8 -mt-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     {tips.map((tip, idx) => (
-                        <div key={idx} className="bg-white dark:bg-slate-900 p-8 rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100/50 dark:shadow-none hover:scale-[1.02] transition-all">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${tip.color === 'yellow' ? 'bg-amber-50 dark:bg-amber-900/20' :
+                        <div key={idx} className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100/50 dark:shadow-none hover:scale-[1.02] transition-all">
+                            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 ${tip.color === 'yellow' ? 'bg-amber-50 dark:bg-amber-900/20' :
                                 tip.color === 'indigo' ? 'bg-indigo-50 dark:bg-indigo-900/20' :
                                     tip.color === 'rose' ? 'bg-rose-50 dark:bg-rose-900/20' :
                                         tip.color === 'pink' ? 'bg-pink-50 dark:bg-pink-900/20' :
