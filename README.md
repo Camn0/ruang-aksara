@@ -5,6 +5,7 @@
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-Database-green?style=for-the-badge&logo=supabase&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-Upstash-red?style=for-the-badge&logo=redis&logoColor=white)
 
 Ruang Aksara is a platform for publishing and reading digital literature. Built with **Next.js 14** and **Prisma**, it features an automated reading progress system, author publication tools, a personal library for readers, and a community interaction system including reviews and threaded discussions.
 
@@ -21,9 +22,11 @@ The application utilizes the Next.js App Router for frontend and server-side log
 | **Styling** | Tailwind CSS + Custom CSS for responsive layout. |
 | **Database** | PostgreSQL (managed by Supabase) + Prisma ORM. |
 | **Authentication** | NextAuth.js (Credentials Provider with RBAC). |
-| **Caching** | Redis (Upstash) for real-time view counts. |
+| **Security** | BCrypt.js for secure password hashing. |
+| **Caching** | Redis (Upstash) for real-time view counts and analytics. |
 | **PWA** | Progressive Web App support for mobile installation. |
-| **State** | Server Actions and LocalStorage for user preferences. |
+| **Notifications** | Sonner for real-time toast feedback. |
+| **Theming** | Next-themes for dynamic Dark/Light mode support. |
 
 ---
 
@@ -36,21 +39,23 @@ The project follows a modular structure separating mutations, UI components, and
 ```bash
 ruang-aksara/
 ├── app/
+│   ├── auth/                # Authentication (Login/Register)
 │   ├── actions/               # Server actions (Mutations)
 │   ├── admin/                 # Editor and Moderator dashboards
 │   ├── library/               # Bookshelf (History, Favorites, Finished)
 │   ├── novel/                 # Reader interface and Story details
-│   ├── profile/               # User profiles and Community posts
-│   └── search/                # Content discovery and Filtering
+│   ├── onboarding/            # User welcome and Role selection
+│   ├── profile/               # User profiles, Follows, and Community posts
+│   ├── search/                # Content discovery and Filtering
+│   └── user/                  # User settings and personalized data
 ├── components/                # Reusable UI elements
-├── lib/                       # API clients (Prisma, Redis)
+├── lib/                       # API clients (Prisma, Redis, Auth)
 └── prisma/                    # Schema and data modeling
-
 ```
 
 ### 2. Database Schema
 
-The backend uses a relational schema to handle users, their creative works, and community interactions.
+The backend uses a relational schema to handle users, their creative works, and complex social interactions.
 
 ```sql
 -- Core User and Content Tables
@@ -65,22 +70,33 @@ CREATE TABLE Karya (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   total_views INTEGER DEFAULT 0,
-  is_completed BOOLEAN DEFAULT FALSE,
+  avg_rating FLOAT DEFAULT 0,
   uploader_id TEXT REFERENCES User(id)
+);
+
+-- Social & Engagement
+CREATE TABLE Follow (
+  follower_id TEXT REFERENCES User(id),
+  following_id TEXT REFERENCES User(id)
 );
 
 CREATE TABLE AuthorPost (
   id TEXT PRIMARY KEY,
   author_id TEXT REFERENCES User(id),
   content TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
+  image_url TEXT
 );
 
+CREATE TABLE ChapterReaction (
+  user_id TEXT,
+  bab_id TEXT,
+  reaction_type TEXT -- LIKE, LOVE, FIRE, etc.
+);
 ```
 
 ### 3. Server Actions
 
-Data mutations are handled via Server Actions to manage state changes across the application.
+Data mutations are handled via Server Actions to manage state changes across the application securely.
 
 ```typescript
 // app/actions/post.ts example
@@ -90,8 +106,14 @@ export async function createAuthorPost(formData: FormData) {
   if (!session) return { error: "Unauthorized" }
   
   const content = formData.get('content') as string
+  const image_url = formData.get('image_url') as string
+  
   await prisma.authorPost.create({
-    data: { content, author_id: session.user.id }
+    data: { 
+      content, 
+      author_id: session.user.id,
+      image_url 
+    }
   })
   revalidatePath('/profile/[id]')
 }
@@ -105,42 +127,45 @@ The interface focuses on content delivery and social engagement for literary ent
 
 ### 1. Reader & Personalization
 
-The reader interface includes controls for font size adjustment and theme switching. It uses an immersive layout that prioritizes text by hiding navigation elements during active reading.
+The reader interface includes an immersive layout with chapter pickers, font adjustments, and theme switching. It tracks reading progress in real-time.
 
 <img width="1365" height="400" alt="Reader Interface" src="https://via.placeholder.com/1365x400?text=Reader+Interface+and+Controls" />
 
-### 2. Library (Personal Bookshelf)
+### 2. Library & Gamification
 
-The Library is divided into functional tabs for managing a user's reading list.
+The Library manages a user's reading list, while the system rewards engagement with streaks and points.
 
-| Tab | Description |
+| Feature | Description |
 | --- | --- |
-| **History** | Recently read books with progress bars and timestamps. |
-| **Favorites** | Bookmarked works that the user follows. |
-| **Finished** | Works completed by the user or marked as finished. |
+| **History** | Recently read books with progress tracking. |
+| **Favorites** | Bookmarked works for easy access. |
+| **Gamification** | Reading streaks and points to encourage daily reading. |
 
-<img width="1365" height="500" alt="Library View" src="https://via.placeholder.com/1365x500?text=Library+Tabs+Preview" />
+<img width="1365" height="500" alt="Library View" src="https://via.placeholder.com/1365x500?text=Library+and+User+Stats+Preview" />
 
 ### 3. Community Interaction
 
-Engagement is facilitated through threaded comments on chapters, formal reviews on story pages, and author updates.
+Engagement is high with threaded comments, author follows, and emoji reactions on specific chapters.
 
-| Feature | Preview |
+| Feature | Description |
 | --- | --- |
-| **Threading** | <img width="441" height="150" alt="Comments" src="https://via.placeholder.com/441x150?text=Nested+Comments+Interface" /> |
-| **Reviewing** | <img width="430" height="150" alt="Reviews" src="https://via.placeholder.com/430x150?text=Review+and+Upvote+System" /> |
-| **Posting** | <img width="439" height="150" alt="Author Posts" src="https://via.placeholder.com/439x150?text=Author+Community+Board" /> |
+| **Follow System** | Stay updated with your favorite authors. |
+| **Reactions** | Quick emoji-based engagement on chapters. |
+| **Author Posts** | Community board for author-to-reader announcements. |
+| **Reviews** | Long-form formal reviews with upvoting and discussions. |
+
+<img width="1365" height="300" alt="Engagement Preview" src="https://via.placeholder.com/1365x300?text=Community+Interactions+and+Social+Features" />
 
 ### 4. Color Palette
 
-The platform uses a standardized Indigo-based theme for consistent visual identification.
+The platform uses a standardized Indigo-based theme with full dark mode support.
 
 | Element | Hex Code | Usage |
 | --- | --- | --- |
-| **Primary** | `#4f46e5` | Active UI and buttons |
+| **Primary** | `#4f46e5` | Active UI, buttons, and highlights |
 | **Background** | `#f9fafb` | Primary light background |
-| **Slate** | `#020617` | Dark mode background |
-| **Amber** | `#fbbf24` | Review stars and highlighting |
+| **Slate** | `#020617` | Premium dark mode background |
+| **Amber** | `#fbbf24` | Review stars and achievements |
 
 ---
 
@@ -163,9 +188,9 @@ Create a `.env` file in the root directory and provide the following credentials
 
 ```env
 DATABASE_URL="postgresql://..."
+DIRECT_URL="postgresql://..." # Required for Prisma migrations
 NEXTAUTH_SECRET="..."
-UPSTASH_REDIS_REST_URL="..."
-UPSTASH_REDIS_REST_TOKEN="..."
+REDIS_URL="..."
 ```
 
 ### 3. Database Sync
@@ -174,6 +199,8 @@ Synchronize the database using Prisma:
 
 ```bash
 npx prisma db push
+# Or for migrations
+# npx prisma migrate dev
 ```
 
 ### 4. Running the App
