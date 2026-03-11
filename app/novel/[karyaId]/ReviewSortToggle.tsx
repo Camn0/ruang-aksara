@@ -16,25 +16,25 @@ export default function ReviewSortToggle({ karyaId }: { karyaId: string }) {
     };
 
     return (
-        <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl w-fit">
+        <div className="flex bg-ink/5 p-1 wobbly-border-sm w-fit backdrop-blur-sm">
             <button
                 onClick={() => setSort('new')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${currentSort === 'new'
-                        ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                className={`flex items-center gap-2 px-4 py-2 font-journal-title text-lg italic transition-all ${currentSort === 'new'
+                    ? 'bg-parchment text-pine shadow-md wobbly-border-sm rotate-1'
+                    : 'text-ink/30 hover:text-ink-deep'
                     }`}
             >
-                <Clock className="w-3.5 h-3.5" />
+                <Clock className="w-4 h-4" />
                 Terbaru
             </button>
             <button
                 onClick={() => setSort('top')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${currentSort === 'top'
-                        ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                className={`flex items-center gap-2 px-4 py-2 font-journal-title text-lg italic transition-all ${currentSort === 'top'
+                    ? 'bg-parchment text-pine shadow-md wobbly-border-sm -rotate-1'
+                    : 'text-ink/30 hover:text-ink-deep'
                     }`}
             >
-                <TrendingUp className="w-3.5 h-3.5" />
+                <TrendingUp className="w-4 h-4" />
                 Populer
             </button>
         </div>

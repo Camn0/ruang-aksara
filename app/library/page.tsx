@@ -57,7 +57,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     })[];
 
     const CoverPlaceholder = ({ title }: { title: string }) => (
-        <div className="w-20 h-28 bg-indigo-50 dark:bg-slate-800 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-indigo-700 dark:text-indigo-300 shadow-sm shrink-0 border border-indigo-100 dark:border-slate-700">
+        <div className="w-20 h-28 bg-parchment dark:bg-slate-800 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-dried-red dark:text-dried-red/60 shadow-sm shrink-0 border border-white/10 dark:border-slate-700">
             {title}
         </div>
     );

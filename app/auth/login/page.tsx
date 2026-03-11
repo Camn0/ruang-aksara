@@ -45,70 +45,74 @@ function LoginForm() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-            <div className="p-6 relative z-10">
-                <Link href="/onboarding" className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
+        <div className="flex flex-col min-h-screen bg-parchment-light transition-all duration-300">
+            <div className="p-8 relative z-10">
+                <Link href="/onboarding" className="p-3 -ml-3 text-ink-deep hover:bg-white wobbly-border-sm transition-all rotate-3 active:-rotate-3 inline-flex items-center">
                     <ArrowLeft className="w-6 h-6 mr-2" />
-                    <span>Kembali</span>
+                    <span className="font-journal-title italic text-lg">Kembali</span>
                 </Link>
             </div>
 
             <div className="flex-1 flex flex-col items-center justify-center p-8 -mt-20">
-                <h1 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-12 tracking-wide font-serif">
-                    {title}
-                </h1>
+                <div className="bg-white wobbly-border paper-shadow p-10 max-w-md w-full -rotate-1 transition-all hover:rotate-0">
+                    <h1 className="text-4xl font-journal-title text-ink-deep mb-10 text-center italic tracking-tight">
+                        {title} Ruang Aksara
+                    </h1>
 
-                <form onSubmit={handleSubmit} className="w-full space-y-6">
-                    {error && (
-                        <div className="p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-2xl text-center font-medium text-sm animate-in fade-in slide-in-from-top-2">
-                            {error}
+                    <form onSubmit={handleSubmit} className="w-full space-y-8">
+                        {error && (
+                            <div className="p-6 bg-dried-red/5 text-dried-red wobbly-border-sm text-center font-journal-title text-lg italic animate-in fade-in slide-in-from-top-2">
+                                {error}
+                            </div>
+                        )}
+
+                        <div className="space-y-6">
+                            <div className="relative">
+                                <label className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 block ml-2">Username</label>
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="e.g. pujangga_malam"
+                                    className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-6 py-4 font-journal-body text-lg text-ink-deep italic transition-all placeholder:text-ink/10"
+                                    required
+                                />
+                            </div>
+
+                            <div className="relative">
+                                <label className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 block ml-2">Kata Sandi (Password)</label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="********"
+                                    className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-6 py-4 font-journal-body text-lg text-ink-deep italic transition-all placeholder:text-ink/10"
+                                    required
+                                />
+                            </div>
                         </div>
-                    )}
 
-                    <div className="space-y-4">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Username"
-                                className="w-full py-4 px-6 rounded-full border-2 border-gray-900 dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-500/30 transition-all text-lg"
-                                required
-                            />
-                        </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full mt-4 py-5 bg-pine text-parchment font-journal-title text-2xl wobbly-border paper-shadow shadow-xl italic hover:rotate-1 active:scale-95 transition-all disabled:opacity-50"
+                        >
+                            {isLoading ? "Menyingkap Pintu..." : `Masuk ke ${title}`}
+                        </button>
 
-                        <div className="relative">
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Password"
-                                className="w-full py-4 px-6 rounded-full border-2 border-gray-900 dark:border-slate-700 dark:bg-slate-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-500/30 transition-all text-lg"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full mt-8 py-4 bg-transparent border-2 border-gray-900 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-full font-bold text-lg hover:bg-gray-900 dark:hover:bg-slate-800 hover:text-white dark:hover:text-white transition-all active:scale-95 disabled:opacity-50"
-                    >
-                        {isLoading ? "Memproses..." : `Login ${title}`}
-                    </button>
-
-                    {isReader && (
-                        <div className="mt-8 text-center pt-8 border-t border-gray-100 dark:border-slate-800">
-                            <p className="text-gray-500 dark:text-gray-400 mb-4">Pengguna Baru?</p>
-                            <Link
-                                href="/auth/register"
-                                className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
-                            >
-                                Daftar Akun Pembaca
-                            </Link>
-                        </div>
-                    )}
-                </form>
+                        {isReader && (
+                            <div className="mt-10 text-center pt-8 border-t wobbly-border-t border-ink/5">
+                                <p className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-4">Pengembara Baru?</p>
+                                <Link
+                                    href="/auth/register"
+                                    className="font-journal-title text-xl text-pine hover:text-pine-light hover:underline underline-offset-8 italic"
+                                >
+                                    Daftar Akun Pembaca
+                                </Link>
+                            </div>
+                        )}
+                    </form>
+                </div>
             </div>
         </div>
     );

@@ -11,16 +11,19 @@ export default async function CreateKaryaPage() {
     });
 
     return (
-        <div className="pb-24 transition-colors duration-300">
-            <div className="px-6 pt-6 sm:pt-10 mb-6 sm:mb-10">
-                <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic">Tulis Mahakarya</h1>
-                <p className="text-indigo-500 font-extrabold text-[10px] sm:text-xs uppercase tracking-widest mt-2 leading-none">Mulai Perjalanan Baru</p>
+        <div className="pb-32 bg-parchment-light min-h-screen transition-all">
+            <div className="px-8 pt-10 mb-10 relative">
+                <div className="absolute top-10 right-10 w-32 h-32 bg-ink/5 rounded-full blur-3xl -z-10" />
+                <h1 className="font-journal-title text-4xl text-ink-deep italic uppercase tracking-tight">Menulis Mahakarya</h1>
+                <p className="font-marker text-[10px] text-pine uppercase tracking-[0.2em] mt-2">Mulai Perjalanan Baru di Jurnal Jati Diri</p>
             </div>
 
-            <div className="px-6">
-                <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 dark:border-slate-800 transition-colors duration-300">
-                    <h2 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-2">Kerangka Dasar</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">Isi detail dasar dari buku Anda. Anda dapat merangkai bab-bab setelah menyimpan kerangka ini.</p>
+            <div className="px-8">
+                <div className="bg-white wobbly-border paper-shadow p-8 sm:p-12 -rotate-1 transition-all hover:rotate-0">
+                    <h2 className="font-journal-title text-3xl text-ink-deep mb-3 italic">Kerangka Dasar</h2>
+                    <p className="font-journal-body text-lg text-ink/60 mb-10 leading-relaxed italic">
+                        Tentukan fondasi utama dari hikayat Anda. Anda dapat mulai mengukir bab demi bab setelah kerangka ini tersimpan rapi.
+                    </p>
 
                     <CreateKaryaFormModern genres={daftarGenre} />
                 </div>

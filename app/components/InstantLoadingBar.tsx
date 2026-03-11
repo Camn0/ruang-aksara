@@ -102,7 +102,7 @@ export default function InstantLoadingBar() {
     return (
         <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none">
             <div
-                className={`h-[3px] bg-indigo-600 dark:bg-indigo-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(79,70,229,0.8)] ${visible ? 'opacity-100 animate-pulse' : 'opacity-0'}`}
+                className={`h-[3px] bg-pine dark:bg-pine border-b border-white/10 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(74,93,78,0.8)] ${visible ? 'opacity-100 animate-pulse' : 'opacity-0'}`}
                 style={{ width: `${progress}%` }}
             />
         </div>

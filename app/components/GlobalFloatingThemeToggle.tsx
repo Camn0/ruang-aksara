@@ -21,23 +21,23 @@ export default function GlobalFloatingThemeToggle() {
     if (!mounted || isReadingPage) return null;
 
     return (
-        <div className="fixed bottom-24 right-4 z-50 flex flex-col items-center gap-2">
+        <div className="fixed bottom-24 right-6 z-50 flex flex-col items-center gap-3">
             {/* Quick Toggle Menu */}
             {isOpen && (
-                <div className="flex flex-col gap-2 mb-2 animate-in slide-in-from-bottom-2 fade-in duration-200">
+                <div className="flex flex-col gap-3 mb-2 animate-in slide-in-from-bottom-2 fade-in duration-200">
                     <button
                         onClick={() => { setTheme("light"); setIsOpen(false); }}
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg border transition-all ${theme === 'light' ? 'bg-white border-indigo-500 text-indigo-600' : 'bg-white dark:bg-slate-800 border-gray-100 dark:border-slate-700 text-gray-500'}`}
+                        className={`w-12 h-12 wobbly-border-sm flex items-center justify-center shadow-lg transition-all rotate-3 ${theme === 'light' ? 'bg-pine text-parchment border-pine' : 'bg-white text-ink/40 border-ink/10'}`}
                         title="Light Mode"
                     >
-                        <Sun className="w-4 h-4" />
+                        <Sun className="w-5 h-5" />
                     </button>
                     <button
                         onClick={() => { setTheme("dark"); setIsOpen(false); }}
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg border transition-all ${theme === 'dark' ? 'bg-slate-900 border-indigo-500 text-indigo-400' : 'bg-white dark:bg-slate-800 border-gray-100 dark:border-slate-700 text-gray-500'}`}
+                        className={`w-12 h-12 wobbly-border-sm flex items-center justify-center shadow-lg transition-all -rotate-3 ${theme === 'dark' ? 'bg-ink-deep text-parchment border-white/20' : 'bg-white text-ink/40 border-ink/10'}`}
                         title="Dark Mode"
                     >
-                        <Moon className="w-4 h-4" />
+                        <Moon className="w-5 h-5" />
                     </button>
                 </div>
             )}
@@ -46,13 +46,13 @@ export default function GlobalFloatingThemeToggle() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 onDoubleClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={`w-12 h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-xl transition-all active:scale-90 border-2 border-white dark:border-slate-950 ${isOpen ? 'rotate-45' : 'rotate-0'}`}
+                className={`w-14 h-14 bg-pine hover:bg-pine-light text-parchment wobbly-border flex items-center justify-center shadow-xl transition-all active:scale-90 border-2 border-white/20 ${isOpen ? 'rotate-45' : 'hover:rotate-12'}`}
                 aria-label="Toggle Theme Menu"
             >
                 {isOpen ? (
-                    <X className="w-5 h-5 rotate-[-45deg]" />
+                    <X className="w-6 h-6 rotate-[-45deg]" />
                 ) : (
-                    theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />
+                    theme === "dark" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />
                 )}
             </button>
         </div>

@@ -40,7 +40,7 @@ export default function PostCommentForm({ postId }: { postId: string }) {
         return (
             <button
                 onClick={() => setShowForm(true)}
-                className="text-xs font-semibold text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                className="font-marker text-[9px] text-ink/30 hover:text-pine transition-all uppercase tracking-[0.2em] mb-4 block"
             >
                 Tulis komentar...
             </button>
@@ -52,18 +52,18 @@ export default function PostCommentForm({ postId }: { postId: string }) {
             <form ref={formRef} action={handleSubmit} className="flex gap-2 items-start">
                 <textarea
                     name="content"
-                    placeholder="Tulis komentar..."
+                    placeholder="Ukir komentar..."
                     required
                     disabled={isPending}
-                    className="flex-1 text-xs border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-2 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500 min-h-[36px] resize-none"
+                    className="flex-1 font-journal-body text-base bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none p-2 italic"
                     rows={1}
                 />
                 <button
                     type="submit"
                     disabled={isPending}
-                    className="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 shrink-0"
+                    className="bg-pine text-parchment p-2 wobbly-border-sm hover:bg-pine-light transition disabled:opacity-50 shrink-0"
                 >
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-4 h-4" />
                 </button>
             </form>
             {success && (

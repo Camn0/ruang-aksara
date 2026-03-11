@@ -104,16 +104,16 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
                 {/* Tombol Upvote */}
                 <button
                     onClick={handleUpvote}
-                    className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${isUpvoted ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400'}`}
+                    className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${isUpvoted ? 'text-pine' : 'text-ink/40 hover:text-pine'}`}
                     disabled={isPending}
                 >
-                    <ThumbsUp className={`w-3.5 h-3.5 ${isUpvoted ? 'fill-current' : ''}`} /> {upvotes} Membantu
+                    <ThumbsUp className={`w-3.5 h-3.5 ${isUpvoted ? 'fill-current' : ''}`} /> {upvotes} Sangat Membantu
                 </button>
 
                 {/* Tombol Toggle Form Balas */}
                 <button
                     onClick={() => setShowReplyForm(!showReplyForm)}
-                    className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-bold text-ink/40 hover:text-pine transition-colors"
                 >
                     <MessageSquare className="w-3.5 h-3.5" /> Balas ({localReplyCount})
                 </button>
@@ -127,15 +127,15 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
                         placeholder="Tulis balasan untuk ulasan ini..."
                         required
                         disabled={replyPending}
-                        className="flex-1 text-xs border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-2 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500 min-h-[40px] resize-none"
+                        className="flex-1 text-xs bg-parchment-light border-2 border-ink/5 wobbly-border-sm p-3 outline-none focus:border-pine/30 min-h-[50px] italic"
                         rows={2}
                     />
                     <button
                         type="submit"
                         disabled={replyPending}
-                        className="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 shrink-0"
+                        className="bg-pine text-parchment p-3 wobbly-border-sm hover:bg-pine-light transition active:scale-95 disabled:opacity-50 shrink-0"
                     >
-                        <Send className="w-3.5 h-3.5" />
+                        <Send className="w-4 h-4" />
                     </button>
                 </form>
             )}

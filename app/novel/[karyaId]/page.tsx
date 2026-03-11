@@ -82,7 +82,7 @@ function parseMentions(text: string) {
         if (part.match(/^@\w+$/)) {
             const username = part.slice(1);
             return (
-                <Link key={i} href={`/profile/${username}`} className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline" target="_blank">
+                <Link key={i} href={`/profile/${username}`} className="text-pine font-bold hover:underline" target="_blank">
                     {part}
                 </Link>
             );
@@ -146,8 +146,8 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     const typedKarya = karya as any; // Temporary cast for relation access
 
     const CoverPlaceholder = () => (
-        <div className="w-32 h-48 sm:w-40 sm:h-56 bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-2xl shadow-lg border border-indigo-100 flex items-center justify-center text-center p-4">
-            <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest">{karya.title}</span>
+        <div className="w-32 h-48 sm:w-40 sm:h-56 bg-parchment-light rounded-2xl shadow-lg border-2 border-white/20 flex items-center justify-center text-center p-4">
+            <span className="text-xs font-marker text-ink/20 uppercase tracking-widest">{karya.title}</span>
         </div>
     );
 

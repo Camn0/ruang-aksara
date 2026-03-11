@@ -36,59 +36,81 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-                    Daftar Akun Baru
+        <div className="min-h-screen bg-parchment-light flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-all duration-300">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md px-6">
+                <h2 className="mt-6 text-center text-4xl font-journal-title italic text-ink-deep leading-tight">
+                    Daftar Akun Pengelana
                 </h2>
-                <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-                    Atau{' '}
-                    <Link href="/api/auth/signin" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors">
-                        masuk ke akun yang sudah ada
+                <p className="mt-4 text-center">
+                    <span className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em]">Atau </span>
+                    <Link href="/api/auth/signin" className="font-journal-title text-xl text-pine hover:text-pine-light hover:underline underline-offset-8 transition-all italic">
+                        Masuk ke akun yang sudah ada
                     </Link>
                 </p>
             </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white dark:bg-slate-900 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+            <div className="mt-12 sm:mx-auto sm:w-full sm:max-w-md px-6">
+                <div className="bg-white wobbly-border paper-shadow py-10 px-8 sm:px-12 -rotate-1 transition-all hover:rotate-0">
 
                     {message && (
-                        <div className={`p-4 mb-6 text-sm rounded-lg ${message.type === 'error' ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800/50' : 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800/50'}`}>
+                        <div className={`p-6 mb-8 font-journal-title text-lg italic wobbly-border-sm animate-in fade-in slide-in-from-top-4 ${message.type === 'error'
+                            ? 'bg-dried-red/5 text-dried-red border-dried-red/10'
+                            : 'bg-pine/5 text-pine border-pine/10'
+                            }`}>
                             {message.text}
                         </div>
                     )}
 
-                    <form className="space-y-6" onSubmit={handleSubmit}>
+                    <form className="space-y-8" onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor="display_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Nama Penampilan
+                            <label htmlFor="display_name" className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 block ml-2">
+                                Nama Tampilan (Display Name)
                             </label>
-                            <div className="mt-1">
-                                <input id="display_name" name="display_name" type="text" required className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:border-indigo-400 sm:text-sm" />
-                            </div>
+                            <input
+                                id="display_name"
+                                name="display_name"
+                                type="text"
+                                required
+                                className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-5 py-4 font-journal-body text-base text-ink-deep italic transition-all placeholder:text-ink/10"
+                                placeholder="Sang Pujangga"
+                            />
                         </div>
 
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Username
+                            <label htmlFor="username" className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 block ml-2">
+                                Nama Pengenal (Username)
                             </label>
-                            <div className="mt-1">
-                                <input id="username" name="username" type="text" required className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:border-indigo-400 sm:text-sm" />
-                            </div>
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                required
+                                className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-5 py-4 font-journal-body text-base text-ink-deep italic transition-all placeholder:text-ink/10"
+                                placeholder="username_unik"
+                            />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Password
+                            <label htmlFor="password" className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 block ml-2">
+                                Kata Sandi Rahasia (Password)
                             </label>
-                            <div className="mt-1">
-                                <input id="password" name="password" type="password" required className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:border-indigo-400 sm:text-sm" />
-                            </div>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-5 py-4 font-journal-body text-base text-ink-deep italic transition-all placeholder:text-ink/10"
+                                placeholder="********"
+                            />
                         </div>
 
-                        <div>
-                            <button type="submit" disabled={isPending} className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isPending ? 'opacity-70 cursor-not-allowed' : 'hover:bg-indigo-700 dark:hover:bg-indigo-600'}`}>
-                                {isPending ? 'Mendaftar...' : 'Daftar Sekarang'}
+                        <div className="pt-4">
+                            <button
+                                type="submit"
+                                disabled={isPending}
+                                className="w-full bg-pine text-parchment font-journal-title text-2xl py-5 wobbly-border paper-shadow shadow-xl flex items-center justify-center gap-2 italic hover:rotate-1 active:scale-[0.98] transition-all disabled:opacity-50"
+                            >
+                                {isPending ? 'Mengukir Nama...' : 'Daftar Sekarang ✨'}
                             </button>
                         </div>
                     </form>

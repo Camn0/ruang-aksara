@@ -31,8 +31,8 @@ export default async function TipsStudioPage() {
             title: "Alur yang Memikat",
             desc: "Pastikan setiap bab memiliki 'pertanyaan' yang membuat pembaca ingin lanjut.",
             icon: TrendingUp,
-            color: "text-indigo-500",
-            bg: "bg-indigo-50 dark:bg-indigo-900/20"
+            color: "text-pine",
+            bg: "bg-pine/5"
         },
         {
             title: "Dunia yang Hidup",
@@ -51,35 +51,40 @@ export default async function TipsStudioPage() {
     ];
 
     return (
-        <div className="pb-20">
+        <div className="pb-32 bg-parchment-light min-h-screen transition-all">
             {/* Page Header: Title & Subtitle */}
-            <div className="px-4 sm:px-8 pt-6 sm:pt-10 mb-12 sm:mb-16">
-                <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic mb-2">Tips Studio</h1>
-                <p className="text-indigo-500 font-extrabold text-[10px] sm:text-xs uppercase tracking-widest leading-none">Panduan Mengasah Pena</p>
+            <div className="px-8 pt-10 mb-16 relative">
+                <div className="absolute top-10 right-10 w-32 h-32 bg-ink/5 rounded-full blur-3xl -z-10" />
+                <h1 className="font-journal-title text-4xl text-ink-deep italic mb-2 tracking-tight uppercase">Manual Sang Pencatat</h1>
+                <p className="font-marker text-[10px] text-pine uppercase tracking-[0.2em]">Panduan Mengasah Pena di Ruang Aksara</p>
             </div>
 
-            <main className="w-full mx-auto px-4 sm:px-8 -mt-6 sm:-mt-8">
-                {/* Tips Grid: Menyajikan kartu tips dengan hover effect yang dinamis */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
+            <main className="w-full mx-auto px-8 -mt-8">
+                {/* Tips Grid: Journal style logs */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {tips.map((tip, idx) => (
-                        <div key={idx} className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100/50 dark:shadow-none hover:scale-[1.02] transition-all group">
-                            <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${tip.bg} transition-transform group-hover:rotate-6`}>
-                                <tip.icon className={`w-5 h-5 sm:w-7 sm:h-7 ${tip.color}`} />
+                        <div key={idx} className={`bg-white wobbly-border paper-shadow p-8 transition-all group ${idx % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0`}>
+                            <div className={`w-14 h-14 wobbly-border-sm flex items-center justify-center mb-6 ${tip.bg} transition-transform group-hover:rotate-12`}>
+                                <tip.icon className={`w-7 h-7 ${tip.color === 'text-pine' ? 'text-pine' : tip.color}`} />
                             </div>
-                            <h3 className="text-sm sm:text-xl font-black text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 uppercase tracking-tight">{tip.title}</h3>
-                            <p className="text-[10px] sm:text-[13px] text-gray-500 dark:text-gray-400 font-bold leading-relaxed">{tip.desc}</p>
+                            <h3 className="font-journal-title text-2xl text-ink-deep mb-3 italic uppercase tracking-tight">{tip.title}</h3>
+                            <p className="font-journal-body text-[15px] text-ink/60 leading-relaxed italic">{tip.desc}</p>
                         </div>
                     ))}
                 </div>
 
-                {/* Promotional Banner: Siapkan untuk fitur interaktif di masa depan */}
-                <div className="mt-8 sm:mt-12 bg-indigo-600 rounded-[2rem] sm:rounded-[4.5rem] p-6 sm:p-12 text-white text-center shadow-2xl shadow-indigo-500/20 relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] group-hover:scale-110 transition-transform duration-1000"></div>
+                {/* Promotional Banner: The Secret Dossier feel */}
+                <div className="mt-16 bg-pine text-parchment wobbly-border paper-shadow p-12 text-center relative overflow-hidden group rotate-1 hover:rotate-0 transition-all">
+                    <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                     <div className="relative z-10 max-w-lg mx-auto">
-                        <Bookmark className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-4 sm:mb-6 opacity-50 group-hover:scale-110 transition-transform" />
-                        <h2 className="text-lg sm:text-2xl font-black italic mb-3 sm:mb-4">Siap Melangkah Lebih Jauh?</h2>
-                        <p className="text-[9px] sm:text-[11px] font-bold text-indigo-100 uppercase tracking-widest leading-relaxed mb-6 sm:mb-10 opacity-80">Kami sedang menyiapkan fitur bimbingan menulis langsung dari editor profesional.</p>
-                        <button className="bg-white text-indigo-600 px-6 sm:px-10 py-3 sm:py-4 rounded-full font-black text-[9px] sm:text-[11px] uppercase tracking-widest transition-all hover:scale-110 active:scale-95 shadow-xl">Kirim Saran Fitur</button>
+                        <Bookmark className="w-12 h-12 mx-auto mb-8 text-gold opacity-50 group-hover:scale-110 transition-transform" />
+                        <h2 className="font-journal-title text-3xl italic mb-4">Ingin Menjadi Legenda?</h2>
+                        <p className="font-journal-body text-lg italic text-parchment/80 mb-10 leading-relaxed tracking-wide">
+                            Kami sedang menyiapkan jalur bimbingan rahasia langsung dari para kurator arsip profesional.
+                        </p>
+                        <button className="bg-parchment text-pine px-10 py-5 wobbly-border-sm font-journal-title text-xl italic hover:rotate-2 active:scale-95 shadow-xl transition-all">
+                            Usulkan Fitur Bimbingan
+                        </button>
                     </div>
                 </div>
             </main>

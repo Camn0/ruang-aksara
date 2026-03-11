@@ -18,8 +18,8 @@ export default function CollapsibleReviewSection({ children, count }: Collapsibl
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
             >
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
-                        <MessageSquareQuote className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    <div className="w-10 h-10 bg-pine wobbly-border-sm flex items-center justify-center -rotate-6">
+                        <MessageSquareQuote className="w-5 h-5 text-parchment" />
                     </div>
                     <div className="text-left">
                         <h2 className="text-base font-black text-gray-900 dark:text-gray-100 italic">
@@ -30,7 +30,7 @@ export default function CollapsibleReviewSection({ children, count }: Collapsibl
                         </p>
                     </div>
                 </div>
-                <div className={`p-2 rounded-full border border-gray-100 dark:border-slate-800 transition-all ${isOpen ? 'rotate-180 bg-indigo-600 border-indigo-600 text-white' : 'text-gray-400'}`}>
+                <div className={`p-2 wobbly-border-sm border-2 border-ink/5 transition-all ${isOpen ? 'rotate-180 bg-pine border-pine text-parchment' : 'text-ink/30 bg-white/20'}`}>
                     <ChevronDown className="w-5 h-5" />
                 </div>
             </button>
