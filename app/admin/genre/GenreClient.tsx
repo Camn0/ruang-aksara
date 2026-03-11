@@ -24,20 +24,20 @@ export function GenreForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex gap-3">
+        <form onSubmit={handleSubmit} className="flex gap-4">
             <input
                 name="name"
                 type="text"
-                placeholder="Nama Genre Baru (e.g. Romance)"
+                placeholder="Nama Genre Baru (e.g. Noir)"
                 required
-                className="flex-1 bg-gray-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500/20 focus:bg-white dark:focus:bg-slate-800 focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-gray-900 dark:text-gray-100 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                className="flex-1 bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none p-4 sm:p-5 text-lg font-journal-body text-ink-deep transition-all placeholder:text-ink/20"
             />
             <button
                 type="submit"
                 disabled={isPending}
-                className="bg-indigo-600 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-lg active:scale-95 flex items-center justify-center min-w-[100px]"
+                className="bg-pine text-parchment px-8 sm:px-12 py-4 sm:py-5 wobbly-border-sm font-journal-title text-xl italic hover:rotate-1 disabled:opacity-50 transition-all shadow-lg active:scale-95 flex items-center justify-center min-w-[120px]"
             >
-                {isPending ? '...' : 'Tambah'}
+                {isPending ? '...' : 'Torehkan'}
             </button>
         </form>
     );
@@ -48,7 +48,7 @@ export function DeleteGenreButton({ id }: { id: string }) {
     const router = useRouter();
 
     async function handleDelete() {
-        if (!confirm("Yakin hapus genre ini?")) return;
+        if (!confirm("Hapus genre ini dari catatan?")) return;
         setIsPending(true);
         const result = await deleteGenre(id);
         if (result.error) alert(result.error);
@@ -60,7 +60,7 @@ export function DeleteGenreButton({ id }: { id: string }) {
         <button
             onClick={handleDelete}
             disabled={isPending}
-            className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+            className="text-dried-red font-marker text-[10px] uppercase tracking-widest disabled:opacity-50 transition-all p-3 hover:bg-dried-red/5 wobbly-border-sm rotate-3 hover:rotate-0"
         >
             {isPending ? '...' : 'Hapus'}
         </button>

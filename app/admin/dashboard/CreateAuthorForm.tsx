@@ -34,37 +34,37 @@ export default function CreateAuthorForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-gray-100 dark:border-slate-700 mb-8 w-full transition-colors duration-300">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">Tambah Akun Penulis</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Buatkan akun akses untuk anggota tim. Mereka akan login dengan username dan password ini.</p>
+        <form onSubmit={handleSubmit} className="bg-parchment-light p-8 wobbly-border-sm border-2 border-ink/5 mb-10 w-full transition-all rotate-1">
+            <h3 className="font-journal-title text-2xl text-ink-deep mb-3 italic leading-none">Pendaftaran Penulis Baru</h3>
+            <p className="font-journal-body text-base text-ink/40 mb-8 italic">Berikan kunci akses untuk rekan penjelajah ceritamu. Mereka akan masuk menggunakan identitas ini.</p>
 
             {message && (
-                <div className={`p-4 mb-6 text-sm rounded-xl font-medium border ${message?.type === 'error' ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-100 dark:border-red-800/50' : 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-100 dark:border-green-800/50'}`}>
+                <div className={`p-5 mb-8 wobbly-border-sm font-journal-body italic ${message?.type === 'error' ? 'bg-dried-red/5 text-dried-red border-dried-red/10' : 'bg-pine/5 text-pine border-pine/10'}`}>
                     {message?.text}
                 </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-6">
                 <div>
-                    <label className="block text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Display Name <span className="text-xs text-gray-400 dark:text-gray-500 font-normal">(Opsional)</span></label>
-                    <input name="display_name" type="text" placeholder="Nama Pena / Panggilan" className="w-full py-2.5 px-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 text-sm text-gray-900 dark:text-gray-100 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500" />
+                    <label className="block font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 px-2">Nama Pena / Panggilan <span className="text-[8px] italic">(Opsional)</span></label>
+                    <input name="display_name" type="text" placeholder="e.g. Sang Pengelana" className="w-full py-4 px-6 bg-white wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
                 </div>
-                <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex flex-col md:flex-row gap-6">
                     <div className="flex-1">
-                        <label className="block text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Username Login</label>
-                        <input name="username" type="text" required placeholder="Contoh: author123" className="w-full py-2.5 px-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 text-sm text-gray-900 dark:text-gray-100 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500" />
+                        <label className="block font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 px-2">Username Identitas</label>
+                        <input name="username" type="text" required placeholder="author_baru" className="w-full py-4 px-6 bg-white wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
                     </div>
                     <div className="flex-1">
-                        <label className="block text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Password Sementara</label>
-                        <input name="password" type="password" required placeholder="Minimal 6 karakter" className="w-full py-2.5 px-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 text-sm text-gray-900 dark:text-gray-100 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500" />
+                        <label className="block font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 px-2">Kata Sandi Rahasia</label>
+                        <input name="password" type="password" required placeholder="Min. 6 Karakter" className="w-full py-4 px-6 bg-white wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
                     </div>
                 </div>
                 <button
                     type="submit"
                     disabled={isPending}
-                    className="w-full mt-2 bg-indigo-600 dark:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-indigo-200 dark:shadow-none transition-all hover:bg-indigo-700 dark:hover:bg-indigo-400 active:scale-[0.98] disabled:opacity-50 text-sm"
+                    className="w-full mt-4 bg-pine text-parchment font-journal-title text-xl py-4 sm:py-5 wobbly-border-sm shadow-xl transition-all hover:rotate-1 active:scale-[0.98] disabled:opacity-50 italic"
                 >
-                    {isPending ? 'Mendaftarkan Penulis...' : 'Daftarkan Penulis Baru'}
+                    {isPending ? 'Mendaftarkan...' : 'Resmikan Penulis Baru ✨'}
                 </button>
             </div>
         </form>

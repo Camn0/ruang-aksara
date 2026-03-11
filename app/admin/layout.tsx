@@ -45,43 +45,43 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-[#FDFBF7] dark:bg-slate-950 transition-colors duration-500 w-full">
+        <div className="flex min-h-screen bg-parchment-light pb-32 selection:bg-pine/20 w-full relative">
+            {/* Vignette Overlay (Internal) */}
+            <div className="fixed inset-0 pointer-events-none z-[100] shadow-[inset_0_0_150px_rgba(0,0,0,0.05)]" />
 
             {/* --- DESKTOP SIDEBAR --- */}
-            <aside className="hidden lg:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-gray-100 dark:border-slate-800 sticky top-0 h-screen z-30 transition-colors">
+            <aside className="hidden lg:flex flex-col w-72 bg-parchment wobbly-border-r border-ink/5 sticky top-0 h-screen z-50 transition-colors">
                 {/* Brand / Logo Section */}
-                <div className="p-8">
-                    <Link href="/" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-xl flex items-center justify-center text-white font-black italic shadow-lg shadow-indigo-100 dark:shadow-none transition-transform group-hover:scale-110">
-                            RA
-                        </div>
-                        <span className="font-black text-xl tracking-tighter text-gray-900 dark:text-gray-100">STUDIO</span>
+                <div className="p-10">
+                    <Link href="/" className="flex flex-col gap-1 group">
+                        <span className="font-journal-title text-3xl tracking-tight text-ink-deep group-hover:rotate-[-2deg] transition-transform italic">STUDIO</span>
+                        <span className="font-marker text-xs text-pine uppercase tracking-[0.3em] font-black">Ruang Aksara</span>
                     </Link>
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex-1 px-4 space-y-1">
-                    {navigation.map((item) => (
+                <nav className="flex-1 px-6 space-y-4">
+                    {navigation.map((item, i) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className="flex items-center gap-3 px-4 py-3 text-sm font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-2xl transition-all group"
+                            className={`flex items-center gap-4 px-6 py-4 wobbly-border-sm transition-all group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0 hover:bg-gold/10 hover:border-pine/30 ${item.href === '/admin/dashboard' ? 'bg-pine text-parchment shadow-md' : 'bg-white/40 text-ink/40'}`}
                         >
                             <item.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
-                            {item.name}
+                            <span className="font-journal-title text-xl italic">{item.name}</span>
                         </Link>
                     ))}
                 </nav>
 
                 {/* Footer Sidebar: User Profile & Logout */}
-                <div className="p-6 border-t border-gray-50 dark:border-slate-800">
-                    <div className="flex items-center gap-3 mb-6 px-2">
-                        <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 shadow-sm">
-                            <UserCircle2 className="w-6 h-6" />
+                <div className="p-8 border-t-2 border-ink/5 wobbly-border-t">
+                    <div className="flex items-center gap-4 mb-8 px-2 rotate-1">
+                        <div className="w-12 h-12 wobbly-border border-2 border-white bg-white shadow-sm flex items-center justify-center text-ink/30">
+                            <UserCircle2 className="w-7 h-7" />
                         </div>
                         <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-black text-gray-900 dark:text-gray-100 truncate uppercase tracking-tight">{session.user.name}</span>
-                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">{session.user.role}</span>
+                            <span className="font-journal-title text-lg text-ink-deep underline decoration-dotted decoration-ink/20 italic truncate">{session.user.name}</span>
+                            <span className="font-special text-[9px] text-pine font-black uppercase tracking-[0.2em]">{session.user.role}</span>
                         </div>
                     </div>
                     <LogoutButton />
@@ -91,22 +91,20 @@ export default async function AdminLayout({
             {/* --- MAIN CONTENT AREA --- */}
             <div className="flex-1 flex flex-col min-w-0">
                 {/* MOBILE HEADER: Hanya muncul di screen kecil (sm/md) */}
-                <header className="lg:hidden h-16 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between px-4 sticky top-0 z-30 transition-colors">
-                    <Link href="/admin/dashboard" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-lg flex items-center justify-center text-white font-black italic shadow-md text-xs">
-                            RA
-                        </div>
-                        <span className="font-black text-sm tracking-tighter text-gray-900 dark:text-gray-100 uppercase">Studio</span>
+                <header className="lg:hidden h-20 bg-parchment wobbly-border-b border-ink/5 flex items-center justify-between px-6 sticky top-0 z-[110] transition-colors">
+                    <Link href="/admin/dashboard" className="flex flex-col">
+                        <span className="font-journal-title text-xl text-ink-deep italic leading-none">STUDIO</span>
+                        <span className="font-marker text-[8px] text-pine uppercase tracking-widest font-black">Ruang Aksara</span>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <Link href={`/profile/${session.user.id}`} className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-slate-700">
-                            <UserCircle2 className="w-5 h-5" />
+                    <div className="flex items-center gap-4">
+                        <Link href={`/profile/${session.user.id}`} className="w-10 h-10 wobbly-border-sm bg-white flex items-center justify-center text-ink/20 shadow-sm">
+                            <UserCircle2 className="w-6 h-6" />
                         </Link>
                     </div>
                 </header>
 
                 {/* Main Content Injector */}
-                <main className="flex-1 w-full max-w-full overflow-x-hidden">
+                <main className="flex-1 w-full max-w-full overflow-x-hidden p-6 sm:p-10">
                     {children}
                 </main>
             </div>

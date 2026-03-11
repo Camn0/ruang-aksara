@@ -154,234 +154,293 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     const firstChapter = karya.bab.length > 0 ? karya.bab[0].chapter_no : null;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
-            <header className="px-6 h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
-                <Link href="/" className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors">
-                    <ArrowLeft className="w-6 h-6" />
+        <div className="min-h-screen bg-parchment-light pb-32 selection:bg-pine/20">
+            {/* Vignette Overlay */}
+            <div className="fixed inset-0 pointer-events-none z-50 shadow-[inset_0_0_150px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_0_200px_rgba(0,0,0,0.5)]" />
+
+            {/* Header: Wobbly Tab */}
+            <header className="px-6 h-16 bg-parchment border-b-4 border-ink/5 wobbly-border-b sticky top-0 z-30 flex items-center justify-between">
+                <Link href="/" className="p-2 -ml-2 text-ink-deep hover:text-pine transition-all active:scale-90">
+                    <ArrowLeft className="w-7 h-7" />
                 </Link>
-                <h1 className="font-bold text-lg text-gray-900 dark:text-gray-100 absolute left-1/2 -translate-x-1/2 w-48 text-center truncate">
-                    Detail Karya
+                <h1 className="font-journal-title text-2xl text-ink-deep absolute left-1/2 -translate-x-1/2 w-64 text-center truncate italic">
+                    Dossier: {karya.title}
                 </h1>
                 <div className="w-10"></div>
             </header>
 
-            <div className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 pt-8 pb-8 px-6 transition-colors duration-300">
-                <div className="flex gap-6 items-start">
-                    {karya.cover_url ? (
-                        <img src={karya.cover_url} alt={karya.title} className="w-32 h-48 sm:w-40 sm:h-56 object-cover rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800 shrink-0" />
-                    ) : (
-                        <CoverPlaceholder />
-                    )}
+            {/* Top Section: The Dossier Entry */}
+            <div className="pt-10 pb-12 px-6 relative">
+                {/* Background Decoration: Ink Splatter placeholder or subtle texture */}
+                <div className="absolute top-10 right-10 w-32 h-32 bg-ink/5 rounded-full blur-3xl -z-10" />
 
-                    <div className="flex-1 min-w-0 py-1">
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-2 line-clamp-3">
+                <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start max-w-4xl mx-auto">
+                    {/* Cover: The Taped-on Sketch */}
+                    <div className="relative group rotate-[-2deg] transition-transform hover:rotate-0">
+                        {/* Tape effect */}
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-8 bg-gold/30 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
+
+                        {karya.cover_url ? (
+                            <img src={karya.cover_url} alt={karya.title} className="w-44 h-64 sm:w-52 sm:h-72 object-cover wobbly-border border-4 border-white shadow-xl bg-white" />
+                        ) : (
+                            <div className="w-44 h-64 sm:w-52 sm:h-72 bg-white wobbly-border border-4 flex items-center justify-center p-6 text-center shadow-xl">
+                                <span className="font-marker text-xl text-ink/30 italic uppercase">{karya.title}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex-1 text-center sm:text-left">
+                        <h1 className="font-journal-title text-4xl sm:text-5xl text-ink-deep leading-none mb-4 drop-shadow-sm italic">
                             {karya.title}
                         </h1>
-                        <div className="flex items-center gap-2 mb-3">
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Oleh <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:underline font-bold transition-colors">{karya.penulis_alias}</Link></p>
+
+                        <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
+                            <p className="font-journal-body text-xl text-ink/60 italic">
+                                Dicatat oleh: <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-pine font-marker text-2xl hover:text-ink-deep transition-colors underline decoration-dotted">{karya.penulis_alias}</Link>
+                            </p>
                             {session && session.user.id !== karya.uploader_id && (
-                                <FollowButton
-                                    targetUserId={karya.uploader_id}
-                                    initialIsFollowing={isFollowing}
-                                    karyaId={karya.id}
-                                />
+                                <div className="scale-90 sm:scale-100 rotate-1">
+                                    <FollowButton
+                                        targetUserId={karya.uploader_id}
+                                        initialIsFollowing={isFollowing}
+                                        karyaId={karya.id}
+                                    />
+                                </div>
                             )}
                         </div>
 
-                        <div className="flex flex-wrap gap-1.5 mb-4">
+                        {/* Genres: Ink Tags */}
+                        <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-6">
                             {(karya as any).genres?.map((g: any) => (
                                 <Link
                                     key={g.id}
                                     href={`/search?q=&genreId=${g.id}`}
-                                    className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[10px] uppercase font-bold px-2 py-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
+                                    className="font-marker text-xs uppercase tracking-widest text-ink/50 px-3 py-1.5 wobbly-border-sm bg-white/40 hover:bg-gold hover:text-ink-deep hover:rotate-3 transition-all"
                                 >
                                     {g.name}
                                 </Link>
                             ))}
-                            {karya.is_completed ? (
-                                <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-black px-2 py-1 rounded transition-colors">
-                                    Tamat
-                                </span>
-                            ) : (
-                                <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-[10px] uppercase font-black px-2 py-1 rounded transition-colors">
-                                    Ongoing
-                                </span>
-                            )}
+                            <span className={`font-special text-[10px] uppercase tracking-widest px-3 py-1.5 wobbly-border-sm rotate-[-2deg] ${karya.is_completed ? 'bg-pine/10 text-pine' : 'bg-gold/20 text-ink-deep'}`}>
+                                {karya.is_completed ? 'DOKUMEN TAMAT' : 'DALAM PEMANTAUAN'}
+                            </span>
                         </div>
 
-                        <div className="flex flex-wrap gap-x-5 gap-y-3 mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 text-xs font-bold text-gray-600 dark:text-gray-400 transition-colors duration-300">
-                            <span className="flex items-center gap-1.5 min-w-[30%]">
-                                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                                <span className="text-gray-900 dark:text-gray-100 text-sm">{karya.avg_rating.toFixed(1)} <span className="text-gray-400 dark:text-gray-500 font-medium text-[10px]">/ 5</span></span>
-                            </span>
-                            <span className="flex items-center gap-1.5 min-w-[30%]">
-                                <TrendingUp className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-                                <span className="text-gray-900 dark:text-gray-100 text-sm">{karya.total_views.toLocaleString()}</span>
-                            </span>
-                            <span className="flex items-center gap-1.5 min-w-[30%]">
-                                <BookOpen className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                                <span className="text-gray-900 dark:text-gray-100 text-sm">{karya.bab.length} Bab</span>
-                            </span>
+                        {/* Metrics: The Sidebar Notes feel */}
+                        <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto sm:mx-0 pt-6 border-t border-ink/5">
+                            <div className="flex flex-col items-center sm:items-start group">
+                                <div className="flex items-center gap-2 text-gold">
+                                    <Star className="w-5 h-5 fill-current" />
+                                    <span className="font-journal-title text-2xl text-ink-deep">{karya.avg_rating.toFixed(1)}</span>
+                                </div>
+                                <span className="font-special text-[9px] text-ink/30 uppercase tracking-widest">Penilaian</span>
+                            </div>
+                            <div className="flex flex-col items-center sm:items-start">
+                                <div className="flex items-center gap-2 text-pine">
+                                    <TrendingUp className="w-5 h-5" />
+                                    <span className="font-journal-title text-2xl text-ink-deep">{karya.total_views.toLocaleString()}</span>
+                                </div>
+                                <span className="font-special text-[9px] text-ink/30 uppercase tracking-widest">Laporan Baca</span>
+                            </div>
+                            <div className="flex flex-col items-center sm:items-start">
+                                <div className="flex items-center gap-2 text-ink/30">
+                                    <BookOpen className="w-5 h-5" />
+                                    <span className="font-journal-title text-2xl text-ink-deep">{karya.bab.length}</span>
+                                </div>
+                                <span className="font-special text-[9px] text-ink/30 uppercase tracking-widest">Kumpulan Bab</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-8 flex gap-2">
+                {/* Main Action Buttons: Big Scrap style */}
+                <div className="mt-12 flex flex-col sm:flex-row gap-4 max-w-4xl mx-auto">
                     {firstChapter ? (
-                        <Link href={`/novel/${karya.id}/${firstChapter}`} className="flex-1 text-center py-3.5 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl font-black text-sm shadow-xl shadow-indigo-200 dark:shadow-none active:scale-95 transition-all flex items-center justify-center">
-                            Mulai Membaca
+                        <Link href={`/novel/${karya.id}/${firstChapter}`} className="flex-1 text-center py-5 bg-pine text-parchment wobbly-border paper-shadow font-journal-title text-2xl italic hover:bg-ink-deep transition-all active:scale-95 rotate-[-1deg]">
+                            Buka Halaman Pertama
                         </Link>
                     ) : (
-                        <button disabled className="flex-1 text-center py-3.5 bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 rounded-xl font-bold text-sm cursor-not-allowed transition-colors">
-                            Belum Ada Bab
+                        <button disabled className="flex-1 py-5 bg-ink/5 text-ink/20 wobbly-border border-dashed font-journal-body text-xl italic cursor-not-allowed">
+                            "Halaman ini masih kosong..."
                         </button>
                     )}
 
-                    <div className="flex gap-2 shrink-0">
-                        {session && <BookmarkButton karyaId={karya.id} isBookmarkedInitial={isBookmarked} />}
-                        <ShareButton title={karya.title} karyaId={karya.id} />
+                    <div className="flex gap-4 sm:shrink-0 justify-center">
+                        {session && (
+                            <div className="rotate-2 transition-transform hover:rotate-0">
+                                <BookmarkButton karyaId={karya.id} isBookmarkedInitial={isBookmarked} />
+                            </div>
+                        )}
+                        <div className="rotate-[-2deg] transition-transform hover:rotate-0">
+                            <ShareButton title={karya.title} karyaId={karya.id} />
+                        </div>
                     </div>
                 </div>
 
-                <ContinueReadingButton karyaId={karya.id} />
+                <div className="max-w-4xl mx-auto mt-6">
+                    <ContinueReadingButton karyaId={karya.id} />
+                </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 transition-colors duration-300">
-                <div className="p-6 border-b border-gray-100 dark:border-slate-800">
-                    <h2 className="text-base font-black text-gray-900 dark:text-gray-100">Daftar Isi</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{karya.bab.length} Bab Tersedia</p>
-                </div>
-
-                <div className="divide-y divide-gray-100 dark:divide-slate-800">
-                    {karya.bab.length === 0 ? (
-                        <div className="p-8 text-center text-gray-400 dark:text-gray-500 text-sm">
-                            Belum ada bab yang dirilis.
+            <div className="max-w-4xl mx-auto px-6 space-y-10">
+                {/* Synopsis: A dedicated parchment entry */}
+                {karya.deskripsi && (
+                    <div className="bg-parchment p-8 wobbly-border paper-shadow rotate-[0.5deg]">
+                        <h2 className="font-journal-title text-2xl text-ink-deep mb-4 italic flex items-center gap-3">
+                            <MessageSquareQuote className="w-6 h-6 text-pine" />
+                            Ringkasan Kejadian
+                        </h2>
+                        <div className="font-journal-body text-xl text-ink-deep leading-relaxed whitespace-pre-wrap italic">
+                            {karya.deskripsi}
                         </div>
-                    ) : (
-                        karya.bab.map((chapter: any) => (
-                            <Link
-                                key={chapter.id}
-                                href={`/novel/${karya.id}/${chapter.chapter_no}`}
-                                className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 active:bg-gray-100 dark:active:bg-slate-800 transition-colors"
-                            >
-                                <div className="flex flex-col pr-4">
-                                    <span className="font-bold text-gray-900 dark:text-gray-100 text-sm">Bab {chapter.chapter_no}{chapter.title ? `: ${chapter.title}` : ''}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 italic text-left">
-                                        Klik untuk mulai membaca...
-                                    </span>
-                                </div>
-                                <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0 transition-colors">
-                                    <ArrowLeft className="w-4 h-4 text-gray-400 dark:text-gray-500 rotate-180" />
-                                </div>
-                            </Link>
-                        ))
-                    )}
-                </div>
-            </div>
-
-            {karya.deskripsi && (
-                <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
-                    <h2 className="text-base font-black text-gray-900 dark:text-gray-100 mb-3">Sinopsis</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
-                        {karya.deskripsi}
-                    </p>
-                </div>
-            )}
-
-            <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-2 italic">
-                        <MessageSquareQuote className="w-5 h-5 text-indigo-600 dark:text-indigo-400 non-italic" />
-                        Tulis Ulasan
-                    </h2>
-                </div>
-
-                {session ? (
-                    <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
-                ) : (
-                    <div className="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-3xl text-center border border-indigo-100 dark:border-indigo-900/30 transition-colors">
-                        <p className="text-sm font-black text-indigo-900 dark:text-indigo-300 mb-2 uppercase tracking-widest">Tertarik Memberi Rating?</p>
-                        <p className="text-xs text-indigo-700 dark:text-indigo-400 mb-6 px-4 leading-relaxed font-bold">Masuk ke akunmu untuk meninggalkan jejak dan mendukung penulis ini.</p>
-                        <Link href="/onboarding" className="inline-block px-8 py-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 dark:shadow-none transition-transform active:scale-95">
-                            Mulai Masuk
-                        </Link>
                     </div>
                 )}
-            </div>
 
-            <CollapsibleReviewSection count={karya._count.reviews}>
-                <div className="flex justify-end mb-6">
-                    <ReviewSortToggle karyaId={karya.id} />
+                {/* Chapter List: The Index Page */}
+                <div className="bg-white/40 wobbly-border p-8 rotate-[-0.5deg]">
+                    <div className="flex items-center justify-between mb-8 border-b-2 border-ink/5 pb-4">
+                        <div>
+                            <h2 className="font-journal-title text-3xl text-ink-deep italic">Indeks Cerita</h2>
+                            <p className="font-special text-[11px] text-ink/40 uppercase tracking-widest mt-1">{karya.bab.length} Bab Telah Dicatat</p>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-4">
+                        {karya.bab.length === 0 ? (
+                            <div className="py-12 text-center font-journal-body text-xl text-ink/20 italic">
+                                Belum ada penemuan yang dicatat...
+                            </div>
+                        ) : (
+                            karya.bab.map((chapter: any) => (
+                                <Link
+                                    key={chapter.id}
+                                    href={`/novel/${karya.id}/${chapter.chapter_no}`}
+                                    className="flex items-center justify-between p-5 bg-parchment-light hover:bg-white wobbly-border-sm transition-all group hover:scale-[1.02]"
+                                >
+                                    <div className="flex flex-col">
+                                        <span className="font-journal-title text-xl text-ink-deep group-hover:text-pine transition-colors italic">
+                                            Bab {chapter.chapter_no}{chapter.title ? `: ${chapter.title}` : ''}
+                                        </span>
+                                        <span className="font-marker text-xs text-ink/30 uppercase tracking-[0.2em] mt-1">
+                                            Masuk ke arsip...
+                                        </span>
+                                    </div>
+                                    <div className="w-10 h-10 wobbly-border-sm bg-white flex items-center justify-center transition-all group-hover:bg-gold group-hover:rotate-12">
+                                        <ArrowLeft className="w-5 h-5 text-ink rotate-180" />
+                                    </div>
+                                </Link>
+                            ))
+                        )}
+                    </div>
                 </div>
 
-                <div className="space-y-4">
-                    {karya.reviews.map((review: any) => (
-                        <div key={review.id} className="p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-gray-100 dark:border-slate-800 shadow-sm transition-colors group">
-                            <div className="flex items-start justify-between gap-4 mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 border-2 border-white dark:border-slate-950 shadow-sm">
-                                        {review.user.avatar_url ? (
-                                            <img src={review.user.avatar_url} alt={review.user.display_name} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <UserCircle2 className="w-full h-full text-gray-300" />
+                {/* Reviews Section: Field Observations */}
+                <div className="space-y-8">
+                    <div className="flex items-center justify-between">
+                        <h2 className="font-journal-title text-3xl text-ink-deep flex items-center gap-3 italic">
+                            <UserCircle2 className="w-7 h-7 text-pine" />
+                            Observasi Pembaca
+                        </h2>
+                    </div>
+
+                    <div className="bg-parchment/60 p-8 wobbly-border paper-shadow rotate-[0.2deg]">
+                        {session ? (
+                            <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
+                        ) : (
+                            <div className="p-8 text-center border-2 border-dashed border-ink/10 rotate-[-1deg]">
+                                <p className="font-journal-title text-2xl text-ink/60 italic mb-4">Ingin berpartisipasi dalam observasi?</p>
+                                <p className="font-journal-body text-lg text-ink/40 mb-8 max-w-sm mx-auto">Masuk untuk mencatat kesan Anda di jurnal ini dan dukung sang pencatat.</p>
+                                <Link href="/onboarding" className="inline-block px-10 py-4 bg-pine text-parchment font-journal-title text-xl italic wobbly-border-sm hover:rotate-2 transition-all active:scale-95">
+                                    Masuk Sekarang
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+
+                    <CollapsibleReviewSection count={karya._count.reviews}>
+                        <div className="flex justify-end mb-8">
+                            <div className="rotate-2">
+                                <ReviewSortToggle karyaId={karya.id} />
+                            </div>
+                        </div>
+
+                        <div className="space-y-8">
+                            {karya.reviews.map((review: any) => (
+                                <div key={review.id} className="p-8 bg-white wobbly-border paper-shadow transition-all group relative hover:rotate-[0.5deg]">
+                                    {/* Action Buttons: Sketch Style */}
+                                    <div className="absolute top-6 right-8 flex items-center gap-2 opacity-10 sm:group-hover:opacity-100 transition-opacity">
+                                        {(session?.user?.role === 'admin' || session?.user?.id === karya.uploader_id) && (
+                                            <PinReviewButton
+                                                reviewId={review.id}
+                                                karyaId={karya.id}
+                                                initialIsPinned={(review as any).is_pinned}
+                                            />
+                                        )}
+                                        {(session?.user?.role === 'admin' || session?.user?.id === review.user_id || session?.user?.id === karya.uploader_id) && (
+                                            <DeleteReviewButton
+                                                reviewId={review.id}
+                                                path={`/novel/${karya.id}`}
+                                            />
                                         )}
                                     </div>
-                                    <div>
-                                        <p className="text-xs font-black text-gray-900 dark:text-gray-100">{review.user.display_name}</p>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+
+                                    <div className="flex items-start gap-5 mb-6">
+                                        <div className="w-14 h-14 wobbly-border overflow-hidden bg-parchment-light shrink-0 rotate-[-3deg] group-hover:rotate-6 transition-transform">
+                                            {review.user.avatar_url ? (
+                                                <img src={review.user.avatar_url} alt={review.user.display_name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center font-journal-title text-2xl text-ink/20">
+                                                    {review.user.display_name.charAt(0)}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p className="font-journal-title text-xl text-ink-deep leading-none mb-1">{review.user.display_name}</p>
+                                            <p className="font-marker text-[11px] text-ink/30 uppercase tracking-[0.2em]">
+                                                {new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {(session?.user?.role === 'admin' || session?.user?.id === karya.uploader_id) && (
-                                        <PinReviewButton
-                                            reviewId={review.id}
-                                            karyaId={karya.id}
-                                            initialIsPinned={(review as any).is_pinned}
-                                        />
+                                    {review.is_pinned && (
+                                        <div className="flex items-center gap-2 mb-6 font-special text-[10px] text-gold bg-ink-deep px-4 py-1.5 wobbly-border-sm w-fit uppercase tracking-[0.2em] rotate-1">
+                                            <Pin className="w-4 h-4 fill-current" />
+                                            Observasi Pilihan
+                                        </div>
                                     )}
-                                    {(session?.user?.role === 'admin' || session?.user?.id === review.user_id || session?.user?.id === karya.uploader_id) && (
-                                        <DeleteReviewButton
-                                            reviewId={review.id}
-                                            path={`/novel/${karya.id}`}
-                                        />
+
+                                    {review.rating !== null && review.rating > 0 && (
+                                        <div className="flex text-gold mb-4 text-xl drop-shadow-sm rotate-[-2deg]">
+                                            {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                                        </div>
                                     )}
+
+                                    <p className="font-journal-body text-[19px] text-ink-deep leading-relaxed mb-8 italic">
+                                        "{parseMentions(review.content)}"
+                                    </p>
+
+                                    <div className="pt-6 border-t border-ink/5">
+                                        <ReviewInteraction
+                                            reviewId={review.id}
+                                            initialUpvotes={review._count.upvotes}
+                                            initialUpvoted={userUpvotedReviews.includes(review.id)}
+                                            replyCount={review._count.comments}
+                                            currentPath={`/novel/${karya.id}`}
+                                        />
+                                    </div>
+
+                                    <ReviewCommentSection
+                                        comments={review.comments}
+                                        karyaUploaderId={karya.uploader_id}
+                                        currentUser={session?.user}
+                                        path={`/novel/${karya.id}`}
+                                        reviewId={review.id}
+                                    />
                                 </div>
-                            </div>
-
-                            {review.is_pinned && (
-                                <div className="flex items-center gap-1.5 mb-4 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full w-fit uppercase tracking-[0.1em] border border-amber-100 dark:border-amber-900/40">
-                                    <Pin className="w-3 h-3 fill-amber-500" />
-                                    Review Pilihan Penulis
-                                </div>
-                            )}
-
-                            {review.rating !== null && review.rating > 0 && (
-                                <div className="flex text-amber-400 fill-amber-400 mb-3 drop-shadow-sm">
-                                    {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                                </div>
-                            )}
-                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium mb-4">"{parseMentions(review.content)}"</p>
-
-                            <ReviewInteraction
-                                reviewId={review.id}
-                                initialUpvotes={review._count.upvotes}
-                                initialUpvoted={userUpvotedReviews.includes(review.id)}
-                                replyCount={review._count.comments}
-                                currentPath={`/novel/${karya.id}`}
-                            />
-
-                            <ReviewCommentSection
-                                comments={review.comments}
-                                karyaUploaderId={karya.uploader_id}
-                                currentUser={session?.user}
-                                path={`/novel/${karya.id}`}
-                                reviewId={review.id}
-                            />
+                            ))}
                         </div>
-                    ))}
+                    </CollapsibleReviewSection>
                 </div>
-            </CollapsibleReviewSection>
+            </div>
         </div>
     );
 }

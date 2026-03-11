@@ -58,40 +58,45 @@ export default function ProfileClient({
         switch (activeTab) {
             case 'karya':
                 return (
-                    <div className="grid gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300 px-4 sm:px-0">
+                    <div className="grid gap-8 animate-in fade-in slide-in-from-bottom-6 duration-500 px-4 sm:px-0">
                         {works.length === 0 ? (
-                            <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-gray-200 dark:border-slate-800">
-                                <BookOpen className="w-12 h-12 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
-                                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Belum ada karya</p>
+                            <div className="py-24 text-center bg-white/5 wobbly-border-sm border-2 border-dashed border-ink/10 rotate-1">
+                                <BookOpen className="w-16 h-16 text-ink/10 mx-auto mb-6 rotate-12" />
+                                <p className="font-journal-body text-xl text-ink/30 italic uppercase tracking-[0.2em]">Pena Belum Bergerak</p>
                             </div>
-                        ) : works.map(karya => (
-                            <Link key={karya.id} href={`/novel/${karya.id}`} className="group bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-3xl p-4 shadow-sm hover:shadow-md hover:border-indigo-100 dark:hover:border-indigo-900/30 transition-all flex gap-5">
-                                <div className="relative shrink-0">
+                        ) : works.map((karya, i) => (
+                            <Link key={karya.id} href={`/novel/${karya.id}`} className={`group bg-white wobbly-border paper-shadow p-6 hover:shadow-2xl hover:-translate-y-1 transition-all flex gap-8 relative items-start ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                                <div className="relative shrink-0 rotate-[-3deg] group-hover:rotate-0 transition-transform">
+                                    <div className="absolute inset-0 bg-ink-deep/10 translate-x-2 translate-y-2 wobbly-border-sm -z-10" />
                                     {karya.cover_url ? (
-                                        <img src={karya.cover_url} className="w-24 h-36 object-cover rounded-2xl shadow-sm group-hover:scale-105 transition-transform duration-500" alt="" />
+                                        <img src={karya.cover_url} className="w-28 h-40 object-cover wobbly-border-sm border-2 border-white shadow-xl" alt="" />
                                     ) : (
-                                        <div className="w-24 h-36 bg-gray-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center p-4 text-center">
-                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{karya.title}</span>
+                                        <div className="w-28 h-40 bg-parchment-light wobbly-border-sm border-2 border-white flex items-center justify-center p-6 text-center shadow-xl">
+                                            <span className="text-[10px] font-marker text-ink/40 uppercase tracking-tighter leading-tight">{karya.title}</span>
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex-1 py-1 min-w-0">
-                                    <h3 className="font-black text-gray-900 dark:text-gray-100 text-lg mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{karya.title}</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4 leading-relaxed">{karya.deskripsi || "Penulis belum menambahkan sinopsis untuk karya ini."}</p>
-                                    <div className="flex gap-5">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
-                                                <TrendingUp className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                                <div className="flex-1 py-2 min-w-0">
+                                    <h3 className="font-journal-title text-2xl text-ink-deep mb-3 group-hover:text-pine transition-colors leading-none italic">{karya.title}</h3>
+                                    <p className="font-journal-body text-base text-ink/60 line-clamp-3 mb-6 leading-relaxed italic">"{karya.deskripsi || "Penulis belum menitipkan sinopsis untuk karya ini."}"</p>
+                                    <div className="flex gap-8">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 wobbly-border-sm bg-pine/10 flex items-center justify-center -rotate-6">
+                                                <TrendingUp className="w-4 h-4 text-pine" />
                                             </div>
-                                            <span className="text-[11px] font-black text-gray-600 dark:text-gray-400 uppercase tracking-widest">{karya.total_views.toLocaleString()}</span>
+                                            <span className="font-special text-[11px] font-black text-ink/40 uppercase tracking-widest">{karya.total_views.toLocaleString()}</span>
                                         </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-6 h-6 rounded-lg bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center">
-                                                <BookMarked className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 wobbly-border-sm bg-gold/20 flex items-center justify-center rotate-6">
+                                                <BookMarked className="w-4 h-4 text-ink-deep" />
                                             </div>
-                                            <span className="text-[11px] font-black text-gray-600 dark:text-gray-400 uppercase tracking-widest">{karya._count.bookmarks}</span>
+                                            <span className="font-special text-[11px] font-black text-ink/40 uppercase tracking-widest">{karya._count.bookmarks}</span>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Sparkles className="w-5 h-5 text-gold animate-pulse" />
                                 </div>
                             </Link>
                         ))}
@@ -99,37 +104,41 @@ export default function ProfileClient({
                 );
             case 'postingan':
                 return (
-                    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300 px-4 sm:px-0">
-                        {isOwnProfile && <CreatePostForm userProfile={userProfile} />}
+                    <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-bottom-6 duration-500 px-4 sm:px-0">
+                        {isOwnProfile && (
+                            <div className="rotate-1">
+                                <CreatePostForm userProfile={userProfile} />
+                            </div>
+                        )}
                         {posts.length === 0 ? (
-                            <div className="py-20 text-center flex flex-col items-center gap-4 bg-white dark:bg-slate-900 rounded-[3rem] border border-dashed border-gray-200 dark:border-slate-800">
-                                <Sparkles className="w-12 h-12 text-gray-200 dark:text-gray-700 mx-auto" strokeWidth={1.5} />
+                            <div className="py-24 text-center bg-white/5 wobbly-border-sm border-2 border-dashed border-ink/10 -rotate-1">
+                                <Sparkles className="w-16 h-16 text-ink/10 mx-auto mb-6" />
                                 <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-gray-100 italic">Papan Pena Masih Kosong</h3>
-                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1 px-8">Biarkan imajinasimu mengalir dan sapa pembaca di sini!</p>
+                                    <h3 className="font-journal-title text-2xl text-ink-deep italic mb-2">Papan Pena Kosong</h3>
+                                    <p className="font-marker text-xs text-ink/30 uppercase tracking-[0.2em]">Sapa pembaca dengan imajinasimu!</p>
                                 </div>
                             </div>
                         ) : (
-                            posts.map(post => (
-                                <div key={post.id} className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-[2.5rem] p-6 shadow-sm hover:shadow-md transition-all">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-800">
-                                            {userProfile.avatar_url ? <img src={userProfile.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-gray-300" />}
+                            posts.map((post, i) => (
+                                <div key={post.id} className={`bg-white wobbly-border paper-shadow p-8 hover:shadow-xl transition-all relative ${i % 2 === 0 ? '-rotate-0.5' : 'rotate-0.5'}`}>
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="w-12 h-12 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-white shadow-md -rotate-3">
+                                            {userProfile.avatar_url ? <img src={userProfile.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-ink/10" />}
                                         </div>
                                         <div>
-                                            <p className="font-bold text-sm dark:text-white">{userProfile.display_name}</p>
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{new Date(post.created_at).toLocaleDateString()}</p>
+                                            <p className="font-journal-title text-xl text-ink-deep italic leading-none">{userProfile.display_name}</p>
+                                            <p className="font-special text-[10px] text-ink/30 font-black uppercase tracking-widest mt-1">{new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                         </div>
                                     </div>
-                                    <p className="text-gray-800 dark:text-gray-300 whitespace-pre-wrap leading-relaxed mb-6">{post.content}</p>
-                                    <div className="flex gap-4 pt-4 border-t border-gray-50 dark:border-slate-800">
+                                    <p className="font-journal-body text-lg text-ink/70 whitespace-pre-wrap leading-relaxed mb-8 italic">"{post.content}"</p>
+                                    <div className="flex gap-6 pt-6 wobbly-border-t border-ink/5">
                                         <PostLikeButton postId={post.id} initialLikes={post._count.likes} initialLikedByUser={session ? post.likes && post.likes.length > 0 : false} />
-                                        <div className="flex items-center gap-1.5 text-gray-400">
-                                            <MessageSquare className="w-4 h-4" />
-                                            <span className="text-xs font-bold">{post._count.comments}</span>
+                                        <div className="flex items-center gap-2.5 text-ink/30 hover:text-pine transition-colors group cursor-pointer">
+                                            <MessageSquare className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                            <span className="font-special text-xs font-black">{post._count.comments}</span>
                                         </div>
                                     </div>
-                                    <div className="mt-4">
+                                    <div className="mt-8 bg-parchment-light/50 wobbly-border-sm p-4">
                                         <PostCommentSection postId={post.id} initialComments={post.comments || []} commentCount={post._count.comments} currentUserId={session?.user?.id} currentUserRole={session?.user?.role} />
                                     </div>
                                 </div>
@@ -139,53 +148,45 @@ export default function ProfileClient({
                 );
             case 'aktivitas':
                 return (
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 space-y-8 px-4 sm:px-0">
+                    <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 space-y-12 px-4 sm:px-0">
                         {/* Summary Stats Grid */}
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-100 dark:border-slate-800 text-center shadow-sm group hover:border-indigo-100 transition-all">
-                                <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                                    <BookMarked className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                        <div className="grid grid-cols-3 gap-6">
+                            {[
+                                { icon: BookMarked, val: stats.bookmarks, label: 'Karya Disimpan', color: 'bg-pine/5 text-pine', rot: '-rotate-2' },
+                                { icon: Star, val: stats.reviews, label: 'Ulasan Dibuat', color: 'bg-gold/20 text-ink-deep', rot: 'rotate-3' },
+                                { icon: MessageCircle, val: stats.comments, label: 'Komentar', color: 'bg-dried-red/5 text-dried-red', rot: '-rotate-1' }
+                            ].map((s, i) => (
+                                <div key={i} className={`bg-white p-6 wobbly-border paper-shadow text-center group hover:-translate-y-1 transition-all ${s.rot}`}>
+                                    <div className={`w-12 h-12 ${s.color} wobbly-border-sm flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform`}>
+                                        <s.icon className="w-6 h-6" />
+                                    </div>
+                                    <p className="font-journal-title text-3xl text-ink-deep italic">{s.val}</p>
+                                    <p className="font-special text-[9px] font-black uppercase text-ink/30 tracking-[0.2em] mt-1">{s.label}</p>
                                 </div>
-                                <p className="text-xl font-black dark:text-white">{stats.bookmarks}</p>
-                                <p className="text-[8px] font-black uppercase text-gray-400 tracking-[0.2em] mt-1">Karya Disimpan</p>
-                            </div>
-                            <div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-100 dark:border-slate-800 text-center shadow-sm group hover:border-orange-100 transition-all">
-                                <div className="w-10 h-10 bg-orange-50 dark:bg-orange-950/30 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                                    <Star className="w-5 h-5 text-orange-500 dark:text-orange-400" />
-                                </div>
-                                <p className="text-xl font-black dark:text-white">{stats.reviews}</p>
-                                <p className="text-[8px] font-black uppercase text-gray-400 tracking-[0.2em] mt-1">Ulasan Dibuat</p>
-                            </div>
-                            <div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-100 dark:border-slate-800 text-center shadow-sm group hover:border-emerald-100 transition-all">
-                                <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950/30 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                                    <MessageCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                                </div>
-                                <p className="text-xl font-black dark:text-white">{stats.comments}</p>
-                                <p className="text-[8px] font-black uppercase text-gray-400 tracking-[0.2em] mt-1">Komentar</p>
-                            </div>
+                            ))}
                         </div>
 
                         {/* Recent Reviews Segment */}
                         <div>
-                            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 px-2">Ulasan Terbaru</h4>
+                            <h4 className="font-marker text-xs text-ink/40 uppercase tracking-[0.3em] mb-6 px-4">Arsip Ulasan</h4>
                             {reviews.length === 0 ? (
-                                <p className="text-center py-10 text-xs text-gray-400 font-bold uppercase border border-dashed border-gray-100 rounded-3xl">Belum ada ulasan</p>
+                                <p className="text-center py-16 font-journal-body text-ink/20 italic wobbly-border-sm border-2 border-dashed border-ink/5">Halaman ini masih putih polos...</p>
                             ) : (
-                                <div className="grid gap-3">
-                                    {reviews.map(review => (
-                                        <div key={review.id} className="bg-white dark:bg-slate-900 p-5 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm flex items-start gap-4">
+                                <div className="grid gap-4">
+                                    {reviews.map((review, i) => (
+                                        <div key={review.id} className={`bg-white p-6 wobbly-border paper-shadow flex items-start gap-6 hover:shadow-lg transition-all ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
                                             <div className="shrink-0 pt-1">
-                                                <div className="flex bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded-full items-center gap-1">
-                                                    <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                                                    <span className="text-[10px] font-black text-amber-700 dark:text-amber-400">{review.rating}/5</span>
+                                                <div className="flex bg-gold/30 px-3 py-1.5 wobbly-border-sm items-center gap-2 -rotate-12 shadow-sm">
+                                                    <Star className="w-4 h-4 text-ink-deep fill-ink-deep/20" />
+                                                    <span className="font-special text-xs font-black text-ink-deep">{review.rating}/5</span>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <Link href={`/novel/${review.karya.id}`} className="text-xs font-black text-indigo-600 dark:text-indigo-400 hover:underline mb-1 block">
+                                            <div className="flex-1">
+                                                <Link href={`/novel/${review.karya.id}`} className="font-journal-title text-xl text-pine hover:underline mb-2 block italic leading-none">
                                                     {review.karya.title}
                                                 </Link>
-                                                <p className="text-sm dark:text-gray-300 italic line-clamp-2">&quot;{review.content}&quot;</p>
-                                                <p className="text-[8px] text-gray-400 font-bold uppercase mt-2">{new Date(review.created_at).toLocaleDateString()}</p>
+                                                <p className="font-journal-body text-lg text-ink/70 italic leading-relaxed">&quot;{review.content}&quot;</p>
+                                                <p className="font-special text-[9px] text-ink/30 font-black uppercase mt-4 tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID')}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -195,19 +196,21 @@ export default function ProfileClient({
 
                         {/* Recent Comments Segment */}
                         <div>
-                            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 px-2">Komentar Terbaru</h4>
+                            <h4 className="font-marker text-xs text-ink/40 uppercase tracking-[0.3em] mb-6 px-4">Catatan Pinggir</h4>
                             {comments.length === 0 ? (
-                                <p className="text-center py-10 text-xs text-gray-400 font-bold uppercase border border-dashed border-gray-100 rounded-3xl">Belum ada komentar</p>
+                                <p className="text-center py-16 font-journal-body text-ink/20 italic wobbly-border-sm border-2 border-dashed border-ink/5">Belum ada tinta tertoreh...</p>
                             ) : (
-                                <div className="space-y-4">
-                                    {comments.map(comment => (
-                                        <div key={comment.id} className="group flex flex-col gap-2">
-                                            <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-[9px] font-black text-gray-400 uppercase tracking-widest hover:text-indigo-600 transition-colors">
-                                                # {comment.bab.karya.title} — <span className="text-gray-300 dark:text-gray-700">Bab {comment.bab.chapter_no}</span>
+                                <div className="space-y-6">
+                                    {comments.map((comment, i) => (
+                                        <div key={comment.id} className="group flex flex-col gap-3">
+                                            <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="font-marker text-[10px] text-ink/30 uppercase tracking-widest hover:text-pine transition-colors ml-4 flex items-center gap-2">
+                                                <span># {comment.bab.karya.title}</span>
+                                                <span className="w-1 h-1 bg-ink/10 rounded-full" />
+                                                <span className="italic text-ink/20">Bab {comment.bab.chapter_no}</span>
                                             </Link>
-                                            <div className="bg-white dark:bg-slate-900 p-5 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm group-hover:border-indigo-100 transition-all relative">
-                                                <p className="text-[13px] text-gray-700 dark:text-gray-400 leading-relaxed font-medium">&quot;{comment.content}&quot;</p>
-                                                <span className="absolute -bottom-1 -right-1 text-[7px] font-black bg-gray-50 dark:bg-slate-800 px-2 py-0.5 rounded-full text-gray-400 uppercase tracking-tighter shadow-sm">{new Date(comment.created_at).toLocaleDateString()}</span>
+                                            <div className={`bg-parchment p-6 wobbly-border paper-shadow group-hover:shadow-lg transition-all relative ${i % 2 === 0 ? '-rotate-0.5' : 'rotate-0.5'}`}>
+                                                <p className="font-journal-body text-lg text-ink/70 leading-relaxed italic">&quot;{comment.content}&quot;</p>
+                                                <span className="absolute -bottom-2 -right-2 font-special text-[8px] font-black bg-white px-3 py-1 wobbly-border-sm text-ink/40 uppercase tracking-tighter shadow-sm">{new Date(comment.created_at).toLocaleDateString('id-ID')}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -218,19 +221,19 @@ export default function ProfileClient({
                 );
             case 'pengikut':
                 return (
-                    <div className="divide-y divide-gray-50 dark:divide-slate-800 animate-in fade-in zoom-in-95 duration-300">
-                        {followers.length === 0 ? <div className="py-20 text-center text-xs text-gray-400 font-bold uppercase tracking-widest italic">Belum ada pengikut</div> :
+                    <div className="bg-white wobbly-border paper-shadow divide-y-2 divide-ink/5 animate-in fade-in zoom-in-95 duration-500 overflow-hidden -rotate-1">
+                        {followers.length === 0 ? <div className="py-24 text-center font-journal-body text-ink/20 italic uppercase tracking-widest">Sepi di sini...</div> :
                             followers.map(f => (
-                                <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-4 p-5 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all group">
-                                    <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 dark:bg-slate-800 border-2 border-white dark:border-slate-800 group-hover:border-indigo-400 transition-all shadow-sm">
-                                        {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-gray-300" />}
+                                <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-6 p-6 hover:bg-gold/5 transition-all group">
+                                    <div className="w-16 h-16 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-white group-hover:rotate-6 transition-all shadow-md">
+                                        {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-ink/10" />}
                                     </div>
                                     <div>
-                                        <p className="font-black text-sm text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{f.display_name}</p>
-                                        <div className="flex items-center gap-2 mt-0.5">
-                                            <p className="text-xs text-gray-500 font-medium">@{f.username}</p>
-                                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                            <span className="text-[8px] font-black uppercase text-indigo-500/70 tracking-tighter">{f.role}</span>
+                                        <p className="font-journal-title text-2xl text-ink-deep group-hover:text-pine transition-colors italic leading-none mb-1">{f.display_name}</p>
+                                        <div className="flex items-center gap-3">
+                                            <p className="font-marker text-xs text-ink/30 uppercase tracking-widest">@{f.username}</p>
+                                            <span className="w-1.5 h-1.5 bg-ink/5 wobbly-border-sm transform rotate-45"></span>
+                                            <span className="font-special text-[10px] font-black uppercase text-pine/60 tracking-tighter">{f.role}</span>
                                         </div>
                                     </div>
                                 </Link>
@@ -239,19 +242,19 @@ export default function ProfileClient({
                 );
             case 'mengikuti':
                 return (
-                    <div className="divide-y divide-gray-50 dark:divide-slate-800 animate-in fade-in zoom-in-95 duration-300">
-                        {following.length === 0 ? <div className="py-20 text-center text-xs text-gray-400 font-bold uppercase tracking-widest italic">Belum mengikuti siapapun</div> :
+                    <div className="bg-white wobbly-border paper-shadow divide-y-2 divide-ink/5 animate-in fade-in zoom-in-95 duration-500 overflow-hidden rotate-1">
+                        {following.length === 0 ? <div className="py-24 text-center font-journal-body text-ink/20 italic uppercase tracking-widest">Belum mengikuti siapapun</div> :
                             following.map(f => (
-                                <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-4 p-5 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all group">
-                                    <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 dark:bg-slate-800 border-2 border-white dark:border-slate-800 group-hover:border-indigo-400 transition-all shadow-sm">
-                                        {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-gray-300" />}
+                                <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-6 p-6 hover:bg-gold/5 transition-all group">
+                                    <div className="w-16 h-16 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-white group-hover:-rotate-6 transition-all shadow-md">
+                                        {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-ink/10" />}
                                     </div>
                                     <div>
-                                        <p className="font-black text-sm text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{f.display_name}</p>
-                                        <div className="flex items-center gap-2 mt-0.5">
-                                            <p className="text-xs text-gray-500 font-medium">@{f.username}</p>
-                                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                            <span className="text-[8px] font-black uppercase text-indigo-500/70 tracking-tighter">{f.role}</span>
+                                        <p className="font-journal-title text-2xl text-ink-deep group-hover:text-pine transition-colors italic leading-none mb-1">{f.display_name}</p>
+                                        <div className="flex items-center gap-3">
+                                            <p className="font-marker text-xs text-ink/30 uppercase tracking-widest">@{f.username}</p>
+                                            <span className="w-1.5 h-1.5 bg-ink/5 wobbly-border-sm transform rotate-45"></span>
+                                            <span className="font-special text-[10px] font-black uppercase text-pine/60 tracking-tighter">{f.role}</span>
                                         </div>
                                     </div>
                                 </Link>
@@ -264,138 +267,139 @@ export default function ProfileClient({
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
+        <div className="min-h-screen bg-parchment-light transition-colors duration-300 pb-32">
             {/* Header / Nav */}
-            <header className="px-4 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-50">
-                <div className="flex items-center gap-4">
-                    <Link href="/" className="p-2 -ml-2 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-full transition-all active:scale-95">
-                        <ArrowLeft className="w-6 h-6" />
+            <header className="px-6 h-20 bg-parchment wobbly-border-b border-ink/5 flex items-center justify-between sticky top-0 z-[110] transition-colors">
+                <div className="flex items-center gap-6">
+                    <Link href="/" className="p-3 -ml-3 text-ink-deep hover:bg-gold/10 wobbly-border-sm transition-all active:scale-95">
+                        <ArrowLeft className="w-7 h-7" />
                     </Link>
                     <div className="hidden sm:block">
-                        <h1 className="font-black text-sm text-gray-900 dark:text-gray-100 uppercase tracking-tight">{userProfile.display_name}</h1>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">@{userProfile.username}</p>
+                        <h1 className="font-journal-title text-2xl text-ink-deep italic leading-none">{userProfile.display_name}</h1>
+                        <p className="font-special text-[10px] text-pine font-black uppercase tracking-widest mt-1">@{userProfile.username}</p>
                     </div>
                 </div>
 
                 <div className="absolute left-1/2 -translate-x-1/2 sm:hidden text-center">
-                    <h1 className="font-black text-sm text-gray-900 dark:text-gray-100 uppercase tracking-tight truncate max-w-[140px]">{userProfile.display_name}</h1>
-                    <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest">@{userProfile.username}</p>
+                    <h1 className="font-journal-title text-xl text-ink-deep italic leading-none truncate max-w-[160px]">{userProfile.display_name}</h1>
+                    <p className="font-special text-[8px] text-pine font-black uppercase tracking-widest">@{userProfile.username}</p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                     <ThemeToggle />
                     {isOwnProfile && (
-                        <Link href="/profile/settings" className="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                            <Settings className="w-6 h-6" />
+                        <Link href="/profile/settings" className="p-3 -mr-3 text-ink/30 hover:text-ink-deep transition-colors group">
+                            <Settings className="w-7 h-7 group-hover:rotate-90 transition-transform" />
                         </Link>
                     )}
                 </div>
             </header>
 
-            <main className="max-w-[1280px] mx-auto px-4 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
-                    {/* Sidebar: Left (Mobile Header-like on small screens, Sidebar on Large) */}
-                    <aside className="lg:col-span-4 lg:sticky lg:top-24 flex flex-col gap-6">
-                        <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 border border-gray-100 dark:border-slate-800 shadow-xl relative overflow-hidden">
-                            {/* Decorative Background */}
-                            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-900/20 dark:to-purple-900/20 -z-10" />
+                    {/* Sidebar: Left */}
+                    <aside className="lg:col-span-4 lg:sticky lg:top-32 flex flex-col gap-8">
+                        <div className="bg-white wobbly-border paper-shadow p-8 relative overflow-hidden -rotate-1">
+                            {/* Decorative Background - Taped Note feel */}
+                            <div className="absolute top-0 left-0 right-0 h-4 bg-gold/20 wobbly-border-sm opacity-50" />
 
                             {/* Avatar Section */}
-                            <div className="relative mb-6">
-                                <div className="w-32 h-32 rounded-[2.5rem] overflow-hidden bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 shadow-2xl mx-auto">
+                            <div className="relative mb-8 pt-4">
+                                {/* Tape effect */}
+                                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-12 h-6 bg-gold/40 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
+
+                                <div className="w-40 h-40 wobbly-border border-4 border-white shadow-2xl mx-auto overflow-hidden bg-parchment-light rotate-[-2deg]">
                                     {userProfile.avatar_url ? (
                                         <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
-                                        <UserCircle2 className="w-full h-full text-indigo-100 dark:text-slate-700" strokeWidth={1} />
+                                        <UserCircle2 className="w-full h-full text-ink/5" strokeWidth={1} />
                                     )}
                                 </div>
                                 {isAuthor && (
-                                    <div className="absolute -bottom-2 right-1/2 translate-x-12 bg-indigo-600 text-white p-1.5 rounded-xl shadow-lg border-2 border-white dark:border-slate-800 animate-bounce">
-                                        <Sparkles className="w-4 h-4" />
+                                    <div className="absolute -bottom-2 right-1/2 translate-x-16 bg-pine text-parchment p-2 wobbly-border-sm shadow-lg border-2 border-white animate-bounce">
+                                        <Sparkles className="w-5 h-5 text-gold" />
                                     </div>
                                 )}
                             </div>
 
                             {/* Info Section */}
-                            <div className="text-center mb-6">
-                                <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-1 leading-tight">{userProfile.display_name}</h2>
-                                <p className="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mb-3">@{userProfile.username}</p>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-[9px] font-black uppercase tracking-[0.15em] border border-indigo-100 dark:border-indigo-800">
-                                    {userProfile.role === 'admin' ? 'Author & Admin' : userProfile.role}
+                            <div className="text-center mb-8">
+                                <h2 className="font-journal-title text-3xl text-ink-deep mb-2 italic leading-none">{userProfile.display_name}</h2>
+                                <p className="font-marker text-sm text-ink/40 uppercase tracking-[0.2em] mb-4">@{userProfile.username}</p>
+                                <span className="inline-flex items-center gap-2 px-4 py-1.5 wobbly-border-sm bg-pine/5 text-pine text-[10px] font-black uppercase tracking-[0.2em]">
+                                    {userProfile.role === 'admin' ? 'Curator & Admin' : userProfile.role}
                                 </span>
                             </div>
 
                             {/* Action Row */}
-                            <div className="flex justify-center mb-8">
+                            <div className="flex justify-center mb-10">
                                 {isOwnProfile ? (
-                                    <Link href="/profile/edit" className="w-full bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 text-gray-900 dark:text-white py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-sm text-center">
-                                        Ubah Profil
+                                    <Link href="/profile/edit" className="w-full bg-gold text-ink-deep font-journal-title text-xl py-4 wobbly-border-sm hover:rotate-1 transition-all shadow-lg text-center italic">
+                                        Ubah Berkas
                                     </Link>
                                 ) : session ? (
-                                    <FollowButton targetUserId={userProfile.id} initialIsFollowing={isFollowing} />
+                                    <div className="w-full rotate-1">
+                                        <FollowButton targetUserId={userProfile.id} initialIsFollowing={isFollowing} />
+                                    </div>
                                 ) : (
-                                    <Link href="/onboarding" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-indigo-200 dark:shadow-none text-center">
-                                        Ikuti
+                                    <Link href="/onboarding" className="w-full bg-pine text-parchment font-journal-title text-xl py-4 wobbly-border-sm hover:rotate-[-1deg] transition-all shadow-lg text-center italic">
+                                        Ikuti Jejak
                                     </Link>
                                 )}
                             </div>
 
                             {/* Bio */}
                             {userProfile.bio && (
-                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6 italic font-medium px-2">
-                                    &ldquo;{userProfile.bio}&rdquo;
-                                </p>
+                                <div className="relative p-6 bg-parchment-light wobbly-border-sm rotate-1 mb-8">
+                                    <p className="font-journal-body text-lg text-ink/60 leading-relaxed italic text-center">
+                                        &ldquo;{userProfile.bio}&rdquo;
+                                    </p>
+                                </div>
                             )}
 
                             {/* Social Links */}
-                            <div className="flex justify-center gap-4 pt-6 border-t border-gray-50 dark:border-slate-800/50">
-                                {userProfile.social_links?.twitter && (
-                                    <a href={userProfile.social_links.twitter} target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 dark:bg-slate-800 rounded-2xl text-gray-400 hover:text-indigo-500 hover:bg-white transition-all shadow-sm border border-transparent hover:border-indigo-100" title="Twitter/X">
-                                        <Twitter className="w-5 h-5" />
+                            <div className="flex justify-center gap-6 pt-8 border-t-2 border-ink/5 wobbly-border-t">
+                                {[
+                                    { link: userProfile.social_links?.twitter, icon: Twitter, color: 'hover:text-sky-500' },
+                                    { link: userProfile.social_links?.instagram, icon: Instagram, color: 'hover:text-pink-500' },
+                                    { link: userProfile.social_links?.website, icon: Globe, color: 'hover:text-pine' }
+                                ].filter(s => s.link).map((social, i) => (
+                                    <a key={i} href={social.link} target="_blank" rel="noopener noreferrer" className={`p-4 bg-white wobbly-border-sm text-ink/20 ${social.color} transition-all shadow-sm hover:scale-110 hover:shadow-md ${i % 2 === 0 ? 'rotate-12' : '-rotate-12'}`} title="Sosial">
+                                        <social.icon className="w-6 h-6" />
                                     </a>
-                                )}
-                                {userProfile.social_links?.instagram && (
-                                    <a href={userProfile.social_links.instagram} target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 dark:bg-slate-800 rounded-2xl text-gray-400 hover:text-pink-500 hover:bg-white transition-all shadow-sm border border-transparent hover:border-pink-100" title="Instagram">
-                                        <Instagram className="w-5 h-5" />
-                                    </a>
-                                )}
-                                {userProfile.social_links?.website && (
-                                    <a href={userProfile.social_links.website} target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 dark:bg-slate-800 rounded-2xl text-gray-400 hover:text-emerald-500 hover:bg-white transition-all shadow-sm border border-transparent hover:border-emerald-100" title="Situs Web">
-                                        <Globe className="w-5 h-5" />
-                                    </a>
-                                )}
+                                ))}
                             </div>
                         </div>
 
                         {/* Quick Connection Stats */}
-                        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-gray-100 dark:border-slate-800 shadow-lg grid grid-cols-2 gap-3 bg-gray-50 dark:bg-slate-800/50 overflow-hidden">
-                            <button onClick={() => handleTabChange('pengikut')} className="bg-white dark:bg-slate-900 py-5 px-2 rounded-2xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all group border border-transparent hover:border-indigo-100 dark:hover:border-slate-700 flex flex-col items-center justify-center text-center">
-                                <p className="text-2xl font-black text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 transition-colors uppercase">{userProfile._count.followers}</p>
-                                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">Pengikut</p>
+                        <div className="wobbly-border paper-shadow p-3 grid grid-cols-2 gap-4 bg-white rotate-1">
+                            <button onClick={() => handleTabChange('pengikut')} className="bg-parchment-light wobbly-border-sm py-6 px-3 hover:bg-gold/10 transition-all group flex flex-col items-center justify-center text-center -rotate-2">
+                                <p className="font-journal-title text-3xl text-ink-deep group-hover:scale-110 transition-transform italic">{userProfile._count.followers}</p>
+                                <p className="font-special text-[10px] text-ink/30 uppercase tracking-[0.2em] mt-1">Pengikut</p>
                             </button>
-                            <button onClick={() => handleTabChange('mengikuti')} className="bg-white dark:bg-slate-900 py-5 px-2 rounded-2xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all group border border-transparent hover:border-indigo-100 dark:hover:border-slate-700 flex flex-col items-center justify-center text-center">
-                                <p className="text-2xl font-black text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 transition-colors uppercase">{userProfile._count.following}</p>
-                                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">Mengikuti</p>
+                            <button onClick={() => handleTabChange('mengikuti')} className="bg-parchment-light wobbly-border-sm py-6 px-3 hover:bg-gold/10 transition-all group flex flex-col items-center justify-center text-center rotate-2">
+                                <p className="font-journal-title text-3xl text-ink-deep group-hover:scale-110 transition-transform italic">{userProfile._count.following}</p>
+                                <p className="font-special text-[10px] text-ink/30 uppercase tracking-[0.2em] mt-1">Mengikuti</p>
                             </button>
                         </div>
                     </aside>
 
-                    {/* Main Content: Right (Tabs & Feed) */}
+                    {/* Main Content: Right */}
                     <div className="lg:col-span-8">
                         {/* Tab Bar */}
-                        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-2 border border-gray-100 dark:border-slate-800 shadow-lg mb-8 flex gap-1 sticky top-[5.5rem] z-30 overflow-x-auto hide-scrollbar">
+                        <div className="bg-white/40 wobbly-border paper-shadow p-3 mb-10 flex gap-3 sticky top-[6.5rem] z-[100] overflow-x-auto hide-scrollbar -rotate-[0.5deg]">
                             {isAuthor && (
                                 <>
                                     <button
                                         onClick={() => handleTabChange('karya')}
-                                        className={`flex-1 min-w-[100px] py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'karya' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-none' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800'}`}
+                                        className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'karya' ? 'bg-pine text-parchment shadow-lg rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-white/60 -rotate-1'}`}
                                     >
                                         Karya
                                     </button>
                                     <button
                                         onClick={() => handleTabChange('postingan')}
-                                        className={`flex-1 min-w-[100px] py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'postingan' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-none' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800'}`}
+                                        className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'postingan' ? 'bg-pine text-parchment shadow-lg -rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-white/60 rotate-1'}`}
                                     >
                                         Postingan
                                     </button>
@@ -403,22 +407,17 @@ export default function ProfileClient({
                             )}
                             <button
                                 onClick={() => handleTabChange('aktivitas')}
-                                className={`flex-1 min-w-[100px] py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'aktivitas' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-none' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800'}`}
+                                className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'aktivitas' ? 'bg-pine text-parchment shadow-lg rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-white/60 -rotate-1'}`}
                             >
                                 {isAuthor ? 'Feed' : 'Aktivitas'}
                             </button>
-                            {(activeTab === 'pengikut' || activeTab === 'mengikuti') && (
-                                <button className="flex-1 min-w-[100px] py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-widest bg-gray-50 dark:bg-slate-800 text-indigo-600 border border-indigo-100 dark:border-indigo-900/30">
-                                    {activeTab === 'pengikut' ? 'Daftar Pengikut' : 'Daftar Mengikuti'}
-                                </button>
-                            )}
                         </div>
 
                         {/* Content Area */}
                         <div className="min-h-[600px] relative">
                             {isPending && (
-                                <div className="absolute inset-0 bg-white/50 dark:bg-slate-950/50 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[3rem]">
-                                    <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                                <div className="absolute inset-0 bg-parchment/40 backdrop-blur-[2px] z-[120] flex items-center justify-center wobbly-border">
+                                    <div className="w-12 h-12 border-4 border-pine border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             )}
                             {renderTabContent()}

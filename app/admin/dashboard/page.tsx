@@ -61,202 +61,167 @@ export default async function AdminDashboardPage() {
     });
 
     return (
-        <div className="pb-24">
+        <div className="pb-32">
             {/* Header Dashboard: Info User & Role */}
-            <div className="px-3 sm:px-6 pt-6 sm:pt-10 mb-6 sm:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic">Dashboard</h1>
-                <div className="flex items-center gap-2 px-1">
-                    <span className="text-[10px] sm:text-[11px] text-indigo-500 font-black uppercase tracking-[0.2em]">{session.user.role === 'admin' ? 'Administrator' : 'Author'}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-slate-700"></span>
-                    <span className="text-[10px] sm:text-[11px] text-gray-400 font-bold uppercase tracking-widest">{session.user.name}</span>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
+                <h1 className="font-journal-title text-4xl text-ink-deep italic tracking-tight uppercase">Buku Kendali</h1>
+                <div className="flex items-center gap-3 bg-white/40 px-6 py-2 wobbly-border-sm rotate-1">
+                    <span className="font-special text-[11px] text-pine font-black uppercase tracking-[0.2em]">{session.user.role === 'admin' ? 'Curator' : 'Researcher'}</span>
+                    <span className="w-1 h-1 rounded-full bg-ink/20"></span>
+                    <span className="font-journal-body text-lg text-ink-deep italic font-bold">{session.user.name}</span>
                 </div>
             </div>
 
-            <div className="w-full mx-auto px-3 sm:px-6">
-                {/* --- TOP STATISTICS GRID --- */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10 sm:mb-16">
-                    {/* View Statistics */}
-                    <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-indigo-500/10 transition-all duration-500">
-                        <div className="p-2 sm:p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
+            {/* --- TOP STATISTICS GRID --- */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                {[
+                    { label: 'Engagement', val: totalViews.toLocaleString(), unit: 'Views', icon: TrendingUp, color: 'text-pine', bg: 'bg-pine/5' },
+                    { label: 'Kepuasan', val: avgRating.toFixed(1), unit: 'Stars', icon: Star, color: 'text-gold', bg: 'bg-gold/5' },
+                    { label: 'Disimpan', val: totalBookmarks.toLocaleString(), unit: 'Saves', icon: Bookmark, color: 'text-dried-red', bg: 'bg-dried-red/5' },
+                    { label: 'Katalog', val: daftarKarya.length, unit: 'Karya', icon: BookOpen, color: 'text-ink-deep', bg: 'bg-ink/5' }
+                ].map((stat, i) => (
+                    <div key={i} className={`bg-white wobbly-border paper-shadow p-8 flex flex-col items-center text-center transition-all hover:scale-105 duration-500 ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                        <div className={`p-4 ${stat.bg} w-fit wobbly-border-sm mb-6 ${stat.color}`}>
+                            <stat.icon className="w-7 h-7" />
                         </div>
-                        <p className="text-[9px] sm:text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-0.5 sm:mb-1 px-1">Engagement</p>
-                        <div className="flex items-baseline gap-1 px-1">
-                            <p className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100">{totalViews.toLocaleString()}</p>
-                            <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase">Views</span>
-                        </div>
-                    </div>
-                    {/* Rating Statistics */}
-                    <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-amber-500/10 transition-all duration-500">
-                        <div className="p-2 sm:p-3 bg-amber-50 dark:bg-amber-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-amber-500 group-hover:text-white transition-all">
-                            <Star className="w-5 h-5 sm:w-6 sm:h-6" />
-                        </div>
-                        <p className="text-[9px] sm:text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-0.5 sm:mb-1 px-1">Kepuasan</p>
-                        <div className="flex items-baseline gap-1 px-1">
-                            <p className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100">{avgRating.toFixed(1)}</p>
-                            <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase">Stars</span>
+                        <p className="font-special text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+                        <div className="flex items-baseline gap-2">
+                            <p className="font-journal-title text-4xl text-ink-deep italic">{stat.val}</p>
+                            <span className="font-marker text-xs text-ink/40 uppercase">{stat.unit}</span>
                         </div>
                     </div>
-                    {/* Bookmark Statistics */}
-                    <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-rose-500/10 transition-all duration-500">
-                        <div className="p-2 sm:p-3 bg-rose-50 dark:bg-rose-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-rose-500 group-hover:text-white transition-all">
-                            <Bookmark className="w-5 h-5 sm:w-6 sm:h-6" />
-                        </div>
-                        <p className="text-[9px] sm:text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-0.5 sm:mb-1 px-1">Disimpan</p>
-                        <div className="flex items-baseline gap-1 px-1">
-                            <p className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100">{totalBookmarks.toLocaleString()}</p>
-                            <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase">Saves</span>
-                        </div>
-                    </div>
-                    {/* Catalog Statistics */}
-                    <div className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/20 dark:shadow-none group hover:shadow-emerald-500/10 transition-all duration-500">
-                        <div className="p-2 sm:p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl sm:rounded-2xl w-fit mb-3 sm:mb-5 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                            <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />
-                        </div>
-                        <p className="text-[9px] sm:text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-0.5 sm:mb-1 px-1">Koleksi</p>
-                        <div className="flex items-baseline gap-1 px-1">
-                            <p className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100">{daftarKarya.length}</p>
-                            <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase">Karya</span>
-                        </div>
-                    </div>
-                </div>
+                ))}
+            </div>
 
-                <div className="grid lg:grid-cols-12 gap-4 sm:gap-12">
-                    {/* --- MAIN CONTENT: STORY MANAGEMENT --- */}
-                    <div className="lg:col-span-8 space-y-8 sm:space-y-12">
-                        <section>
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 px-1 sm:px-4">
-                                <h2 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 italic tracking-tight">Karya Anda</h2>
-                                <Link href="/admin/editor/karya" className="bg-gray-900 dark:bg-indigo-600 hover:bg-indigo-600 text-white px-5 sm:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-[1.5rem] font-black text-[9px] sm:text-[11px] uppercase tracking-[0.15em] flex items-center gap-2.5 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group w-full sm:w-auto justify-center">
-                                    <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform" /> Karya Baru
+            <div className="grid lg:grid-cols-12 gap-12">
+                {/* --- MAIN CONTENT: STORY MANAGEMENT --- */}
+                <div className="lg:col-span-8 space-y-12">
+                    <section>
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
+                            <h2 className="font-journal-title text-3xl text-ink-deep italic underline decoration-dotted decoration-ink/20">Katalog Karya</h2>
+                            <Link href="/admin/editor/karya" className="bg-pine text-parchment font-journal-title text-xl px-10 py-3 wobbly-border-sm hover:rotate-[-2deg] transition-all active:scale-95 shadow-md italic flex items-center gap-3">
+                                <Plus className="w-5 h-5" /> Dokumen Baru
+                            </Link>
+                        </div>
+
+                        {/* Empty State */}
+                        {daftarKarya.length === 0 ? (
+                            <div className="text-center py-24 wobbly-border-sm bg-white/40 rotate-1 mx-auto max-w-lg">
+                                <div className="w-20 h-20 bg-ink/5 wobbly-border flex items-center justify-center mb-8 mx-auto -rotate-12">
+                                    <PenTool className="w-10 h-10 text-ink/10" />
+                                </div>
+                                <h3 className="font-journal-title text-2xl text-ink-deep mb-3 italic">Belum Ada Catatan</h3>
+                                <p className="font-journal-body text-lg text-ink/40 mb-10 leading-relaxed italic">Tulis mahakarya pertamamu dan temukan pembaca setiamu di antara pepohonan.</p>
+                                <Link href="/admin/editor/karya" className="bg-gold text-ink-deep font-journal-title text-xl px-12 py-4 wobbly-border-sm hover:rotate-2 transition-all active:scale-95 shadow-lg italic">
+                                    Mulai Menulis
                                 </Link>
                             </div>
+                        ) : (
+                            /* Karya List Grid */
+                            <div className="space-y-8">
+                                {daftarKarya.map((item, i) => (
+                                    <Link key={item.id} href={`/admin/editor/karya/${item.id}`} className={`group flex flex-col sm:flex-row gap-8 bg-white wobbly-border paper-shadow p-6 hover:scale-[1.01] transition-all duration-500 ${i % 2 === 0 ? '-rotate-[0.5deg]' : 'rotate-[0.5deg]'}`}>
+                                        {/* Cover Thumbnail */}
+                                        <div className="relative shrink-0 mx-auto sm:mx-0">
+                                            {/* Tape effect */}
+                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-5 bg-gold/30 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
 
-                            {/* Empty State */}
-                            {daftarKarya.length === 0 ? (
-                                <div className="text-center py-20 sm:py-32 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-[2.5rem] sm:rounded-[4rem] shadow-2xl shadow-gray-200/30 px-6">
-                                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 dark:bg-slate-800 rounded-[2rem] sm:rounded-[2.5rem] flex items-center justify-center mb-6 sm:mb-8 mx-auto shadow-inner">
-                                        <PenTool className="w-10 h-10 sm:w-12 sm:h-12 text-gray-200" />
-                                    </div>
-                                    <h3 className="font-black text-xl sm:text-2xl text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 tracking-tight">Belum Ada Karya</h3>
-                                    <p className="text-gray-400 dark:text-gray-500 text-xs sm:text-[13px] font-bold mb-8 sm:mb-10 max-w-sm mx-auto uppercase tracking-wide px-4">Mulailah menulis mahakarya pertamamu dan temukan pembaca setiamu.</p>
-                                    <Link href="/admin/editor/karya" className="inline-block bg-indigo-600 text-white px-10 sm:px-12 py-4 sm:py-5 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-500/20 active:scale-95">
-                                        Mulai Menulis
-                                    </Link>
-                                </div>
-                            ) : (
-                                /* Karya List Grid */
-                                <div className="grid gap-4 sm:gap-8">
-                                    {daftarKarya.map((item) => (
-                                        <Link key={item.id} href={`/admin/editor/karya/${item.id}`} className="group bg-white dark:bg-slate-900 p-3 sm:p-6 rounded-3xl sm:rounded-[3.5rem] border border-gray-100 dark:border-slate-800 hover:border-indigo-100 dark:hover:border-indigo-900 shadow-xl shadow-gray-200/20 dark:shadow-none transition-all flex flex-col sm:flex-row gap-4 sm:gap-8 items-start sm:items-center active:scale-[0.99] duration-500">
-                                            {/* Cover Thumbnail */}
-                                            <div className="w-20 h-30 sm:w-28 sm:h-40 rounded-xl sm:rounded-[2.5rem] overflow-hidden shrink-0 shadow-2xl border-2 sm:border-4 border-white dark:border-slate-800 mx-auto sm:mx-0">
+                                            <div className="w-28 h-40 wobbly-border border-4 border-white shadow-xl overflow-hidden bg-white">
                                                 {item.cover_url ? (
                                                     <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                                                 ) : (
-                                                    <div className="w-full h-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-3 text-center text-[10px] text-gray-400 font-black uppercase text-pretty">{item.title}</div>
+                                                    <div className="w-full h-full bg-parchment-light flex items-center justify-center p-4 text-center font-marker text-[10px] text-ink/30 italic uppercase">{item.title}</div>
                                                 )}
                                             </div>
-                                            {/* Karya Details */}
-                                            <div className="flex-1 min-w-0 py-1 sm:py-2 text-center sm:text-left w-full">
-                                                <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-4 mb-1 sm:mb-3">
-                                                    <h3 className="font-black text-gray-900 dark:text-gray-100 text-lg sm:text-2xl leading-tight line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{item.title}</h3>
-                                                    {item.is_completed && <span className="bg-emerald-500 text-white text-[7px] sm:text-[9px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-lg shadow-emerald-200 dark:shadow-none uppercase tracking-widest w-fit">Tamat</span>}
-                                                </div>
-                                                <p className="text-[10px] sm:text-[13px] text-indigo-500 dark:text-indigo-400 font-extrabold mb-4 sm:mb-8 uppercase tracking-[0.15em]">{item.penulis_alias}</p>
+                                        </div>
 
-                                                {/* Meta Stats at Karya Level */}
-                                                <div className="flex justify-center sm:justify-start gap-4 sm:gap-6 items-center flex-wrap">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[8px] sm:text-[10px] font-black text-gray-300 dark:text-gray-600 uppercase tracking-[0.2em] mb-0.5 sm:mb-1.5">Views</span>
-                                                        <span className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-sm font-black text-gray-900 dark:text-gray-100">
-                                                            <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-500" /> {totalViews.toLocaleString()}
+                                        {/* Karya Details */}
+                                        <div className="flex-1 min-w-0 py-2">
+                                            <div className="flex items-center gap-4 mb-2">
+                                                <h3 className="font-journal-title text-2xl text-ink-deep leading-tight line-clamp-1 italic group-hover:text-pine transition-colors uppercase tracking-tight">{item.title}</h3>
+                                                {item.is_completed && <span className="bg-dried-red text-parchment font-special text-[8px] px-3 py-1 wobbly-border-sm shadow-md uppercase tracking-widest rotate-6">TAMAT</span>}
+                                            </div>
+                                            <p className="font-marker text-sm text-ink/40 uppercase tracking-widest mb-6">{item.penulis_alias}</p>
+
+                                            <div className="flex gap-8 items-center flex-wrap">
+                                                {[
+                                                    { label: 'Akses', val: item.total_views.toLocaleString(), icon: BarChart3, color: 'text-pine' },
+                                                    { label: 'Catatan', val: item._count.bab, icon: BookOpen, color: 'text-gold' },
+                                                    { label: 'Pin', val: item._count.bookmarks, icon: Users, color: 'text-dried-red' }
+                                                ].map((stat, idx) => (
+                                                    <div key={idx} className="flex flex-col">
+                                                        <span className="font-special text-[9px] text-ink/20 uppercase tracking-widest mb-1">{stat.label}</span>
+                                                        <span className={`flex items-center gap-2 font-journal-title text-lg italic ${stat.color}`}>
+                                                            <stat.icon className="w-4 h-4 opacity-30" /> {stat.val}
                                                         </span>
                                                     </div>
-                                                    <div className="hidden sm:block w-[1.5px] h-8 bg-gray-50 dark:bg-slate-800"></div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[8px] sm:text-[10px] font-black text-gray-300 dark:text-gray-600 uppercase tracking-[0.2em] mb-0.5 sm:mb-1.5">Chapters</span>
-                                                        <span className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-sm font-black text-gray-900 dark:text-gray-100">
-                                                            <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" /> {item._count.bab}
-                                                        </span>
-                                                    </div>
-                                                    <div className="hidden sm:block w-[1.5px] h-8 bg-gray-50 dark:bg-slate-800"></div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[8px] sm:text-[10px] font-black text-gray-300 dark:text-gray-600 uppercase tracking-[0.2em] mb-0.5 sm:mb-1.5">Readers</span>
-                                                        <span className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-sm font-black text-gray-900 dark:text-gray-100">
-                                                            <Users className="w-3 h-3 sm:w-4 sm:h-4 text-rose-500" /> {item._count.bookmarks}
-                                                        </span>
-                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="w-14 h-14 wobbly-border bg-ink/5 items-center justify-center text-ink/10 group-hover:bg-pine group-hover:text-parchment transition-all self-center hidden sm:flex rotate-12 group-hover:rotate-0">
+                                            <ChevronRight className="w-7 h-7" />
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                </div>
+
+                {/* --- SIDEBAR: INSIGHTS & RECENT COMMUNITY --- */}
+                <div className="lg:col-span-4 space-y-12">
+                    {/* Recent Comments Section */}
+                    <section className="bg-white wobbly-border paper-shadow p-8 relative overflow-hidden -rotate-1">
+                        <div className="relative z-10">
+                            <h2 className="font-journal-title text-2xl text-ink-deep mb-8 flex items-center gap-4 italic underline decoration-dotted decoration-ink/20">
+                                <MessageSquare className="w-6 h-6 text-pine" /> Komunitas
+                            </h2>
+
+                            {latestComments.length === 0 ? (
+                                <div className="text-center py-12 bg-ink/5 wobbly-border-sm px-6">
+                                    <MessageSquare className="w-10 h-10 mx-auto text-ink/10 mb-4 rotate-12" />
+                                    <p className="font-journal-body text-sm text-ink/30 italic uppercase tracking-[0.2em]">Belum ada <br />interaksi masuk</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-10">
+                                    {latestComments.map((c, i) => (
+                                        <div key={c.id} className={`group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <div className="w-12 h-12 wobbly-border-sm bg-white border-2 border-ink/5 flex items-center justify-center font-journal-title text-xl text-ink-deep shadow-sm">
+                                                    {c.user.display_name[0].toUpperCase()}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="font-journal-title text-lg text-ink-deep italic">{c.user.display_name}</span>
+                                                    <span className="font-special text-[9px] text-ink/30 uppercase tracking-widest">{new Date(c.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-[2.5rem] bg-gray-50 dark:bg-slate-800 items-center justify-center text-gray-300 group-hover:bg-indigo-600 group-hover:text-white transition-all mr-0 sm:mr-2 shadow-inner group-hover:shadow-indigo-900/40 group-hover:scale-110 shrink-0 self-center hidden sm:flex">
-                                                <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+                                            <div className="bg-parchment-light wobbly-border-sm p-5 shadow-inner mb-3">
+                                                <p className="font-journal-body text-sm text-ink/60 leading-relaxed italic">"{c.content}"</p>
                                             </div>
-                                        </Link>
+                                            <Link href={`/novel/${c.bab.karya.id}`} className="font-marker text-xs text-pine hover:text-ink-deep transition-all flex items-center gap-2 italic ml-2">
+                                                📚 {c.bab.karya.title}
+                                            </Link>
+                                        </div>
                                     ))}
+                                    <Link href="/admin/community" className="w-full text-center py-4 bg-ink/5 wobbly-border-sm font-journal-title text-sm text-ink-deep hover:bg-pine hover:text-parchment transition-all block mt-8 italic">Pusat Interaksi</Link>
                                 </div>
                             )}
-                        </section>
-                    </div>
+                        </div>
+                    </section>
 
-                    {/* --- SIDEBAR: INSIGHTS & RECENT COMMUNITY --- */}
-                    <div className="lg:col-span-4 space-y-8 sm:space-y-12">
-                        {/* Recent Comments Section */}
-                        <section className="bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[4rem] p-6 sm:p-10 border border-gray-100 dark:border-slate-800 shadow-2xl shadow-gray-200/40 dark:shadow-none relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500 rounded-full blur-[100px] opacity-10 -mr-24 -mt-24"></div>
-                            <div className="relative z-10">
-                                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 mb-6 sm:mb-10 flex items-center gap-3 sm:gap-4 italic tracking-tight">
-                                    <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500" /> Komunitas
-                                </h2>
-
-                                {latestComments.length === 0 ? (
-                                    <div className="text-center py-12 sm:py-16 opacity-50 bg-gray-50/50 dark:bg-slate-800 px-4 sm:px-6 rounded-[2rem] sm:rounded-[3rem] border border-dashed border-gray-100">
-                                        <MessageSquare className="w-12 h-12 mx-auto text-gray-200 mb-4" />
-                                        <p className="text-xs text-gray-400 font-black leading-relaxed uppercase tracking-[0.2em]">Belum ada <br />interaksi masuk</p>
-                                    </div>
-                                ) : (
-                                    /* Comments List */
-                                    <div className="space-y-10">
-                                        {latestComments.map(c => (
-                                            <div key={c.id} className="group cursor-default animate-in fade-in slide-in-from-right-4 duration-500">
-                                                <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-800 flex items-center justify-center text-xs sm:text-sm font-black text-indigo-600 dark:text-indigo-400 border border-gray-100 dark:border-slate-700 shadow-sm transition-transform group-hover:scale-110">
-                                                        {c.user.display_name[0].toUpperCase()}
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[11px] sm:text-[13px] font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight">{c.user.display_name}</span>
-                                                        <span className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">{new Date(c.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="bg-gray-50/50 dark:bg-slate-800/50 p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-transparent group-hover:border-indigo-100 dark:group-hover:border-indigo-900 transition-all mb-2 sm:mb-3 shadow-inner">
-                                                    <p className="text-[12px] sm:text-[14px] text-gray-600 dark:text-gray-400 line-clamp-2 sm:line-clamp-3 leading-relaxed italic font-medium">"{c.content}"</p>
-                                                </div>
-                                                <Link href={`/novel/${c.bab.karya.id}`} className="text-[11px] text-indigo-500 dark:text-indigo-400 font-black uppercase tracking-[0.15em] hover:text-indigo-600 flex items-center gap-2 ml-2 transition-transform hover:translate-x-1">
-                                                    <BookOpen className="w-3.5 h-3.5" /> {c.bab.karya.title}
-                                                </Link>
-                                            </div>
-                                        ))}
-                                        <Link href="/admin/community" className="w-full text-center py-5 bg-gray-100 dark:bg-slate-800 rounded-[2rem] text-[11px] font-black text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 uppercase tracking-[0.25em] hover:bg-gray-200 dark:hover:bg-slate-700 transition-all block mt-10 border border-transparent hover:border-indigo-100">Manajemen Komentar</Link>
-                                    </div>
-                                )}
+                    {/* Tips Studio Promotional Section */}
+                    <section className="bg-pine wobbly-border paper-shadow p-10 text-parchment relative overflow-hidden group rotate-2">
+                        <div className="relative z-10 text-center sm:text-left">
+                            <div className="w-16 h-16 bg-white/10 wobbly-border-sm flex items-center justify-center mb-8 mx-auto sm:mx-0 group-hover:rotate-12 transition-transform">
+                                <Sparkles className="w-8 h-8 text-gold" />
                             </div>
-                        </section>
-
-                        {/* Tips Studio Promotional Section */}
-                        <section className="bg-indigo-900 rounded-3xl sm:rounded-[4rem] p-8 sm:p-12 text-white text-left relative overflow-hidden group shadow-3xl shadow-indigo-500/10">
-                            <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] group-hover:scale-110 transition-transform duration-1000"></div>
-                            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left">
-                                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 rounded-xl sm:rounded-[1.5rem] flex items-center justify-center mb-6 sm:mb-8 border border-white/10 backdrop-blur-sm group-hover:rotate-6 transition-transform">
-                                    <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-200" />
-                                </div>
-                                <h3 className="text-2xl sm:text-3xl font-black italic mb-3 sm:mb-4 leading-tight">Inspirasi Menanti</h3>
-                                <p className="text-[10px] sm:text-[12px] text-indigo-300 font-bold uppercase tracking-[0.1em] sm:tracking-[0.15em] mb-8 sm:mb-10 leading-relaxed opacity-90 px-4 sm:px-0">Setiap kata yang kamu tulis adalah permata bagi pembacamu.</p>
-                                <Link href="/admin/editor/tips" className="inline-flex items-center gap-3 bg-white text-indigo-600 px-8 sm:px-10 py-3 sm:py-4 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] transition-all hover:scale-110 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] active:scale-95 shadow-2xl shadow-black/20">
-                                    Tips Studio <Sparkles className="w-4 h-4" />
-                                </Link>
-                            </div>
-                        </section>
-                    </div>
+                            <h3 className="font-journal-title text-3xl italic mb-4 leading-tight">Inspirasi Menanti</h3>
+                            <p className="font-journal-body text-lg italic text-parchment/70 mb-10 leading-relaxed">Setiap kata yang kamu tulis adalah permata bagi pembacamu.</p>
+                            <Link href="/admin/editor/tips" className="bg-parchment text-pine font-journal-title text-xl px-10 py-4 wobbly-border-sm hover:rotate-2 transition-all active:scale-95 shadow-xl italic inline-block">
+                                Tips Studio ✨
+                            </Link>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

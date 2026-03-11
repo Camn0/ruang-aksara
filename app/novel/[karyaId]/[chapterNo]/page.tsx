@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { unstable_cache } from "next/cache";
 import ReadingInterface from "./ReadingInterface";
 import CommentSection from "./CommentSection";
+import { Search as SearchIcon, Star, TrendingUp, BookOpen, History } from "lucide-react";
 
 /**
  * Halaman Baca Bab (Reading Page).
@@ -120,7 +121,7 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
     const comments = buildCommentTree(allRawComments);
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 text-gray-900 dark:text-gray-100 pb-28">
+        <div className="min-h-screen bg-parchment-light dark:bg-parchment-dark text-ink-deep pb-28 selection:bg-pine/30 transition-colors duration-500">
             <ReadingInterface
                 karyaId={params.karyaId}
                 babId={chapter.id}
@@ -135,21 +136,28 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
                 reactionStats={chapterReactionStats as any}
             />
 
-            <div className="max-w-2xl mx-auto px-6 mt-12 pt-12 border-t border-gray-100 dark:border-slate-800">
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-xl font-black italic">Komentar</h2>
-                    <span className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full text-xs font-bold text-gray-500">
-                        {allRawComments.length}
+            <div className="max-w-2xl mx-auto px-6 mt-16 pt-16 border-t-4 border-ink/5 relative">
+                <div className="flex items-center justify-between mb-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 wobbly-border-sm bg-ink-deep flex items-center justify-center text-parchment rotate-[-6deg]">
+                            <History className="w-5 h-5" />
+                        </div>
+                        <h2 className="text-3xl font-journal-title text-ink-deep">Goresan Pembaca</h2>
+                    </div>
+                    <span className="bg-gold text-ink-deep px-4 py-1 wobbly-border-sm text-xs font-marker uppercase tracking-widest shadow-sm rotate-2">
+                        {allRawComments.length} Pesan
                     </span>
                 </div>
 
-                <CommentSection
-                    babId={chapter.id}
-                    initialComments={comments as any}
-                    currentUserId={session?.user?.id}
-                    currentUserRole={session?.user?.role}
-                    authorId={(chapter as any).karya.uploader_id}
-                />
+                <div className="relative">
+                    <CommentSection
+                        babId={chapter.id}
+                        initialComments={comments as any}
+                        currentUserId={session?.user?.id}
+                        currentUserRole={session?.user?.role}
+                        authorId={(chapter as any).karya.uploader_id}
+                    />
+                </div>
             </div>
         </div>
     );

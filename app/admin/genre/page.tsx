@@ -33,40 +33,40 @@ export default async function AdminGenrePage() {
     });
 
     return (
-        <div className="pb-24">
+        <div className="pb-32 bg-parchment-light min-h-screen">
             {/* Header Settings */}
-            <div className="px-6 pt-6 sm:pt-10 mb-6 sm:mb-10">
-                <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic">Pengaturan Admin</h1>
-                <p className="text-indigo-500 font-extrabold text-[10px] sm:text-xs uppercase tracking-widest mt-2 leading-none">Kelola Genre & Penulis</p>
+            <div className="px-8 pt-10 sm:pt-16 mb-10 sm:mb-16">
+                <h1 className="font-journal-title text-3xl sm:text-5xl text-ink-deep italic leading-none">Lembar Administrasi</h1>
+                <p className="font-marker text-pine text-sm uppercase tracking-[0.3em] mt-3">Kendali Genre & Keanggotaan</p>
             </div>
 
             <div className="px-6">
-                <div className="max-w-4xl bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-gray-200/40 dark:shadow-none p-6 sm:p-10 border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+                <div className="max-w-4xl bg-white wobbly-border paper-shadow p-8 sm:p-12 transition-all duration-300 -rotate-1">
 
                     {/* SECTION 1: MANAJEMEN PENULIS (AUTHOR) */}
-                    <div className="mb-12">
+                    <div className="mb-16">
                         <CreateAuthorForm />
                     </div>
 
                     {/* SECTION 2: MANAJEMEN GENRE (INPUT) */}
-                    <div className="mb-8 border-t border-gray-100 dark:border-slate-800 pt-10">
-                        <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-3">
-                            <span className="w-2 h-8 bg-indigo-600 rounded-full"></span>
-                            Penambahan Genre
+                    <div className="mb-12 pt-12 wobbly-border-t border-ink/5">
+                        <h2 className="font-journal-title text-2xl sm:text-3xl text-ink-deep mb-8 flex items-center gap-4 italic leading-none">
+                            <span className="w-1.5 h-10 bg-gold/50 rotate-12"></span>
+                            Inkripsi Genre Baru
                         </h2>
                         <GenreForm />
                     </div>
 
                     {/* SECTION 3: LIST GENRE AKTIF (DISPLAY & DELETE) */}
-                    <div className="mt-12">
-                        <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-6">Daftar Genre Aktif</h2>
+                    <div className="mt-16">
+                        <h2 className="font-marker text-xs text-ink/30 uppercase tracking-[0.3em] mb-8">Katalog Genre Terdaftar</h2>
                         {genres.length === 0 ? (
-                            <p className="text-gray-500 dark:text-gray-400 italic font-bold">Belum ada genre yang ditambahkan.</p>
+                            <p className="font-journal-body text-ink/40 italic text-lg">Belum ada genre yang tertulis di lembaran ini.</p>
                         ) : (
-                            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {genres.map(g => (
-                                    <li key={g.id} className="bg-gray-50 dark:bg-slate-800/50 border border-transparent dark:border-slate-800 rounded-2xl p-4 flex justify-between items-center transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-lg group">
-                                        <span className="font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight text-sm">{g.name}</span>
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {genres.map((g, i) => (
+                                    <li key={g.id} className={`bg-parchment-light wobbly-border-sm p-5 flex justify-between items-center transition-all hover:bg-white hover:shadow-xl hover:-translate-y-1 group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                                        <span className="font-journal-title text-lg text-ink-deep italic leading-none">{g.name}</span>
                                         <DeleteGenreButton id={g.id} />
                                     </li>
                                 ))}

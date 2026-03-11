@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { List, X, ChevronRight, BookOpen, Clock } from 'lucide-react';
+import { List, X, ChevronRight, BookOpen, Clock, ArrowLeft } from 'lucide-react';
 
 interface ChapterPickerProps {
     karyaId: string;
@@ -48,40 +48,40 @@ export default function ChapterPicker({
     return (
         <div className="fixed inset-0 z-[100] flex flex-col md:flex-row justify-end">
             <div
-                className="absolute inset-0 bg-slate-950/40 backdrop-blur-md transition-opacity animate-in fade-in duration-300"
+                className="absolute inset-0 bg-ink-deep/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-500"
                 onClick={() => setIsOpen(false)}
             />
 
-            {/* The "Sheet" / Sidebar */}
-            <div className="relative w-full md:w-96 h-[90vh] md:h-full bg-[#FDFBF7] dark:bg-slate-950 mt-auto md:mt-0 rounded-t-[3rem] md:rounded-t-none md:rounded-l-[3rem] shadow-[0_-20px_50px_-10px_rgba(0,0,0,0.3)] dark:shadow-none flex flex-col overflow-hidden animate-in slide-in-from-bottom md:slide-in-from-right duration-500 ease-out border-l border-white/10">
+            {/* The "Journal Index" sidebar */}
+            <div className="relative w-full md:w-96 h-[90vh] md:h-full bg-parchment dark:bg-parchment-dark mt-auto md:mt-0 rounded-t-[3rem] md:rounded-t-none md:wobbly-border-l-4 border-ink-deep/20 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom md:slide-in-from-right duration-500 ease-out transition-colors">
 
                 {/* Drag Handle for Mobile */}
-                <div className="w-12 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full mx-auto mt-4 md:hidden shrink-0" />
+                <div className="w-16 h-1.5 bg-ink/10 rounded-full mx-auto mt-4 md:hidden shrink-0" />
 
                 {/* Header Section */}
-                <div className="px-8 pt-6 pb-6 border-b border-gray-100 dark:border-slate-900 flex items-center justify-between sticky top-0 z-10 bg-[#FDFBF7]/80 dark:bg-slate-950/80 backdrop-blur-md">
+                <div className="px-8 pt-8 pb-8 border-b-2 border-dotted border-ink/10 flex items-center justify-between sticky top-0 z-10 bg-parchment/80 dark:bg-parchment-dark/80 backdrop-blur-md">
                     <div>
-                        <h3 className="font-black text-2xl text-gray-900 dark:text-gray-100 flex items-center gap-3 italic tracking-tight">
-                            <BookOpen className="w-6 h-6 text-indigo-600" />
-                            Daftar Isi
+                        <h3 className="font-journal-title text-3xl text-ink-deep flex items-center gap-3 italic">
+                            <BookOpen className="w-7 h-7 text-pine rotate-[-12deg]" />
+                            Indeks Bab
                         </h3>
-                        <div className="flex items-center gap-3 mt-1.5">
-                            <span className="text-[10px] font-black bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded uppercase tracking-widest">{chapters.length} Bab</span>
-                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Serial Karya</span>
+                        <div className="flex items-center gap-3 mt-2">
+                            <span className="text-[10px] font-special bg-pine/10 text-pine px-2 py-0.5 wobbly-border-sm uppercase tracking-widest">{chapters.length} Goresan</span>
+                            <span className="w-1 h-1 bg-ink/10 rounded-full"></span>
+                            <span className="text-[10px] font-marker text-ink/40 uppercase tracking-widest italic">Terarsip</span>
                         </div>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="w-12 h-12 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-all hover:rotate-90 active:scale-90 shadow-sm"
+                        className="w-12 h-12 bg-white/40 wobbly-border-sm flex items-center justify-center text-ink/30 hover:text-dried-red hover:rotate-90 transition-all active:scale-90"
                     >
                         <X className="w-6 h-6" />
                     </button>
                 </div>
 
                 {/* Chapters List */}
-                <div className="flex-1 overflow-y-auto px-4 py-4 hide-scrollbar">
-                    <div className="space-y-2">
+                <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar">
+                    <div className="space-y-4">
                         {chapters.map((ch) => {
                             const isActive = ch.chapter_no === currentChapterNo;
                             return (
@@ -89,34 +89,34 @@ export default function ChapterPicker({
                                     key={ch.chapter_no}
                                     href={`/novel/${karyaId}/${ch.chapter_no}`}
                                     onClick={() => setIsOpen(false)}
-                                    className={`flex items-center gap-4 px-6 py-5 rounded-[2rem] transition-all group relative overflow-hidden ${isActive
-                                        ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-200 dark:shadow-none translate-x-1'
-                                        : 'bg-white dark:bg-slate-900 border border-gray-50 dark:border-slate-900 hover:border-indigo-100 dark:hover:border-indigo-900/50 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10'
+                                    className={`flex items-center gap-5 px-6 py-5 wobbly-border-sm transition-all group relative overflow-hidden ${isActive
+                                        ? 'bg-gold text-ink-deep shadow-lg translate-x-2 border-ink-deep'
+                                        : 'bg-white/40 dark:bg-parchment-dark/40 border-ink/5 hover:border-pine/30 hover:bg-white/80'
                                         }`}
                                 >
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${isActive ? 'bg-white/20' : 'bg-gray-50 dark:bg-slate-800 text-gray-400'}`}>
+                                    <div className={`w-10 h-10 wobbly-border-sm flex items-center justify-center text-sm font-journal-title shrink-0 ${isActive ? 'bg-ink-deep text-parchment rotate-[-6deg]' : 'bg-ink/5 text-ink/30'}`}>
                                         {ch.chapter_no}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className={`text-sm font-black truncate leading-tight uppercase tracking-tight ${isActive ? 'text-white' : 'text-gray-900 dark:text-gray-100'}`}>
+                                        <h4 className={`text-base font-journal-title truncate leading-tight italic ${isActive ? 'text-ink-deep' : 'text-ink/80 group-hover:text-pine'}`}>
                                             {ch.title || `Bab ${ch.chapter_no}`}
                                         </h4>
                                         <div className="flex items-center gap-2 mt-1">
                                             {isActive ? (
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-indigo-200">Sedang Dibaca</span>
+                                                <span className="text-[9px] font-special uppercase tracking-widest text-ink/40">Sedang Dibuka</span>
                                             ) : (
                                                 <div className="flex items-center gap-1.5">
-                                                    <Clock className="w-3 h-3 text-gray-300" />
-                                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Bab Tersedia</span>
+                                                    <Clock className="w-3 h-3 text-ink/20" />
+                                                    <span className="text-[9px] font-marker text-ink/30 uppercase tracking-tighter">Lembaran Tersimpan</span>
                                                 </div>
                                             )}
                                         </div>
                                     </div>
-                                    <ChevronRight className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${isActive ? 'text-white' : 'text-gray-300'}`} />
+                                    <ChevronRight className={`w-5 h-5 transition-transform group-hover:translate-x-2 ${isActive ? 'text-ink-deep' : 'text-ink/20'}`} />
 
-                                    {/* Reflection Effect for Active */}
+                                    {/* Paper Texture Overlay for Active */}
                                     {isActive && (
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                                        <div className="absolute inset-0 bg-parchment-texture opacity-5 pointer-events-none"></div>
                                     )}
                                 </Link>
                             );
@@ -124,14 +124,15 @@ export default function ChapterPicker({
                     </div>
                 </div>
 
-                {/* Footer / Quick Navigation Action */}
-                <div className="p-8 border-t border-gray-100 dark:border-slate-900 bg-[#FDFBF7]/80 dark:bg-slate-950/80 backdrop-blur-md">
+                {/* Footer */}
+                <div className="p-8 border-t-2 border-dotted border-ink/10 bg-parchment/80 dark:bg-parchment-dark/80 backdrop-blur-md">
                     <Link
                         href={`/novel/${karyaId}`}
-                        className="w-full h-14 bg-gray-900 dark:bg-white text-white dark:text-slate-950 rounded-full flex items-center justify-center font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-600 dark:hover:bg-indigo-500 dark:hover:text-white transition-all active:scale-95 gap-3"
+                        className="w-full h-14 bg-ink-deep text-parchment wobbly-border flex items-center justify-center font-journal-title text-xl hover:bg-pine hover:text-white transition-all active:scale-95 gap-3 rotate-[1deg] shadow-lg"
                     >
-                        <X className="w-4 h-4" /> Tutup & Kembali
+                        <ArrowLeft className="w-5 h-5" /> Kembali ke Arsip Utama
                     </Link>
+                    <p className="text-[10px] font-special text-ink/20 text-center mt-6 uppercase tracking-[0.3em]">Ruang Aksara — Jilid IV</p>
                 </div>
             </div>
         </div>

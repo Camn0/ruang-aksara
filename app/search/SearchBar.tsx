@@ -42,23 +42,23 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
     }
 
     return (
-        <form className="relative group" onSubmit={handleSearch}>
+        <form className="relative group rotate-[-0.5deg]" onSubmit={handleSearch}>
             <input
                 type="text"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Cari judul atau penulis..."
-                className="w-full pl-12 pr-12 py-3.5 bg-gray-100 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white dark:focus:bg-slate-900 transition-all shadow-sm"
+                className="w-full pl-12 pr-12 py-4 bg-parchment-light dark:bg-parchment text-ink-deep placeholder-ink/40 wobbly-border paper-shadow text-base font-marker focus:outline-none focus:bg-white transition-all"
             />
-            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400" />
+            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-ink/40 transition-colors group-focus-within:text-pine" strokeWidth={1.5} />
 
             {q && (
                 <button
                     type="button"
                     onClick={clearSearch}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-all"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-ink/5 rounded-full text-ink/40 hover:text-dried-red transition-all"
                 >
-                    <X className="w-4 h-4" />
+                    <X className="w-5 h-5 wobbly-border-sm border-2 border-ink/10" />
                 </button>
             )}
             <button type="submit" className="hidden">Cari</button>

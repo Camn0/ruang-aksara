@@ -51,27 +51,27 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-10">
+            <div className="space-y-8">
                 {/* Avatar URL */}
                 <div>
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-2 block ml-1 flex items-center gap-2">
-                        <UserCircle2 className="w-3 h-3" /> URL Foto Profil
+                    <label className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-4 ml-2 flex items-center gap-3">
+                        <UserCircle2 className="w-4 h-4" /> Lukisan Profil (URL Foto)
                     </label>
-                    <div className="flex gap-4 items-center">
-                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 dark:bg-slate-800 border border-gray-100 dark:border-slate-800 shrink-0">
+                    <div className="flex gap-6 items-center">
+                        <div className="w-20 h-20 wobbly-border-sm bg-parchment-light flex items-center justify-center border-2 border-white shadow-lg rotate-3 shrink-0 overflow-hidden">
                             {avatarUrl ? (
                                 <img src={avatarUrl} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
-                                <UserCircle2 className="w-full h-full text-gray-300 p-2" />
+                                <UserCircle2 className="w-full h-full text-ink/10 p-3" />
                             )}
                         </div>
                         <input
                             type="url"
                             value={avatarUrl}
                             onChange={(e) => setAvatarUrl(e.target.value)}
-                            className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-medium text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                            placeholder="https://example.com/avatar.jpg"
+                            className="flex-1 bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-5 py-4 font-journal-body text-base text-ink-deep italic transition-all placeholder:text-ink/10"
+                            placeholder="https://example.com/lukisan.jpg"
                             disabled={isPending}
                         />
                     </div>
@@ -79,15 +79,15 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
 
                 {/* Display Name */}
                 <div>
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-2 block ml-1">
-                        Nama Tampilan
+                    <label className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-3 block ml-2">
+                        Nama Tampilan Terukir
                     </label>
                     <input
                         type="text"
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
-                        className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                        placeholder="Nama yang muncul di profil..."
+                        className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-5 py-4 font-journal-title text-xl text-ink-deep italic transition-all placeholder:text-ink/10"
+                        placeholder="Nama yang muncul di lembaran..."
                         required
                         disabled={isPending}
                     />
@@ -95,67 +95,67 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
 
                 {/* Bio */}
                 <div>
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-2 block ml-1">
-                        Bio / Deskripsi Diri
+                    <label className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-3 block ml-2">
+                        Hikayat Singkat (Bio)
                     </label>
                     <textarea
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
-                        rows={3}
-                        className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
-                        placeholder="Ceritakan sedikit tentang dirimu..."
+                        rows={4}
+                        className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-5 py-4 font-journal-body text-lg text-ink-deep italic transition-all resize-none placeholder:text-ink/10 leading-relaxed"
+                        placeholder="Bagikan sedikit kisahmu..."
                         disabled={isPending}
                     />
                 </div>
 
                 {/* Social Links Section */}
-                <div className="pt-4 border-t border-gray-50 dark:border-slate-800">
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-4 block ml-1 flex items-center gap-2">
-                        <Link2 className="w-3 h-3" /> Tautan Sosial
+                <div className="pt-8 wobbly-border-t border-ink/5">
+                    <label className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-6 ml-2 flex items-center gap-3">
+                        <Link2 className="w-4 h-4" /> Tautan Jaring Sosial
                     </label>
 
-                    <div className="space-y-3">
+                    <div className="space-y-5">
                         {/* Instagram */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-pink-600 shrink-0">
-                                <Instagram className="w-4 h-4" />
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 wobbly-border-sm bg-pink-50 flex items-center justify-center text-pink-600 border-2 border-white shadow-md rotate-3 shrink-0">
+                                <Instagram className="w-6 h-6" />
                             </div>
                             <input
                                 type="url"
                                 value={socials.instagram || ''}
                                 onChange={(e) => updateSocial('instagram', e.target.value)}
-                                className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-                                placeholder="https://instagram.com/username"
+                                className="flex-1 bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pink-500/20 px-5 py-3 font-journal-body text-base text-ink-deep outline-none italic"
+                                placeholder="https://instagram.com/pujangga"
                                 disabled={isPending}
                             />
                         </div>
 
                         {/* Twitter/X */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-slate-900/10 dark:bg-slate-800 flex items-center justify-center text-gray-900 dark:text-gray-100 shrink-0">
-                                <Twitter className="w-4 h-4" />
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 wobbly-border-sm bg-ink-deep text-parchment flex items-center justify-center border-2 border-white shadow-md -rotate-3 shrink-0">
+                                <Twitter className="w-6 h-6" />
                             </div>
                             <input
                                 type="url"
                                 value={socials.twitter || ''}
                                 onChange={(e) => updateSocial('twitter', e.target.value)}
-                                className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all"
-                                placeholder="https://x.com/username"
+                                className="flex-1 bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-ink-deep/20 px-5 py-3 font-journal-body text-base text-ink-deep outline-none italic"
+                                placeholder="https://x.com/pujangga"
                                 disabled={isPending}
                             />
                         </div>
 
                         {/* Website */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 shrink-0">
-                                <Globe className="w-4 h-4" />
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 wobbly-border-sm bg-pine/10 text-pine flex items-center justify-center border-2 border-white shadow-md rotate-2 shrink-0">
+                                <Globe className="w-6 h-6" />
                             </div>
                             <input
                                 type="url"
                                 value={socials.website || ''}
                                 onChange={(e) => updateSocial('website', e.target.value)}
-                                className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                                placeholder="https://yourwebsite.com"
+                                className="flex-1 bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 px-5 py-3 font-journal-body text-base text-ink-deep outline-none italic"
+                                placeholder="https://kedai-imajinasi.com"
                                 disabled={isPending}
                             />
                         </div>
@@ -166,10 +166,10 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
             <button
                 type="submit"
                 disabled={isPending}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-100 dark:shadow-none transition-all active:scale-[0.98]"
+                className="w-full bg-pine text-parchment font-journal-title text-2xl py-5 wobbly-border paper-shadow shadow-xl flex items-center justify-center gap-3 italic hover:rotate-1 active:scale-[0.98] transition-all disabled:opacity-50"
             >
-                <Save className="w-5 h-5" />
-                {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                <Save className="w-6 h-6" />
+                {isPending ? 'Mengukir Perubahan...' : 'Torehkan Perubahan ✨'}
             </button>
         </form>
     );

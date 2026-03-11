@@ -18,60 +18,60 @@ export default async function SettingsPage() {
     if (!userProfile) return notFound();
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
-            <header className="px-4 h-14 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
-                <Link href={`/profile/${userProfile.username}`} className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors">
+        <div className="min-h-screen bg-parchment-light pb-32 transition-all">
+            <header className="px-6 h-16 bg-parchment border-b wobbly-border-b border-ink/5 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+                <Link href={`/profile/${userProfile.username}`} className="p-3 -ml-3 text-ink-deep hover:bg-white wobbly-border-sm transition-all rotate-3 active:-rotate-3">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="font-bold text-lg text-gray-900 dark:text-gray-100 absolute left-1/2 -translate-x-1/2">Pengaturan</h1>
+                <h1 className="font-journal-title text-2xl text-ink-deep absolute left-1/2 -translate-x-1/2 italic">Lembar Pengaturan</h1>
                 <div className="w-10"></div>
             </header>
 
-            <div className="p-6">
-                <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 mb-8 transition-colors duration-300">
-                    <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                            <UserCircle2 className="w-7 h-7" />
+            <div className="p-8 max-w-2xl mx-auto">
+                <div className="bg-white wobbly-border paper-shadow p-8 mb-12 -rotate-1 transition-all hover:rotate-0">
+                    <div className="flex items-center gap-5">
+                        <div className="w-16 h-16 wobbly-border-sm bg-parchment-light flex items-center justify-center text-pine border-2 border-white shadow-md rotate-3 shrink-0">
+                            <UserCircle2 className="w-10 h-10" />
                         </div>
                         <div className="flex-1">
-                            <h2 className="text-base font-black text-gray-900 dark:text-gray-100 italic">Identitas Publik</h2>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Edit profil dan bio kamu</p>
+                            <h2 className="font-journal-title text-xl text-ink-deep italic leading-none">Identitas Publik</h2>
+                            <p className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mt-2">Ukir bio dan profilmu</p>
                         </div>
-                        <Link href="/profile/edit" className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-100 dark:shadow-none transition-all active:scale-95">
+                        <Link href="/profile/edit" className="px-6 py-3 bg-pine text-parchment font-journal-title text-lg italic wobbly-border-sm shadow-xl hover:rotate-2 transition-all active:scale-95">
                             Edit Profil
                         </Link>
                     </div>
                 </div>
 
-                <h2 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 ml-2 flex items-center gap-2">
-                    <KeySquare className="w-4 h-4" /> Keamanan Akun
+                <h2 className="font-marker text-xs text-ink/30 uppercase tracking-[0.3em] mb-6 ml-3 flex items-center gap-3">
+                    <KeySquare className="w-4 h-4" /> Kunci Keamanan
                 </h2>
 
-                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden mb-8 transition-colors duration-300">
-                    <div className="p-4 flex items-center justify-between opacity-50 cursor-not-allowed grayscale">
-                        <div className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                            <KeySquare className="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                            <span className="font-bold text-sm">Ganti Kata Sandi</span>
+                <div className="bg-white wobbly-border-sm paper-shadow p-6 mb-12 rotate-1 opacity-60">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 text-ink/40 italic">
+                            <KeySquare className="w-6 h-6" />
+                            <span className="font-journal-title text-lg">Ganti Kata Sandi</span>
                         </div>
-                        <span className="text-[10px] bg-gray-200 dark:bg-slate-800 text-gray-600 dark:text-gray-400 px-2 py-1 rounded font-bold uppercase tracking-wider">Coming Soon</span>
+                        <span className="font-marker text-[8px] bg-parchment-light text-ink/30 px-3 py-1.5 wobbly-border-sm uppercase tracking-widest">Segera Terukir</span>
                     </div>
                 </div>
 
-                <h2 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 ml-2 flex items-center gap-2 text-red-500">
-                    <ShieldAlert className="w-4 h-4" /> Zona Berbahaya
+                <h2 className="font-marker text-xs text-dried-red/40 uppercase tracking-[0.3em] mb-6 ml-3 flex items-center gap-3 italic">
+                    <ShieldAlert className="w-4 h-4" /> Zona Terlarang
                 </h2>
 
-                <div className="bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/30 shadow-sm overflow-hidden mb-6 transition-colors duration-300">
-                    <div className="p-4 flex items-center justify-between hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors cursor-pointer cursor-not-allowed opacity-50">
-                        <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
-                            <Trash2 className="w-5 h-5" />
-                            <span className="font-bold text-sm">Hapus Akun Permanen</span>
+                <div className="bg-dried-red/5 wobbly-border-sm p-6 mb-12 -rotate-1 opacity-50 border-2 border-dried-red/10">
+                    <div className="flex items-center justify-between opacity-40">
+                        <div className="flex items-center gap-4 text-dried-red">
+                            <Trash2 className="w-6 h-6" />
+                            <span className="font-journal-title text-lg italic">Hapus Jejak Akun</span>
                         </div>
-                        <span className="text-[10px] bg-red-200 dark:bg-red-900/40 text-red-800 dark:text-red-300 px-2 py-1 rounded font-bold uppercase">Segera Hadir</span>
+                        <span className="font-marker text-[8px] bg-dried-red/10 text-dried-red px-3 py-1.5 wobbly-border-sm uppercase">Segera Hadir</span>
                     </div>
                 </div>
 
-                <div className="mt-8">
+                <div className="mt-12 flex justify-center">
                     <LogoutSettingsButton />
                 </div>
             </div>

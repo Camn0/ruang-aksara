@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Patrick_Hand } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./components/AuthProvider";
 import Navbar from "./components/Navbar";
@@ -8,7 +8,10 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import InstantLoadingBar from "./components/InstantLoadingBar";
 import { Suspense } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const patrickHand = Patrick_Hand({
+    weight: '400',
+    subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
     title: "Ruang Aksara",
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-    themeColor: "#4f46e5",
+    themeColor: "#EADDBF",
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
@@ -30,22 +33,23 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="id">
-            <body className={`${inter.className} bg-gray-100 dark:bg-slate-900 min-h-screen flex justify-center text-gray-900 dark:text-gray-100`}>
+            <body className={`${patrickHand.className} min-h-screen flex justify-center selection:bg-pine/30`}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                     <Suspense fallback={null}>
                         <InstantLoadingBar />
                     </Suspense>
-                    <div className="w-full mx-auto bg-white dark:bg-slate-950 min-h-screen shadow-2xl relative flex flex-col overflow-x-hidden transition-colors duration-300">
+                    <div className="w-full mx-auto bg-parchment-light dark:bg-parchment min-h-screen relative flex flex-col overflow-x-hidden transition-colors duration-300">
                         <AuthProvider>
-                            {/* Navbar desktop/old hidden di mobile if we want, but let's keep for now */}
-                            <main className="flex-grow flex flex-col relative pb-20">
+                            <main className="flex-grow flex flex-col relative pb-32">
                                 {children}
+                                {/* Final Polish: Cat Logo Watermark */}
+                                <div className="fixed bottom-24 right-4 w-20 h-20 cat-watermark pointer-events-none -z-10 rotate-12" />
                             </main>
                             <BottomNav />
                         </AuthProvider>
                     </div>
                 </ThemeProvider>
             </body>
-        </html >
+        </html>
     );
 }

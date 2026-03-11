@@ -6,9 +6,9 @@ export default function LogoutSettingsButton() {
     return (
         <button
             onClick={() => signOut({ callbackUrl: '/auth/login' })}
-            className="w-full py-4 bg-gray-900 text-white rounded-full font-bold text-sm tracking-widest uppercase shadow-xl shadow-gray-200 hover:bg-black active:scale-95 transition-all text-center"
+            className="w-full py-5 bg-ink-deep text-parchment font-journal-title text-xl italic wobbly-border paper-shadow shadow-xl hover:bg-black hover:rotate-1 active:scale-95 transition-all text-center"
         >
-            Keluar dari Akun
+            Tinggalkan Catatan (Logout)
         </button>
     );
 }

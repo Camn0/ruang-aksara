@@ -97,77 +97,76 @@ export default async function UserDashboardPage() {
     ]);
 
     const bookmarks = bookmarksRaw as any[];
-
-    // Hero: Most recently read
-    const lastRead = bookmarks[0];
-
     const trending = (trendingRaw as any[]).slice(0, 8);
 
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 transition-colors duration-500 pb-32">
-            {/* Header with Glassmorphism */}
-            <header className="px-6 pt-12 pb-6 flex justify-between items-center bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl sticky top-0 z-30 border-b border-gray-100 dark:border-slate-800 transition-all">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white font-black italic shadow-lg shadow-indigo-200 dark:shadow-none transition-transform hover:rotate-3">
+        <div className="min-h-screen bg-parchment-light dark:bg-parchment-dark transition-colors duration-500 pb-32 selection:bg-pine/30">
+            {/* Header: Journal Header Style */}
+            <header className="px-6 pt-10 pb-6 flex justify-between items-center bg-parchment/80 dark:bg-parchment-dark/80 backdrop-blur-md sticky top-0 z-30 border-b-4 border-ink-deep/10 transition-all">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-ink-deep wobbly-border-sm flex items-center justify-center text-parchment font-journal-title text-2xl rotate-[-2deg] shadow-md">
                         RA
                     </div>
                     <div>
-                        <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 leading-none tracking-tight">Ruang Aksara</h1>
-                        <p className="text-[9px] text-indigo-500 font-bold uppercase tracking-widest mt-1">Dashboard Pembaca</p>
+                        <h1 className="text-2xl font-journal-title text-ink-deep leading-none">Ruang Aksara</h1>
+                        <p className="font-special text-[10px] text-pine uppercase tracking-widest mt-1">Catatan Pembaca</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Link href={`/profile/${session.user.id}`} className="relative group">
-                        <UserCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-all group-active:scale-90" />
+                <div className="flex items-center gap-4">
+                    <Link href={`/profile/${session.user.id}`} className="relative group hover:rotate-6 transition-transform">
+                        <UserCircle2 className="w-9 h-9 text-ink hover:text-pine transition-all group-active:scale-90" strokeWidth={1.5} />
                     </Link>
                     <LogoutButton />
                 </div>
             </header>
 
-            <div className="px-6 mt-8 space-y-10">
+            <div className="px-6 mt-10 space-y-12 max-w-4xl mx-auto">
 
-                {/* Stats Grid - Gamification Componentized for interactivity */}
+                {/* Stats Grid */}
                 <DashboardStats stats={stats} />
 
                 {/* Hero section: Continue Reading (Expanded to 4) */}
                 {bookmarks.length > 0 && (
                     <section className="relative">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-black text-gray-900 dark:text-gray-100 italic">Lanjutkan Membaca</h2>
-                            <Link href="/library" className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Library</Link>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-3xl font-journal-title text-ink-deep flex items-center gap-2">
+                                <History className="w-6 h-6 text-pine" />
+                                Lanjutkan Perjalanan
+                            </h2>
+                            <Link href="/library" className="font-special text-xs uppercase tracking-widest text-pine hover:text-ink-deep transition-colors border-b-2 border-dotted border-pine/30 pb-0.5">Semua Catatan</Link>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Primary Hero */}
                             <Link href={`/novel/${bookmarks[0].karya.id}/${bookmarks[0].last_chapter}`} className="block group md:col-span-2">
-                                <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-4 border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100 dark:shadow-none flex gap-5 items-center group-active:scale-[0.98] transition-all border-l-4 border-l-indigo-600">
-                                    <div className="w-20 h-28 rounded-2xl overflow-hidden shadow-2xl shrink-0 border border-gray-100 dark:border-slate-800">
+                                <div className="bg-white dark:bg-parchment-dark p-6 wobbly-border paper-shadow flex gap-6 items-center group-active:scale-[0.98] transition-all border-l-8 border-l-gold rotate-[0.5deg]">
+                                    <div className="w-24 h-32 wobbly-border overflow-hidden shadow-xl shrink-0 group-hover:rotate-2 transition-transform duration-500">
                                         {bookmarks[0].karya.cover_url ? (
-                                            <img src={bookmarks[0].karya.cover_url} alt={bookmarks[0].karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            <img src={bookmarks[0].karya.cover_url} alt={bookmarks[0].karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                         ) : (
-                                            <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-2 text-center text-[10px] text-gray-400 font-bold uppercase">{bookmarks[0].karya.title}</div>
+                                            <div className="w-full h-full bg-ink/5 flex items-center justify-center p-2 text-center text-[10px] text-ink/40 font-marker uppercase">{bookmarks[0].karya.title}</div>
                                         )}
                                     </div>
-                                    <div className="flex-1 min-w-0 pr-2">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-[8px] font-black bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded uppercase tracking-widest">Terakhir</span>
-                                            <h3 className="text-sm font-black text-gray-900 dark:text-gray-100 leading-tight truncate">{bookmarks[0].karya.title}</h3>
+                                    <div className="flex-1 min-w-0 pr-4">
+                                        <div className="flex flex-col mb-3">
+                                            <span className="text-[10px] font-special bg-pine/10 text-pine px-2 py-0.5 rounded-sm uppercase tracking-widest w-fit mb-1">Membaca Sekarang</span>
+                                            <h3 className="text-2xl font-journal-title text-ink-deep leading-tight truncate">{bookmarks[0].karya.title}</h3>
                                         </div>
-                                        <p className="text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-3 uppercase tracking-tighter">Bab {bookmarks[0].last_chapter}</p>
+                                        <p className="font-marker text-sm text-ink/60 mb-4 uppercase tracking-tighter">Bab {bookmarks[0].last_chapter} — Terakhir Disentuh</p>
 
-                                        <div className="space-y-1">
-                                            <div className="flex justify-between text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tighter italic">
-                                                <span>Progres</span>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-[10px] font-special text-pine uppercase tracking-tighter italic">
+                                                <span>Kelengkapan</span>
                                                 <span>{bookmarks[0].karya._count.bab > 0 ? Math.round((bookmarks[0].last_chapter / bookmarks[0].karya._count.bab) * 100) : 0}%</span>
                                             </div>
-                                            <div className="h-1.5 bg-gray-50 dark:bg-slate-800 rounded-full overflow-hidden">
-                                                <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full" style={{ width: `${bookmarks[0].karya._count.bab > 0 ? Math.round((bookmarks[0].last_chapter / bookmarks[0].karya._count.bab) * 100) : 0}%` }}></div>
+                                            <div className="h-3 bg-ink/5 wobbly-border-sm overflow-hidden border border-ink/10">
+                                                <div className="h-full bg-gold transition-all duration-1000" style={{ width: `${bookmarks[0].karya._count.bab > 0 ? Math.round((bookmarks[0].last_chapter / bookmarks[0].karya._count.bab) * 100) : 0}%` }}></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="w-9 h-9 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 group-hover:bg-indigo-600 group-hover:text-white transition-all mr-1 shadow-inner">
-                                        <ChevronRight className="w-5 h-5" />
+                                    <div className="w-12 h-12 wobbly-border-sm bg-ink/5 flex items-center justify-center text-ink/40 group-hover:bg-gold group-hover:text-ink-deep transition-all mr-2">
+                                        <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                                     </div>
                                 </div>
                             </Link>
@@ -177,26 +176,26 @@ export default async function UserDashboardPage() {
                                 const progress = b.karya._count.bab > 0 ? Math.round((b.last_chapter / b.karya._count.bab) * 100) : 0;
                                 return (
                                     <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="block group">
-                                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-3 border border-gray-100 dark:border-slate-800 shadow-md shadow-gray-50 dark:shadow-none flex gap-4 items-center group-active:scale-[0.98] transition-all">
-                                            <div className="w-12 h-16 rounded-xl overflow-hidden shadow shrink-0 border border-gray-100 dark:border-slate-800">
+                                        <div className="bg-white/60 dark:bg-parchment p-4 wobbly-border-sm paper-shadow flex gap-4 items-center group-active:scale-[0.98] transition-all rotate-[-0.5deg]">
+                                            <div className="w-14 h-20 wobbly-border overflow-hidden shadow-md shrink-0 border-2 border-ink/10 group-hover:rotate-[-2deg] transition-transform">
                                                 {b.karya.cover_url ? (
                                                     <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                                 ) : (
-                                                    <div className="w-full h-full bg-slate-100 dark:bg-slate-800" />
+                                                    <div className="w-full h-full bg-ink/5" />
                                                 )}
                                             </div>
-                                            <div className="flex-1 min-w-0 pr-1">
-                                                <h3 className="text-xs font-black text-gray-900 dark:text-gray-100 leading-tight truncate mb-1">{b.karya.title}</h3>
+                                            <div className="flex-1 min-w-0 pr-2">
+                                                <h3 className="text-base font-journal-title text-ink-deep leading-tight truncate mb-1">{b.karya.title}</h3>
                                                 <div className="flex items-center gap-2">
-                                                    <p className="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tighter">Bab {b.last_chapter}</p>
-                                                    <span className="w-1 h-1 bg-gray-200 rounded-full" />
-                                                    <p className="text-[9px] text-indigo-500 font-black uppercase tracking-tighter">{progress}%</p>
+                                                    <p className="font-marker text-[11px] text-ink/60 uppercase tracking-tighter">Bab {b.last_chapter}</p>
+                                                    <span className="w-1 h-1 bg-ink/20 rounded-full" />
+                                                    <p className="font-marker text-[11px] text-pine uppercase tracking-tighter">{progress}%</p>
                                                 </div>
-                                                <div className="h-1 bg-gray-50 dark:bg-slate-800 rounded-full mt-2 overflow-hidden w-24">
-                                                    <div className="h-full bg-indigo-500" style={{ width: `${progress}%` }} />
+                                                <div className="h-1.5 bg-ink/5 wobbly-border-sm mt-2 overflow-hidden w-full border border-ink/5">
+                                                    <div className="h-full bg-pine/40" style={{ width: `${progress}%` }} />
                                                 </div>
                                             </div>
-                                            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 transition-colors" />
+                                            <ChevronRight className="w-5 h-5 text-ink/20 group-hover:text-gold transition-colors" />
                                         </div>
                                     </Link>
                                 );
@@ -205,113 +204,114 @@ export default async function UserDashboardPage() {
                     </section>
                 )}
 
-                {/* Section: Penulis yang Diikuti (Followed Authors) */}
+                {/* Section: Authors */}
                 <section>
-                    <div className="flex items-center justify-between mb-5">
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-xl">
-                                <Heart className="w-5 h-5 text-pink-600" />
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-3">
+                            <div className="p-3 bg-dried-red/10 wobbly-border-sm rotate-[3deg]">
+                                <Heart className="w-6 h-6 text-dried-red" />
                             </div>
-                            <h2 className="text-lg font-black text-gray-900 dark:text-gray-100">Penulis Favoritmu</h2>
+                            <h2 className="text-3xl font-journal-title text-ink-deep">Penulis Terpilih</h2>
                         </div>
                     </div>
 
-                    <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
+                    <div className="flex gap-6 overflow-x-auto pb-6 snap-x hide-scrollbar">
                         {followedAuthorsRaw.length === 0 ? (
-                            <div className="w-full py-8 px-6 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-dashed border-gray-200 dark:border-slate-800 text-center">
-                                <p className="text-xs text-gray-500 dark:text-gray-400 font-bold mb-3 uppercase tracking-tighter">Belum ada penulis yang diikuti</p>
-                                <Link href="/search" className="inline-block py-2 px-6 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-colors">Temukan Penulis</Link>
+                            <div className="w-full py-12 px-6 bg-white/40 dark:bg-black/10 wobbly-border border-dashed border-ink/20 text-center rotate-[-0.5deg]">
+                                <p className="font-marker text-ink/50 mb-6 italic text-lg">"Halaman ini masih kosong. Siapa yang akan mengisinya?"</p>
+                                <Link href="/search" className="inline-block py-3 px-8 bg-gold text-ink-deep wobbly-border-sm font-journal-title text-xl hover:scale-105 active:scale-95 transition-all shadow-sm">Temukan Penjaga Kata</Link>
                             </div>
                         ) : (
                             followedAuthorsRaw.map((f: any) => (
-                                <Link key={f.following.id} href={`/profile/${f.following.username}`} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-                                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white dark:border-slate-800 shadow-lg group-hover:border-pink-500 transition-all group-active:scale-95">
-                                        {f.following.avatar_url ? (
-                                            <img src={f.following.avatar_url} alt={f.following.display_name} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <div className="w-full h-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
-                                                <UserCircle2 className="w-8 h-8 text-gray-300" />
-                                            </div>
-                                        )}
+                                <Link key={f.following.id} href={`/profile/${f.following.username}`} className="snap-start shrink-0 flex flex-col items-center gap-3 group">
+                                    <div className="w-20 h-20 wobbly-border p-1 bg-white dark:bg-parchment paper-shadow group-hover:rotate-6 transition-all group-active:scale-95 group-hover:border-gold">
+                                        <div className="w-full h-full wobbly-border-sm overflow-hidden bg-ink/5">
+                                            {f.following.avatar_url ? (
+                                                <img src={f.following.avatar_url} alt={f.following.display_name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center">
+                                                    <UserCircle2 className="w-10 h-10 text-ink/20" />
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <p className="text-[10px] font-black text-gray-900 dark:text-gray-100 text-center line-clamp-1 w-16">{f.following.display_name}</p>
+                                    <p className="font-marker text-sm text-ink-deep text-center line-clamp-1 w-20 leading-none">{f.following.display_name}</p>
                                 </Link>
                             ))
                         )}
                     </div>
                 </section>
 
-                {/* Section: Sedang Hangat - Horizontal Scroll with premium feel */}
+                {/* Section: Trending - Large Magical Covers */}
                 <section>
-                    <div className="flex items-center justify-between mb-5">
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
-                                <Flame className="w-5 h-5 text-orange-600" />
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-3">
+                            <div className="p-3 bg-gold/10 wobbly-border-sm rotate-[-4deg]">
+                                <Flame className="w-6 h-6 text-gold drop-shadow-[0_0_8px_rgba(212,184,114,0.5)]" />
                             </div>
-                            <h2 className="text-lg font-black text-gray-900 dark:text-gray-100">Sedang Hangat</h2>
+                            <h2 className="text-3xl font-journal-title text-ink-deep">Yang Sedang Terbakar</h2>
                         </div>
                     </div>
 
-                    <div className="flex gap-4 overflow-x-auto pb-6 snap-x hide-scrollbar">
+                    <div className="flex gap-6 overflow-x-auto pb-10 snap-x hide-scrollbar">
                         {trending.map((f: any) => (
-                            <Link key={f.id} href={`/novel/${f.id}`} className="snap-start shrink-0 w-36 flex flex-col gap-3 group">
-                                <div className="relative aspect-[3/4.2] w-full rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 dark:border-slate-800">
+                            <Link key={f.id} href={`/novel/${f.id}`} className="snap-start shrink-0 w-44 flex flex-col gap-4 group">
+                                <div className="relative aspect-[3/4.5] w-full wobbly-border paper-shadow overflow-hidden bg-white group-hover:rotate-1 transition-transform duration-700">
                                     {f.cover_url ? (
-                                        <img src={f.cover_url} alt={f.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                        <img src={f.cover_url} alt={f.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                                     ) : (
-                                        <div className="w-full h-full bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4 text-center text-xs text-gray-400 font-bold uppercase">{f.title}</div>
+                                        <div className="w-full h-full bg-parchment flex items-center justify-center p-4 text-center text-xs text-ink/40 font-marker uppercase">{f.title}</div>
                                     )}
-                                    <div className="absolute top-3 right-3 bg-black/40 backdrop-blur-md text-white text-[9px] px-2 py-1 rounded-full flex items-center gap-1 font-black">
-                                        <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                                    <div className="absolute top-4 right-4 bg-ink-deep/80 backdrop-blur-sm text-gold px-3 py-1 wobbly-border-sm flex items-center gap-1.5 font-special text-[11px]">
+                                        <Star className="w-3 h-3 fill-gold text-gold" />
                                         <span>{f.avg_rating.toFixed(1)}</span>
                                     </div>
-                                    <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-3">
-                                        <p className="text-[10px] text-white/80 font-black uppercase tracking-tighter truncate">{f.penulis_alias}</p>
+                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink-deep/90 via-ink-deep/40 to-transparent flex flex-col justify-end p-4">
+                                        <p className="font-marker text-[11px] text-parchment/70 uppercase tracking-widest truncate">{f.penulis_alias}</p>
                                     </div>
                                 </div>
-                                <h3 className="text-sm font-black text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight px-1 group-hover:text-indigo-600 transition-colors">{f.title}</h3>
+                                <h3 className="font-journal-title text-lg text-ink-deep line-clamp-2 leading-tight px-1 group-hover:text-pine transition-colors">{f.title}</h3>
                             </Link>
                         ))}
                     </div>
                 </section>
 
-                {/* Section: Library Shortcuts - Compact and Light */}
-                <section className="bg-white dark:bg-slate-900 rounded-[3rem] p-6 border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100 dark:shadow-none">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-2">
-                            <BookOpen className="w-5 h-5 text-indigo-600" />
-                            <h2 className="text-lg font-black text-gray-900 dark:text-gray-100 italic">Perpustakaan</h2>
+                {/* Section: Library Shortcuts */}
+                <section className="bg-white/40 dark:bg-black/10 p-8 wobbly-border paper-shadow-lg rotate-1">
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-3">
+                            <BookOpen className="w-7 h-7 text-pine rotate-[-12deg]" />
+                            <h2 className="text-3xl font-journal-title text-ink-deep italic underline decoration-pine/20 underline-offset-8">Simpanan Lembaran</h2>
                         </div>
-                        <Link href="/library" className="w-9 h-9 rounded-full bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 hover:text-indigo-600 transition-all border border-gray-100 dark:border-slate-800">
-                            <History className="w-4 h-4" />
+                        <Link href="/library" className="w-12 h-12 wobbly-border-sm bg-parchment-light flex items-center justify-center text-ink/40 hover:text-pine hover:rotate-6 transition-all border-2 border-ink/10">
+                            <History className="w-6 h-6" />
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {bookmarks.slice(0, 8).map(b => (
-                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-3 p-2 bg-gray-50/50 dark:bg-slate-800/50 rounded-2xl hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/50 transition-all group overflow-hidden">
-                                <div className="w-10 h-14 rounded-xl overflow-hidden shrink-0 shadow-sm border border-gray-100 dark:border-slate-800">
+                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-4 p-3 bg-parchment/40 wobbly-border-sm border-2 border-transparent hover:border-pine/30 hover:bg-white transition-all group overflow-hidden">
+                                <div className="w-12 h-16 wobbly-border-sm overflow-hidden shrink-0 shadow-sm transition-transform group-hover:rotate-[-3deg]">
                                     {b.karya.cover_url ? (
                                         <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                                     ) : (
-                                        <div className="w-full h-full bg-slate-200 dark:bg-slate-700" />
+                                        <div className="w-full h-full bg-ink/10 flex items-center justify-center text-[10px] text-ink/20 font-marker">Buku</div>
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <h4 className="text-[11px] font-black text-gray-900 dark:text-gray-100 line-clamp-1 leading-tight">{b.karya.title}</h4>
-                                    <p className="text-[8px] font-black text-indigo-500 uppercase tracking-tighter mt-1">Bab {b.last_chapter}</p>
+                                    <h4 className="font-journal-title text-sm text-ink-deep line-clamp-1 leading-tight">{b.karya.title}</h4>
+                                    <p className="font-marker text-[11px] text-pine uppercase tracking-widest mt-1">Bab {b.last_chapter}</p>
                                 </div>
                             </Link>
                         ))}
                         {(bookmarks.length === 0 || bookmarks.length < 8) && (
-                            <Link href="/search" className="flex items-center justify-center gap-2 py-4 bg-dashed border-2 border-dashed border-gray-100 dark:border-slate-800 rounded-3xl text-gray-400 hover:text-indigo-600 hover:border-indigo-200 transition-all group">
-                                <BookOpen className="w-4 h-4" />
-                                <span className="text-[10px] font-black uppercase tracking-tighter">Cari Baru</span>
+                            <Link href="/search" className="flex items-center justify-center gap-3 py-6 wobbly-border-sm border-2 border-dashed border-ink/20 text-ink/40 hover:text-pine hover:border-pine/30 transition-all group bg-white/20">
+                                <BookOpen className="w-5 h-5 group-hover:rotate-[20deg] transition-transform" />
+                                <span className="font-journal-title text-lg">Cari Lembar Baru</span>
                             </Link>
                         )}
                     </div>
                 </section>
-
 
             </div>
         </div>

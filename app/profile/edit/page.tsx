@@ -17,24 +17,24 @@ export default async function EditProfilePage() {
     if (!userProfile) return notFound();
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
-            <header className="px-4 h-14 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
-                <Link href={`/profile/${userProfile.id}`} className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors">
+        <div className="min-h-screen bg-parchment-light pb-32 transition-all">
+            <header className="px-6 h-16 bg-parchment border-b wobbly-border-b border-ink/5 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+                <Link href={`/profile/${userProfile.username}`} className="p-3 -ml-3 text-ink-deep hover:bg-white wobbly-border-sm transition-all rotate-3 active:-rotate-3">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="font-bold text-lg text-gray-900 dark:text-gray-100 absolute left-1/2 -translate-x-1/2">Edit Profil</h1>
+                <h1 className="font-journal-title text-2xl text-ink-deep absolute left-1/2 -translate-x-1/2 italic">Gubahan Identitas</h1>
                 <div className="w-10"></div>
             </header>
 
-            <div className="p-6">
-                <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 mb-8 transition-colors duration-300">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                            <UserCircle2 className="w-7 h-7" />
+            <div className="p-8 max-w-2xl mx-auto">
+                <div className="bg-white wobbly-border paper-shadow p-8 mb-12 -rotate-1 transition-all hover:rotate-0">
+                    <div className="flex items-center gap-5 mb-10">
+                        <div className="w-16 h-16 wobbly-border-sm bg-parchment-light flex items-center justify-center text-pine border-2 border-white shadow-md rotate-3 shrink-0">
+                            <UserCircle2 className="w-10 h-10" />
                         </div>
                         <div>
-                            <h2 className="text-base font-black text-gray-900 dark:text-gray-100 italic">Identitas Publik</h2>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Atur bagaimana orang lain melihatmu</p>
+                            <h2 className="font-journal-title text-xl text-ink-deep italic leading-none">Informasi Publik</h2>
+                            <p className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mt-2">Bagaimana dunia akan mengenalmu</p>
                         </div>
                     </div>
 

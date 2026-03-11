@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight, Home, Settings, Type, List, RotateCcw, Plus, Minus, X, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Home, Settings, Type, List, RotateCcw, Plus, Minus, X, Sun, Moon, Star } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -140,10 +140,10 @@ export default function ReadingInterface({
 
     return (
         <>
-            {/* Header Sticky Atas */}
-            <header className="px-4 h-14 bg-[#FDFBF7]/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 flex items-center justify-between sticky top-0 z-40 shadow-sm transition-transform duration-300">
-                <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-200 dark:active:bg-slate-800 rounded-full transition-colors">
-                    <ArrowLeft className="w-6 h-6" />
+            {/* Header: Bookmark Style */}
+            <header className="px-4 h-16 bg-parchment/95 dark:bg-parchment-dark/95 backdrop-blur-md border-b-4 border-ink-deep/10 flex items-center justify-between sticky top-0 z-40 transition-transform duration-500 selection:bg-pine/30">
+                <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-ink hover:text-pine hover:rotate-[-8deg] transition-all active:scale-90">
+                    <ArrowLeft className="w-7 h-7" strokeWidth={1.5} />
                 </Link>
                 <div className="flex-1 px-4">
                     <button
@@ -151,64 +151,64 @@ export default function ReadingInterface({
                         className="w-full group focus:outline-none"
                     >
                         <div className="flex flex-col items-center">
-                            <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[8px] font-black uppercase tracking-[0.2em] mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <List className="w-2 h-2" /> Daftar Isi
-                            </div>
-                            <h1 className="font-black text-sm text-gray-900 dark:text-gray-100 leading-none group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Bab {chapterNo}</h1>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[180px] mx-auto font-medium">{chapterTitle || novelTitle}</p>
+                            <h1 className="font-journal-title text-xl text-ink-deep leading-none group-hover:text-pine transition-colors">Bab {chapterNo}</h1>
+                            <p className="font-marker text-[11px] text-ink/40 truncate max-w-[180px] mx-auto uppercase tracking-tighter mt-1">{chapterTitle || novelTitle}</p>
                         </div>
                     </button>
                 </div>
                 <div className="relative">
                     <button
                         onClick={() => setShowSettings(!showSettings)}
-                        className="p-2 -mr-2 text-gray-900 dark:text-gray-100 active:bg-gray-200 dark:active:bg-slate-800 rounded-full transition-colors"
+                        className="p-2 -mr-2 text-ink hover:text-gold hover:rotate-[8deg] transition-all active:scale-90"
                     >
-                        <Settings className="w-5 h-5" />
+                        <Settings className="w-6 h-6" strokeWidth={1.5} />
                     </button>
 
-                    {/* Dropdown Settings */}
+                    {/* Dropdown Settings: Small Note Style */}
                     {showSettings && (
-                        <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-xl p-4 z-50 animate-in fade-in slide-in-from-top-2">
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pengaturan</span>
-                                <button onClick={() => setShowSettings(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full p-1 bg-gray-50 dark:bg-slate-800">
-                                    <X className="w-4 h-4" />
+                        <div className="absolute top-full right-0 mt-4 w-60 bg-parchment dark:bg-parchment-dark wobbly-border paper-shadow p-6 z-50 animate-in fade-in slide-in-from-top-4 duration-300 rotate-[-1deg]">
+                            <div className="flex items-center justify-between mb-6 border-b-2 border-ink/5 pb-2">
+                                <span className="text-[10px] font-special text-pine uppercase tracking-widest">Catatan Penyesuaian</span>
+                                <button onClick={() => setShowSettings(false)} className="text-ink/20 hover:text-dried-red transition-colors">
+                                    <X className="w-5 h-5 wobbly-border-sm border-2 border-ink/5" />
                                 </button>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                                 <div>
-                                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider mb-2 block">Ukuran Teks</label>
-                                    <div className="flex items-center justify-between bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl p-1">
+                                    <label className="text-[10px] text-ink/40 uppercase font-marker tracking-widest mb-3 block">Ukuran Aksara</label>
+                                    <div className="flex items-center justify-between bg-ink/5 wobbly-border-sm p-1">
                                         <button
                                             onClick={() => handleSetFontSize(fontSize - 2)}
-                                            className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors active:scale-95 text-gray-700 dark:text-gray-300 disabled:opacity-50"
+                                            className="p-2 hover:bg-white rounded-sm transition-all active:scale-90 text-ink/60 disabled:opacity-30"
                                             disabled={fontSize <= 12}
                                         >
-                                            <Minus className="w-4 h-4" />
+                                            <Minus className="w-5 h-5" />
                                         </button>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-gray-100 w-10 text-center">{fontSize}px</span>
+                                        <span className="font-journal-title text-xl text-ink-deep w-12 text-center">{fontSize}</span>
                                         <button
                                             onClick={() => handleSetFontSize(fontSize + 2)}
-                                            className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors active:scale-95 text-gray-700 dark:text-gray-300 disabled:opacity-50"
+                                            className="p-2 hover:bg-white rounded-sm transition-all active:scale-90 text-ink/60 disabled:opacity-30"
                                             disabled={fontSize >= 32}
                                         >
-                                            <Plus className="w-4 h-4" />
+                                            <Plus className="w-5 h-5" />
                                         </button>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider mb-2 block">Tema</label>
+                                    <label className="text-[10px] text-ink/40 uppercase font-marker tracking-widest mb-3 block">Suasana</label>
                                     <button
                                         onClick={toggleTheme}
-                                        className="w-full flex items-center justify-between bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl p-3 hover:bg-white dark:hover:bg-slate-700 transition-colors active:scale-95 text-gray-700 dark:text-gray-200"
+                                        className="w-full flex items-center justify-between bg-white/50 wobbly-border-sm p-3 hover:bg-gold/10 transition-all active:scale-95 group"
                                     >
-                                        <span className="text-sm font-bold">{mounted && theme === 'dark' ? 'Mode Terang' : 'Mode Gelap'}</span>
-                                        {mounted && theme === 'dark' ? <Sun className="w-5 h-5 text-amber-500" /> : <Moon className="w-5 h-5 text-indigo-500" />}
+                                        <span className="font-marker text-sm text-ink-deep">{mounted && theme === 'dark' ? 'Terang Benderang' : 'Hutan Gelap'}</span>
+                                        {mounted && theme === 'dark' ? <Sun className="w-5 h-5 text-gold" /> : <Moon className="w-5 h-5 text-pine" />}
                                     </button>
                                 </div>
+                            </div>
+                            <div className="mt-6 pt-4 border-t-2 border-ink/5 text-center">
+                                <p className="text-[9px] font-special text-ink/20 italic">"Gunakan mata Anda dengan bijak."</p>
                             </div>
                         </div>
                     )}
@@ -220,51 +220,62 @@ export default function ReadingInterface({
                 <div className="fixed inset-0 z-30" onClick={() => setShowSettings(false)} />
             )}
 
-            <main className="px-6 py-8 sm:px-12 md:max-w-2xl md:mx-auto min-h-[70vh]">
-                <article
-                    className="prose prose-indigo dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-[#2c2c2c] dark:text-[#d4d4d4] font-serif max-w-none transition-all duration-200"
-                    style={{ fontSize: `${fontSize}px` }}
-                >
-                    {content}
-                </article>
+            <main className="px-6 py-12 sm:px-12 md:max-w-3xl md:mx-auto min-h-[70vh]">
+                <div className="bg-white/80 dark:bg-parchment-dark/80 p-8 sm:p-12 wobbly-border paper-shadow-lg relative overflow-hidden transition-all duration-700">
+                    <article
+                        className="prose prose-stone dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-ink-deep font-journal-body max-w-none selection:bg-gold/40 scroll-smooth"
+                        style={{ fontSize: `${fontSize}px` }}
+                    >
+                        {content}
+                    </article>
 
-                {/* Reaction System */}
-                <div className="mt-20 pt-12 border-t border-gray-100 dark:border-slate-800 text-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                    <div className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-6">
-                        Hore! Selesai Membaca
+                    {/* Decorative ink splatters for longer content */}
+                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-ink-deep/5 pointer-events-none rounded-full blur-3xl" />
+                    <div className="absolute -top-10 -left-10 w-24 h-24 bg-pine/5 pointer-events-none rounded-full blur-2xl" />
+                </div>
+
+                {/* Reaction System: Paper Scraps */}
+                <div className="mt-24 pt-16 border-t-4 border-ink/5 text-center animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                    <div className="inline-block px-6 py-1.5 wobbly-border-sm bg-gold/20 text-ink-deep text-[11px] font-special uppercase tracking-widest mb-8 rotate-[-1deg]">
+                        Lembaran ini Telah Selesai
                     </div>
-                    <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-2 italic">Gimana bab ini?</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-xs mx-auto">Ekspresikan perasaanmu setelah membaca bab ini.</p>
+                    <h3 className="text-3xl font-journal-title text-ink-deep mb-4 italic">Bagaimana jejak tinta ini?</h3>
+                    <p className="font-journal-body text-[15px] text-ink/50 mb-10 max-w-xs mx-auto italic">"Berikan tandamu agar penulis tahu Anda telah sampai di sini."</p>
 
-                    <div className="flex items-center justify-center gap-4 mb-8">
-                        {REACTIONS.map((r) => {
+                    <div className="flex items-center justify-center gap-6 mb-12">
+                        {REACTIONS.map((r, i) => {
                             const count = reactionStats?.find(s => s.reaction_type === r.type)?._count._all || 0;
                             const isActive = userReaction === r.type;
+                            const rotation = (i % 2 === 0 ? -5 : 5) + (Math.random() * 4 - 2);
 
                             return (
                                 <button
                                     key={r.type}
                                     onClick={() => handleReaction(r.type)}
-                                    className={`flex flex-col items-center gap-2 transition-all active:scale-90 group`}
+                                    className="flex flex-col items-center gap-3 transition-all active:scale-90 group"
+                                    style={{ transform: `rotate(${rotation}deg)` }}
                                 >
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-all border-2 ${isActive
-                                        ? 'bg-indigo-600 border-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none scale-110'
-                                        : 'bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 hover:border-indigo-200'
+                                    <div className={`w-16 h-16 wobbly-border flex items-center justify-center text-3xl transition-all paper-shadow ${isActive
+                                        ? 'bg-gold border-ink-deep scale-110'
+                                        : 'bg-white dark:bg-parchment border-ink/10 hover:border-pine hover:bg-parchment-light'
                                         }`}>
                                         {r.emoji}
                                     </div>
                                     <div className="flex flex-col items-center">
-                                        <span className={`text-[10px] font-black uppercase tracking-tighter ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`}>{r.label}</span>
-                                        <span className="text-[10px] font-bold text-gray-300 dark:text-gray-600">{count}</span>
+                                        <span className={`text-[11px] font-marker uppercase tracking-widest ${isActive ? 'text-ink-deep font-bold' : 'text-ink/40'}`}>{r.label}</span>
+                                        <span className="text-[10px] font-special text-ink/20 mt-1">{count} Jejak</span>
                                     </div>
                                 </button>
                             );
                         })}
                     </div>
+                    <div className="mt-8">
+                        <Star className="w-12 h-12 text-ink/5 mx-auto rotate-12" />
+                    </div>
                 </div>
             </main>
 
-            {/* Chapter Picker Overlay (Now more prominent) */}
+            {/* Chapter Picker Overlay */}
             <ChapterPicker
                 karyaId={karyaId}
                 currentChapterNo={chapterNo}
@@ -273,49 +284,49 @@ export default function ReadingInterface({
                 onClose={() => setIsOpenPicker(false)}
             />
 
-            {/* Bottom Floating Navigation - Adjusted Position (bottom-6) */}
-            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-300">
-                <div className="flex bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-gray-100 dark:border-slate-800 p-1.5 rounded-full shadow-2xl items-center gap-2 transition-colors">
+            {/* Bottom Floating Navigation: Scroll Tabs style */}
+            <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-500 selection:bg-pine/30">
+                <div className="flex bg-parchment/90 dark:bg-parchment-dark/90 backdrop-blur-md wobbly-border paper-shadow p-2 items-center gap-3 rotate-[-0.5deg]">
                     {/* Prev Chapter */}
                     {prevChapter ? (
-                        <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-2.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-full transition-all active:scale-90" title="Bab Sebelumnya">
-                            <ArrowLeft className="w-5 h-5" />
+                        <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-3 text-ink/60 hover:text-pine hover:bg-white wobbly-border-sm transition-all active:scale-90 hover:rotate-[-6deg]" title="Mundur">
+                            <ArrowLeft className="w-6 h-6" strokeWidth={2} />
                         </Link>
                     ) : (
-                        <div className="p-2.5 text-gray-300 dark:text-gray-700 cursor-not-allowed">
-                            <ArrowLeft className="w-5 h-5" />
+                        <div className="p-3 text-ink/10 cursor-not-allowed">
+                            <ArrowLeft className="w-6 h-6" />
                         </div>
                     )}
 
-                    <div className="w-[1px] h-6 bg-gray-100 dark:bg-slate-800" />
+                    <div className="w-1 h-8 bg-ink/5 wobbly-border-sm" />
 
-                    <Link href={`/novel/${karyaId}`} className="p-2.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-full transition-all active:scale-90" title="Kembali ke Detail Novel">
-                        <Home className="w-5 h-5" />
+                    <Link href={`/novel/${karyaId}`} className="p-3 text-ink/60 hover:text-pine hover:bg-white wobbly-border-sm transition-all active:scale-90 hover:rotate-12" title="Rumah Novel">
+                        <Home className="w-6 h-6" strokeWidth={2} />
                     </Link>
 
                     <button
                         onClick={() => setIsOpenPicker(true)}
-                        className={`p-2.5 border-2 border-white dark:border-slate-950 rounded-full shadow-sm hover:scale-110 active:scale-90 transition-all font-black ${prevChapter
-                            ? 'bg-indigo-600 text-white shadow-indigo-200 dark:shadow-none'
-                            : 'bg-gray-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400'
+                        className={`p-3 wobbly-border shadow-sm hover:scale-110 active:scale-90 transition-all rotate-3 ${prevChapter
+                            ? 'bg-ink-deep text-parchment border-gold shadow-lg'
+                            : 'bg-white text-pine border-ink/10'
                             }`}
                         title="Daftar Isi"
                     >
-                        <List className="w-5 h-5 shadow-sm" />
+                        <List className="w-6 h-6" strokeWidth={2.5} />
                     </button>
 
-                    <div className="w-[1px] h-6 bg-gray-100 dark:bg-slate-800" />
+                    <div className="w-1 h-8 bg-ink/5 wobbly-border-sm" />
 
                     {/* Next Chapter */}
                     {nextChapter ? (
-                        <Link href={`/novel/${karyaId}/${nextChapter}`} className="p-2.5 bg-indigo-600 text-white rounded-full shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-90 flex items-center gap-1.5 pl-3 pr-4" title="Bab Selanjutnya">
-                            <span className="text-xs font-black uppercase">Lanjut</span>
-                            <ArrowRight className="w-4 h-4" />
+                        <Link href={`/novel/${karyaId}/${nextChapter}`} className="bg-pine text-parchment wobbly-border-sm px-6 py-3 hover:bg-ink-deep transition-all active:scale-95 flex items-center gap-3 shadow-md rotate-[-2deg]" title="Lanjut Melangkah">
+                            <span className="text-sm font-journal-title tracking-widest pt-0.5">TERUSKAN</span>
+                            <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
                         </Link>
                     ) : (
-                        <div className="p-2.5 pr-4 text-gray-400 dark:text-gray-600 flex items-center gap-1.5" title="Bab Terakhir">
-                            <span className="text-xs font-black uppercase tracking-wider">Tamat</span>
-                            <RotateCcw className="w-4 h-4 opacity-50" />
+                        <div className="px-6 py-3 text-ink/20 font-journal-title tracking-widest opacity-50 flex items-center gap-3 bg-ink/5 wobbly-border-sm" title="Akhir Lembaran">
+                            <span>TAMAT</span>
+                            <RotateCcw className="w-5 h-5" />
                         </div>
                     )}
                 </div>

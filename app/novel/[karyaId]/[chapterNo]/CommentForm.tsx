@@ -95,9 +95,9 @@ export default function CommentForm({
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition shadow-sm bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 px-3 py-1.5 rounded"
+                className="text-[10px] font-marker uppercase tracking-widest text-ink hover:text-pine transition-all wobbly-border-sm bg-white/40 px-4 py-2 rotate-[-2deg] active:scale-95"
             >
-                {replyToUsername ? 'Balas ini' : 'Balas Komentar'}
+                {replyToUsername ? `Balas @${replyToUsername}` : 'Goreskan Komentar'}
             </button>
         );
     }
@@ -107,40 +107,40 @@ export default function CommentForm({
             ref={formRef}
             id={parentId ? `comment-form-${parentId}` : "comment-form"}
             onSubmit={handleSubmit}
-            className={`${isReply ? 'mt-3 border-l-2 border-indigo-300 dark:border-indigo-700 pl-4 py-2' : ''}`}
+            className={`${isReply ? 'mt-6 border-l-4 border-pine/20 pl-6 py-2 rotate-[0.5deg]' : ''} selection:bg-pine/20`}
         >
-            {!isReply && <h3 className="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-200">Tinggalkan Komentar</h3>}
+            {!isReply && <h3 className="font-journal-title text-2xl mb-6 text-ink-deep italic">Apa yang merasuki pikiran Anda?</h3>}
 
             <textarea
                 ref={textAreaRef}
                 name="content"
                 defaultValue={replyToUsername ? `@${replyToUsername} ` : ""}
-                className={`w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 ${isReply ? 'min-h-[60px] text-sm' : 'min-h-[100px]'}`}
-                placeholder={isReply ? "Tulis balasan Anda..." : "Tuliskan analisis atau apresiasi Anda di sini..."}
+                className={`w-full bg-parchment-light border-2 border-ink/5 wobbly-border-sm p-4 outline-none focus:bg-white focus:border-pine/30 transition-all font-journal-body text-ink-deep leading-relaxed placeholder-ink/30 ${isReply ? 'min-h-[80px] text-sm' : 'min-h-[120px] text-base'}`}
+                placeholder={isReply ? "Bisikkan balasan Anda..." : "Arsipkan analisis atau sekadar salam di sini..."}
                 required
                 disabled={isPending}
             />
 
             {successMessage && (
-                <p className="text-xs font-bold text-green-600 dark:text-green-400 mt-2 animate-pulse">{successMessage}</p>
+                <p className="text-[11px] font-special text-pine mt-3 animate-bounce uppercase tracking-widest drop-shadow-sm">✓ {successMessage}</p>
             )}
 
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-4 mt-5">
                 <button
                     type="submit"
                     disabled={isPending}
-                    className={`bg-indigo-600 dark:bg-indigo-500 text-white font-medium px-6 rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed ${isReply ? 'py-1.5 text-xs' : 'py-2'}`}
+                    className={`bg-pine text-parchment font-journal-title text-lg px-8 wobbly-border-sm hover:bg-ink-deep transition-all active:scale-95 disabled:opacity-30 ${isReply ? 'py-1.5 text-base' : 'py-2.5'}`}
                 >
-                    {isPending ? 'Mengirim...' : (isReply ? 'Kirim Balasan' : 'Kirim Komentar')}
+                    {isPending ? 'Mengirim...' : (isReply ? 'BALAS' : 'SIMPAN GORESAN')}
                 </button>
 
                 {isReply && (
                     <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium py-1.5 px-4 rounded-xl text-xs hover:bg-gray-300 dark:hover:bg-slate-600 transition"
+                        className="bg-white/40 text-ink/40 font-special py-1.5 px-6 wobbly-border-sm text-[10px] uppercase tracking-widest hover:text-dried-red hover:bg-white transition-all"
                     >
-                        Batal
+                        BATAL
                     </button>
                 )}
             </div>

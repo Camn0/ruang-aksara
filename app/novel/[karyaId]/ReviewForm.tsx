@@ -49,58 +49,58 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800 p-6 rounded-xl transition-colors duration-300">
-            <h3 className="text-sm font-black text-gray-900 dark:text-gray-100 mb-4 uppercase tracking-wider">
-                Penilaian & Ulasan
+        <form onSubmit={handleSubmit} className="bg-parchment-light p-6 wobbly-border-sm selection:bg-pine/20">
+            <h3 className="font-journal-title text-xl text-ink-deep mb-6 italic">
+                Catatan Pengamatan Anda
             </h3>
 
             <input type="hidden" name="karya_id" value={karyaId} />
             <input type="hidden" name="rating" value={score} />
 
-            <div className="mb-4">
-                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Beri Rating</label>
-                <div className="flex items-center gap-4">
-                    <div className="flex gap-1">
+            <div className="mb-6">
+                <label className="block font-special text-[10px] text-ink/40 mb-3 uppercase tracking-widest">Penilaian Bintang</label>
+                <div className="flex items-center gap-6">
+                    <div className="flex gap-2">
                         {[1, 2, 3, 4, 5].map(star => (
                             <button
                                 key={star}
                                 type="button"
                                 onClick={() => setScore(star)}
-                                className={`text-2xl transition-transform hover:scale-110 ${star <= score ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+                                className={`text-3xl transition-all active:scale-150 drop-shadow-sm ${star <= score ? 'text-gold rotate-6' : 'text-ink/10 -rotate-3 hover:text-gold/50'}`}
                             >
                                 ★
                             </button>
                         ))}
                     </div>
                     {score > 0 && (
-                        <button type="button" onClick={() => setScore(0)} className="text-xs text-gray-500 hover:text-red-500 transition-colors">
-                            Hapus
+                        <button type="button" onClick={() => setScore(0)} className="font-marker text-sm text-ink/30 hover:text-dried-red transition-colors underline decoration-dotted">
+                            Hapus Penilaian
                         </button>
                     )}
                 </div>
             </div>
 
-            <div className="mb-4">
-                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Ulasan (Opsional)</label>
+            <div className="mb-6">
+                <label className="block font-special text-[10px] text-ink/40 mb-3 uppercase tracking-widest">Goresan Ulasan (Opsional)</label>
                 <textarea
                     name="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Tulis pendapat Anda tentang karya ini..."
-                    className="w-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none min-h-[80px] transition-colors"
+                    placeholder="Apa yang Anda temukan di halaman-halaman ini?"
+                    className="w-full bg-white/60 border-2 border-ink/5 wobbly-border-sm p-4 font-journal-body text-lg text-ink-deep outline-none focus:bg-white focus:border-pine/20 transition-all min-h-[100px] italic leading-relaxed"
                 ></textarea>
             </div>
 
             {success && (
-                <p className="text-xs font-bold text-green-600 dark:text-green-400 mb-3 animate-pulse">{success}</p>
+                <p className="font-special text-[11px] text-pine mb-4 animate-bounce uppercase tracking-widest">✓ {success}</p>
             )}
 
             <button
                 type="submit"
                 disabled={isPending || (score === 0 && !content.trim())}
-                className="bg-indigo-600 dark:bg-indigo-500 text-white font-bold py-2.5 px-6 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm"
+                className={`bg-pine text-parchment font-journal-title text-xl px-10 py-2.5 wobbly-border-sm hover:bg-ink-deep transition-all active:scale-95 disabled:opacity-20 disabled:grayscale rotate-[-1deg]`}
             >
-                {isPending ? 'Menyimpan...' : (existingReview ? 'Update' : (content.trim() ? 'Publikasi Ulasan' : 'Simpan Rating'))}
+                {isPending ? 'Mencatat...' : (existingReview ? 'DIPERBARUI' : (content.trim() ? 'SIMPAN OBSERVASI' : 'HANYA RATING'))}
             </button>
         </form>
     );

@@ -1,30 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Patrick+Hand&family=Caveat+Brush&family=Special+Elite&family=Caveat&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --parchment: #F4EAD5;
+  --parchment-dark: #EADDBF;
+  --ink: #3A2A18;
+  --ink-deep: #2C241B;
+  --pine: #4A5D4E;
+  --gold: #D4B872;
+  --dried-red: #9E473D;
+
+  --background: var(--parchment);
+  --foreground: var(--ink);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.dark {
+  --parchment: #2C241B;
+  --parchment-dark: #1E1812;
+  --ink: #EADDBF;
+  --ink-deep: #F4EAD5;
+
+  --background: var(--parchment);
+  --foreground: var(--ink);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: 'Patrick Hand', cursive;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Parchment Texture Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Vignette Effect */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 100px rgba(58, 42, 24, 0.15);
+  pointer-events: none;
+  z-index: 9998;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .wobbly-border {
+    border: 3px solid var(--ink);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   }
+
+  .wobbly-border-sm {
+    border: 2px solid var(--ink);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  }
+
+  .paper-scrap {
+    background-color: var(--parchment-dark);
+    box-shadow: 4px 4px 0px var(--ink);
+    transition: all 0.2s ease;
+  }
+
+  .paper-scrap:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px var(--ink);
+  }
+
+  .ink-splatter {
+    mask-image: url("/images/splatters.png");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+  }
+
+  .bg-runes {
+    background-image: url("/images/runes.png");
+    background-size: 400px;
+    background-repeat: repeat;
+    opacity: 0.03;
+  }
+
+  .cat-watermark {
+    mask-image: url("/images/cat_logo.png");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    background-color: var(--ink);
+    opacity: 0.1;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Permanent Marker', cursive;
+  line-height: 1.2;
+}
+
+.font-marker {
+  font-family: 'Caveat Brush', cursive;
+}
+
+.font-special {
+  font-family: 'Special Elite', cursive;
 }
