@@ -46,7 +46,7 @@ export default function EditKaryaForm({ karya, allGenres }: { karya: Karya, allG
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="w-full py-4 bg-white wobbly-border-sm border-2 border-pine text-pine font-journal-title text-xl italic hover:bg-pine hover:text-parchment transition-all shadow-md active:scale-95"
+                className="w-full py-4 bg-paper wobbly-border-sm border-2 border-pine text-pine font-journal-title text-xl italic hover:bg-pine hover:text-parchment transition-all shadow-md active:scale-95"
             >
                 Ubah Metadata Hikayat
             </button>
@@ -54,7 +54,7 @@ export default function EditKaryaForm({ karya, allGenres }: { karya: Karya, allG
     }
 
     return (
-        <form action={handleSubmit} className="p-8 mt-6 wobbly-border paper-shadow bg-white flex flex-col gap-8 transition-all relative">
+        <form action={handleSubmit} className="p-8 mt-6 wobbly-border paper-shadow bg-paper flex flex-col gap-8 transition-all relative">
             <div className="flex justify-between items-center border-b border-ink/5 pb-4 mb-2">
                 <h2 className="font-journal-title text-2xl text-ink-deep italic">Sunting Logika & Estetika</h2>
                 <button
@@ -129,13 +129,13 @@ export default function EditKaryaForm({ karya, allGenres }: { karya: Karya, allG
                 </div>
             </div>
 
-            <label className="flex items-center gap-4 p-5 bg-parchment-light wobbly-border-sm cursor-pointer transition-all hover:bg-white group">
+            <label className="flex items-center gap-4 p-5 bg-parchment-light wobbly-border-sm cursor-pointer transition-all hover:bg-paper group">
                 <input
                     type="checkbox"
                     name="is_completed"
                     value="true"
                     defaultChecked={karya.is_completed}
-                    className="w-6 h-6 text-pine rounded-md border-ink/20 focus:ring-pine/30 bg-white"
+                    className="w-6 h-6 text-pine rounded-md border-ink/20 focus:ring-pine/30 bg-paper"
                 />
                 <div className="flex flex-col">
                     <span className="font-journal-title text-xl text-ink-deep italic">Tamatkan Hikayat Ini</span>

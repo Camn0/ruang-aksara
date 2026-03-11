@@ -32,7 +32,7 @@ export default function OnboardingPage() {
 
                 {step === 2 && (
                     <div className="space-y-8 flex flex-col items-center max-w-sm">
-                        <div className="w-64 h-64 bg-white/30 dark:bg-black/20 wobbly-border flex items-center justify-center relative overflow-hidden mb-4 rotate-[2deg]">
+                        <div className="w-64 h-64 bg-paper/30 wobbly-border flex items-center justify-center relative overflow-hidden mb-4 rotate-[2deg]">
                             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/p6.png')]"></div>
                             <svg className="w-32 h-32 text-ink-deep/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -63,7 +63,7 @@ export default function OnboardingPage() {
 
                             <button
                                 onClick={() => router.push("/auth/login?type=admin")}
-                                className="w-full py-4 px-6 bg-white/50 dark:bg-black/20 border-2 border-ink-deep text-ink-deep wobbly-border-sm font-marker text-xl flex items-center justify-between hover:bg-white/80 transition-all active:scale-95"
+                                className="w-full py-4 px-6 bg-paper/50 border-2 border-ink-deep text-ink-deep wobbly-border-sm font-marker text-xl flex items-center justify-between hover:bg-paper/80 transition-all active:scale-95"
                             >
                                 <span>Penulis & Penjaga</span>
                                 <ChevronRight className="w-6 h-6" />

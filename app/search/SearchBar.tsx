@@ -48,7 +48,7 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Cari judul atau penulis..."
-                className="w-full pl-12 pr-12 py-4 bg-parchment-light dark:bg-parchment text-ink-deep placeholder-ink/40 wobbly-border paper-shadow text-base font-marker focus:outline-none focus:bg-white transition-all"
+                className="w-full pl-12 pr-12 py-4 bg-parchment-light text-ink-deep placeholder-ink/40 wobbly-border paper-shadow text-base font-marker focus:outline-none focus:bg-paper transition-all"
             />
             <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-ink/40 transition-colors group-focus-within:text-pine" strokeWidth={1.5} />
 

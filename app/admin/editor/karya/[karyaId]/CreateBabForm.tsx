@@ -57,7 +57,7 @@ export default function CreateBabForm({ karyaId }: { karyaId: string }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-8 wobbly-border paper-shadow mt-12 transition-all rotate-1 hover:rotate-0">
+        <form onSubmit={handleSubmit} className="bg-paper p-8 wobbly-border paper-shadow mt-12 transition-all rotate-1 hover:rotate-0">
             <h3 className="font-journal-title text-2xl text-ink-deep italic mb-6">Ukir Lembaran Baru</h3>
 
             {message && (

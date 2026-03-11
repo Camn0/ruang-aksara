@@ -117,7 +117,7 @@ export default async function SearchPage({
     const authors = searchData.authors as any[];
 
     const CoverPlaceholder = ({ title }: { title: string }) => (
-        <div className="w-24 h-32 bg-gray-200 dark:bg-slate-800 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400 shadow-sm shrink-0">
+        <div className="w-24 h-32 bg-paper/30 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-ink/20 shadow-sm shrink-0">
             {title}
         </div>
     );
@@ -140,7 +140,7 @@ export default async function SearchPage({
                             href={`/search?q=${q}&filter=${f.id}${genreId ? `&genreId=${genreId}` : ''}`}
                             className={`snap-start shrink-0 px-4 py-2 wobbly-border-sm text-[11px] font-marker uppercase tracking-widest transition-all ${filter === f.id
                                 ? 'bg-gold text-ink-deep shadow-md rotate-[-2deg]'
-                                : 'bg-white dark:bg-parchment text-ink/60 hover:text-pine rotate-[1deg]'
+                                : 'bg-paper text-ink/60 hover:text-pine rotate-[1deg]'
                                 }`}
                         >
                             {f.label}
@@ -165,7 +165,7 @@ export default async function SearchPage({
                             href={`/search?q=${q}&filter=${filter}&genreId=${g.id}`}
                             className={`snap-start shrink-0 px-3 py-1.5 wobbly-border-sm text-[10px] font-special uppercase tracking-widest transition-all ${genreId === g.id
                                 ? 'bg-pine/20 text-pine border-pine/40 border-2'
-                                : 'bg-white/40 text-ink/50 border-ink/10 border-2 hover:bg-white hover:text-pine'
+                                : 'bg-paper/40 text-ink/50 border-ink/10 border-2 hover:bg-paper hover:text-pine'
                                 }`}
                         >
                             {g.name}
@@ -181,7 +181,7 @@ export default async function SearchPage({
                     <div className="flex gap-6 overflow-x-auto pb-4 snap-x hide-scrollbar">
                         {authors.map(author => (
                             <Link key={author.id} href={`/profile/${author.username}`} className="snap-start shrink-0 flex flex-col items-center gap-3 group">
-                                <div className="w-16 h-16 wobbly-border p-1 bg-white dark:bg-parchment paper-shadow group-hover:rotate-12 transition-all">
+                                <div className="w-16 h-16 wobbly-border p-1 bg-paper paper-shadow group-hover:rotate-12 transition-all">
                                     <div className="w-full h-full wobbly-border-sm overflow-hidden bg-ink/5">
                                         {author.avatar_url ? (
                                             <img src={author.avatar_url} alt={author.display_name} className="w-full h-full object-cover" />
@@ -209,7 +209,7 @@ export default async function SearchPage({
                 </div>
 
                 {results.length === 0 ? (
-                    <div className="text-center py-20 px-8 wobbly-border border-dashed border-ink/20 bg-white/20 rotate-[-1deg] mt-4">
+                    <div className="text-center py-20 px-8 wobbly-border border-dashed border-ink/20 bg-paper/20 rotate-[-1deg] mt-4">
                         <div className="w-20 h-20 bg-ink/5 wobbly-border-sm flex items-center justify-center mb-6 mx-auto rotate-12">
                             <SearchIcon className="w-10 h-10 text-ink/20" />
                         </div>
@@ -224,12 +224,12 @@ export default async function SearchPage({
                 ) : (
                     <div className="flex flex-col gap-8">
                         {results.map((item) => (
-                            <div key={item.id} className="group bg-white dark:bg-parchment p-5 wobbly-border paper-shadow flex gap-6 items-start hover:rotate-1 transition-all group-active:scale-[0.98] relative">
+                            <div key={item.id} className="group bg-paper p-5 wobbly-border paper-shadow flex gap-6 items-start hover:rotate-1 transition-all group-active:scale-[0.98] relative">
                                 <Link href={`/novel/${item.id}`} className="w-24 aspect-[3/4.5] relative shrink-0 wobbly-border overflow-hidden shadow-lg group-hover:rotate-[-2deg] transition-transform">
                                     {item.cover_url ? (
                                         <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     ) : (
-                                        <div className="w-full h-full bg-parchment flex items-center justify-center p-2 text-center text-[10px] text-ink/40 font-marker uppercase">
+                                        <div className="w-full h-full bg-paper flex items-center justify-center p-2 text-center text-[10px] text-ink/40 font-marker uppercase">
                                             {item.title}
                                         </div>
                                     )}

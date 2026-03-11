@@ -29,7 +29,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     return (
         <div className="space-y-6">
             {/* Level Card - Paper Scrap Style */}
-            <div className="bg-white dark:bg-parchment-dark p-6 wobbly-border paper-shadow flex flex-col gap-4 relative overflow-hidden group rotate-[-1deg]">
+            <div className="bg-paper p-6 wobbly-border paper-shadow flex flex-col gap-4 relative overflow-hidden group rotate-[-1deg]">
                 <div className="flex justify-between items-center relative z-10">
                     <div className="flex items-center gap-4">
                         <div className="w-14 h-14 bg-gold wobbly-border flex items-center justify-center text-ink-deep shadow-inner rotate-3">

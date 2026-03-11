@@ -49,7 +49,7 @@ export default async function CommentManagementPage() {
                     <h1 className="font-journal-title text-3xl sm:text-5xl text-ink-deep italic leading-none">Interaksi Pembaca</h1>
                     <p className="font-marker text-pine text-xs uppercase tracking-[0.3em] mt-3">Catatan Komentar & Diskusi</p>
                 </div>
-                <div className="bg-white wobbly-border-sm px-6 py-3 border-2 border-gold/20 -rotate-2 shadow-sm">
+                <div className="bg-paper wobbly-border-sm px-6 py-3 border-2 border-gold/20 -rotate-2 shadow-sm">
                     <span className="font-marker text-xs font-black text-gold uppercase tracking-widest">{comments.length} Suara</span>
                 </div>
             </div>
@@ -57,7 +57,7 @@ export default async function CommentManagementPage() {
             <main className="w-full mx-auto px-6 sm:px-8 transition-all">
                 {/* Empty State: Jika belum ada pembaca yang berkomentar */}
                 {comments.length === 0 ? (
-                    <div className="text-center py-24 bg-white wobbly-border paper-shadow px-8 max-w-2xl mx-auto rotate-1">
+                    <div className="text-center py-24 bg-paper wobbly-border paper-shadow px-8 max-w-2xl mx-auto rotate-1">
                         <MessageSquare className="w-16 h-16 text-ink/10 mx-auto mb-6 rotate-12" />
                         <h3 className="font-journal-title text-3xl text-ink-deep mb-3 italic">Hening di Kejauhan...</h3>
                         <p className="font-journal-body text-ink/40 italic text-lg leading-relaxed">Belum ada jejak bincang-bincang pada karyamu. Mungkin saatnya memancing imajinasi mereka?</p>
@@ -66,10 +66,10 @@ export default async function CommentManagementPage() {
                     /* Grid Layout: Menampilkan komentar dalam kartu-kartu kecil */
                     <div className="grid gap-8 sm:gap-10 md:grid-cols-2 lg:grid-cols-3 pb-20">
                         {comments.map((comment, i) => (
-                            <div key={comment.id} className={`bg-white wobbly-border paper-shadow p-6 transition-all hover:bg-parchment-light hover:-translate-y-1 group flex flex-col ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                            <div key={comment.id} className={`bg-paper wobbly-border paper-shadow p-6 transition-all hover:bg-parchment-light hover:-translate-y-1 group flex flex-col ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
                                 {/* Header Kartu: Profile Pengirim & Waktu */}
                                 <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-10 h-10 wobbly-border-sm bg-parchment flex items-center justify-center font-journal-title text-xl text-ink-deep italic border-2 border-white shadow-md">
+                                    <div className="w-10 h-10 wobbly-border-sm bg-parchment flex items-center justify-center font-journal-title text-xl text-ink-deep italic border-2 border-paper shadow-md">
                                         {comment.user.display_name[0].toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">

@@ -87,7 +87,7 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Apa yang Anda temukan di halaman-halaman ini?"
-                    className="w-full bg-white/60 border-2 border-ink/5 wobbly-border-sm p-4 font-journal-body text-lg text-ink-deep outline-none focus:bg-white focus:border-pine/20 transition-all min-h-[100px] italic leading-relaxed"
+                    className="w-full bg-paper/60 border-2 border-ink/5 wobbly-border-sm p-4 font-journal-body text-lg text-ink-deep outline-none focus:bg-paper focus:border-pine/20 transition-all min-h-[100px] italic leading-relaxed"
                 ></textarea>
             </div>
 

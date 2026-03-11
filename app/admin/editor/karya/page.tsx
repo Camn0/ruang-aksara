@@ -19,7 +19,7 @@ export default async function CreateKaryaPage() {
             </div>
 
             <div className="px-8">
-                <div className="bg-white wobbly-border paper-shadow p-8 sm:p-12 -rotate-1 transition-all hover:rotate-0">
+                <div className="bg-paper wobbly-border paper-shadow p-8 sm:p-12 -rotate-1 transition-all hover:rotate-0">
                     <h2 className="font-journal-title text-3xl text-ink-deep mb-3 italic">Kerangka Dasar</h2>
                     <p className="font-journal-body text-lg text-ink/60 mb-10 leading-relaxed italic">
                         Tentukan fondasi utama dari hikayat Anda. Anda dapat mulai mengukir bab demi bab setelah kerangka ini tersimpan rapi.

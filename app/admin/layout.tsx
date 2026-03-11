@@ -47,7 +47,8 @@ export default async function AdminLayout({
     return (
         <div className="flex min-h-screen bg-parchment-light pb-32 selection:bg-pine/20 w-full relative">
             {/* Vignette Overlay (Internal) */}
-            <div className="fixed inset-0 pointer-events-none z-[100] shadow-[inset_0_0_150px_rgba(0,0,0,0.05)]" />
+            {/* Vignette Overlay (Internal) - Color handled in globals.css, this adds extra depth */}
+            <div className="fixed inset-0 pointer-events-none z-[100] shadow-[inset_0_0_150px_rgba(0,0,0,0.05)] dark:shadow-[inset_0_0_150px_rgba(0,0,0,0.2)]" />
 
             {/* --- DESKTOP SIDEBAR --- */}
             <aside className="hidden lg:flex flex-col w-72 bg-parchment wobbly-border-r border-ink/5 sticky top-0 h-screen z-50 transition-colors">
@@ -65,7 +66,7 @@ export default async function AdminLayout({
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={`flex items-center gap-4 px-6 py-4 wobbly-border-sm transition-all group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0 hover:bg-gold/10 hover:border-pine/30 ${item.href === '/admin/dashboard' ? 'bg-pine text-parchment shadow-md' : 'bg-white/40 text-ink/40'}`}
+                            className={`flex items-center gap-4 px-6 py-4 wobbly-border-sm transition-all group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0 hover:bg-gold/10 hover:border-pine/30 ${item.href === '/admin/dashboard' ? 'bg-pine text-parchment shadow-md' : 'bg-paper/40 text-ink/40'}`}
                         >
                             <item.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
                             <span className="font-journal-title text-xl italic">{item.name}</span>
@@ -76,7 +77,7 @@ export default async function AdminLayout({
                 {/* Footer Sidebar: User Profile & Logout */}
                 <div className="p-8 border-t-2 border-ink/5 wobbly-border-t">
                     <div className="flex items-center gap-4 mb-8 px-2 rotate-1">
-                        <div className="w-12 h-12 wobbly-border border-2 border-white bg-white shadow-sm flex items-center justify-center text-ink/30">
+                        <div className="w-12 h-12 wobbly-border border-2 border-paper bg-paper shadow-sm flex items-center justify-center text-ink/30">
                             <UserCircle2 className="w-7 h-7" />
                         </div>
                         <div className="flex flex-col min-w-0">
@@ -97,7 +98,7 @@ export default async function AdminLayout({
                         <span className="font-marker text-[8px] text-pine uppercase tracking-widest font-black">Ruang Aksara</span>
                     </Link>
                     <div className="flex items-center gap-4">
-                        <Link href={`/profile/${session.user.id}`} className="w-10 h-10 wobbly-border-sm bg-white flex items-center justify-center text-ink/20 shadow-sm">
+                        <Link href={`/profile/${session.user.id}`} className="w-10 h-10 wobbly-border-sm bg-paper flex items-center justify-center text-ink/20 shadow-sm">
                             <UserCircle2 className="w-6 h-6" />
                         </Link>
                     </div>

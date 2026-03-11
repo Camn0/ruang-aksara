@@ -62,7 +62,7 @@ export default function EditBabForm({ babId, initialContent }: { babId: string, 
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="px-5 py-3 wobbly-border-sm bg-white text-ink/40 font-marker text-[9px] uppercase tracking-[0.2em] hover:text-ink-deep hover:rotate-2 transition-all shadow-sm"
+                className="px-5 py-3 wobbly-border-sm bg-paper text-ink/40 font-marker text-[9px] uppercase tracking-[0.2em] hover:text-ink-deep hover:rotate-2 transition-all shadow-sm"
             >
                 Edit Isi Lembaran
             </button>
@@ -70,7 +70,7 @@ export default function EditBabForm({ babId, initialContent }: { babId: string, 
     }
 
     return (
-        <form onSubmit={handleSubmit} className="w-full mt-6 bg-white p-6 wobbly-border paper-shadow relative z-20 transition-all rotate-1 hover:rotate-0">
+        <form onSubmit={handleSubmit} className="w-full mt-6 bg-paper p-6 wobbly-border paper-shadow relative z-20 transition-all rotate-1 hover:rotate-0">
             <div className="flex justify-between items-center mb-4">
                 <h4 className="font-journal-title text-xl text-ink-deep italic">Gubah Barisan Kalimat</h4>
                 {lastSaved && (
@@ -87,7 +87,7 @@ export default function EditBabForm({ babId, initialContent }: { babId: string, 
                 value={content}
                 onChange={handleContentChange}
                 rows={12}
-                className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-6 py-4 font-journal-body text-lg text-ink-deep italic transition-all mb-6"
+                className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-paper focus:outline-none px-6 py-4 font-journal-body text-lg text-ink-deep italic transition-all mb-6"
             ></textarea>
 
             <div className="flex gap-4">

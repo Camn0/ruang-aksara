@@ -57,7 +57,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     })[];
 
     const CoverPlaceholder = ({ title }: { title: string }) => (
-        <div className="w-20 h-28 bg-parchment dark:bg-slate-800 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-dried-red dark:text-dried-red/60 shadow-sm shrink-0 border border-white/10 dark:border-slate-700">
+        <div className="w-20 h-28 bg-paper/20 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-dried-red/60 shadow-sm shrink-0 border border-ink/5">
             {title}
         </div>
     );
@@ -66,7 +66,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     const completedBookmarks = bookmarks.filter(b => b.karya._count.bab > 0 && b.last_chapter === b.karya._count.bab);
 
     const renderEmptyState = (message: string, subMessage: string) => (
-        <div className="text-center py-20 px-8 wobbly-border-sm bg-white/40 rotate-1 max-w-lg mx-auto">
+        <div className="text-center py-20 px-8 wobbly-border-sm bg-paper/40 rotate-1 max-w-lg mx-auto">
             <div className="w-16 h-16 bg-ink/5 wobbly-border flex items-center justify-center mb-6 mx-auto rotate-[-8deg]">
                 <BookMarked className="w-8 h-8 text-ink/20" />
             </div>
@@ -103,7 +103,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                     <input
                         type="text"
                         placeholder="Cari di arsip perpusmu..."
-                        className="w-full bg-white/60 border-2 border-ink/5 wobbly-border-sm py-4 pl-12 pr-6 font-journal-body text-xl text-ink-deep outline-none focus:bg-white focus:border-pine/20 transition-all italic"
+                        className="w-full bg-paper/60 border-2 border-ink/5 wobbly-border-sm py-4 pl-12 pr-6 font-journal-body text-xl text-ink-deep outline-none focus:bg-paper focus:border-pine/20 transition-all italic"
                     />
                 </div>
 
@@ -117,7 +117,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                         <Link
                             key={tab.id}
                             href={`/library?tab=${tab.id}`}
-                            className={`px-8 py-3 wobbly-border-sm font-journal-title text-xl whitespace-nowrap transition-all active:scale-95 ${activeTab === tab.id ? 'bg-pine text-parchment -rotate-2 shadow-lg' : 'bg-white/40 text-ink/30 hover:bg-gold/20 hover:text-ink-deep rotate-1'}`}
+                            className={`px-8 py-3 wobbly-border-sm font-journal-title text-xl whitespace-nowrap transition-all active:scale-95 ${activeTab === tab.id ? 'bg-pine text-parchment -rotate-2 shadow-lg' : 'bg-paper/40 text-ink/30 hover:bg-gold/20 hover:text-ink-deep rotate-1'}`}
                         >
                             {tab.label}
                         </Link>
@@ -132,16 +132,16 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                                 <div key={b.id} className="group relative">
                                     <Link
                                         href={`/novel/${b.karya.id}/${b.last_chapter}`}
-                                        className={`bg-white wobbly-border paper-shadow p-4 hover:scale-[1.01] transition-all flex gap-5 ${i % 2 === 0 ? 'rotate-[-0.5deg]' : 'rotate-[0.5deg]'}`}
+                                        className={`bg-paper wobbly-border paper-shadow p-4 hover:scale-[1.01] transition-all flex gap-5 ${i % 2 === 0 ? 'rotate-[-0.5deg]' : 'rotate-[0.5deg]'}`}
                                     >
                                         <div className="relative shrink-0">
                                             {/* Tape effect */}
                                             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-5 bg-gold/30 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
 
                                             {b.karya.cover_url ? (
-                                                <img src={b.karya.cover_url} alt={b.karya.title} className="w-24 h-36 object-cover wobbly-border border-2 border-white shadow-md bg-white" />
+                                                <img src={b.karya.cover_url} alt={b.karya.title} className="w-24 h-36 object-cover wobbly-border border-2 border-paper shadow-md bg-paper" />
                                             ) : (
-                                                <div className="w-24 h-36 bg-white wobbly-border border-2 flex items-center justify-center p-3 text-center shadow-md">
+                                                <div className="w-24 h-36 bg-paper wobbly-border border-2 flex items-center justify-center p-3 text-center shadow-md">
                                                     <span className="font-marker text-[10px] text-ink/30 italic uppercase">{b.karya.title}</span>
                                                 </div>
                                             )}
@@ -195,14 +195,14 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                             {bookmarks.map((b, i) => (
                                 <div key={b.id} className="group relative">
                                     <Link href={`/novel/${b.karya.id}`} className="flex flex-col gap-4">
-                                        <div className={`aspect-[3/4] relative wobbly-border bg-white p-2 shadow-md transition-all duration-500 group-hover:scale-105 ${i % 3 === 0 ? 'rotate-[-2deg]' : i % 3 === 1 ? 'rotate-[1deg]' : 'rotate-[3deg]'}`}>
+                                        <div className={`aspect-[3/4] relative wobbly-border bg-paper p-2 shadow-md transition-all duration-500 group-hover:scale-105 ${i % 3 === 0 ? 'rotate-[-2deg]' : i % 3 === 1 ? 'rotate-[1deg]' : 'rotate-[3deg]'}`}>
                                             {/* Tape effect */}
                                             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-5 bg-gold/30 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
 
                                             {b.karya.cover_url ? (
                                                 <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all border border-ink/5" />
                                             ) : (
-                                                <div className="w-full h-full bg-parchment-light flex items-center justify-center p-4 text-center font-marker text-xs text-ink/30 italic uppercase border border-ink/5">{b.karya.title}</div>
+                                                <div className="w-full h-full bg-paper flex items-center justify-center p-4 text-center font-marker text-xs text-ink/30 italic uppercase border border-ink/5">{b.karya.title}</div>
                                             )}
 
                                             {/* Status Badge: Wax Seal look */}
@@ -236,7 +236,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
                             {completedBookmarks.map((b, i) => (
                                 <Link key={b.id} href={`/novel/${b.karya.id}`} className="group relative flex flex-col gap-4">
-                                    <div className={`aspect-[3/4] relative wobbly-border bg-white p-2 shadow-md filter grayscale group-hover:grayscale-0 transition-all duration-700 ${i % 3 === 0 ? 'rotate-[2deg]' : i % 3 === 1 ? 'rotate-[-1deg]' : 'rotate-[-3deg]'}`}>
+                                    <div className={`aspect-[3/4] relative wobbly-border bg-paper p-2 shadow-md filter grayscale group-hover:grayscale-0 transition-all duration-700 ${i % 3 === 0 ? 'rotate-[2deg]' : i % 3 === 1 ? 'rotate-[-1deg]' : 'rotate-[-3deg]'}`}>
                                         {/* Red Stamp effect */}
                                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-20 group-hover:opacity-10 transition-opacity">
                                             <div className="border-4 border-dried-red text-dried-red font-special p-2 rotate-[-45deg] uppercase tracking-widest text-xl font-black">TERARSIP</div>

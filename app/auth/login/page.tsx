@@ -47,14 +47,14 @@ function LoginForm() {
     return (
         <div className="flex flex-col min-h-screen bg-parchment-light transition-all duration-300">
             <div className="p-8 relative z-10">
-                <Link href="/onboarding" className="p-3 -ml-3 text-ink-deep hover:bg-white wobbly-border-sm transition-all rotate-3 active:-rotate-3 inline-flex items-center">
+                <Link href="/onboarding" className="p-3 -ml-3 text-ink-deep hover:bg-paper wobbly-border-sm transition-all rotate-3 active:-rotate-3 inline-flex items-center">
                     <ArrowLeft className="w-6 h-6 mr-2" />
                     <span className="font-journal-title italic text-lg">Kembali</span>
                 </Link>
             </div>
 
             <div className="flex-1 flex flex-col items-center justify-center p-8 -mt-20">
-                <div className="bg-white wobbly-border paper-shadow p-10 max-w-md w-full -rotate-1 transition-all hover:rotate-0">
+                <div className="bg-paper wobbly-border paper-shadow p-10 max-w-md w-full -rotate-1 transition-all hover:rotate-0">
                     <h1 className="text-4xl font-journal-title text-ink-deep mb-10 text-center italic tracking-tight">
                         {title} Ruang Aksara
                     </h1>

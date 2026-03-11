@@ -50,7 +50,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="mt-12 sm:mx-auto sm:w-full sm:max-w-md px-6">
-                <div className="bg-white wobbly-border paper-shadow py-10 px-8 sm:px-12 -rotate-1 transition-all hover:rotate-0">
+                <div className="bg-paper wobbly-border paper-shadow py-10 px-8 sm:px-12 -rotate-1 transition-all hover:rotate-0">
 
                     {message && (
                         <div className={`p-6 mb-8 font-journal-title text-lg italic wobbly-border-sm animate-in fade-in slide-in-from-top-4 ${message.type === 'error'

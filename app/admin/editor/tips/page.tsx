@@ -63,7 +63,7 @@ export default async function TipsStudioPage() {
                 {/* Tips Grid: Journal style logs */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {tips.map((tip, idx) => (
-                        <div key={idx} className={`bg-white wobbly-border paper-shadow p-8 transition-all group ${idx % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0`}>
+                        <div key={idx} className={`bg-paper wobbly-border paper-shadow p-8 transition-all group ${idx % 2 === 0 ? 'rotate-1' : '-rotate-1'} hover:rotate-0`}>
                             <div className={`w-14 h-14 wobbly-border-sm flex items-center justify-center mb-6 ${tip.bg} transition-transform group-hover:rotate-12`}>
                                 <tip.icon className={`w-7 h-7 ${tip.color === 'text-pine' ? 'text-pine' : tip.color}`} />
                             </div>

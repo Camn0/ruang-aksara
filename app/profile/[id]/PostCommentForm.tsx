@@ -55,7 +55,7 @@ export default function PostCommentForm({ postId }: { postId: string }) {
                     placeholder="Ukir komentar..."
                     required
                     disabled={isPending}
-                    className="flex-1 font-journal-body text-base bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none p-2 italic"
+                    className="flex-1 font-journal-body text-base bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-paper focus:outline-none p-2 italic"
                     rows={1}
                 />
                 <button

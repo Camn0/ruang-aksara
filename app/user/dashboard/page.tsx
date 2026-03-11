@@ -140,7 +140,7 @@ export default async function UserDashboardPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Primary Hero */}
                             <Link href={`/novel/${bookmarks[0].karya.id}/${bookmarks[0].last_chapter}`} className="block group md:col-span-2">
-                                <div className="bg-white dark:bg-parchment-dark p-6 wobbly-border paper-shadow flex gap-6 items-center group-active:scale-[0.98] transition-all border-l-8 border-l-gold rotate-[0.5deg]">
+                                <div className="bg-paper p-6 wobbly-border paper-shadow flex gap-6 items-center group-active:scale-[0.98] transition-all border-l-8 border-l-gold rotate-[0.5deg]">
                                     <div className="w-24 h-32 wobbly-border overflow-hidden shadow-xl shrink-0 group-hover:rotate-2 transition-transform duration-500">
                                         {bookmarks[0].karya.cover_url ? (
                                             <img src={bookmarks[0].karya.cover_url} alt={bookmarks[0].karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -176,7 +176,7 @@ export default async function UserDashboardPage() {
                                 const progress = b.karya._count.bab > 0 ? Math.round((b.last_chapter / b.karya._count.bab) * 100) : 0;
                                 return (
                                     <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="block group">
-                                        <div className="bg-white/60 dark:bg-parchment p-4 wobbly-border-sm paper-shadow flex gap-4 items-center group-active:scale-[0.98] transition-all rotate-[-0.5deg]">
+                                        <div className="bg-paper/60 p-4 wobbly-border-sm paper-shadow flex gap-4 items-center group-active:scale-[0.98] transition-all rotate-[-0.5deg]">
                                             <div className="w-14 h-20 wobbly-border overflow-hidden shadow-md shrink-0 border-2 border-ink/10 group-hover:rotate-[-2deg] transition-transform">
                                                 {b.karya.cover_url ? (
                                                     <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -217,14 +217,14 @@ export default async function UserDashboardPage() {
 
                     <div className="flex gap-6 overflow-x-auto pb-6 snap-x hide-scrollbar">
                         {followedAuthorsRaw.length === 0 ? (
-                            <div className="w-full py-12 px-6 bg-white/40 dark:bg-black/10 wobbly-border border-dashed border-ink/20 text-center rotate-[-0.5deg]">
+                            <div className="w-full py-12 px-6 bg-paper/40 wobbly-border border-dashed border-ink/20 text-center rotate-[-0.5deg]">
                                 <p className="font-marker text-ink/50 mb-6 italic text-lg">"Halaman ini masih kosong. Siapa yang akan mengisinya?"</p>
                                 <Link href="/search" className="inline-block py-3 px-8 bg-gold text-ink-deep wobbly-border-sm font-journal-title text-xl hover:scale-105 active:scale-95 transition-all shadow-sm">Temukan Penjaga Kata</Link>
                             </div>
                         ) : (
                             followedAuthorsRaw.map((f: any) => (
                                 <Link key={f.following.id} href={`/profile/${f.following.username}`} className="snap-start shrink-0 flex flex-col items-center gap-3 group">
-                                    <div className="w-20 h-20 wobbly-border p-1 bg-white dark:bg-parchment paper-shadow group-hover:rotate-6 transition-all group-active:scale-95 group-hover:border-gold">
+                                    <div className="w-20 h-20 wobbly-border p-1 bg-paper paper-shadow group-hover:rotate-6 transition-all group-active:scale-95 group-hover:border-gold">
                                         <div className="w-full h-full wobbly-border-sm overflow-hidden bg-ink/5">
                                             {f.following.avatar_url ? (
                                                 <img src={f.following.avatar_url} alt={f.following.display_name} className="w-full h-full object-cover" />
@@ -256,7 +256,7 @@ export default async function UserDashboardPage() {
                     <div className="flex gap-6 overflow-x-auto pb-10 snap-x hide-scrollbar">
                         {trending.map((f: any) => (
                             <Link key={f.id} href={`/novel/${f.id}`} className="snap-start shrink-0 w-44 flex flex-col gap-4 group">
-                                <div className="relative aspect-[3/4.5] w-full wobbly-border paper-shadow overflow-hidden bg-white group-hover:rotate-1 transition-transform duration-700">
+                                <div className="relative aspect-[3/4.5] w-full wobbly-border paper-shadow overflow-hidden bg-paper group-hover:rotate-1 transition-transform duration-700">
                                     {f.cover_url ? (
                                         <img src={f.cover_url} alt={f.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                                     ) : (
@@ -277,7 +277,7 @@ export default async function UserDashboardPage() {
                 </section>
 
                 {/* Section: Library Shortcuts */}
-                <section className="bg-white/40 dark:bg-black/10 p-8 wobbly-border paper-shadow-lg rotate-1">
+                <section className="bg-paper/40 p-8 wobbly-border paper-shadow-lg rotate-1">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
                             <BookOpen className="w-7 h-7 text-pine rotate-[-12deg]" />
@@ -290,7 +290,7 @@ export default async function UserDashboardPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {bookmarks.slice(0, 8).map(b => (
-                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-4 p-3 bg-parchment/40 wobbly-border-sm border-2 border-transparent hover:border-pine/30 hover:bg-white transition-all group overflow-hidden">
+                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-4 p-3 bg-parchment/40 wobbly-border-sm border-2 border-transparent hover:border-pine/30 hover:bg-paper transition-all group overflow-hidden">
                                 <div className="w-12 h-16 wobbly-border-sm overflow-hidden shrink-0 shadow-sm transition-transform group-hover:rotate-[-3deg]">
                                     {b.karya.cover_url ? (
                                         <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
@@ -305,7 +305,7 @@ export default async function UserDashboardPage() {
                             </Link>
                         ))}
                         {(bookmarks.length === 0 || bookmarks.length < 8) && (
-                            <Link href="/search" className="flex items-center justify-center gap-3 py-6 wobbly-border-sm border-2 border-dashed border-ink/20 text-ink/40 hover:text-pine hover:border-pine/30 transition-all group bg-white/20">
+                            <Link href="/search" className="flex items-center justify-center gap-3 py-6 wobbly-border-sm border-2 border-dashed border-ink/20 text-ink/40 hover:text-pine hover:border-pine/30 transition-all group bg-paper/20">
                                 <BookOpen className="w-5 h-5 group-hover:rotate-[20deg] transition-transform" />
                                 <span className="font-journal-title text-lg">Cari Lembar Baru</span>
                             </Link>

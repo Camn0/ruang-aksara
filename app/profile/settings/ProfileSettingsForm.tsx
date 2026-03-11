@@ -51,7 +51,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
 
     return (
         <form onSubmit={handleSubmit} className="space-y-10">
-            <div className="space-y-8 bg-white wobbly-border paper-shadow p-8 -rotate-1">
+            <div className="space-y-8 bg-paper wobbly-border paper-shadow p-8 -rotate-1">
                 {/* Display Name */}
                 <div>
                     <label className="font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-3 block ml-2">
@@ -92,7 +92,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
                     <div className="space-y-5">
                         {/* Instagram */}
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 wobbly-border-sm bg-pink-50 flex items-center justify-center text-pink-600 border-2 border-white shadow-md rotate-3 shrink-0">
+                            <div className="w-12 h-12 wobbly-border-sm bg-pink-500/10 flex items-center justify-center text-pink-500 border-2 border-paper shadow-md rotate-3 shrink-0">
                                 <Instagram className="w-6 h-6" />
                             </div>
                             <input
@@ -107,7 +107,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
 
                         {/* Twitter/X */}
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 wobbly-border-sm bg-ink-deep text-parchment flex items-center justify-center border-2 border-white shadow-md -rotate-3 shrink-0">
+                            <div className="w-12 h-12 wobbly-border-sm bg-ink-deep text-parchment flex items-center justify-center border-2 border-paper shadow-md -rotate-3 shrink-0">
                                 <Twitter className="w-6 h-6" />
                             </div>
                             <input
@@ -122,7 +122,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
 
                         {/* Website */}
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 wobbly-border-sm bg-pine/10 text-pine flex items-center justify-center border-2 border-white shadow-md rotate-2 shrink-0">
+                            <div className="w-12 h-12 wobbly-border-sm bg-pine/10 text-pine flex items-center justify-center border-2 border-paper shadow-md rotate-2 shrink-0">
                                 <Globe className="w-6 h-6" />
                             </div>
                             <input

@@ -80,7 +80,7 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
 
                 {/* KOLOM KIRI: Manajemen Metadata & Cover */}
                 <div className="lg:col-span-7 space-y-8">
-                    <section className="bg-white wobbly-border paper-shadow p-8 sm:p-12 -rotate-1 hover:rotate-0 transition-all">
+                    <section className="bg-paper wobbly-border paper-shadow p-8 sm:p-12 -rotate-1 hover:rotate-0 transition-all">
                         <div className="flex items-center gap-4 mb-10">
                             <div className="w-14 h-14 bg-pine wobbly-border-sm flex items-center justify-center text-parchment rotate-3">
                                 <BookOpen className="w-7 h-7" />
@@ -106,7 +106,7 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
 
                 {/* KOLOM KANAN: Manajemen Bab/Isi --- */}
                 <div className="lg:col-span-5 space-y-8">
-                    <section className="bg-white wobbly-border paper-shadow p-8 sm:p-10 rotate-1 hover:rotate-0 transition-all">
+                    <section className="bg-paper wobbly-border paper-shadow p-8 sm:p-10 rotate-1 hover:rotate-0 transition-all">
                         <div className="flex items-center justify-between mb-10">
                             <div className="flex items-center gap-4">
                                 <div className="w-14 h-14 bg-gold wobbly-border-sm flex items-center justify-center text-ink-deep -rotate-6">
@@ -132,7 +132,7 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
                         ) : (
                             <div className="space-y-6 max-h-[700px] overflow-y-auto pr-3 custom-scrollbar">
                                 {karya.bab.map((chapter) => (
-                                    <div key={chapter.id} className="group bg-parchment-light/20 hover:bg-white p-6 wobbly-border-sm border-transparent hover:border-pine/10 transition-all">
+                                    <div key={chapter.id} className="group bg-parchment-light/20 hover:bg-paper p-6 wobbly-border-sm border-transparent hover:border-pine/10 transition-all">
                                         <div className="flex justify-between items-start mb-6">
                                             <div className="flex items-center gap-4">
                                                 <div className="bg-pine text-parchment font-journal-title text-xl italic wobbly-border-sm w-12 h-12 flex items-center justify-center shadow-lg transition-transform group-hover:rotate-12">
@@ -152,7 +152,7 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
                                             </div>
                                             <Link
                                                 href={`/novel/${karya.id}/${chapter.chapter_no}`}
-                                                className="px-5 py-3 bg-white wobbly-border-sm text-ink/40 hover:text-pine font-marker text-[9px] uppercase tracking-[0.2em] transition-all hover:rotate-3 active:scale-95 shadow-sm"
+                                                className="px-5 py-3 bg-paper wobbly-border-sm text-ink/40 hover:text-pine font-marker text-[9px] uppercase tracking-[0.2em] transition-all hover:rotate-3 active:scale-95 shadow-sm"
                                             >
                                                 Baca
                                             </Link>

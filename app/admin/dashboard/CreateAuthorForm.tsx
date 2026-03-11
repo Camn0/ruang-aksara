@@ -47,16 +47,16 @@ export default function CreateAuthorForm() {
             <div className="space-y-6">
                 <div>
                     <label className="block font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 px-2">Nama Pena / Panggilan <span className="text-[8px] italic">(Opsional)</span></label>
-                    <input name="display_name" type="text" placeholder="e.g. Sang Pengelana" className="w-full py-4 px-6 bg-white wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
+                    <input name="display_name" type="text" placeholder="e.g. Sang Pengelana" className="w-full py-4 px-6 bg-paper wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
                 </div>
                 <div className="flex flex-col md:flex-row gap-6">
                     <div className="flex-1">
                         <label className="block font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 px-2">Username Identitas</label>
-                        <input name="username" type="text" required placeholder="author_baru" className="w-full py-4 px-6 bg-white wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
+                        <input name="username" type="text" required placeholder="author_baru" className="w-full py-4 px-6 bg-paper wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
                     </div>
                     <div className="flex-1">
                         <label className="block font-marker text-[10px] text-ink/30 uppercase tracking-[0.2em] mb-2 px-2">Kata Sandi Rahasia</label>
-                        <input name="password" type="password" required placeholder="Min. 6 Karakter" className="w-full py-4 px-6 bg-white wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
+                        <input name="password" type="password" required placeholder="Min. 6 Karakter" className="w-full py-4 px-6 bg-paper wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:outline-none font-journal-body text-lg text-ink-deep transition-all placeholder:text-ink/10 shadow-inner" />
                     </div>
                 </div>
                 <button

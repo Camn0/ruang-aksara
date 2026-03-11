@@ -141,7 +141,7 @@ export default function ReadingInterface({
     return (
         <>
             {/* Header: Bookmark Style */}
-            <header className="px-4 h-16 bg-parchment/95 dark:bg-parchment-dark/95 backdrop-blur-md border-b-4 border-ink-deep/10 flex items-center justify-between sticky top-0 z-40 transition-transform duration-500 selection:bg-pine/30">
+            <header className="px-4 h-16 bg-parchment-light/95 backdrop-blur-md border-b-4 border-ink-deep/10 flex items-center justify-between sticky top-0 z-40 transition-transform duration-500 selection:bg-pine/30">
                 <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-ink hover:text-pine hover:rotate-[-8deg] transition-all active:scale-90">
                     <ArrowLeft className="w-7 h-7" strokeWidth={1.5} />
                 </Link>
@@ -166,7 +166,7 @@ export default function ReadingInterface({
 
                     {/* Dropdown Settings: Small Note Style */}
                     {showSettings && (
-                        <div className="absolute top-full right-0 mt-4 w-60 bg-parchment dark:bg-parchment-dark wobbly-border paper-shadow p-6 z-50 animate-in fade-in slide-in-from-top-4 duration-300 rotate-[-1deg]">
+                        <div className="absolute top-full right-0 mt-4 w-60 bg-parchment wobbly-border paper-shadow p-6 z-50 animate-in fade-in slide-in-from-top-4 duration-300 rotate-[-1deg]">
                             <div className="flex items-center justify-between mb-6 border-b-2 border-ink/5 pb-2">
                                 <span className="text-[10px] font-special text-pine uppercase tracking-widest">Catatan Penyesuaian</span>
                                 <button onClick={() => setShowSettings(false)} className="text-ink/20 hover:text-dried-red transition-colors">
@@ -180,7 +180,7 @@ export default function ReadingInterface({
                                     <div className="flex items-center justify-between bg-ink/5 wobbly-border-sm p-1">
                                         <button
                                             onClick={() => handleSetFontSize(fontSize - 2)}
-                                            className="p-2 hover:bg-white rounded-sm transition-all active:scale-90 text-ink/60 disabled:opacity-30"
+                                            className="p-2 hover:bg-paper rounded-sm transition-all active:scale-90 text-ink/60 disabled:opacity-30"
                                             disabled={fontSize <= 12}
                                         >
                                             <Minus className="w-5 h-5" />
@@ -188,7 +188,7 @@ export default function ReadingInterface({
                                         <span className="font-journal-title text-xl text-ink-deep w-12 text-center">{fontSize}</span>
                                         <button
                                             onClick={() => handleSetFontSize(fontSize + 2)}
-                                            className="p-2 hover:bg-white rounded-sm transition-all active:scale-90 text-ink/60 disabled:opacity-30"
+                                            className="p-2 hover:bg-paper rounded-sm transition-all active:scale-90 text-ink/60 disabled:opacity-30"
                                             disabled={fontSize >= 32}
                                         >
                                             <Plus className="w-5 h-5" />
@@ -200,7 +200,7 @@ export default function ReadingInterface({
                                     <label className="text-[10px] text-ink/40 uppercase font-marker tracking-widest mb-3 block">Suasana</label>
                                     <button
                                         onClick={toggleTheme}
-                                        className="w-full flex items-center justify-between bg-white/50 wobbly-border-sm p-3 hover:bg-gold/10 transition-all active:scale-95 group"
+                                        className="w-full flex items-center justify-between bg-paper/50 wobbly-border-sm p-3 hover:bg-gold/10 transition-all active:scale-95 group"
                                     >
                                         <span className="font-marker text-sm text-ink-deep">{mounted && theme === 'dark' ? 'Terang Benderang' : 'Hutan Gelap'}</span>
                                         {mounted && theme === 'dark' ? <Sun className="w-5 h-5 text-gold" /> : <Moon className="w-5 h-5 text-pine" />}
@@ -221,7 +221,7 @@ export default function ReadingInterface({
             )}
 
             <main className="px-6 py-12 sm:px-12 md:max-w-3xl md:mx-auto min-h-[70vh]">
-                <div className="bg-white/80 dark:bg-parchment-dark/80 p-8 sm:p-12 wobbly-border paper-shadow-lg relative overflow-hidden transition-all duration-700">
+                <div className="bg-paper/80 p-8 sm:p-12 wobbly-border paper-shadow-lg relative overflow-hidden transition-all duration-700">
                     <article
                         className="prose prose-stone dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-ink-deep font-journal-body max-w-none selection:bg-gold/40 scroll-smooth"
                         style={{ fontSize: `${fontSize}px` }}
@@ -257,7 +257,7 @@ export default function ReadingInterface({
                                 >
                                     <div className={`w-16 h-16 wobbly-border flex items-center justify-center text-3xl transition-all paper-shadow ${isActive
                                         ? 'bg-gold border-ink-deep scale-110'
-                                        : 'bg-white dark:bg-parchment border-ink/10 hover:border-pine hover:bg-parchment-light'
+                                        : 'bg-paper dark:bg-parchment border-ink/10 hover:border-pine hover:bg-parchment-light'
                                         }`}>
                                         {r.emoji}
                                     </div>
@@ -286,10 +286,10 @@ export default function ReadingInterface({
 
             {/* Bottom Floating Navigation: Scroll Tabs style */}
             <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-500 selection:bg-pine/30">
-                <div className="flex bg-parchment/90 dark:bg-parchment-dark/90 backdrop-blur-md wobbly-border paper-shadow p-2 items-center gap-3 rotate-[-0.5deg]">
+                <div className="flex bg-parchment-light/90 backdrop-blur-md wobbly-border paper-shadow p-2 items-center gap-3 rotate-[-0.5deg]">
                     {/* Prev Chapter */}
                     {prevChapter ? (
-                        <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-3 text-ink/60 hover:text-pine hover:bg-white wobbly-border-sm transition-all active:scale-90 hover:rotate-[-6deg]" title="Mundur">
+                        <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-3 text-ink/60 hover:text-pine hover:bg-paper wobbly-border-sm transition-all active:scale-90 hover:rotate-[-6deg]" title="Mundur">
                             <ArrowLeft className="w-6 h-6" strokeWidth={2} />
                         </Link>
                     ) : (
@@ -300,7 +300,7 @@ export default function ReadingInterface({
 
                     <div className="w-1 h-8 bg-ink/5 wobbly-border-sm" />
 
-                    <Link href={`/novel/${karyaId}`} className="p-3 text-ink/60 hover:text-pine hover:bg-white wobbly-border-sm transition-all active:scale-90 hover:rotate-12" title="Rumah Novel">
+                    <Link href={`/novel/${karyaId}`} className="p-3 text-ink/60 hover:text-pine hover:bg-paper wobbly-border-sm transition-all active:scale-90 hover:rotate-12" title="Rumah Novel">
                         <Home className="w-6 h-6" strokeWidth={2} />
                     </Link>
 
@@ -308,7 +308,7 @@ export default function ReadingInterface({
                         onClick={() => setIsOpenPicker(true)}
                         className={`p-3 wobbly-border shadow-sm hover:scale-110 active:scale-90 transition-all rotate-3 ${prevChapter
                             ? 'bg-ink-deep text-parchment border-gold shadow-lg'
-                            : 'bg-white text-pine border-ink/10'
+                            : 'bg-paper text-pine border-ink/10'
                             }`}
                         title="Daftar Isi"
                     >

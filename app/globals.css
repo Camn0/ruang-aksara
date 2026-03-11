@@ -10,21 +10,34 @@
   --ink: #3A2A18;
   --ink-deep: #2C241B;
   --pine: #4A5D4E;
+  --pine-light: #5C7461;
   --gold: #D4B872;
+  --gold-light: #E5C983;
   --dried-red: #9E473D;
 
   --background: var(--parchment);
   --foreground: var(--ink);
+  --paper: #FFFFFF;
+  --shadow-color: rgba(58, 42, 24, 0.1);
+  --vignette-color: rgba(58, 42, 24, 0.15);
 }
 
 .dark {
-  --parchment: #2C241B;
-  --parchment-dark: #1E1812;
+  --parchment: #1A1612;
+  --parchment-dark: #120F0C;
   --ink: #EADDBF;
   --ink-deep: #F4EAD5;
+  --pine: #6A8D70;
+  --pine-light: #7BA583;
+  --gold: #BFA35E;
+  --gold-light: #D4B872;
+  --dried-red: #C1594E;
 
   --background: var(--parchment);
   --foreground: var(--ink);
+  --paper: #251E18;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --vignette-color: rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -33,6 +46,7 @@ body {
   font-family: 'Patrick Hand', cursive;
   position: relative;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Parchment Texture Overlay */
@@ -49,6 +63,11 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
+.dark body::before {
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+}
+
 /* Vignette Effect */
 body::after {
   content: "";
@@ -57,20 +76,28 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  box-shadow: inset 0 0 100px rgba(58, 42, 24, 0.15);
+  box-shadow: inset 0 0 100px var(--vignette-color);
   pointer-events: none;
   z-index: 9998;
+  transition: box-shadow 0.3s ease;
 }
 
 @layer utilities {
   .wobbly-border {
     border: 3px solid var(--ink);
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    transition: border-color 0.3s ease;
   }
 
   .wobbly-border-sm {
     border: 2px solid var(--ink);
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    transition: border-color 0.3s ease;
+  }
+
+  .paper-shadow {
+    box-shadow: 8px 8px 0px var(--shadow-color);
+    transition: box-shadow 0.3s ease;
   }
 
   .paper-scrap {
@@ -95,6 +122,11 @@ body::after {
     background-size: 400px;
     background-repeat: repeat;
     opacity: 0.03;
+  }
+
+  .dark .bg-runes {
+    opacity: 0.08;
+    filter: invert(1);
   }
 
   .cat-watermark {

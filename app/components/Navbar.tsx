@@ -10,7 +10,7 @@ export default function Navbar() {
     const { data: session, status } = useSession();
 
     return (
-        <nav className="bg-parchment-light dark:bg-parchment border-b-2 border-ink-deep sticky top-0 z-50 transition-colors duration-300">
+        <nav className="bg-parchment border-b-2 border-ink-deep sticky top-0 z-50 transition-colors duration-300">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-20 items-center">
                     {/* Logo & Main Nav */}

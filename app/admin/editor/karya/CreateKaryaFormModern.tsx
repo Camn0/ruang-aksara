@@ -78,7 +78,7 @@ export default function CreateKaryaFormModern({ genres }: { genres: Genre[] }) {
                 <textarea
                     name="deskripsi"
                     rows={6}
-                    className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none px-6 py-4 font-journal-body text-xl text-ink-deep italic transition-all placeholder:text-ink/10 resize-none"
+                    className="w-full bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-paper focus:outline-none px-6 py-4 font-journal-body text-xl text-ink-deep italic transition-all placeholder:text-ink/10 resize-none"
                     placeholder="Ringkaskan takdir para tokoh dalam beberapa kalimat..."
                 />
             </label>

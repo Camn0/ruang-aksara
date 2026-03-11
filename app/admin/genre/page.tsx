@@ -41,7 +41,7 @@ export default async function AdminGenrePage() {
             </div>
 
             <div className="px-6">
-                <div className="max-w-4xl bg-white wobbly-border paper-shadow p-8 sm:p-12 transition-all duration-300 -rotate-1">
+                <div className="max-w-4xl bg-paper wobbly-border paper-shadow p-8 sm:p-12 transition-all duration-300 -rotate-1">
 
                     {/* SECTION 1: MANAJEMEN PENULIS (AUTHOR) */}
                     <div className="mb-16">
@@ -65,7 +65,7 @@ export default async function AdminGenrePage() {
                         ) : (
                             <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {genres.map((g, i) => (
-                                    <li key={g.id} className={`bg-parchment-light wobbly-border-sm p-5 flex justify-between items-center transition-all hover:bg-white hover:shadow-xl hover:-translate-y-1 group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                                    <li key={g.id} className={`bg-parchment-light wobbly-border-sm p-5 flex justify-between items-center transition-all hover:bg-paper hover:shadow-xl hover:-translate-y-1 group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
                                         <span className="font-journal-title text-lg text-ink-deep italic leading-none">{g.name}</span>
                                         <DeleteGenreButton id={g.id} />
                                     </li>

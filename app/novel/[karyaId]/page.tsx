@@ -146,7 +146,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     const typedKarya = karya as any; // Temporary cast for relation access
 
     const CoverPlaceholder = () => (
-        <div className="w-32 h-48 sm:w-40 sm:h-56 bg-parchment-light rounded-2xl shadow-lg border-2 border-white/20 flex items-center justify-center text-center p-4">
+        <div className="w-32 h-48 sm:w-40 sm:h-56 bg-parchment-light rounded-2xl shadow-lg border-2 border-paper/20 flex items-center justify-center text-center p-4">
             <span className="text-xs font-marker text-ink/20 uppercase tracking-widest">{karya.title}</span>
         </div>
     );
@@ -181,9 +181,9 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                         <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-8 bg-gold/30 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
 
                         {karya.cover_url ? (
-                            <img src={karya.cover_url} alt={karya.title} className="w-44 h-64 sm:w-52 sm:h-72 object-cover wobbly-border border-4 border-white shadow-xl bg-white" />
+                            <img src={karya.cover_url} alt={karya.title} className="w-44 h-64 sm:w-52 sm:h-72 object-cover wobbly-border border-4 border-paper shadow-xl bg-paper" />
                         ) : (
-                            <div className="w-44 h-64 sm:w-52 sm:h-72 bg-white wobbly-border border-4 flex items-center justify-center p-6 text-center shadow-xl">
+                            <div className="w-44 h-64 sm:w-52 sm:h-72 bg-paper wobbly-border border-4 flex items-center justify-center p-6 text-center shadow-xl">
                                 <span className="font-marker text-xl text-ink/30 italic uppercase">{karya.title}</span>
                             </div>
                         )}
@@ -215,7 +215,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                 <Link
                                     key={g.id}
                                     href={`/search?q=&genreId=${g.id}`}
-                                    className="font-marker text-xs uppercase tracking-widest text-ink/50 px-3 py-1.5 wobbly-border-sm bg-white/40 hover:bg-gold hover:text-ink-deep hover:rotate-3 transition-all"
+                                    className="font-marker text-xs uppercase tracking-widest text-ink/50 px-3 py-1.5 wobbly-border-sm bg-paper/40 hover:bg-gold hover:text-ink-deep hover:rotate-3 transition-all"
                                 >
                                     {g.name}
                                 </Link>
@@ -296,7 +296,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 )}
 
                 {/* Chapter List: The Index Page */}
-                <div className="bg-white/40 wobbly-border p-8 rotate-[-0.5deg]">
+                <div className="bg-paper/40 wobbly-border p-8 rotate-[-0.5deg]">
                     <div className="flex items-center justify-between mb-8 border-b-2 border-ink/5 pb-4">
                         <div>
                             <h2 className="font-journal-title text-3xl text-ink-deep italic">Indeks Cerita</h2>
@@ -314,7 +314,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                 <Link
                                     key={chapter.id}
                                     href={`/novel/${karya.id}/${chapter.chapter_no}`}
-                                    className="flex items-center justify-between p-5 bg-parchment-light hover:bg-white wobbly-border-sm transition-all group hover:scale-[1.02]"
+                                    className="flex items-center justify-between p-5 bg-parchment-light hover:bg-paper wobbly-border-sm transition-all group hover:scale-[1.02]"
                                 >
                                     <div className="flex flex-col">
                                         <span className="font-journal-title text-xl text-ink-deep group-hover:text-pine transition-colors italic">
@@ -324,7 +324,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                             Masuk ke arsip...
                                         </span>
                                     </div>
-                                    <div className="w-10 h-10 wobbly-border-sm bg-white flex items-center justify-center transition-all group-hover:bg-gold group-hover:rotate-12">
+                                    <div className="w-10 h-10 wobbly-border-sm bg-paper flex items-center justify-center transition-all group-hover:bg-gold group-hover:rotate-12">
                                         <ArrowLeft className="w-5 h-5 text-ink rotate-180" />
                                     </div>
                                 </Link>
@@ -365,7 +365,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
                         <div className="space-y-8">
                             {karya.reviews.map((review: any) => (
-                                <div key={review.id} className="p-8 bg-white wobbly-border paper-shadow transition-all group relative hover:rotate-[0.5deg]">
+                                <div key={review.id} className="p-8 bg-paper wobbly-border paper-shadow transition-all group relative hover:rotate-[0.5deg]">
                                     {/* Action Buttons: Sketch Style */}
                                     <div className="absolute top-6 right-8 flex items-center gap-2 opacity-10 sm:group-hover:opacity-100 transition-opacity">
                                         {(session?.user?.role === 'admin' || session?.user?.id === karya.uploader_id) && (

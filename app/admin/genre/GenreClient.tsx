@@ -30,7 +30,7 @@ export function GenreForm() {
                 type="text"
                 placeholder="Nama Genre Baru (e.g. Noir)"
                 required
-                className="flex-1 bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none p-4 sm:p-5 text-lg font-journal-body text-ink-deep transition-all placeholder:text-ink/20"
+                className="flex-1 bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-paper focus:outline-none p-4 sm:p-5 text-lg font-journal-body text-ink-deep transition-all placeholder:text-ink/20"
             />
             <button
                 type="submit"

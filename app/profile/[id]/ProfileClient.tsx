@@ -60,18 +60,18 @@ export default function ProfileClient({
                 return (
                     <div className="grid gap-8 animate-in fade-in slide-in-from-bottom-6 duration-500 px-4 sm:px-0">
                         {works.length === 0 ? (
-                            <div className="py-24 text-center bg-white/5 wobbly-border-sm border-2 border-dashed border-ink/10 rotate-1">
+                            <div className="py-24 text-center bg-paper/10 wobbly-border-sm border-2 border-dashed border-ink/10 rotate-1">
                                 <BookOpen className="w-16 h-16 text-ink/10 mx-auto mb-6 rotate-12" />
                                 <p className="font-journal-body text-xl text-ink/30 italic uppercase tracking-[0.2em]">Pena Belum Bergerak</p>
                             </div>
                         ) : works.map((karya, i) => (
-                            <Link key={karya.id} href={`/novel/${karya.id}`} className={`group bg-white wobbly-border paper-shadow p-6 hover:shadow-2xl hover:-translate-y-1 transition-all flex gap-8 relative items-start ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                            <Link key={karya.id} href={`/novel/${karya.id}`} className={`group bg-paper wobbly-border paper-shadow p-6 hover:shadow-2xl hover:-translate-y-1 transition-all flex gap-8 relative items-start ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
                                 <div className="relative shrink-0 rotate-[-3deg] group-hover:rotate-0 transition-transform">
                                     <div className="absolute inset-0 bg-ink-deep/10 translate-x-2 translate-y-2 wobbly-border-sm -z-10" />
                                     {karya.cover_url ? (
-                                        <img src={karya.cover_url} className="w-28 h-40 object-cover wobbly-border-sm border-2 border-white shadow-xl" alt="" />
+                                        <img src={karya.cover_url} className="w-28 h-40 object-cover wobbly-border-sm border-2 border-paper shadow-xl" alt="" />
                                     ) : (
-                                        <div className="w-28 h-40 bg-parchment-light wobbly-border-sm border-2 border-white flex items-center justify-center p-6 text-center shadow-xl">
+                                        <div className="w-28 h-40 bg-parchment-light wobbly-border-sm border-2 border-paper flex items-center justify-center p-6 text-center shadow-xl">
                                             <span className="text-[10px] font-marker text-ink/40 uppercase tracking-tighter leading-tight">{karya.title}</span>
                                         </div>
                                     )}
@@ -111,7 +111,7 @@ export default function ProfileClient({
                             </div>
                         )}
                         {posts.length === 0 ? (
-                            <div className="py-24 text-center bg-white/5 wobbly-border-sm border-2 border-dashed border-ink/10 -rotate-1">
+                            <div className="py-24 text-center bg-paper/10 wobbly-border-sm border-2 border-dashed border-ink/10 -rotate-1">
                                 <Sparkles className="w-16 h-16 text-ink/10 mx-auto mb-6" />
                                 <div>
                                     <h3 className="font-journal-title text-2xl text-ink-deep italic mb-2">Papan Pena Kosong</h3>
@@ -120,9 +120,9 @@ export default function ProfileClient({
                             </div>
                         ) : (
                             posts.map((post, i) => (
-                                <div key={post.id} className={`bg-white wobbly-border paper-shadow p-8 hover:shadow-xl transition-all relative ${i % 2 === 0 ? '-rotate-0.5' : 'rotate-0.5'}`}>
+                                <div key={post.id} className={`bg-paper wobbly-border paper-shadow p-8 hover:shadow-xl transition-all relative ${i % 2 === 0 ? '-rotate-0.5' : 'rotate-0.5'}`}>
                                     <div className="flex items-center gap-4 mb-6">
-                                        <div className="w-12 h-12 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-white shadow-md -rotate-3">
+                                        <div className="w-12 h-12 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-paper shadow-md -rotate-3">
                                             {userProfile.avatar_url ? <img src={userProfile.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-ink/10" />}
                                         </div>
                                         <div>
@@ -156,7 +156,7 @@ export default function ProfileClient({
                                 { icon: Star, val: stats.reviews, label: 'Ulasan Dibuat', color: 'bg-gold/20 text-ink-deep', rot: 'rotate-3' },
                                 { icon: MessageCircle, val: stats.comments, label: 'Komentar', color: 'bg-dried-red/5 text-dried-red', rot: '-rotate-1' }
                             ].map((s, i) => (
-                                <div key={i} className={`bg-white p-6 wobbly-border paper-shadow text-center group hover:-translate-y-1 transition-all ${s.rot}`}>
+                                <div key={i} className={`bg-paper p-6 wobbly-border paper-shadow text-center group hover:-translate-y-1 transition-all ${s.rot}`}>
                                     <div className={`w-12 h-12 ${s.color} wobbly-border-sm flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform`}>
                                         <s.icon className="w-6 h-6" />
                                     </div>
@@ -174,7 +174,7 @@ export default function ProfileClient({
                             ) : (
                                 <div className="grid gap-4">
                                     {reviews.map((review, i) => (
-                                        <div key={review.id} className={`bg-white p-6 wobbly-border paper-shadow flex items-start gap-6 hover:shadow-lg transition-all ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                                        <div key={review.id} className={`bg-paper p-6 wobbly-border paper-shadow flex items-start gap-6 hover:shadow-lg transition-all ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
                                             <div className="shrink-0 pt-1">
                                                 <div className="flex bg-gold/30 px-3 py-1.5 wobbly-border-sm items-center gap-2 -rotate-12 shadow-sm">
                                                     <Star className="w-4 h-4 text-ink-deep fill-ink-deep/20" />
@@ -210,7 +210,7 @@ export default function ProfileClient({
                                             </Link>
                                             <div className={`bg-parchment p-6 wobbly-border paper-shadow group-hover:shadow-lg transition-all relative ${i % 2 === 0 ? '-rotate-0.5' : 'rotate-0.5'}`}>
                                                 <p className="font-journal-body text-lg text-ink/70 leading-relaxed italic">&quot;{comment.content}&quot;</p>
-                                                <span className="absolute -bottom-2 -right-2 font-special text-[8px] font-black bg-white px-3 py-1 wobbly-border-sm text-ink/40 uppercase tracking-tighter shadow-sm">{new Date(comment.created_at).toLocaleDateString('id-ID')}</span>
+                                                <span className="absolute -bottom-2 -right-2 font-special text-[8px] font-black bg-paper px-3 py-1 wobbly-border-sm text-ink/40 uppercase tracking-tighter shadow-sm">{new Date(comment.created_at).toLocaleDateString('id-ID')}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -221,11 +221,11 @@ export default function ProfileClient({
                 );
             case 'pengikut':
                 return (
-                    <div className="bg-white wobbly-border paper-shadow divide-y-2 divide-ink/5 animate-in fade-in zoom-in-95 duration-500 overflow-hidden -rotate-1">
+                    <div className="bg-paper wobbly-border paper-shadow divide-y-2 divide-ink/5 animate-in fade-in zoom-in-95 duration-500 overflow-hidden -rotate-1">
                         {followers.length === 0 ? <div className="py-24 text-center font-journal-body text-ink/20 italic uppercase tracking-widest">Sepi di sini...</div> :
                             followers.map(f => (
                                 <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-6 p-6 hover:bg-gold/5 transition-all group">
-                                    <div className="w-16 h-16 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-white group-hover:rotate-6 transition-all shadow-md">
+                                    <div className="w-16 h-16 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-paper group-hover:rotate-6 transition-all shadow-md">
                                         {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-ink/10" />}
                                     </div>
                                     <div>
@@ -242,11 +242,11 @@ export default function ProfileClient({
                 );
             case 'mengikuti':
                 return (
-                    <div className="bg-white wobbly-border paper-shadow divide-y-2 divide-ink/5 animate-in fade-in zoom-in-95 duration-500 overflow-hidden rotate-1">
+                    <div className="bg-paper wobbly-border paper-shadow divide-y-2 divide-ink/5 animate-in fade-in zoom-in-95 duration-500 overflow-hidden rotate-1">
                         {following.length === 0 ? <div className="py-24 text-center font-journal-body text-ink/20 italic uppercase tracking-widest">Belum mengikuti siapapun</div> :
                             following.map(f => (
                                 <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-6 p-6 hover:bg-gold/5 transition-all group">
-                                    <div className="w-16 h-16 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-white group-hover:-rotate-6 transition-all shadow-md">
+                                    <div className="w-16 h-16 wobbly-border-sm overflow-hidden bg-parchment-light border-2 border-paper group-hover:-rotate-6 transition-all shadow-md">
                                         {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-ink/10" />}
                                     </div>
                                     <div>
@@ -300,7 +300,7 @@ export default function ProfileClient({
 
                     {/* Sidebar: Left */}
                     <aside className="lg:col-span-4 lg:sticky lg:top-32 flex flex-col gap-8">
-                        <div className="bg-white wobbly-border paper-shadow p-8 relative overflow-hidden -rotate-1">
+                        <div className="bg-paper wobbly-border paper-shadow p-8 relative overflow-hidden -rotate-1">
                             {/* Decorative Background - Taped Note feel */}
                             <div className="absolute top-0 left-0 right-0 h-4 bg-gold/20 wobbly-border-sm opacity-50" />
 
@@ -309,7 +309,7 @@ export default function ProfileClient({
                                 {/* Tape effect */}
                                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-12 h-6 bg-gold/40 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
 
-                                <div className="w-40 h-40 wobbly-border border-4 border-white shadow-2xl mx-auto overflow-hidden bg-parchment-light rotate-[-2deg]">
+                                <div className="w-40 h-40 wobbly-border border-4 border-paper shadow-2xl mx-auto overflow-hidden bg-parchment-light rotate-[-2deg]">
                                     {userProfile.avatar_url ? (
                                         <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
@@ -317,7 +317,7 @@ export default function ProfileClient({
                                     )}
                                 </div>
                                 {isAuthor && (
-                                    <div className="absolute -bottom-2 right-1/2 translate-x-16 bg-pine text-parchment p-2 wobbly-border-sm shadow-lg border-2 border-white animate-bounce">
+                                    <div className="absolute -bottom-2 right-1/2 translate-x-16 bg-pine text-parchment p-2 wobbly-border-sm shadow-lg border-2 border-paper animate-bounce">
                                         <Sparkles className="w-5 h-5 text-gold" />
                                     </div>
                                 )}
@@ -365,7 +365,7 @@ export default function ProfileClient({
                                     { link: userProfile.social_links?.instagram, icon: Instagram, color: 'hover:text-pink-500' },
                                     { link: userProfile.social_links?.website, icon: Globe, color: 'hover:text-pine' }
                                 ].filter(s => s.link).map((social, i) => (
-                                    <a key={i} href={social.link} target="_blank" rel="noopener noreferrer" className={`p-4 bg-white wobbly-border-sm text-ink/20 ${social.color} transition-all shadow-sm hover:scale-110 hover:shadow-md ${i % 2 === 0 ? 'rotate-12' : '-rotate-12'}`} title="Sosial">
+                                    <a key={i} href={social.link} target="_blank" rel="noopener noreferrer" className={`p-4 bg-paper wobbly-border-sm text-ink/20 ${social.color} transition-all shadow-sm hover:scale-110 hover:shadow-md ${i % 2 === 0 ? 'rotate-12' : '-rotate-12'}`} title="Sosial">
                                         <social.icon className="w-6 h-6" />
                                     </a>
                                 ))}
@@ -373,7 +373,7 @@ export default function ProfileClient({
                         </div>
 
                         {/* Quick Connection Stats */}
-                        <div className="wobbly-border paper-shadow p-3 grid grid-cols-2 gap-4 bg-white rotate-1">
+                        <div className="wobbly-border paper-shadow p-3 grid grid-cols-2 gap-4 bg-paper rotate-1">
                             <button onClick={() => handleTabChange('pengikut')} className="bg-parchment-light wobbly-border-sm py-6 px-3 hover:bg-gold/10 transition-all group flex flex-col items-center justify-center text-center -rotate-2">
                                 <p className="font-journal-title text-3xl text-ink-deep group-hover:scale-110 transition-transform italic">{userProfile._count.followers}</p>
                                 <p className="font-special text-[10px] text-ink/30 uppercase tracking-[0.2em] mt-1">Pengikut</p>
@@ -388,18 +388,18 @@ export default function ProfileClient({
                     {/* Main Content: Right */}
                     <div className="lg:col-span-8">
                         {/* Tab Bar */}
-                        <div className="bg-white/40 wobbly-border paper-shadow p-3 mb-10 flex gap-3 sticky top-[6.5rem] z-[100] overflow-x-auto hide-scrollbar -rotate-[0.5deg]">
+                        <div className="bg-paper/40 wobbly-border paper-shadow p-3 mb-10 flex gap-3 sticky top-[6.5rem] z-[100] overflow-x-auto hide-scrollbar -rotate-[0.5deg]">
                             {isAuthor && (
                                 <>
                                     <button
                                         onClick={() => handleTabChange('karya')}
-                                        className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'karya' ? 'bg-pine text-parchment shadow-lg rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-white/60 -rotate-1'}`}
+                                        className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'karya' ? 'bg-pine text-parchment shadow-lg rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-paper/60 -rotate-1'}`}
                                     >
                                         Karya
                                     </button>
                                     <button
                                         onClick={() => handleTabChange('postingan')}
-                                        className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'postingan' ? 'bg-pine text-parchment shadow-lg -rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-white/60 rotate-1'}`}
+                                        className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'postingan' ? 'bg-pine text-parchment shadow-lg -rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-paper/60 rotate-1'}`}
                                     >
                                         Postingan
                                     </button>
@@ -407,7 +407,7 @@ export default function ProfileClient({
                             )}
                             <button
                                 onClick={() => handleTabChange('aktivitas')}
-                                className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'aktivitas' ? 'bg-pine text-parchment shadow-lg rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-white/60 -rotate-1'}`}
+                                className={`flex-1 min-w-[120px] py-4 wobbly-border-sm font-journal-title text-xl italic transition-all ${activeTab === 'aktivitas' ? 'bg-pine text-parchment shadow-lg rotate-1' : 'text-ink/40 hover:text-ink-deep hover:bg-paper/60 -rotate-1'}`}
                             >
                                 {isAuthor ? 'Feed' : 'Aktivitas'}
                             </button>

@@ -65,7 +65,7 @@ export default async function AdminDashboardPage() {
             {/* Header Dashboard: Info User & Role */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
                 <h1 className="font-journal-title text-4xl text-ink-deep italic tracking-tight uppercase">Buku Kendali</h1>
-                <div className="flex items-center gap-3 bg-white/40 px-6 py-2 wobbly-border-sm rotate-1">
+                <div className="flex items-center gap-3 bg-paper/40 px-6 py-2 wobbly-border-sm rotate-1">
                     <span className="font-special text-[11px] text-pine font-black uppercase tracking-[0.2em]">{session.user.role === 'admin' ? 'Curator' : 'Researcher'}</span>
                     <span className="w-1 h-1 rounded-full bg-ink/20"></span>
                     <span className="font-journal-body text-lg text-ink-deep italic font-bold">{session.user.name}</span>
@@ -75,12 +75,12 @@ export default async function AdminDashboardPage() {
             {/* --- TOP STATISTICS GRID --- */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
                 {[
-                    { label: 'Engagement', val: totalViews.toLocaleString(), unit: 'Views', icon: TrendingUp, color: 'text-pine', bg: 'bg-pine/5' },
-                    { label: 'Kepuasan', val: avgRating.toFixed(1), unit: 'Stars', icon: Star, color: 'text-gold', bg: 'bg-gold/5' },
-                    { label: 'Disimpan', val: totalBookmarks.toLocaleString(), unit: 'Saves', icon: Bookmark, color: 'text-dried-red', bg: 'bg-dried-red/5' },
-                    { label: 'Katalog', val: daftarKarya.length, unit: 'Karya', icon: BookOpen, color: 'text-ink-deep', bg: 'bg-ink/5' }
+                    { label: 'Engagement', val: totalViews.toLocaleString(), unit: 'Views', icon: TrendingUp, color: 'text-pine', bg: 'bg-pine/10' },
+                    { label: 'Kepuasan', val: avgRating.toFixed(1), unit: 'Stars', icon: Star, color: 'text-gold', bg: 'bg-gold/10' },
+                    { label: 'Disimpan', val: totalBookmarks.toLocaleString(), unit: 'Saves', icon: Bookmark, color: 'text-dried-red', bg: 'bg-dried-red/10' },
+                    { label: 'Katalog', val: daftarKarya.length, unit: 'Karya', icon: BookOpen, color: 'text-ink-deep', bg: 'bg-ink/10' }
                 ].map((stat, i) => (
-                    <div key={i} className={`bg-white wobbly-border paper-shadow p-8 flex flex-col items-center text-center transition-all hover:scale-105 duration-500 ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
+                    <div key={i} className={`bg-paper wobbly-border paper-shadow p-8 flex flex-col items-center text-center transition-all hover:scale-105 duration-500 ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
                         <div className={`p-4 ${stat.bg} w-fit wobbly-border-sm mb-6 ${stat.color}`}>
                             <stat.icon className="w-7 h-7" />
                         </div>
@@ -106,8 +106,8 @@ export default async function AdminDashboardPage() {
 
                         {/* Empty State */}
                         {daftarKarya.length === 0 ? (
-                            <div className="text-center py-24 wobbly-border-sm bg-white/40 rotate-1 mx-auto max-w-lg">
-                                <div className="w-20 h-20 bg-ink/5 wobbly-border flex items-center justify-center mb-8 mx-auto -rotate-12">
+                            <div className="text-center py-24 wobbly-border-sm bg-paper/40 rotate-1 mx-auto max-w-lg">
+                                <div className="w-20 h-20 bg-ink/10 wobbly-border flex items-center justify-center mb-8 mx-auto -rotate-12">
                                     <PenTool className="w-10 h-10 text-ink/10" />
                                 </div>
                                 <h3 className="font-journal-title text-2xl text-ink-deep mb-3 italic">Belum Ada Catatan</h3>
@@ -120,13 +120,13 @@ export default async function AdminDashboardPage() {
                             /* Karya List Grid */
                             <div className="space-y-8">
                                 {daftarKarya.map((item, i) => (
-                                    <Link key={item.id} href={`/admin/editor/karya/${item.id}`} className={`group flex flex-col sm:flex-row gap-8 bg-white wobbly-border paper-shadow p-6 hover:scale-[1.01] transition-all duration-500 ${i % 2 === 0 ? '-rotate-[0.5deg]' : 'rotate-[0.5deg]'}`}>
+                                    <Link key={item.id} href={`/admin/editor/karya/${item.id}`} className={`group flex flex-col sm:flex-row gap-8 bg-paper wobbly-border paper-shadow p-6 hover:scale-[1.01] transition-all duration-500 ${i % 2 === 0 ? '-rotate-[0.5deg]' : 'rotate-[0.5deg]'}`}>
                                         {/* Cover Thumbnail */}
                                         <div className="relative shrink-0 mx-auto sm:mx-0">
                                             {/* Tape effect */}
                                             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-5 bg-gold/30 wobbly-border-sm rotate-12 z-10 mix-blend-multiply" />
 
-                                            <div className="w-28 h-40 wobbly-border border-4 border-white shadow-xl overflow-hidden bg-white">
+                                            <div className="w-28 h-40 wobbly-border border-4 border-paper shadow-xl overflow-hidden bg-paper">
                                                 {item.cover_url ? (
                                                     <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                                                 ) : (
@@ -158,7 +158,7 @@ export default async function AdminDashboardPage() {
                                                 ))}
                                             </div>
                                         </div>
-                                        <div className="w-14 h-14 wobbly-border bg-ink/5 items-center justify-center text-ink/10 group-hover:bg-pine group-hover:text-parchment transition-all self-center hidden sm:flex rotate-12 group-hover:rotate-0">
+                                        <div className="w-14 h-14 wobbly-border bg-ink/10 items-center justify-center text-ink/10 group-hover:bg-pine group-hover:text-parchment transition-all self-center hidden sm:flex rotate-12 group-hover:rotate-0">
                                             <ChevronRight className="w-7 h-7" />
                                         </div>
                                     </Link>
@@ -171,14 +171,14 @@ export default async function AdminDashboardPage() {
                 {/* --- SIDEBAR: INSIGHTS & RECENT COMMUNITY --- */}
                 <div className="lg:col-span-4 space-y-12">
                     {/* Recent Comments Section */}
-                    <section className="bg-white wobbly-border paper-shadow p-8 relative overflow-hidden -rotate-1">
+                    <section className="bg-paper wobbly-border paper-shadow p-8 relative overflow-hidden -rotate-1">
                         <div className="relative z-10">
                             <h2 className="font-journal-title text-2xl text-ink-deep mb-8 flex items-center gap-4 italic underline decoration-dotted decoration-ink/20">
                                 <MessageSquare className="w-6 h-6 text-pine" /> Komunitas
                             </h2>
 
                             {latestComments.length === 0 ? (
-                                <div className="text-center py-12 bg-ink/5 wobbly-border-sm px-6">
+                                <div className="text-center py-12 bg-ink/10 wobbly-border-sm px-6">
                                     <MessageSquare className="w-10 h-10 mx-auto text-ink/10 mb-4 rotate-12" />
                                     <p className="font-journal-body text-sm text-ink/30 italic uppercase tracking-[0.2em]">Belum ada <br />interaksi masuk</p>
                                 </div>
@@ -187,7 +187,7 @@ export default async function AdminDashboardPage() {
                                     {latestComments.map((c, i) => (
                                         <div key={c.id} className={`group ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}>
                                             <div className="flex items-center gap-4 mb-4">
-                                                <div className="w-12 h-12 wobbly-border-sm bg-white border-2 border-ink/5 flex items-center justify-center font-journal-title text-xl text-ink-deep shadow-sm">
+                                                <div className="w-12 h-12 wobbly-border-sm bg-paper border-2 border-ink/5 flex items-center justify-center font-journal-title text-xl text-ink-deep shadow-sm">
                                                     {c.user.display_name[0].toUpperCase()}
                                                 </div>
                                                 <div className="flex flex-col">
@@ -203,7 +203,7 @@ export default async function AdminDashboardPage() {
                                             </Link>
                                         </div>
                                     ))}
-                                    <Link href="/admin/community" className="w-full text-center py-4 bg-ink/5 wobbly-border-sm font-journal-title text-sm text-ink-deep hover:bg-pine hover:text-parchment transition-all block mt-8 italic">Pusat Interaksi</Link>
+                                    <Link href="/admin/community" className="w-full text-center py-4 bg-ink/10 wobbly-border-sm font-journal-title text-sm text-ink-deep hover:bg-pine hover:text-parchment transition-all block mt-8 italic">Pusat Interaksi</Link>
                                 </div>
                             )}
                         </div>

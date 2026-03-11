@@ -32,7 +32,7 @@ export default function BottomNav() {
     return (
         <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-300">
             {/* Wrapper: Wobbly Paper Scrap feeling */}
-            <div className="w-[92%] max-w-lg bg-parchment dark:bg-parchment-dark border-4 border-ink wobbly-border paper-shadow pb-2 pt-2 px-4 pointer-events-auto transition-colors duration-300">
+            <div className="w-[92%] max-w-lg bg-parchment border-4 border-ink wobbly-border paper-shadow pb-2 pt-2 px-4 pointer-events-auto transition-colors duration-300">
                 <div className="flex justify-between items-center h-16 relative">
                     <Link
                         href={homeUrl}

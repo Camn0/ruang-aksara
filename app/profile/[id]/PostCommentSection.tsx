@@ -67,7 +67,7 @@ export default function PostCommentSection({ postId, initialComments, commentCou
     }
 
     return (
-        <div className="mt-3 pt-3 border-t border-gray-50 dark:border-slate-800">
+        <div className="mt-3 pt-3 border-t border-ink/5">
             {/* Toggle Comment Section */}
             {commentCount > 0 && (
                 <button
@@ -84,15 +84,15 @@ export default function PostCommentSection({ postId, initialComments, commentCou
                 <div className="space-y-2 mb-3">
                     {initialComments.map((c) => (
                         <div key={c.id} className="flex gap-2 items-start group">
-                            <div className="w-5 h-5 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-bold text-gray-500 shrink-0">
+                            <div className="w-5 h-5 rounded-full bg-ink/5 flex items-center justify-center text-[8px] font-bold text-ink/30 shrink-0">
                                 {c.user?.display_name?.substring(0, 2).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs">
-                                    <Link href={`/profile/${c.user?.username}`} className="font-bold text-gray-900 dark:text-gray-100 hover:underline">{c.user?.display_name}</Link>{' '}
-                                    <span className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{c.content}</span>
+                                    <Link href={`/profile/${c.user?.username}`} className="font-bold text-ink-deep hover:underline">{c.user?.display_name}</Link>{' '}
+                                    <span className="text-ink/60 whitespace-pre-wrap">{c.content}</span>
                                 </p>
-                                <p className="text-[10px] text-gray-400 dark:text-gray-500">{new Date(c.created_at).toLocaleDateString('id-ID')}</p>
+                                <p className="text-[10px] text-ink/30">{new Date(c.created_at).toLocaleDateString('id-ID')}</p>
                             </div>
                             {/* Delete Button */}
                             {(currentUserId === c.user_id || currentUserRole === 'admin') && (
@@ -118,7 +118,7 @@ export default function PostCommentSection({ postId, initialComments, commentCou
                         placeholder="Ukir komentar..."
                         required
                         disabled={isPending}
-                        className="flex-1 font-journal-body text-base bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-white focus:outline-none p-2 italic"
+                        className="flex-1 font-journal-body text-base bg-parchment-light wobbly-border-sm border-2 border-transparent focus:border-pine/20 focus:bg-paper focus:outline-none p-2 italic"
                         rows={1}
                     />
                     <button
