@@ -15,9 +15,9 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-3 group">
+                    <Link href={session ? "/user/dashboard" : "/"} className="flex items-center gap-3 group">
                         <div className="w-10 h-10 bg-white/10 rounded-lg overflow-hidden p-0.5 border border-tan-primary/10">
-                            <img src="/logo-placeholder.png" alt="Logo" className="w-full h-full object-cover rounded" />
+                            <img src="/logoRuangAksara.png" alt="Logo" className="w-full h-full object-cover rounded" />
                         </div>
                         <span className="font-lobster text-xl text-brown-dark group-hover:text-tan-primary transition-colors">
                             Ruang Aksara
@@ -29,7 +29,7 @@ export default function Navbar() {
                         <ThemeToggle />
                         {status === 'authenticated' && session ? (
                             <Link 
-                                href={session.user.role === 'admin' || session.user.role === 'author' ? "/admin/dashboard" : "/user/dashboard"}
+                                href={`/profile/${session.user.id}`}
                                 className="w-9 h-9 rounded-full bg-tan-primary/20 flex items-center justify-center text-brown-dark border border-tan-primary/20"
                             >
                                 <User className="w-5 h-5" />

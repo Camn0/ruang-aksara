@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Home, Search, Menu, Info, User, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, Search, Menu, Info, User, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
 import { useSidebar } from './SidebarContext';
@@ -13,8 +13,8 @@ export default function Sidebar() {
     const { data: session } = useSession();
     const { isExpanded, setIsExpanded, toggleSidebar } = useSidebar();
 
-    // Sembunyikan sidebar di halaman auth, onboarding, atau error
-    const hiddenRoutes = ["/onboarding", "/auth/login", "/auth/register"];
+    // Sembunyikan sidebar di halaman auth, onboarding, admin, atau error
+    const hiddenRoutes = ["/onboarding", "/auth/login", "/auth/register", "/admin"];
     if (hiddenRoutes.some(route => pathname.startsWith(route))) {
         return null; // Tidak render
     }
@@ -23,7 +23,7 @@ export default function Sidebar() {
 
     const navItems = [
         { name: 'Profile', href: session ? `/profile/${session.user.id}` : '/auth/login', icon: User },
-        { name: 'Home', href: '/', icon: Home },
+        { name: 'Home', href: '/user/dashboard', icon: Home },
         { name: 'Search', href: '/search', icon: Search },
         { name: 'Library', href: '/library', icon: Menu },
         { name: 'Tentang Kami', href: '/about', icon: Info },
@@ -43,7 +43,7 @@ export default function Sidebar() {
                 </button>
 
                 {/* Logo Section */}
-                <Link href="/" className={`flex flex-col items-center mb-10 transition-all duration-500 group/logo`}>
+                <Link href={session ? "/user/dashboard" : "/"} className={`flex flex-col items-center mb-10 transition-all duration-500 group/logo`}>
                     <div className={`transition-all duration-500 bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
                         {/* New Brand Logo Placeholder */}
                         <img
@@ -80,16 +80,16 @@ export default function Sidebar() {
 
                 {/* Bottom Section */}
                 <div className={`mt-auto space-y-6 transition-all duration-500`}>
-                    {/* Unggah Button */}
+                    {/* Studio Button */}
                     <Link
-                        href="/admin/editor/upload"
+                        href="/admin/dashboard"
                         className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
-                        title={!isExpanded ? 'Unggah Cerita Baru' : ''}
+                        title={!isExpanded ? 'Studio Penulis' : ''}
                     >
                         <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
-                            <Plus className="w-7 h-7 text-white" strokeWidth={3} />
+                            <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2.5} />
                         </div>
-                        {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Unggah Cerita</span>}
+                        {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Studio Penulis</span>}
                     </Link>
 
                     {/* Utils */}

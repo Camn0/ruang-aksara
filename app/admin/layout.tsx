@@ -12,8 +12,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, BookOpen, MessageSquare, Sparkles, Settings, ArrowLeft, LogOut, UserCircle2 } from "lucide-react";
+import { UserCircle2 } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
+import SidebarNav from "../components/SidebarNav";
+import AdminMobileHeader from "./AdminMobileHeader";
 
 export default async function AdminLayout({
     children,
@@ -30,83 +32,58 @@ export default async function AdminLayout({
         redirect('/');
     }
 
-    // [3] DYNAMIC NAVIGATION
-    // Menu dasar yang tersedia untuk Author maupun Admin.
-    const navigation = [
-        { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-        { name: 'Karya', href: '/admin/editor/karya', icon: BookOpen },
-        { name: 'Komunitas', href: '/admin/community', icon: MessageSquare },
-        { name: 'Tips Studio', href: '/admin/editor/tips', icon: Sparkles },
-    ];
-
-    // Menu khusus Administrator (Kelola Genre/User platform).
-    if (session.user.role === 'admin') {
-        navigation.push({ name: 'Genre', href: '/admin/genre', icon: Settings });
-    }
-
     return (
-        <div className="flex min-h-screen bg-[#FDFBF7] dark:bg-slate-950 transition-colors duration-500 w-full">
+        <div className="flex min-h-screen bg-[#F2EAD7]/20 dark:bg-slate-950 transition-colors duration-500 w-full">
 
             {/* --- DESKTOP SIDEBAR --- */}
-            <aside className="hidden lg:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-gray-100 dark:border-slate-800 sticky top-0 h-screen z-30 transition-colors">
+            <aside className="hidden lg:flex flex-col w-64 bg-[#AF8F6F] border-r border-[#3B2A22]/5 fixed left-0 top-0 h-screen z-30 transition-colors shadow-2xl">
                 {/* Brand / Logo Section */}
                 <div className="p-8">
-                    <Link href="/" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-xl flex items-center justify-center text-white font-black italic shadow-lg shadow-indigo-100 dark:shadow-none transition-transform group-hover:scale-110">
-                            RA
+                    <Link href="/admin/dashboard" className="flex flex-col items-center group/logo transition-all duration-500">
+                        <div className="w-24 h-20 bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 transition-all">
+                            <img
+                                src="/logoRuangAksara.png"
+                                alt="Ruang Aksara Logo"
+                                className="w-full h-full object-cover rounded-2xl"
+                            />
                         </div>
-                        <span className="font-black text-xl tracking-tighter text-gray-900 dark:text-gray-100">STUDIO</span>
+                        <div className="mt-4 flex flex-col items-center">
+                            <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
+                            <span className="font-black text-xl tracking-tighter text-[#3B2A22] italic uppercase">STUDIO</span>
+                        </div>
                     </Link>
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex-1 px-4 space-y-1">
-                    {navigation.map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className="flex items-center gap-3 px-4 py-3 text-sm font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-2xl transition-all group"
-                        >
-                            <item.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
-                            {item.name}
-                        </Link>
-                    ))}
-                </nav>
+                <SidebarNav userRole={session.user.role} />
 
                 {/* Footer Sidebar: User Profile & Logout */}
-                <div className="p-6 border-t border-gray-50 dark:border-slate-800">
-                    <div className="flex items-center gap-3 mb-6 px-2">
-                        <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 shadow-sm">
-                            <UserCircle2 className="w-6 h-6" />
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-black text-gray-900 dark:text-gray-100 truncate uppercase tracking-tight">{session.user.name}</span>
-                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">{session.user.role}</span>
-                        </div>
+                <div className="p-6 mt-auto">
+                    <div className="bg-[#3B2A22]/5 rounded-[2.5rem] p-5 mb-4 border border-[#3B2A22]/5">
+                        <Link href={`/profile/${session.user.id}`} className="flex items-center gap-3 mb-4 group/profile">
+                            <div className="w-10 h-10 rounded-2xl bg-[#3B2A22] flex items-center justify-center text-[#F2EAD7] shadow-lg transition-transform group-hover/profile:scale-110">
+                                <UserCircle2 className="w-6 h-6" />
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                                <span className="text-[10px] font-black text-[#3B2A22] truncate uppercase tracking-tight italic group-hover/profile:text-[#AF8F6F] transition-colors">{session.user.name}</span>
+                                <span className="text-[8px] text-[#3B2A22]/40 font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
+                            </div>
+                        </Link>
+                        <LogoutButton />
                     </div>
-                    <LogoutButton />
                 </div>
             </aside>
+
+            {/* SPACER for fixed sidebar */}
+            <div className="hidden lg:block w-64 shrink-0" />
 
             {/* --- MAIN CONTENT AREA --- */}
             <div className="flex-1 flex flex-col min-w-0">
                 {/* MOBILE HEADER: Hanya muncul di screen kecil (sm/md) */}
-                <header className="lg:hidden h-16 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between px-4 sticky top-0 z-30 transition-colors">
-                    <Link href="/admin/dashboard" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-lg flex items-center justify-center text-white font-black italic shadow-md text-xs">
-                            RA
-                        </div>
-                        <span className="font-black text-sm tracking-tighter text-gray-900 dark:text-gray-100 uppercase">Studio</span>
-                    </Link>
-                    <div className="flex items-center gap-3">
-                        <Link href={`/profile/${session.user.id}`} className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 border border-gray-100 dark:border-slate-700">
-                            <UserCircle2 className="w-5 h-5" />
-                        </Link>
-                    </div>
-                </header>
+                <AdminMobileHeader session={session} />
 
                 {/* Main Content Injector */}
-                <main className="flex-1 w-full max-w-full overflow-x-hidden">
+                <main className="flex-1 w-full max-w-full overflow-x-hidden bg-[#F2EAD7]/30">
                     {children}
                 </main>
             </div>
