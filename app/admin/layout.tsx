@@ -33,7 +33,7 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-[#F2EAD7]/20 dark:bg-slate-950 transition-colors duration-500 w-full">
+        <div className="flex min-h-screen bg-[#F2EAD7]/20 dark:bg-brown-dark transition-colors duration-500 w-full">
 
             {/* --- DESKTOP SIDEBAR --- */}
             <aside className="hidden lg:flex flex-col w-64 bg-[#AF8F6F] border-r border-[#3B2A22]/5 fixed left-0 top-0 h-screen z-30 transition-colors shadow-2xl">

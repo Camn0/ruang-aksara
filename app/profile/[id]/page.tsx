@@ -28,9 +28,9 @@ export default async function ProfilePage({ params }: { params: { id: string } }
     if (!userProfileRaw) {
         if (session?.user?.id === params.id || session?.user?.role === 'admin') {
             return (
-                <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center transition-colors duration-300">
-                    <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-2">Sesi Tidak Valid</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+                <div className="min-h-screen bg-gray-50 dark:bg-brown-dark flex flex-col items-center justify-center p-6 text-center transition-colors duration-300">
+                    <h1 className="text-xl font-black text-gray-900 dark:text-text-accent mb-2">Sesi Tidak Valid</h1>
+                    <p className="text-sm text-gray-500 dark:text-tan-light mb-8 max-w-sm mx-auto">
                         Profil Anda sudah tidak ditemukan di database.
                     </p>
                 </div>

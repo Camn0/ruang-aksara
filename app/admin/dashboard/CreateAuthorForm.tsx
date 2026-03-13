@@ -34,9 +34,9 @@ export default function CreateAuthorForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-brown-dark/5 dark:bg-slate-800/50 p-6 rounded-2xl border border-tan-primary/10 dark:border-slate-700 mb-8 w-full transition-colors duration-300">
-            <h3 className="text-lg font-bold text-brown-dark dark:text-gray-100 mb-2">Tambah Akun Penulis</h3>
-            <p className="text-sm text-brown-dark/50 dark:text-gray-400 mb-6 font-bold leading-relaxed">Buatkan akun akses untuk anggota tim. Mereka akan login dengan username dan password ini.</p>
+        <form onSubmit={handleSubmit} className="bg-brown-dark/5 dark:bg-brown-mid/50 p-6 rounded-2xl border border-tan-primary/10 dark:border-brown-mid mb-8 w-full transition-colors duration-300">
+            <h3 className="text-lg font-bold text-brown-dark dark:text-text-accent mb-2">Tambah Akun Penulis</h3>
+            <p className="text-sm text-brown-dark/50 dark:text-tan-light mb-6 font-bold leading-relaxed">Buatkan akun akses untuk anggota tim. Mereka akan login dengan username dan password ini.</p>
 
             {message && (
                 <div className={`p-4 mb-6 text-sm rounded-xl font-medium border ${message?.type === 'error' ? 'bg-red-50/50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-100 dark:border-red-800/50' : 'bg-green-50/50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-100 dark:border-green-800/50'}`}>
@@ -47,16 +47,16 @@ export default function CreateAuthorForm() {
             <div className="space-y-4">
                 <div>
                     <label className="block text-sm font-bold text-brown-dark/80 dark:text-gray-200 mb-1.5 uppercase tracking-tighter">Display Name <span className="text-[10px] text-brown-dark/40 dark:text-gray-500 font-normal italic lowercase">(Opsional)</span></label>
-                    <input name="display_name" type="text" placeholder="Nama Pena / Panggilan" className="w-full py-2.5 px-4 bg-white/50 dark:bg-slate-900 border border-tan-primary/20 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan-primary dark:focus:ring-indigo-500 text-sm text-brown-dark dark:text-gray-100 transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500 font-bold" />
+                    <input name="display_name" type="text" placeholder="Nama Pena / Panggilan" className="w-full py-2.5 px-4 bg-white/50 dark:bg-brown-dark border border-tan-primary/20 dark:border-brown-mid rounded-xl focus:outline-none focus:ring-2 focus:ring-tan-primary dark:focus:ring-indigo-500 text-sm text-brown-dark dark:text-text-accent transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500 font-bold" />
                 </div>
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1">
                         <label className="block text-sm font-bold text-brown-dark/80 dark:text-gray-200 mb-1.5 uppercase tracking-tighter">Username Login</label>
-                        <input name="username" type="text" required placeholder="Contoh: author123" className="w-full py-2.5 px-4 bg-white/50 dark:bg-slate-900 border border-tan-primary/20 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan-primary dark:focus:ring-indigo-500 text-sm text-brown-dark dark:text-gray-100 transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500 font-bold" />
+                        <input name="username" type="text" required placeholder="Contoh: author123" className="w-full py-2.5 px-4 bg-white/50 dark:bg-brown-dark border border-tan-primary/20 dark:border-brown-mid rounded-xl focus:outline-none focus:ring-2 focus:ring-tan-primary dark:focus:ring-indigo-500 text-sm text-brown-dark dark:text-text-accent transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500 font-bold" />
                     </div>
                     <div className="flex-1">
                         <label className="block text-sm font-bold text-brown-dark/80 dark:text-gray-200 mb-1.5 uppercase tracking-tighter">Password Sementara</label>
-                        <input name="password" type="password" required placeholder="Minimal 6 karakter" className="w-full py-2.5 px-4 bg-white/50 dark:bg-slate-900 border border-tan-primary/20 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan-primary dark:focus:ring-indigo-500 text-sm text-brown-dark dark:text-gray-100 transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500 font-bold" />
+                        <input name="password" type="password" required placeholder="Minimal 6 karakter" className="w-full py-2.5 px-4 bg-white/50 dark:bg-brown-dark border border-tan-primary/20 dark:border-brown-mid rounded-xl focus:outline-none focus:ring-2 focus:ring-tan-primary dark:focus:ring-indigo-500 text-sm text-brown-dark dark:text-text-accent transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500 font-bold" />
                     </div>
                 </div>
                 <button

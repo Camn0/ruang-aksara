@@ -55,7 +55,7 @@ export default function PostCommentForm({ postId }: { postId: string }) {
                     placeholder="Tulis komentar..."
                     required
                     disabled={isPending}
-                    className="flex-1 text-xs border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-2 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500 min-h-[36px] resize-none"
+                    className="flex-1 text-xs border border-gray-200 dark:border-brown-mid dark:bg-brown-mid dark:text-text-accent p-2 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500 min-h-[36px] resize-none"
                     rows={1}
                 />
                 <button

@@ -30,7 +30,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     return (
         <div className="space-y-4">
             {/* Level Card - Full Width */}
-            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-tan-light/30 dark:border-slate-800 shadow-xl shadow-tan-light/10 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group">
+            <div className="bg-white dark:bg-brown-dark rounded-[2.5rem] p-6 border border-tan-light/30 dark:border-brown-mid shadow-xl shadow-tan-light/10 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group">
                 <div className="flex justify-between items-center relative z-10">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-tan-primary rounded-2xl flex items-center justify-center text-text-accent shadow-lg">
@@ -38,7 +38,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold uppercase tracking-widest text-tan-primary">Peringkat Anda</p>
-                            <h3 className="text-xl font-open-sans font-bold text-text-main dark:text-gray-100">Level {level}</h3>
+                            <h3 className="text-xl font-open-sans font-bold text-text-main dark:text-text-accent">Level {level}</h3>
                         </div>
                     </div>
                     <button
@@ -54,7 +54,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         <span>Progress Level</span>
                         <span className="text-brown-dark">{progressToNextLevel}%</span>
                     </div>
-                    <div className="h-3 bg-tan-light/10 dark:bg-slate-800 rounded-full overflow-hidden border border-tan-light/20">
+                    <div className="h-3 bg-tan-light/10 dark:bg-brown-mid rounded-full overflow-hidden border border-tan-light/20">
                         <div
                             className="h-full bg-tan-primary transition-all duration-1000"
                             style={{ width: `${progressToNextLevel}%` }}
@@ -102,11 +102,11 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             {showLevelInfo && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
                     <div className="absolute inset-0 bg-brown-dark/80 backdrop-blur-sm" onClick={() => setShowLevelInfo(false)} />
-                    <div className="bg-bg-cream dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
+                    <div className="bg-bg-cream dark:bg-brown-dark w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 italic">Level Guide</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Level Guide</h2>
                                     <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Sistem Reputasi Pembaca</p>
                                 </div>
                                 <button onClick={() => setShowLevelInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
@@ -116,10 +116,10 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
 
                             <div className="space-y-4">
                                 {levelTiers.map((tier, i) => (
-                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-white dark:bg-indigo-900/20 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-slate-800/50 border-transparent'}`}>
+                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-white dark:bg-indigo-900/20 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-brown-mid/50 border-transparent'}`}>
                                         <div className="flex justify-between mb-1">
                                             <span className="text-[9px] font-black bg-tan-primary text-text-accent px-2 py-0.5 rounded shadow-sm">LV {tier.lv}</span>
-                                            <span className="text-[11px] font-bold text-text-main dark:text-gray-100">{tier.title}</span>
+                                            <span className="text-[11px] font-bold text-text-main dark:text-text-accent">{tier.title}</span>
                                         </div>
                                         <p className="text-[10px] text-tan-primary font-bold mt-1 line-clamp-2">{tier.benefit}</p>
                                     </div>
@@ -140,18 +140,18 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             {showStreakInfo && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
                     <div className="absolute inset-0 bg-brown-dark/80 backdrop-blur-sm" onClick={() => setShowStreakInfo(false)} />
-                    <div className="bg-bg-cream dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
+                    <div className="bg-bg-cream dark:bg-brown-dark w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 italic">Streak Baca</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Streak Baca</h2>
                                     <p className="text-[10px] text-brown-mid font-black uppercase tracking-widest mt-1">Konsistensi adalah Kunci</p>
                                 </div>
                                 <button onClick={() => setShowStreakInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="space-y-4 text-text-main/70 dark:text-gray-400 text-xs font-bold leading-relaxed">
+                            <div className="space-y-4 text-text-main/70 dark:text-tan-light text-xs font-bold leading-relaxed">
                                 <p>Streak menunjukkan berapa hari berturut-turut kamu membaca di Ruang Aksara.</p>
                                 <div className="p-4 bg-white dark:bg-orange-900/20 rounded-2xl border border-tan-light shadow-sm">
                                     <p className="text-brown-dark font-bold leading-relaxed">
@@ -169,18 +169,18 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             {showPointsInfo && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
                     <div className="absolute inset-0 bg-brown-dark/80 backdrop-blur-sm" onClick={() => setShowPointsInfo(false)} />
-                    <div className="bg-bg-cream dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
+                    <div className="bg-bg-cream dark:bg-brown-dark w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 italic">Poin Aksara</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Poin Aksara</h2>
                                     <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Kumpulkan poin untuk naik level</p>
                                 </div>
                                 <button onClick={() => setShowPointsInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="space-y-4 text-text-main/70 dark:text-gray-400 text-xs font-bold leading-relaxed">
+                            <div className="space-y-4 text-text-main/70 dark:text-tan-light text-xs font-bold leading-relaxed">
                                 <p>Setiap aktivitasmu diapresiasi dengan poin yang akan mengakumulasi peringkatmu.</p>
                                 <ul className="space-y-3">
                                     <li className="flex items-center gap-3">

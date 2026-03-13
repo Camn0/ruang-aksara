@@ -154,16 +154,16 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     const firstChapter = karya.bab.length > 0 ? karya.bab[0].chapter_no : null;
 
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 pb-24 transition-colors duration-300 selection:bg-tan-primary/30">
-            <header className="px-6 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300 shadow-sm shadow-brown-dark/5">
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-24 transition-colors duration-300 selection:bg-tan-primary/30">
+            <header className="px-6 h-16 bg-white/80 dark:bg-brown-dark/80 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300 shadow-sm shadow-brown-dark/5">
                 <Link href="/" className="p-2 -ml-2 text-tan-primary hover:bg-tan-primary/10 rounded-full transition-all active:scale-95">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="font-lobster text-2xl text-brown-dark dark:text-gray-100 absolute left-1/2 -translate-x-1/2 italic">
+                <h1 className="font-lobster text-2xl text-brown-dark dark:text-text-accent absolute left-1/2 -translate-x-1/2 italic">
                     Detail Karya
                 </h1>
                 <div className="w-10"></div>
-            </header>            <div className="bg-white/40 dark:bg-slate-900/40 border-b border-tan-primary/5 pt-8 pb-10 px-6 transition-colors duration-300 relative overflow-hidden">
+            </header>            <div className="bg-white/40 dark:bg-brown-dark/40 border-b border-tan-primary/5 pt-8 pb-10 px-6 transition-colors duration-300 relative overflow-hidden">
                 {/* Background artistic pattern snippet */}
                 <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none">
                     <TrendingUp className="w-full h-full text-tan-primary rotate-12" />
@@ -171,17 +171,17 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
                 <div className="flex gap-6 items-start relative z-10">
                     {karya.cover_url ? (
-                        <img src={karya.cover_url} alt={karya.title} className="w-32 h-48 sm:w-44 sm:h-64 object-cover rounded-3xl shadow-xl shadow-brown-dark/10 border border-white/50 dark:border-slate-800 shrink-0 transform -rotate-1 hover:rotate-0 transition-transform duration-500" />
+                        <img src={karya.cover_url} alt={karya.title} className="w-32 h-48 sm:w-44 sm:h-64 object-cover rounded-3xl shadow-xl shadow-brown-dark/10 border border-white/50 dark:border-brown-mid shrink-0 transform -rotate-1 hover:rotate-0 transition-transform duration-500" />
                     ) : (
                         <CoverPlaceholder />
                     )}
  
                     <div className="flex-1 min-w-0 py-1">
-                        <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-gray-100 leading-tight mb-3 italic tracking-tight">
+                        <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-text-accent leading-tight mb-3 italic tracking-tight">
                             {karya.title}
                         </h1>
                         <div className="flex items-center gap-2 mb-4">
-                            <p className="text-sm font-bold text-brown-dark/60 dark:text-gray-400">Tinta dari <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-tan-primary hover:text-brown-mid hover:underline font-black transition-colors">{karya.penulis_alias}</Link></p>
+                            <p className="text-sm font-bold text-brown-dark/60 dark:text-tan-light">Tinta dari <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-tan-primary hover:text-brown-mid hover:underline font-black transition-colors">{karya.penulis_alias}</Link></p>
                             {session && session.user.id !== karya.uploader_id && (
                                 <FollowButton
                                     targetUserId={karya.uploader_id}
@@ -196,7 +196,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                 <Link
                                     key={g.id}
                                     href={`/search?q=&genreId=${g.id}`}
-                                    className="bg-tan-primary/10 dark:bg-slate-800 text-tan-primary text-[10px] uppercase font-black px-3 py-1.5 rounded-full hover:bg-tan-primary hover:text-text-accent transition-all tracking-wider shadow-sm shadow-tan-primary/5"
+                                    className="bg-tan-primary/10 dark:bg-brown-mid text-tan-primary text-[10px] uppercase font-black px-3 py-1.5 rounded-full hover:bg-tan-primary hover:text-text-accent transition-all tracking-wider shadow-sm shadow-tan-primary/5"
                                 >
                                     {g.name}
                                 </Link>
@@ -212,18 +212,18 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                             )}
                         </div>
 
-                        <div className="flex flex-wrap gap-x-8 gap-y-4 mt-6 pt-6 border-t border-tan-primary/10 text-[11px] font-black text-brown-dark/50 dark:text-gray-400 uppercase tracking-widest">
+                        <div className="flex flex-wrap gap-x-8 gap-y-4 mt-6 pt-6 border-t border-tan-primary/10 text-[11px] font-black text-brown-dark/50 dark:text-tan-light uppercase tracking-widest">
                             <span className="flex items-center gap-2">
                                 <Star className="w-5 h-5 text-amber-500 fill-amber-500 drop-shadow-sm" />
-                                <span className="text-brown-dark dark:text-gray-100 text-base">{karya.avg_rating.toFixed(1)} <span className="text-brown-dark/30 font-bold text-xs">/ 5</span></span>
+                                <span className="text-brown-dark dark:text-text-accent text-base">{karya.avg_rating.toFixed(1)} <span className="text-brown-dark/30 font-bold text-xs">/ 5</span></span>
                             </span>
                             <span className="flex items-center gap-2">
                                 <TrendingUp className="w-5 h-5 text-tan-primary" />
-                                <span className="text-brown-dark dark:text-gray-100 text-base">{karya.total_views.toLocaleString()} <span className="text-brown-dark/30 text-[10px]">Baca</span></span>
+                                <span className="text-brown-dark dark:text-text-accent text-base">{karya.total_views.toLocaleString()} <span className="text-brown-dark/30 text-[10px]">Baca</span></span>
                             </span>
                             <span className="flex items-center gap-2">
                                 <BookOpen className="w-5 h-5 text-brown-mid/40" />
-                                <span className="text-brown-dark dark:text-gray-100 text-base">{karya.bab.length} <span className="text-brown-dark/30 text-[10px]">Pena</span></span>
+                                <span className="text-brown-dark dark:text-text-accent text-base">{karya.bab.length} <span className="text-brown-dark/30 text-[10px]">Pena</span></span>
                             </span>
                         </div>
                     </div>
@@ -235,7 +235,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                             Mulai Perjalanan
                         </Link>
                     ) : (
-                        <button disabled className="flex-1 text-center py-3.5 bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 rounded-xl font-bold text-sm cursor-not-allowed transition-colors">
+                        <button disabled className="flex-1 text-center py-3.5 bg-gray-100 dark:bg-brown-mid text-gray-400 dark:text-gray-500 rounded-xl font-bold text-sm cursor-not-allowed transition-colors">
                             Belum Ada Bab
                         </button>
                     )}
@@ -249,9 +249,9 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 <ContinueReadingButton karyaId={karya.id} />
             </div>
 
-            <div className="bg-white/60 dark:bg-slate-900/60 mt-3 border-y border-tan-primary/5 shadow-sm transition-colors duration-300">
+            <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 shadow-sm transition-colors duration-300">
                 <div className="p-6 border-b border-tan-primary/5">
-                    <h2 className="text-base font-black text-brown-dark dark:text-gray-100 uppercase tracking-widest italic">Daftar Isi</h2>
+                    <h2 className="text-base font-black text-brown-dark dark:text-text-accent uppercase tracking-widest italic">Daftar Isi</h2>
                     <p className="text-[10px] font-bold text-tan-primary/60 uppercase tracking-widest mt-1.5">{karya.bab.length} Pena Terukir</p>
                 </div>
 
@@ -268,12 +268,12 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                 className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 active:bg-gray-100 dark:active:bg-slate-800 transition-colors"
                             >
                                 <div className="flex flex-col pr-4">
-                                    <span className="font-bold text-gray-900 dark:text-gray-100 text-sm">Bab {chapter.chapter_no}{chapter.title ? `: ${chapter.title}` : ''}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 italic text-left">
+                                    <span className="font-bold text-gray-900 dark:text-text-accent text-sm">Bab {chapter.chapter_no}{chapter.title ? `: ${chapter.title}` : ''}</span>
+                                    <span className="text-xs text-gray-500 dark:text-tan-light mt-1 line-clamp-1 italic text-left">
                                         Klik untuk mulai membaca...
                                     </span>
                                 </div>
-                                <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0 transition-colors">
+                                <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-brown-mid border border-gray-200 dark:border-brown-mid flex items-center justify-center shrink-0 transition-colors">
                                     <ArrowLeft className="w-4 h-4 text-gray-400 dark:text-gray-500 rotate-180" />
                                 </div>
                             </Link>
@@ -283,17 +283,17 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
             </div>
 
             {karya.deskripsi && (
-                <div className="bg-white/60 dark:bg-slate-900/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
-                    <h2 className="text-base font-black text-brown-dark dark:text-gray-100 mb-4 uppercase tracking-widest italic">Sinopsis</h2>
-                    <p className="text-sm text-brown-dark/70 dark:text-gray-400 leading-loose whitespace-pre-wrap font-medium">
+                <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
+                    <h2 className="text-base font-black text-brown-dark dark:text-text-accent mb-4 uppercase tracking-widest italic">Sinopsis</h2>
+                    <p className="text-sm text-brown-dark/70 dark:text-tan-light leading-loose whitespace-pre-wrap font-medium">
                         {karya.deskripsi}
                     </p>
                 </div>
             )}
 
-            <div className="bg-white/60 dark:bg-slate-900/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
+            <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
                 <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-xl font-black text-brown-dark dark:text-gray-100 flex items-center gap-3 italic uppercase tracking-tighter">
+                    <h2 className="text-xl font-black text-brown-dark dark:text-text-accent flex items-center gap-3 italic uppercase tracking-tighter">
                         <MessageSquareQuote className="w-6 h-6 text-tan-primary non-italic" />
                         Goresan Ulasan
                     </h2>
@@ -302,9 +302,9 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 {session ? (
                     <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
                 ) : (
-                    <div className="bg-tan-primary/5 dark:bg-slate-800/50 p-10 rounded-[2.5rem] text-center border border-tan-primary/10 transition-colors shadow-inner">
+                    <div className="bg-tan-primary/5 dark:bg-brown-mid/50 p-10 rounded-[2.5rem] text-center border border-tan-primary/10 transition-colors shadow-inner">
                         <p className="text-[11px] font-black text-tan-primary mb-3 uppercase tracking-[0.25em]">Ingin Menulis Kesan?</p>
-                        <p className="text-xs text-brown-dark/50 dark:text-gray-400 mb-8 px-6 leading-loose font-bold italic">Masuk ke Ruang Aksara untuk memberikan apresiasi pada sang penulis.</p>
+                        <p className="text-xs text-brown-dark/50 dark:text-tan-light mb-8 px-6 leading-loose font-bold italic">Masuk ke Ruang Aksara untuk memberikan apresiasi pada sang penulis.</p>
                         <Link href="/auth/login" className="inline-block px-12 py-4 bg-brown-dark text-text-accent rounded-full text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 transition-all hover:scale-105 active:scale-95 hover:bg-brown-mid">
                             Mulai Perjalanan
                         </Link>
@@ -319,7 +319,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
                 <div className="space-y-4">
                     {karya.reviews.map((review: any) => (
-                        <div key={review.id} className="p-8 bg-white/80 dark:bg-slate-900/80 rounded-[2.5rem] border border-tan-primary/10 shadow-xl shadow-brown-dark/5 transition-all group backdrop-blur-sm">
+                        <div key={review.id} className="p-8 bg-white/80 dark:bg-brown-dark/80 rounded-[2.5rem] border border-tan-primary/10 shadow-xl shadow-brown-dark/5 transition-all group backdrop-blur-sm">
                             <div className="flex items-start justify-between gap-4 mb-6">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-2xl overflow-hidden bg-tan-primary/5 border border-tan-primary/10 shadow-inner p-0.5">
@@ -330,7 +330,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                         )}
                                     </div>
                                     <div>
-                                        <p className="text-sm font-black text-brown-dark dark:text-gray-100 tracking-tight">{review.user.display_name}</p>
+                                        <p className="text-sm font-black text-brown-dark dark:text-text-accent tracking-tight">{review.user.display_name}</p>
                                         <p className="text-[10px] font-black text-tan-primary/60 uppercase tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                                     </div>
                                 </div>

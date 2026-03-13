@@ -78,7 +78,7 @@ export default function ProfileClient({
                 return (
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {/* Advanced Controls Section */}
-                        <div className="bg-brown-dark/[0.02] dark:bg-slate-900/40 p-6 rounded-[2.5rem] border border-brown-dark/5 flex flex-col gap-6">
+                        <div className="bg-brown-dark/[0.02] dark:bg-brown-dark/40 p-6 rounded-[2.5rem] border border-brown-dark/5 flex flex-col gap-6">
                             {/* Search Bar */}
                             <div className="relative group w-full">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-tan-primary transition-colors group-focus-within:text-brown-dark" />
@@ -87,7 +87,7 @@ export default function ProfileClient({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Cari dalam koleksi..."
-                                    className="w-full bg-white/50 dark:bg-slate-800/50 border border-brown-dark/10 rounded-2xl py-3.5 pl-11 pr-11 text-[12px] font-black uppercase tracking-widest text-text-main dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-tan-primary/20 placeholder:opacity-30 transition-all"
+                                    className="w-full bg-white/50 dark:bg-brown-mid/50 border border-brown-dark/10 rounded-2xl py-3.5 pl-11 pr-11 text-[12px] font-black uppercase tracking-widest text-text-main dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-tan-primary/20 placeholder:opacity-30 transition-all"
                                 />
                                 {searchQuery && (
                                     <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-brown-dark/5 rounded-full transition-all">
@@ -140,7 +140,7 @@ export default function ProfileClient({
                                     </p>
                                 </div>
                             ) : filteredWorks.map(karya => (
-                                <div key={karya.id} className="group bg-brown-dark/[0.015] dark:bg-slate-900/40 rounded-[2.5rem] p-5 sm:p-7 border border-brown-dark/5 hover:border-tan-primary/10 transition-all duration-500 overflow-hidden relative">
+                                <div key={karya.id} className="group bg-brown-dark/[0.015] dark:bg-brown-dark/40 rounded-[2.5rem] p-5 sm:p-7 border border-brown-dark/5 hover:border-tan-primary/10 transition-all duration-500 overflow-hidden relative">
                                     <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start group/card relative z-10">
                                         {/* Cover Section */}
                                         <div className="w-32 h-48 sm:w-36 sm:h-52 shrink-0 relative">
@@ -161,7 +161,7 @@ export default function ProfileClient({
                                             <div>
                                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                                                     <Link href={`/novel/${karya.id}`}>
-                                                        <h3 className="text-xl sm:text-2xl font-open-sans font-black text-text-main dark:text-gray-100 italic leading-tight hover:text-tan-primary transition-colors">
+                                                        <h3 className="text-xl sm:text-2xl font-open-sans font-black text-text-main dark:text-text-accent italic leading-tight hover:text-tan-primary transition-colors">
                                                             {karya.title}
                                                         </h3>
                                                     </Link>
@@ -198,7 +198,7 @@ export default function ProfileClient({
 
                                             {/* Description Box - Simplified */}
                                             <div>
-                                                <p className="text-[13px] text-text-main/50 dark:text-gray-400 line-clamp-3 leading-relaxed font-medium italic">
+                                                <p className="text-[13px] text-text-main/50 dark:text-tan-light line-clamp-3 leading-relaxed font-medium italic">
                                                     {karya.deskripsi || "Penulis belum menambahkan sinopsis untuk karya indah ini."}
                                                 </p>
                                             </div>
@@ -230,7 +230,7 @@ export default function ProfileClient({
                             </div>
                         )}
                         {posts.length === 0 ? (
-                            <div className="py-20 text-center flex flex-col items-center gap-4 bg-white/50 dark:bg-slate-900/50 rounded-[3rem] border border-dashed border-brown-dark/10 shadow-inner">
+                            <div className="py-20 text-center flex flex-col items-center gap-4 bg-white/50 dark:bg-brown-dark/50 rounded-[3rem] border border-dashed border-brown-dark/10 shadow-inner">
                                 <Sparkles className="w-12 h-12 text-brown-dark/10 mx-auto" strokeWidth={1.5} />
                                 <div>
                                     <h3 className="font-bold text-text-main dark:text-white italic">Papan Pena Masih Kosong</h3>
@@ -239,7 +239,7 @@ export default function ProfileClient({
                             </div>
                         ) : (
                             posts.map(post => (
-                                <div key={post.id} className="group bg-brown-dark/[0.02] dark:bg-slate-900/40 rounded-[2.5rem] p-6 sm:p-8 border border-brown-dark/5 transition-all duration-500">
+                                <div key={post.id} className="group bg-brown-dark/[0.02] dark:bg-brown-dark/40 rounded-[2.5rem] p-6 sm:p-8 border border-brown-dark/5 transition-all duration-500">
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="w-12 h-12 rounded-2xl overflow-hidden bg-tan-light/10 border border-brown-dark/10 shadow-sm relative">
                                             {userProfile.avatar_url ? (
@@ -288,21 +288,21 @@ export default function ProfileClient({
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                         {/* Summary Stats Grid - Overhauled */}
                         <div className="grid grid-cols-3 gap-3">
-                            <div className="bg-brown-dark/[0.03] dark:bg-slate-900/40 p-6 rounded-[2rem] border border-brown-dark/5 text-center group transition-all">
+                            <div className="bg-brown-dark/[0.03] dark:bg-brown-dark/40 p-6 rounded-[2rem] border border-brown-dark/5 text-center group transition-all">
                                 <div className="w-10 h-10 bg-brown-dark/5 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-brown-dark group-hover:text-text-accent transition-all shadow-sm">
                                     <BookMarked className="w-5 h-5" />
                                 </div>
                                 <p className="text-2xl font-black text-text-main dark:text-white leading-none">{stats.bookmarks}</p>
                                 <p className="text-[8px] font-black uppercase text-tan-primary tracking-[0.2em] mt-2 italic">Simpan</p>
                             </div>
-                            <div className="bg-brown-dark/[0.03] dark:bg-slate-900/40 p-6 rounded-[2rem] border border-brown-dark/5 text-center group transition-all">
+                            <div className="bg-brown-dark/[0.03] dark:bg-brown-dark/40 p-6 rounded-[2rem] border border-brown-dark/5 text-center group transition-all">
                                 <div className="w-10 h-10 bg-brown-dark/5 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-brown-dark group-hover:text-text-accent transition-all shadow-sm">
                                     <Star className="w-5 h-5" />
                                 </div>
                                 <p className="text-2xl font-black text-text-main dark:text-white leading-none">{stats.reviews}</p>
                                 <p className="text-[8px] font-black uppercase text-tan-primary tracking-[0.2em] mt-2 italic">Ulasan</p>
                             </div>
-                            <div className="bg-brown-dark/[0.03] dark:bg-slate-900/40 p-6 rounded-[2rem] border border-brown-dark/5 text-center group transition-all">
+                            <div className="bg-brown-dark/[0.03] dark:bg-brown-dark/40 p-6 rounded-[2rem] border border-brown-dark/5 text-center group transition-all">
                                 <div className="w-10 h-10 bg-brown-dark/5 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-brown-dark group-hover:text-text-accent transition-all shadow-sm">
                                     <MessageCircle className="w-5 h-5" />
                                 </div>
@@ -312,7 +312,7 @@ export default function ProfileClient({
                         </div>
 
                         {/* Recent Reviews Segment */}
-                        <div className="bg-brown-dark/[0.015] dark:bg-slate-900/20 p-5 rounded-[2.5rem] border border-brown-dark/5">
+                        <div className="bg-brown-dark/[0.015] dark:bg-brown-dark/20 p-5 rounded-[2.5rem] border border-brown-dark/5">
                             <h4 className="text-[10px] font-black text-tan-primary uppercase tracking-[0.2em] mb-6 px-4 flex items-center gap-3">
                                 <span className="w-4 h-[1px] bg-tan-primary/30"></span>
                                 Ulasan Terbaru
@@ -322,7 +322,7 @@ export default function ProfileClient({
                             ) : (
                                 <div className="grid gap-4">
                                     {reviews.map(review => (
-                                        <div key={review.id} className="bg-brown-dark/[0.04] dark:bg-slate-900/40 p-6 rounded-[2rem] flex items-start gap-5 border border-brown-dark/5 transition-all duration-500 group">
+                                        <div key={review.id} className="bg-brown-dark/[0.04] dark:bg-brown-dark/40 p-6 rounded-[2rem] flex items-start gap-5 border border-brown-dark/5 transition-all duration-500 group">
                                             <div className="shrink-0">
                                                 <div className="flex bg-tan-primary text-text-accent px-3 py-1 rounded-full items-center gap-1.5 shadow-sm shadow-tan-primary/20">
                                                     <Star className="w-2.5 h-2.5 fill-current" />
@@ -346,7 +346,7 @@ export default function ProfileClient({
                         </div>
 
                         {/* Recent Comments Segment */}
-                        <div className="bg-brown-dark/[0.015] dark:bg-slate-900/20 p-5 rounded-[2.5rem] border border-brown-dark/5">
+                        <div className="bg-brown-dark/[0.015] dark:bg-brown-dark/20 p-5 rounded-[2.5rem] border border-brown-dark/5">
                             <h4 className="text-[10px] font-black text-tan-primary uppercase tracking-[0.2em] mb-6 px-4 flex items-center gap-3">
                                 <span className="w-4 h-[1px] bg-tan-primary/30"></span>
                                 Komentar
@@ -361,8 +361,8 @@ export default function ProfileClient({
                                                 <BookOpen className="w-3 h-3 opacity-30" />
                                                 {comment.bab.karya.title} <span className="text-tan-primary/20">—</span> <span className="text-text-main dark:text-white group-hover:underline">Bab {comment.bab.chapter_no}</span>
                                             </Link>
-                                            <div className="bg-brown-dark/[0.04] dark:bg-slate-900/40 p-6 rounded-[2.5rem] border border-brown-dark/5 transition-all duration-500 relative overflow-hidden">
-                                                <p className="text-[14px] text-text-main/80 dark:text-gray-400 leading-relaxed font-medium italic">&quot;{comment.content}&quot;</p>
+                                            <div className="bg-brown-dark/[0.04] dark:bg-brown-dark/40 p-6 rounded-[2.5rem] border border-brown-dark/5 transition-all duration-500 relative overflow-hidden">
+                                                <p className="text-[14px] text-text-main/80 dark:text-tan-light leading-relaxed font-medium italic">&quot;{comment.content}&quot;</p>
                                                 <div className="absolute top-4 right-6">
                                                    <span className="text-[7px] font-black text-tan-primary/20 uppercase tracking-tighter">{new Date(comment.created_at).toLocaleDateString('id-ID')}</span>
                                                 </div>
@@ -384,7 +384,7 @@ export default function ProfileClient({
                                         {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
                                     </div>
                                     <div>
-                                        <p className="font-open-sans font-black text-sm text-text-main dark:text-gray-100 group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
+                                        <p className="font-open-sans font-black text-sm text-text-main dark:text-text-accent group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
                                         <div className="flex items-center gap-2 mt-1">
                                             <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest">@{f.username}</p>
                                             <span className="w-1 h-1 bg-tan-primary/20 rounded-full"></span>
@@ -405,7 +405,7 @@ export default function ProfileClient({
                                         {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
                                     </div>
                                     <div>
-                                        <p className="font-open-sans font-black text-sm text-text-main dark:text-gray-100 group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
+                                        <p className="font-open-sans font-black text-sm text-text-main dark:text-text-accent group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
                                         <div className="flex items-center gap-2 mt-1">
                                             <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest">@{f.username}</p>
                                             <span className="w-1 h-1 bg-tan-primary/20 rounded-full"></span>
@@ -422,7 +422,7 @@ export default function ProfileClient({
     };
 
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 transition-colors duration-500 pb-20">
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark transition-colors duration-500 pb-20">
             {/* Header / Nav - Simplified for Premium Feel */}
             <header className="px-4 h-16 flex items-center justify-between absolute top-0 w-full z-50 text-white">
                 <Link href="/" className="p-2 -ml-2 hover:bg-white/10 rounded-full transition-all active:scale-95">
@@ -493,7 +493,7 @@ export default function ProfileClient({
                     </div>
                     
                     {userProfile.bio && (
-                        <p className="text-sm text-text-main/70 dark:text-gray-400 leading-relaxed max-w-2xl font-medium mb-6 italic">
+                        <p className="text-sm text-text-main/70 dark:text-tan-light leading-relaxed max-w-2xl font-medium mb-6 italic">
                             &quot;{userProfile.bio}&quot;
                         </p>
                     )}
@@ -529,7 +529,7 @@ export default function ProfileClient({
                 </div>
 
                 {/* Tab Navigation - Journal Style with Indicator */}
-                <div className="sticky top-0 bg-bg-cream/90 dark:bg-slate-950/90 backdrop-blur-md z-40 -mx-6 px-6 border-b border-brown-dark/10 flex gap-8 mb-8 overflow-x-auto hide-scrollbar">
+                <div className="sticky top-0 bg-bg-cream/90 dark:bg-brown-dark/90 backdrop-blur-md z-40 -mx-6 px-6 border-b border-brown-dark/10 flex gap-8 mb-8 overflow-x-auto hide-scrollbar">
                     {[
                         ...(isAuthor ? [
                             { id: 'karya', label: 'CERITA' },
@@ -555,7 +555,7 @@ export default function ProfileClient({
                 {/* Content Area */}
                 <div className="min-h-[400px] relative">
                     {isPending && (
-                        <div className="absolute inset-0 bg-bg-cream/50 dark:bg-slate-950/50 backdrop-blur-[1px] z-20 flex pt-20 justify-center">
+                        <div className="absolute inset-0 bg-bg-cream/50 dark:bg-brown-dark/50 backdrop-blur-[1px] z-20 flex pt-20 justify-center">
                             <div className="w-8 h-8 border-3 border-brown-dark border-t-transparent rounded-full animate-spin"></div>
                         </div>
                     )}

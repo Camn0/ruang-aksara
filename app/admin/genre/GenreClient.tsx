@@ -30,7 +30,7 @@ export function GenreForm() {
                 type="text"
                 placeholder="Nama Genre Baru (e.g. Romance)"
                 required
-                className="flex-1 bg-brown-dark/5 dark:bg-slate-800 border-2 border-transparent focus:border-tan-primary/20 focus:bg-white dark:focus:bg-slate-800 focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-brown-dark dark:text-gray-100 transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500"
+                className="flex-1 bg-brown-dark/5 dark:bg-brown-mid border-2 border-transparent focus:border-tan-primary/20 focus:bg-white dark:focus:bg-slate-800 focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-brown-dark dark:text-text-accent transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500"
             />
             <button
                 type="submit"

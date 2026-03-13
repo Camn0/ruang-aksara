@@ -1,70 +1,70 @@
 export default function Loading() {
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 animate-pulse pb-20 transition-colors duration-300">
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark animate-pulse pb-20 transition-colors duration-300">
             {/* Cover Section */}
             <div className="relative">
-                <div className="h-64 bg-tan-primary/5 dark:bg-slate-900 border-b border-tan-primary/5"></div>
+                <div className="h-64 bg-tan-primary/5 dark:bg-brown-dark border-b border-tan-primary/5"></div>
                 <div className="absolute -bottom-24 left-6 z-10">
-                    <div className="w-32 h-48 sm:w-44 sm:h-64 bg-tan-primary/20 dark:bg-slate-800 rounded-3xl shadow-2xl border-4 border-white/50 dark:border-slate-950"></div>
+                    <div className="w-32 h-48 sm:w-44 sm:h-64 bg-tan-primary/20 dark:bg-brown-mid rounded-3xl shadow-2xl border-4 border-white/50 dark:border-slate-950"></div>
                 </div>
             </div>
 
             {/* Title Section */}
             <div className="pt-32 px-6">
-                <div className="h-10 bg-tan-primary/15 dark:bg-slate-800 rounded-2xl w-3/4 mb-4"></div>
-                <div className="h-6 bg-tan-primary/10 dark:bg-slate-800 rounded-full w-1/3 mb-8"></div>
+                <div className="h-10 bg-tan-primary/15 dark:bg-brown-mid rounded-2xl w-3/4 mb-4"></div>
+                <div className="h-6 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-1/3 mb-8"></div>
                 <div className="flex gap-3 mb-8">
-                    <div className="h-7 w-24 bg-tan-primary/5 dark:bg-slate-800 rounded-full"></div>
-                    <div className="h-7 w-24 bg-tan-primary/5 dark:bg-slate-800 rounded-full"></div>
+                    <div className="h-7 w-24 bg-tan-primary/5 dark:bg-brown-mid rounded-full"></div>
+                    <div className="h-7 w-24 bg-tan-primary/5 dark:bg-brown-mid rounded-full"></div>
                 </div>
                 <div className="flex gap-8 pt-8 border-t border-tan-primary/10">
-                    <div className="h-6 w-28 bg-tan-primary/10 dark:bg-slate-800 rounded-full"></div>
-                    <div className="h-6 w-28 bg-tan-primary/10 dark:bg-slate-800 rounded-full"></div>
-                    <div className="h-6 w-28 bg-tan-primary/10 dark:bg-slate-800 rounded-full"></div>
+                    <div className="h-6 w-28 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
+                    <div className="h-6 w-28 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
+                    <div className="h-6 w-28 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
                 </div>
             </div>
 
             {/* Action Buttons */}
             <div className="px-6 mt-10">
-                <div className="h-14 bg-brown-dark/10 dark:bg-slate-800 rounded-[2rem] w-full"></div>
+                <div className="h-14 bg-brown-dark/10 dark:bg-brown-mid rounded-[2rem] w-full"></div>
             </div>
 
             {/* Description */}
-            <div className="px-6 py-10 bg-white/40 dark:bg-slate-900 mt-10 border-y border-tan-primary/5">
-                <div className="h-5 bg-tan-primary/10 dark:bg-slate-800 rounded-full w-full mb-4"></div>
-                <div className="h-5 bg-tan-primary/10 dark:bg-slate-800 rounded-full w-11/12 mb-4"></div>
-                <div className="h-5 bg-tan-primary/10 dark:bg-slate-800 rounded-full w-4/5"></div>
+            <div className="px-6 py-10 bg-white/40 dark:bg-brown-dark mt-10 border-y border-tan-primary/5">
+                <div className="h-5 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-full mb-4"></div>
+                <div className="h-5 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-11/12 mb-4"></div>
+                <div className="h-5 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-4/5"></div>
             </div>
 
             {/* Chapters */}
-            <div className="px-6 py-10 bg-white/60 dark:bg-slate-900 mt-4 border-y border-tan-primary/5 shadow-sm">
-                <div className="h-7 w-48 bg-tan-primary/10 dark:bg-slate-800 rounded-full mb-8"></div>
+            <div className="px-6 py-10 bg-white/60 dark:bg-brown-dark mt-4 border-y border-tan-primary/5 shadow-sm">
+                <div className="h-7 w-48 bg-tan-primary/10 dark:bg-brown-mid rounded-full mb-8"></div>
                 <div className="space-y-5">
                     {[1, 2, 3].map(i => (
                         <div key={i} className="flex justify-between items-center py-5 border-b border-tan-primary/5 last:border-0">
-                            <div className="h-6 bg-tan-primary/10 dark:bg-slate-800 rounded-xl w-1/2"></div>
-                            <div className="w-10 h-10 rounded-full bg-tan-primary/5 dark:bg-slate-800"></div>
+                            <div className="h-6 bg-tan-primary/10 dark:bg-brown-mid rounded-xl w-1/2"></div>
+                            <div className="w-10 h-10 rounded-full bg-tan-primary/5 dark:bg-brown-mid"></div>
                         </div>
                     ))}
                 </div>
             </div>
 
             {/* Reviews */}
-            <div className="px-6 py-8 bg-white dark:bg-slate-900 mt-4 border-y border-tan-primary/10 shadow-sm">
-                <div className="h-6 w-48 bg-brown-mid/10 dark:bg-slate-800 rounded-lg mb-8"></div>
+            <div className="px-6 py-8 bg-white dark:bg-brown-dark mt-4 border-y border-tan-primary/10 shadow-sm">
+                <div className="h-6 w-48 bg-brown-mid/10 dark:bg-brown-mid rounded-lg mb-8"></div>
                 <div className="space-y-6">
                     {[1, 2].map(i => (
-                        <div key={i} className="p-6 bg-tan-primary/5 dark:bg-slate-800/30 rounded-[2rem] border border-tan-primary/10 shadow-sm">
+                        <div key={i} className="p-6 bg-tan-primary/5 dark:bg-brown-mid/30 rounded-[2rem] border border-tan-primary/10 shadow-sm">
                             <div className="flex gap-4 items-center mb-4">
-                                <div className="w-10 h-10 rounded-xl bg-tan-primary/15 dark:bg-slate-700"></div>
+                                <div className="w-10 h-10 rounded-xl bg-tan-primary/15 dark:bg-brown-mid"></div>
                                 <div className="space-y-2">
-                                    <div className="h-4 bg-brown-mid/20 dark:bg-slate-800 rounded w-32"></div>
-                                    <div className="h-3 bg-brown-mid/10 dark:bg-slate-800 rounded w-20"></div>
+                                    <div className="h-4 bg-brown-mid/20 dark:bg-brown-mid rounded w-32"></div>
+                                    <div className="h-3 bg-brown-mid/10 dark:bg-brown-mid rounded w-20"></div>
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <div className="h-4 bg-tan-primary/10 dark:bg-slate-800 rounded-full w-full"></div>
-                                <div className="h-4 bg-tan-primary/10 dark:bg-slate-800 rounded-full w-3/4"></div>
+                                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-full"></div>
+                                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-3/4"></div>
                             </div>
                         </div>
                     ))}

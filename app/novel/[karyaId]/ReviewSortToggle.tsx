@@ -16,7 +16,7 @@ export default function ReviewSortToggle({ karyaId }: { karyaId: string }) {
     };
 
     return (
-        <div className="flex bg-tan-primary/5 dark:bg-slate-800 p-1.5 rounded-[1.25rem] w-fit border border-tan-primary/5">
+        <div className="flex bg-tan-primary/5 dark:bg-brown-mid p-1.5 rounded-[1.25rem] w-fit border border-tan-primary/5">
             <button
                 onClick={() => setSort('new')}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all ${currentSort === 'new'

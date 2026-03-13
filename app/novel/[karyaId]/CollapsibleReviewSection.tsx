@@ -12,7 +12,7 @@ export default function CollapsibleReviewSection({ children, count }: Collapsibl
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="bg-white/60 dark:bg-slate-900/60 mt-3 border-y border-tan-primary/5 transition-colors duration-300">
+        <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 transition-colors duration-300">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full p-6 flex items-center justify-between hover:bg-tan-primary/5 dark:hover:bg-slate-800/50 transition-colors group"
@@ -22,7 +22,7 @@ export default function CollapsibleReviewSection({ children, count }: Collapsibl
                         <MessageSquareQuote className="w-6 h-6 text-tan-primary" />
                     </div>
                     <div className="text-left">
-                        <h2 className="text-lg font-black text-brown-dark dark:text-gray-100 italic uppercase tracking-tighter">
+                        <h2 className="text-lg font-black text-brown-dark dark:text-text-accent italic uppercase tracking-tighter">
                             Tanggapan Pembaca
                         </h2>
                         <p className="text-[10px] font-black text-tan-primary/60 uppercase tracking-widest mt-1">

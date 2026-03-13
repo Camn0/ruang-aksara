@@ -35,7 +35,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="id" className={`${inter.variable} ${lobster.variable} ${openSans.variable}`}>
-            <body className={`${inter.className} bg-bg-cream dark:bg-slate-900 min-h-screen flex text-text-main dark:text-gray-100`}>
+            <body className={`${inter.className} bg-bg-cream dark:bg-bg-dark min-h-screen flex text-text-main dark:text-text-accent`}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                     <Suspense fallback={null}>
                         <InstantLoadingBar />

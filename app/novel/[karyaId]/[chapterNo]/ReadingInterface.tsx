@@ -141,8 +141,8 @@ export default function ReadingInterface({
     return (
         <>
             {/* Header Sticky Atas */}
-            <header className="px-4 h-16 bg-[#FDFBF7]/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-40 shadow-sm transition-transform duration-300">
-                <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-brown-dark dark:text-gray-100 hover:bg-tan-primary/10 rounded-full transition-colors">
+            <header className="px-4 h-16 bg-[#FDFBF7]/95 dark:bg-brown-dark/95 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-40 shadow-sm transition-transform duration-300">
+                <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-brown-dark dark:text-text-accent hover:bg-tan-primary/10 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <div className="flex-1 px-4">
@@ -154,22 +154,22 @@ export default function ReadingInterface({
                             <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-[0.2em] mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <List className="w-2 h-2" /> Daftar Isi
                             </div>
-                            <h1 className="font-black text-sm text-brown-dark dark:text-gray-100 leading-none group-hover:text-tan-primary transition-colors">Bab {chapterNo}</h1>
-                            <p className="text-[10px] text-tan-primary/60 dark:text-gray-400 truncate max-w-[180px] mx-auto font-black uppercase tracking-tighter mt-1">{chapterTitle || novelTitle}</p>
+                            <h1 className="font-black text-sm text-brown-dark dark:text-text-accent leading-none group-hover:text-tan-primary transition-colors">Bab {chapterNo}</h1>
+                            <p className="text-[10px] text-tan-primary/60 dark:text-tan-light truncate max-w-[180px] mx-auto font-black uppercase tracking-tighter mt-1">{chapterTitle || novelTitle}</p>
                         </div>
                     </button>
                 </div>
                 <div className="relative">
                     <button
                         onClick={() => setShowSettings(!showSettings)}
-                        className="p-2 -mr-2 text-brown-dark dark:text-gray-100 hover:bg-tan-primary/10 rounded-full transition-colors"
+                        className="p-2 -mr-2 text-brown-dark dark:text-text-accent hover:bg-tan-primary/10 rounded-full transition-colors"
                     >
                         <Settings className="w-5 h-5" />
                     </button>
 
                     {/* Dropdown Settings */}
                     {showSettings && (
-                        <div className="absolute top-full right-0 mt-3 w-64 bg-white dark:bg-slate-900 border border-tan-primary/10 rounded-[2rem] shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="absolute top-full right-0 mt-3 w-64 bg-white dark:bg-brown-dark border border-tan-primary/10 rounded-[2rem] shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2">
                             <div className="flex items-center justify-between mb-6">
                                 <span className="text-[10px] font-black text-tan-primary/40 uppercase tracking-[0.2em]">Pengaturan</span>
                                 <button onClick={() => setShowSettings(false)} className="text-tan-primary/40 hover:text-tan-primary rounded-full p-1.5 bg-tan-primary/5 transition-colors">
@@ -180,7 +180,7 @@ export default function ReadingInterface({
                             <div className="space-y-6">
                                 <div>
                                     <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Teropong Aksara</label>
-                                    <div className="flex items-center justify-between bg-tan-primary/5 dark:bg-slate-800 border border-tan-primary/5 rounded-[1.25rem] p-1.5 shadow-inner">
+                                    <div className="flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-1.5 shadow-inner">
                                         <button
                                             onClick={() => handleSetFontSize(fontSize - 2)}
                                             className="p-2.5 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
@@ -188,7 +188,7 @@ export default function ReadingInterface({
                                         >
                                             <Minus className="w-4 h-4" />
                                         </button>
-                                        <span className="text-sm font-black text-brown-dark dark:text-gray-100 min-w-[3rem] text-center italic">{fontSize}px</span>
+                                        <span className="text-sm font-black text-brown-dark dark:text-text-accent min-w-[3rem] text-center italic">{fontSize}px</span>
                                         <button
                                             onClick={() => handleSetFontSize(fontSize + 2)}
                                             className="p-2.5 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
@@ -203,7 +203,7 @@ export default function ReadingInterface({
                                     <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Suasana Jelajah</label>
                                     <button
                                         onClick={toggleTheme}
-                                        className="w-full flex items-center justify-between bg-tan-primary/5 dark:bg-slate-800 border border-tan-primary/5 rounded-[1.25rem] p-4 hover:bg-white dark:hover:bg-slate-700 transition-all active:scale-95 text-brown-dark dark:text-gray-200 shadow-sm group"
+                                        className="w-full flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-4 hover:bg-white dark:hover:bg-slate-700 transition-all active:scale-95 text-brown-dark dark:text-gray-200 shadow-sm group"
                                     >
                                         <span className="text-xs font-black uppercase tracking-widest italic">{mounted && theme === 'dark' ? 'Hening Terang' : 'Hening Gelap'}</span>
                                         {mounted && theme === 'dark' ? (
@@ -237,8 +237,8 @@ export default function ReadingInterface({
                     <div className="inline-block px-4 py-1.5 rounded-full bg-tan-primary/10 text-tan-primary text-[10px] font-black uppercase tracking-[0.2em] mb-6">
                         Hore! Goresan Terakhir Selesai
                     </div>
-                    <h3 className="text-2xl font-black text-brown-dark dark:text-gray-100 mb-2 italic tracking-tighter uppercase">Bagaimana Rasanya?</h3>
-                    <p className="text-xs font-black text-tan-primary/40 dark:text-gray-400 mb-10 max-w-xs mx-auto uppercase tracking-widest leading-relaxed">Berikan jejak ekspresimu untuk bab ini.</p>
+                    <h3 className="text-2xl font-black text-brown-dark dark:text-text-accent mb-2 italic tracking-tighter uppercase">Bagaimana Rasanya?</h3>
+                    <p className="text-xs font-black text-tan-primary/40 dark:text-tan-light mb-10 max-w-xs mx-auto uppercase tracking-widest leading-relaxed">Berikan jejak ekspresimu untuk bab ini.</p>
 
                     <div className="flex items-center justify-center gap-4 mb-8">
                         {REACTIONS.map((r) => {
@@ -253,7 +253,7 @@ export default function ReadingInterface({
                                 >
                                     <div className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center text-2xl transition-all border-2 ${isActive
                                         ? 'bg-brown-dark border-brown-dark shadow-xl shadow-brown-dark/20 scale-110'
-                                        : 'bg-white dark:bg-slate-900 border-tan-primary/10 dark:border-slate-800 hover:border-tan-primary group-hover:bg-tan-primary/5'
+                                        : 'bg-white dark:bg-brown-dark border-tan-primary/10 dark:border-brown-mid hover:border-tan-primary group-hover:bg-tan-primary/5'
                                         }`}>
                                         {r.emoji}
                                     </div>
@@ -279,7 +279,7 @@ export default function ReadingInterface({
 
             {/* Bottom Floating Navigation - Adjusted Position (bottom-6) */}
             <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-300">
-                <div className="flex bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-tan-primary/10 shadow-[0_20px_50px_-15px_rgba(59,42,34,0.3)] p-2 rounded-[2rem] items-center gap-2 transition-colors">
+                <div className="flex bg-white/95 dark:bg-brown-dark/95 backdrop-blur-2xl border border-tan-primary/10 shadow-[0_20px_50px_-15px_rgba(59,42,34,0.3)] p-2 rounded-[2rem] items-center gap-2 transition-colors">
                     {/* Prev Chapter */}
                     {prevChapter ? (
                         <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-3 text-tan-primary/60 hover:text-brown-dark hover:bg-tan-primary/10 rounded-full transition-all active:scale-90" title="Bab Sebelumnya">

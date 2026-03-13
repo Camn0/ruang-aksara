@@ -91,7 +91,7 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-bg-cream/50 dark:bg-slate-900 border border-brown-dark/10 rounded-[2rem] p-5 shadow-sm mb-6 transition-all duration-500 group">
+        <form onSubmit={handleSubmit} className="bg-bg-cream/50 dark:bg-brown-dark border border-brown-dark/10 rounded-[2rem] p-5 shadow-sm mb-6 transition-all duration-500 group">
             <div className="flex items-start gap-4 mb-4">
                 <div className="w-10 h-10 rounded-2xl overflow-hidden shrink-0 bg-tan-light/10 border border-brown-dark/10 shadow-sm relative">
                     {userProfile.avatar_url ? (

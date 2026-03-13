@@ -77,14 +77,14 @@ export default function CommentItem({
             {visualDepth > 0 && (
                 <div className="absolute -left-4 sm:-left-6 top-0 bottom-0 w-4 sm:w-6 pointer-events-none">
                     {/* Vertical line: Top to Branch Point */}
-                    <div className="absolute left-1/2 -translate-x-1/2 top-0 h-6 w-[2px] bg-gray-100 dark:bg-slate-800" />
+                    <div className="absolute left-1/2 -translate-x-1/2 top-0 h-6 w-[2px] bg-gray-100 dark:bg-brown-mid" />
 
                     {/* Horizontal Branch Line (L-shape) */}
-                    <div className="absolute left-1/2 -translate-x-[1px] top-6 h-[2px] w-[calc(50%+2px)] bg-gray-100 dark:bg-slate-800 rounded-bl-xl origin-left" />
+                    <div className="absolute left-1/2 -translate-x-[1px] top-6 h-[2px] w-[calc(50%+2px)] bg-gray-100 dark:bg-brown-mid rounded-bl-xl origin-left" />
 
                     {/* Vertical line continuation: Branch Point to Bottom (Only if NOT last) */}
                     {!isLast && (
-                        <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-0 w-[2px] bg-gray-100 dark:bg-slate-800" />
+                        <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-0 w-[2px] bg-gray-100 dark:bg-brown-mid" />
                     )}
                 </div>
             )}
@@ -105,10 +105,10 @@ export default function CommentItem({
 
             {/* Bridge line from parent to its first child */}
             {hasReplies && !isCollapsed && (
-                <div className="absolute left-4 sm:left-5 top-28 bottom-0 w-[2px] bg-gray-100 dark:bg-slate-800 pointer-events-none" />
+                <div className="absolute left-4 sm:left-5 top-28 bottom-0 w-[2px] bg-gray-100 dark:bg-brown-mid pointer-events-none" />
             )}
 
-            <div className="flex gap-2.5 sm:gap-4 items-start relative bg-white dark:bg-slate-900 z-10">
+            <div className="flex gap-2.5 sm:gap-4 items-start relative bg-white dark:bg-brown-dark z-10">
                 {/* Voting Tray - Reddit Style Sidebar */}
                 <div className="flex flex-col items-center gap-0.5 min-w-[28px] pt-1.5 sticky top-24">
                     <button
@@ -122,7 +122,7 @@ export default function CommentItem({
                     </span>
                     <button
                         onClick={() => handleVote(-1)}
-                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === -1 ? 'text-tan-primary bg-tan-primary/5 dark:bg-slate-800 ring-1 ring-tan-primary/20 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary hover:bg-tan-primary/5'}`}
+                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === -1 ? 'text-tan-primary bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/20 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary hover:bg-tan-primary/5'}`}
                     >
                         <ChevronDown className={`w-5 h-5 ${comment.userVote === -1 ? 'fill-current stroke-[3]' : ''}`} />
                     </button>
@@ -131,7 +131,7 @@ export default function CommentItem({
                 <div className="flex-1 min-w-0 flex gap-3 items-start">
                     {/* Avatar */}
                     <Link href={`/profile/${comment.user.username}`} className="shrink-0 relative z-10 pt-1">
-                        <div className={`rounded-xl overflow-hidden bg-white dark:bg-slate-800 border-2 border-gray-50 dark:border-slate-800 group-hover:border-indigo-500 transition-all shadow-sm ${depth === 0 ? 'w-10 h-10' : 'w-8 h-8'}`}>
+                        <div className={`rounded-xl overflow-hidden bg-white dark:bg-brown-mid border-2 border-gray-50 dark:border-brown-mid group-hover:border-indigo-500 transition-all shadow-sm ${depth === 0 ? 'w-10 h-10' : 'w-8 h-8'}`}>
                             {comment.user.avatar_url ? (
                                 <img src={comment.user.avatar_url} alt={comment.user.display_name} className="w-full h-full object-cover" />
                             ) : (
@@ -143,7 +143,7 @@ export default function CommentItem({
                     <div className="flex-1 min-w-0">
                         {/* Header */}
                         <div className="flex items-center gap-2 mb-1 flex-wrap pt-1">
-                            <Link href={`/profile/${comment.user.username}`} className="text-xs font-black text-brown-dark dark:text-gray-100 hover:text-tan-primary transition-colors uppercase tracking-tight italic">
+                            <Link href={`/profile/${comment.user.username}`} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight italic">
                                 {comment.user.display_name}
                             </Link>
                             {isAuthor && (
@@ -177,7 +177,7 @@ export default function CommentItem({
                         </div>
 
                         {/* Content - ALWAYS VISIBLE */}
-                        <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap mb-3 pr-2">
+                        <p className="text-[13px] text-gray-600 dark:text-tan-light leading-relaxed whitespace-pre-wrap mb-3 pr-2">
                             {comment.content}
                         </p>
 

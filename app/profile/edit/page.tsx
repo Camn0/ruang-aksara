@@ -17,23 +17,23 @@ export default async function EditProfilePage() {
     if (!userProfile) return notFound();
 
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 pb-24 transition-colors duration-500">
-            <header className="px-6 h-16 bg-bg-cream dark:bg-slate-950 border-b border-brown-dark/5 flex items-center justify-between sticky top-0 z-50 transition-colors">
-                <Link href={`/profile/${userProfile.username}`} className="p-2 -ml-2 text-text-main dark:text-gray-100 hover:bg-brown-dark/5 rounded-full transition-all active:scale-95">
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-24 transition-colors duration-500">
+            <header className="px-6 h-16 bg-bg-cream dark:bg-brown-dark border-b border-brown-dark/5 flex items-center justify-between sticky top-0 z-50 transition-colors">
+                <Link href={`/profile/${userProfile.username}`} className="p-2 -ml-2 text-text-main dark:text-text-accent hover:bg-brown-dark/5 rounded-full transition-all active:scale-95">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="font-open-sans font-black text-lg text-text-main dark:text-gray-100 italic absolute left-1/2 -translate-x-1/2">Edit Profil</h1>
+                <h1 className="font-open-sans font-black text-lg text-text-main dark:text-text-accent italic absolute left-1/2 -translate-x-1/2">Edit Profil</h1>
                 <div className="w-10"></div>
             </header>
 
             <div className="max-w-2xl mx-auto p-6">
-                <div className="bg-brown-dark/[0.02] dark:bg-slate-900/40 rounded-[2.5rem] border border-brown-dark/5 p-6 sm:p-8 mb-8">
+                <div className="bg-brown-dark/[0.02] dark:bg-brown-dark/40 rounded-[2.5rem] border border-brown-dark/5 p-6 sm:p-8 mb-8">
                     <div className="flex items-center gap-4 mb-10">
                         <div className="w-12 h-12 rounded-2xl bg-tan-primary/10 flex items-center justify-center text-tan-primary shadow-sm border border-tan-primary/20">
                             <UserCircle2 className="w-7 h-7" />
                         </div>
                         <div>
-                            <h2 className="text-lg font-open-sans font-black text-text-main dark:text-gray-100 italic leading-tight">Identitas Publik</h2>
+                            <h2 className="text-lg font-open-sans font-black text-text-main dark:text-text-accent italic leading-tight">Identitas Publik</h2>
                             <p className="text-[9px] font-black text-tan-primary uppercase tracking-[0.2em] mt-1">Atur bagaimana dunia melihatmu</p>
                         </div>
                     </div>

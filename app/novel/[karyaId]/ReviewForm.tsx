@@ -49,8 +49,8 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white/40 dark:bg-slate-900/40 border border-tan-primary/10 p-8 rounded-[2rem] transition-colors duration-300 shadow-sm backdrop-blur-sm">
-            <h3 className="text-xs font-black text-brown-dark/40 dark:text-gray-100 mb-6 uppercase tracking-[0.2em] italic">
+        <form onSubmit={handleSubmit} className="bg-white/40 dark:bg-brown-dark/40 border border-tan-primary/10 p-8 rounded-[2rem] transition-colors duration-300 shadow-sm backdrop-blur-sm">
+            <h3 className="text-xs font-black text-brown-dark/40 dark:text-text-accent mb-6 uppercase tracking-[0.2em] italic">
                 Penilaian & Ulasan
             </h3>
 
@@ -58,7 +58,7 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
             <input type="hidden" name="rating" value={score} />
 
             <div className="mb-6">
-                <label className="block text-[10px] font-black text-tan-primary/60 dark:text-gray-400 mb-3 uppercase tracking-widest">Beri Rating</label>
+                <label className="block text-[10px] font-black text-tan-primary/60 dark:text-tan-light mb-3 uppercase tracking-widest">Beri Rating</label>
                 <div className="flex items-center gap-4">
                     <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map(star => (
@@ -81,13 +81,13 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
             </div>
 
             <div className="mb-8">
-                <label className="block text-[10px] font-black text-tan-primary/60 dark:text-gray-400 mb-3 uppercase tracking-widest">Ulasan (Opsional)</label>
+                <label className="block text-[10px] font-black text-tan-primary/60 dark:text-tan-light mb-3 uppercase tracking-widest">Ulasan (Opsional)</label>
                 <textarea
                     name="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Bagikan goresan pikiranmu tentang karya ini..."
-                    className="w-full border border-tan-primary/10 dark:border-slate-700 bg-white/50 dark:bg-slate-800 text-brown-dark dark:text-gray-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-tan-primary/20 outline-none min-h-[120px] transition-all placeholder:text-tan-primary/20 font-medium italic"
+                    className="w-full border border-tan-primary/10 dark:border-brown-mid bg-white/50 dark:bg-brown-mid text-brown-dark dark:text-text-accent rounded-2xl p-4 text-sm focus:ring-2 focus:ring-tan-primary/20 outline-none min-h-[120px] transition-all placeholder:text-tan-primary/20 font-medium italic"
                 ></textarea>
             </div>
 

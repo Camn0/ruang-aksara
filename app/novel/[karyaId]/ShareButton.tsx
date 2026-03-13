@@ -39,7 +39,7 @@ export default function ShareButton({ title, karyaId }: ShareButtonProps) {
     return (
         <button
             onClick={handleShare}
-            className="w-10 h-10 flex items-center justify-center bg-tan-primary/5 dark:bg-slate-800/50 text-tan-primary/60 dark:text-gray-400 rounded-xl active:scale-95 transition-all hover:bg-tan-primary/10 dark:hover:bg-slate-800 border border-tan-primary/5 dark:border-slate-800"
+            className="w-10 h-10 flex items-center justify-center bg-tan-primary/5 dark:bg-brown-mid/50 text-tan-primary/60 dark:text-tan-light rounded-xl active:scale-95 transition-all hover:bg-tan-primary/10 dark:hover:bg-slate-800 border border-tan-primary/5 dark:border-brown-mid"
             title="Bagikan"
         >
             {copied ? (

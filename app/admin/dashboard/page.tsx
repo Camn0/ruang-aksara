@@ -65,19 +65,19 @@ export default async function AdminDashboardPage() {
     });
 
     return (
-        <div className="min-h-screen bg-[#F2EAD7]/60 dark:bg-slate-950 transition-colors duration-500 pb-24">
+        <div className="min-h-screen bg-[#F2EAD7]/60 dark:bg-brown-dark transition-colors duration-500 pb-24">
             {/* Header Dashboard */}
             <div className="px-6 pt-12 mb-10 flex flex-col sm:flex-row justify-between items-end gap-4 max-w-6xl mx-auto">
                 <div>
-                    <h1 className="text-4xl font-black text-[#3B2A22] dark:text-gray-100 tracking-tight leading-none uppercase italic">Dashboard</h1>
+                    <h1 className="text-4xl font-black text-[#3B2A22] dark:text-text-accent tracking-tight leading-none uppercase italic">Dashboard</h1>
                     <div className="w-12 h-1 bg-[#3B2A22]/20 mt-4"></div>
                 </div>
-                <div className="flex items-center gap-3 bg-white/40 dark:bg-slate-900/40 px-4 py-2 rounded-2xl border border-[#3B2A22]/5">
+                <div className="flex items-center gap-3 bg-white/40 dark:bg-brown-dark/40 px-4 py-2 rounded-2xl border border-[#3B2A22]/5">
                     <span className="text-[10px] text-[#3B2A22] dark:text-tan-primary font-black uppercase tracking-[0.2em]">
                         {session.user.role === 'admin' ? 'Administrator' : 'Author'}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-[#3B2A22]/20"></span>
-                    <span className="text-[10px] text-[#3B2A22]/60 dark:text-gray-400 font-bold uppercase tracking-widest">
+                    <span className="text-[10px] text-[#3B2A22]/60 dark:text-tan-light font-bold uppercase tracking-widest">
                         {session.user.name}
                     </span>
                 </div>
@@ -155,7 +155,7 @@ export default async function AdminDashboardPage() {
                     <div className="lg:col-span-8 space-y-12">
                         <section>
                             <div className="flex justify-between items-center mb-10">
-                                <h2 className="text-3xl font-black text-[#3B2A22] dark:text-gray-100 italic tracking-tight uppercase">Cerita Anda</h2>
+                                <h2 className="text-3xl font-black text-[#3B2A22] dark:text-text-accent italic tracking-tight uppercase">Cerita Anda</h2>
                                 <Link href="/admin/editor/karya" className="bg-[#3B2A22] text-white px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group">
                                     <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Karya Baru
                                 </Link>
@@ -164,14 +164,14 @@ export default async function AdminDashboardPage() {
                             {/* Karya List Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {daftarKarya.length === 0 ? (
-                                    <div className="col-span-full text-center py-32 bg-white/40 dark:bg-slate-900/40 rounded-[3rem] border border-dashed border-[#3B2A22]/10">
+                                    <div className="col-span-full text-center py-32 bg-white/40 dark:bg-brown-dark/40 rounded-[3rem] border border-dashed border-[#3B2A22]/10">
                                         <BookOpen className="w-16 h-16 text-[#3B2A22]/10 mx-auto mb-6" />
                                         <p className="text-[#3B2A22]/30 font-black uppercase tracking-[0.2em] text-[12px]">Belum ada karya yang terbit</p>
                                     </div>
                                 ) : (
                                     <>
                                         {daftarKarya.map((item) => (
-                                            <div key={item.id} className="bg-white/40 dark:bg-slate-900/40 rounded-[2.5rem] p-5 border border-[#3B2A22]/5 flex gap-4 items-center group/card transition-all hover:bg-white/60">
+                                            <div key={item.id} className="bg-white/40 dark:bg-brown-dark/40 rounded-[2.5rem] p-5 border border-[#3B2A22]/5 flex gap-4 items-center group/card transition-all hover:bg-white/60">
                                                 {/* Cover Thumbnail */}
                                                 <div className="w-20 h-28 rounded-[1.2rem] overflow-hidden shrink-0 shadow-lg border-2 border-white/50 relative">
                                                     {item.cover_url ? (
@@ -184,7 +184,7 @@ export default async function AdminDashboardPage() {
                                                 {/* Karya Details */}
                                                 <div className="flex-1 py-1 min-w-0">
                                                     <div className="flex flex-wrap items-center gap-2 mb-2">
-                                                        <h3 className="text-sm font-black text-[#3B2A22] dark:text-gray-100 italic leading-tight uppercase tracking-tight truncate">{item.title}</h3>
+                                                        <h3 className="text-sm font-black text-[#3B2A22] dark:text-text-accent italic leading-tight uppercase tracking-tight truncate">{item.title}</h3>
                                                         {item.is_completed && (
                                                             <span className="bg-[#3B261C] text-[#F2EAD7] text-[6px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">TAMAT</span>
                                                         )}
@@ -226,8 +226,8 @@ export default async function AdminDashboardPage() {
                     {/* --- SIDEBAR: RECENT COMMUNITY --- */}
                     <div className="lg:col-span-4 space-y-12">
                         {/* Recent Comments Section */}
-                        <section className="bg-white/40 dark:bg-slate-900/40 rounded-[3rem] p-8 border border-[#3B2A22]/5">
-                            <h2 className="text-2xl font-black text-[#3B2A22] dark:text-gray-100 mb-8 flex items-center gap-4 italic tracking-tight uppercase">
+                        <section className="bg-white/40 dark:bg-brown-dark/40 rounded-[3rem] p-8 border border-[#3B2A22]/5">
+                            <h2 className="text-2xl font-black text-[#3B2A22] dark:text-text-accent mb-8 flex items-center gap-4 italic tracking-tight uppercase">
                                 <MessageSquare className="w-6 h-6 text-[#3B2A22]" /> Komunitas
                             </h2>
 
@@ -245,12 +245,12 @@ export default async function AdminDashboardPage() {
                                                     {c.user.display_name[0].toUpperCase()}
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <span className="text-[11px] font-black text-[#3B2A22] dark:text-gray-100 uppercase tracking-tight">{c.user.display_name}</span>
+                                                    <span className="text-[11px] font-black text-[#3B2A22] dark:text-text-accent uppercase tracking-tight">{c.user.display_name}</span>
                                                     <span className="text-[9px] text-[#3B2A22]/40 font-bold uppercase tracking-widest">{new Date(c.created_at).toLocaleDateString('id-ID')}</span>
                                                 </div>
                                             </div>
                                             <div className="bg-[#3B2A22]/5 p-5 rounded-[2rem] border border-transparent transition-all mb-3">
-                                                <p className="text-[13px] text-[#3B2A22]/80 dark:text-gray-400 leading-relaxed italic font-medium">"{c.content}"</p>
+                                                <p className="text-[13px] text-[#3B2A22]/80 dark:text-tan-light leading-relaxed italic font-medium">"{c.content}"</p>
                                             </div>
                                             <Link href={`/admin/editor/karya/${c.bab.karya.id}`} className="text-[9px] text-[#3B2A22]/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-[#3B2A22] flex items-center gap-2 ml-2 transition-all">
                                                 <BookOpen className="w-3 h-3" strokeWidth={3} /> {c.bab.karya.title}

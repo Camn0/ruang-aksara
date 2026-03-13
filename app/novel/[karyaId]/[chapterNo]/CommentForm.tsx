@@ -109,13 +109,13 @@ export default function CommentForm({
             onSubmit={handleSubmit}
             className={`${isReply ? 'mt-4 border-l border-tan-primary/20 pl-6 py-2' : ''}`}
         >
-            {!isReply && <h3 className="font-black text-lg mb-6 text-brown-dark dark:text-gray-100 italic uppercase tracking-tighter">Terakan Jejakmu</h3>}
+            {!isReply && <h3 className="font-black text-lg mb-6 text-brown-dark dark:text-text-accent italic uppercase tracking-tighter">Terakan Jejakmu</h3>}
 
             <textarea
                 ref={textAreaRef}
                 name="content"
                 defaultValue={replyToUsername ? `@${replyToUsername} ` : ""}
-                className={`w-full bg-tan-primary/5 border border-tan-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-gray-100 p-5 rounded-[1.5rem] outline-none focus:ring-2 focus:ring-tan-primary/20 transition-all font-bold italic ${isReply ? 'min-h-[80px] text-xs' : 'min-h-[120px] text-sm'}`}
+                className={`w-full bg-tan-primary/5 border border-tan-primary/10 dark:border-brown-mid dark:bg-brown-dark dark:text-text-accent p-5 rounded-[1.5rem] outline-none focus:ring-2 focus:ring-tan-primary/20 transition-all font-bold italic ${isReply ? 'min-h-[80px] text-xs' : 'min-h-[120px] text-sm'}`}
                 placeholder={isReply ? "Tulis balasan Anda..." : "Tuliskan analisis atau apresiasi Anda di sini..."}
                 required
                 disabled={isPending}
@@ -138,7 +138,7 @@ export default function CommentForm({
                     <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="bg-tan-primary/10 dark:bg-slate-800 text-tan-primary/60 font-black py-2 px-6 rounded-full text-[10px] uppercase tracking-widest transition-all hover:bg-tan-primary/20"
+                        className="bg-tan-primary/10 dark:bg-brown-mid text-tan-primary/60 font-black py-2 px-6 rounded-full text-[10px] uppercase tracking-widest transition-all hover:bg-tan-primary/20"
                     >
                         Batal
                     </button>

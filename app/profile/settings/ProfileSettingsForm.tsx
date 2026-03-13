@@ -61,7 +61,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
                         type="text"
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
-                        className="w-full bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-4 text-sm font-black text-text-main dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20 italic"
+                        className="w-full bg-brown-dark/[0.03] dark:bg-brown-dark border border-brown-dark/10 rounded-2xl px-5 py-4 text-sm font-black text-text-main dark:text-text-accent focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20 italic"
                         placeholder="Nama yang muncul di profil..."
                         required
                         disabled={isPending}
@@ -77,7 +77,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
                         rows={4}
-                        className="w-full bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-4 text-sm text-text-main/80 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all resize-none font-medium italic leading-relaxed placeholder:text-brown-dark/20"
+                        className="w-full bg-brown-dark/[0.03] dark:bg-brown-dark border border-brown-dark/10 rounded-2xl px-5 py-4 text-sm text-text-main/80 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all resize-none font-medium italic leading-relaxed placeholder:text-brown-dark/20"
                         placeholder="Ceritakan sedikit tentang dirimu..."
                         disabled={isPending}
                     />
@@ -99,7 +99,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
                                 type="url"
                                 value={socials.instagram || ''}
                                 onChange={(e) => updateSocial('instagram', e.target.value)}
-                                className="flex-1 bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
+                                className="flex-1 bg-brown-dark/[0.03] dark:bg-brown-dark border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
                                 placeholder="https://instagram.com/username"
                                 disabled={isPending}
                             />
@@ -114,7 +114,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
                                 type="url"
                                 value={socials.twitter || ''}
                                 onChange={(e) => updateSocial('twitter', e.target.value)}
-                                className="flex-1 bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
+                                className="flex-1 bg-brown-dark/[0.03] dark:bg-brown-dark border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
                                 placeholder="https://x.com/username"
                                 disabled={isPending}
                             />
@@ -129,7 +129,7 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
                                 type="url"
                                 value={socials.website || ''}
                                 onChange={(e) => updateSocial('website', e.target.value)}
-                                className="flex-1 bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
+                                className="flex-1 bg-brown-dark/[0.03] dark:bg-brown-dark border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
                                 placeholder="https://yourwebsite.com"
                                 disabled={isPending}
                             />

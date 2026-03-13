@@ -105,15 +105,15 @@ export default async function UserDashboardPage() {
 
 
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 transition-colors duration-500 pb-32">
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark transition-colors duration-500 pb-32">
             {/* Header with warm aesthetic */}
-            <header className="px-6 pt-12 pb-6 flex justify-between items-center bg-bg-cream/70 dark:bg-slate-900/70 backdrop-blur-xl sticky top-0 z-30 border-b border-tan-light dark:border-slate-800 transition-all">
+            <header className="px-6 pt-12 pb-6 flex justify-between items-center bg-bg-cream/70 dark:bg-brown-dark/70 backdrop-blur-xl sticky top-0 z-30 border-b border-tan-light dark:border-brown-mid transition-all">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-tan-primary rounded-xl flex items-center justify-center text-text-accent font-lobster text-sm shadow-md transition-transform hover:rotate-3">
                         RA
                     </div>
                     <div>
-                        <h1 className="text-xl font-open-sans font-bold text-text-main dark:text-gray-100 leading-none tracking-tight">Ruang Aksara</h1>
+                        <h1 className="text-xl font-open-sans font-bold text-text-main dark:text-text-accent leading-none tracking-tight">Ruang Aksara</h1>
                         <p className="text-[9px] text-tan-primary font-bold uppercase tracking-widest mt-1">Dashboard Pembaca</p>
                     </div>
                 </div>
@@ -133,15 +133,15 @@ export default async function UserDashboardPage() {
                 {bookmarks.length > 0 && (
                     <section className="relative">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-gray-100 italic">Lanjutkan Membaca</h2>
+                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent italic">Lanjutkan Membaca</h2>
                             <Link href="/library" className="text-[10px] font-bold uppercase tracking-widest text-tan-primary hover:text-brown-dark transition-colors">Perpustakaan</Link>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Primary Hero */}
                             <Link href={`/novel/${bookmarks[0].karya.id}/${bookmarks[0].last_chapter}`} className="block group md:col-span-2">
-                                <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-4 border border-tan-light dark:border-slate-800 shadow-xl shadow-tan-light/10 dark:shadow-none flex gap-5 items-center group-active:scale-[0.98] transition-all border-l-4 border-l-tan-primary">
-                                    <div className="w-20 h-28 rounded-2xl overflow-hidden shadow-2xl shrink-0 border border-tan-light dark:border-slate-800">
+                                <div className="bg-white dark:bg-brown-dark rounded-[2.5rem] p-4 border border-tan-light dark:border-brown-mid shadow-xl shadow-tan-light/10 dark:shadow-none flex gap-5 items-center group-active:scale-[0.98] transition-all border-l-4 border-l-tan-primary">
+                                    <div className="w-20 h-28 rounded-2xl overflow-hidden shadow-2xl shrink-0 border border-tan-light dark:border-brown-mid">
                                         {bookmarks[0].karya.cover_url ? (
                                             <img src={bookmarks[0].karya.cover_url} alt={bookmarks[0].karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                         ) : (
@@ -151,7 +151,7 @@ export default async function UserDashboardPage() {
                                     <div className="flex-1 min-w-0 pr-2">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="text-[8px] font-black bg-tan-light text-brown-dark px-1.5 py-0.5 rounded uppercase tracking-widest">Terakhir</span>
-                                            <h3 className="text-sm font-bold text-text-main dark:text-gray-100 leading-tight truncate">{bookmarks[0].karya.title}</h3>
+                                            <h3 className="text-sm font-bold text-text-main dark:text-text-accent leading-tight truncate">{bookmarks[0].karya.title}</h3>
                                         </div>
                                         <p className="text-[10px] text-tan-primary font-bold mb-3 uppercase tracking-tighter">Bab {bookmarks[0].last_chapter}</p>
 
@@ -176,7 +176,7 @@ export default async function UserDashboardPage() {
                                 const progress = b.karya._count.bab > 0 ? Math.round((b.last_chapter / b.karya._count.bab) * 100) : 0;
                                 return (
                                     <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="block group">
-                                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-3 border border-tan-light/50 dark:border-slate-800 shadow-md shadow-tan-light/10 dark:shadow-none flex gap-4 items-center group-active:scale-[0.98] transition-all">
+                                        <div className="bg-white dark:bg-brown-dark rounded-3xl p-3 border border-tan-light/50 dark:border-brown-mid shadow-md shadow-tan-light/10 dark:shadow-none flex gap-4 items-center group-active:scale-[0.98] transition-all">
                                             <div className="w-12 h-16 rounded-xl overflow-hidden shadow shrink-0 border border-tan-light/30">
                                                 {b.karya.cover_url ? (
                                                     <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -185,7 +185,7 @@ export default async function UserDashboardPage() {
                                                 )}
                                             </div>
                                             <div className="flex-1 min-w-0 pr-1">
-                                                <h3 className="text-xs font-bold text-text-main dark:text-gray-100 leading-tight truncate mb-1">{b.karya.title}</h3>
+                                                <h3 className="text-xs font-bold text-text-main dark:text-text-accent leading-tight truncate mb-1">{b.karya.title}</h3>
                                                 <div className="flex items-center gap-2">
                                                     <p className="text-[9px] text-tan-primary font-bold uppercase tracking-tighter">Bab {b.last_chapter}</p>
                                                     <span className="w-1 h-1 bg-tan-light rounded-full" />
@@ -211,20 +211,20 @@ export default async function UserDashboardPage() {
                             <div className="p-2 bg-tan-light rounded-xl">
                                 <Heart className="w-5 h-5 text-brown-dark" />
                             </div>
-                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-gray-100">Penulis Favoritmu</h2>
+                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent">Penulis Favoritmu</h2>
                         </div>
                     </div>
 
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar scrollbar-hide">
                         {followedAuthorsRaw.length === 0 ? (
-                            <div className="w-full py-8 px-6 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-dashed border-tan-light text-center">
+                            <div className="w-full py-8 px-6 bg-white dark:bg-brown-dark rounded-[2.5rem] border border-dashed border-tan-light text-center">
                                 <p className="text-xs text-tan-primary font-bold mb-3 uppercase tracking-tighter">Belum ada penulis yang diikuti</p>
                                 <Link href="/search" className="inline-block py-2 px-6 bg-tan-light/20 text-tan-primary rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-tan-light hover:text-brown-dark transition-all">Temukan Penulis</Link>
                             </div>
                         ) : (
                             followedAuthorsRaw.map((f: any) => (
                                 <Link key={f.following.id} href={`/profile/${f.following.username}`} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-                                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white dark:border-slate-800 shadow-lg group-hover:border-tan-primary transition-all group-active:scale-95">
+                                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white dark:border-brown-mid shadow-lg group-hover:border-tan-primary transition-all group-active:scale-95">
                                         {f.following.avatar_url ? (
                                             <img src={f.following.avatar_url} alt={f.following.display_name} className="w-full h-full object-cover" />
                                         ) : (
@@ -233,7 +233,7 @@ export default async function UserDashboardPage() {
                                             </div>
                                         )}
                                     </div>
-                                    <p className="text-[10px] font-bold text-text-main dark:text-gray-100 text-center line-clamp-1 w-16">{f.following.display_name}</p>
+                                    <p className="text-[10px] font-bold text-text-main dark:text-text-accent text-center line-clamp-1 w-16">{f.following.display_name}</p>
                                 </Link>
                             ))
                         )}
@@ -247,7 +247,7 @@ export default async function UserDashboardPage() {
                             <div className="p-2 bg-tan-light rounded-xl">
                                 <Flame className="w-5 h-5 text-brown-dark" />
                             </div>
-                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-gray-100">Sedang Hangat</h2>
+                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent">Sedang Hangat</h2>
                         </div>
                     </div>
 
@@ -268,18 +268,18 @@ export default async function UserDashboardPage() {
                                         <p className="text-[9px] text-text-accent font-bold uppercase tracking-widest truncate opacity-80">{f.penulis_alias}</p>
                                     </div>
                                 </div>
-                                <h3 className="text-sm font-bold text-text-main dark:text-gray-100 line-clamp-1 truncate leading-tight px-1 group-hover:text-tan-primary transition-colors">{f.title}</h3>
+                                <h3 className="text-sm font-bold text-text-main dark:text-text-accent line-clamp-1 truncate leading-tight px-1 group-hover:text-tan-primary transition-colors">{f.title}</h3>
                             </Link>
                         ))}
                     </div>
                 </section>
 
                 {/* Section: Perpustakaan Shortcut */}
-                <section className="bg-white dark:bg-slate-900 rounded-[3rem] p-6 border border-tan-light shadow-xl shadow-tan-light/10 dark:shadow-none mb-12">
+                <section className="bg-white dark:bg-brown-dark rounded-[3rem] p-6 border border-tan-light shadow-xl shadow-tan-light/10 dark:shadow-none mb-12">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2">
                             <BookOpen className="w-5 h-5 text-tan-primary" />
-                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-gray-100 italic">Perpustakaan</h2>
+                            <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent italic">Perpustakaan</h2>
                         </div>
                         <Link href="/library" className="w-9 h-9 rounded-full bg-tan-light/20 flex items-center justify-center text-tan-primary hover:bg-tan-primary hover:text-text-accent transition-all border border-tan-light">
                             <History className="w-4 h-4" />
@@ -288,7 +288,7 @@ export default async function UserDashboardPage() {
 
                     <div className="grid grid-cols-2 gap-3">
                         {bookmarks.slice(0, 8).map(b => (
-                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-3 p-2 bg-tan-light/5 dark:bg-slate-800/50 rounded-2xl hover:bg-tan-light/20 border border-transparent hover:border-tan-light transition-all group overflow-hidden">
+                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-3 p-2 bg-tan-light/5 dark:bg-brown-mid/50 rounded-2xl hover:bg-tan-light/20 border border-transparent hover:border-tan-light transition-all group overflow-hidden">
                                 <div className="w-10 h-14 rounded-xl overflow-hidden shrink-0 shadow-sm border border-tan-light/20">
                                     {b.karya.cover_url ? (
                                         <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
@@ -297,7 +297,7 @@ export default async function UserDashboardPage() {
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <h4 className="text-[11px] font-bold text-text-main dark:text-gray-100 line-clamp-1 leading-tight">{b.karya.title}</h4>
+                                    <h4 className="text-[11px] font-bold text-text-main dark:text-text-accent line-clamp-1 leading-tight">{b.karya.title}</h4>
                                     <p className="text-[8px] font-bold text-tan-primary uppercase tracking-tighter mt-1">Bab {b.last_chapter}</p>
                                 </div>
                             </Link>

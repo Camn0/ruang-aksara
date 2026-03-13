@@ -127,7 +127,7 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
                         placeholder="Ukir balasanmu..."
                         required
                         disabled={replyPending}
-                        className="flex-1 text-xs bg-transparent dark:bg-slate-800 dark:text-gray-100 p-2 rounded-xl outline-none min-h-[44px] resize-none font-medium italic placeholder:text-tan-primary/20"
+                        className="flex-1 text-xs bg-transparent dark:bg-brown-mid dark:text-text-accent p-2 rounded-xl outline-none min-h-[44px] resize-none font-medium italic placeholder:text-tan-primary/20"
                         rows={1}
                     />
                     <button

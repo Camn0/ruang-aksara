@@ -41,7 +41,7 @@ export default function ReviewCommentSection({
     if (comments.length === 0) return null;
 
     return (
-        <div className="mt-4 pt-4 border-t border-gray-50 dark:border-slate-800/50">
+        <div className="mt-4 pt-4 border-t border-gray-50 dark:border-brown-mid/50">
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-tan-primary/40 hover:text-tan-primary transition-all mb-6 hover:translate-x-1"
@@ -73,7 +73,7 @@ export default function ReviewCommentSection({
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between gap-2 mb-2">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            <Link href={`/profile/${c.user?.username}`} className="text-xs font-black text-brown-dark dark:text-gray-100 hover:text-tan-primary transition-colors uppercase tracking-tight">{c.user?.display_name}</Link>
+                                            <Link href={`/profile/${c.user?.username}`} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight">{c.user?.display_name}</Link>
                                             {c.user?.id === karyaUploaderId && (
                                                 <span className="text-[7px] font-black bg-brown-dark text-text-accent px-2 py-0.5 rounded-sm uppercase tracking-widest italic">Penulis</span>
                                             )}
@@ -90,7 +90,7 @@ export default function ReviewCommentSection({
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-[13px] text-brown-mid dark:text-gray-400 whitespace-pre-wrap leading-relaxed font-bold italic">"{c.content}"</p>
+                                    <p className="text-[13px] text-brown-mid dark:text-tan-light whitespace-pre-wrap leading-relaxed font-bold italic">"{c.content}"</p>
                                 </div>
                             </div>
                         );

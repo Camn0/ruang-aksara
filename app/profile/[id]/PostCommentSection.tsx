@@ -84,13 +84,13 @@ export default function PostCommentSection({ postId, initialComments, commentCou
                 <div className="space-y-2 mb-3">
                     {initialComments.map((c) => (
                         <div key={c.id} className="flex gap-4 items-start group bg-brown-dark/[0.02] p-3 rounded-2xl border border-brown-dark/5">
-                            <div className="w-8 h-8 rounded-xl bg-tan-light/10 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black text-tan-primary shrink-0 border border-brown-dark/5 shadow-sm">
+                            <div className="w-8 h-8 rounded-xl bg-tan-light/10 dark:bg-brown-mid flex items-center justify-center text-[10px] font-black text-tan-primary shrink-0 border border-brown-dark/5 shadow-sm">
                                 {c.user?.display_name?.substring(0, 2).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-[13px] leading-relaxed">
-                                    <Link href={`/profile/${c.user?.username}`} className="font-black text-text-main dark:text-gray-100 uppercase tracking-tight text-[11px] block mb-1 hover:text-tan-primary transition-colors">{c.user?.display_name}</Link>{' '}
-                                    <span className="text-text-main/70 dark:text-gray-400 font-medium italic">&quot;{c.content}&quot;</span>
+                                    <Link href={`/profile/${c.user?.username}`} className="font-black text-text-main dark:text-text-accent uppercase tracking-tight text-[11px] block mb-1 hover:text-tan-primary transition-colors">{c.user?.display_name}</Link>{' '}
+                                    <span className="text-text-main/70 dark:text-tan-light font-medium italic">&quot;{c.content}&quot;</span>
                                 </p>
                                 <p className="text-[8px] text-tan-primary/40 font-black uppercase tracking-widest mt-2">{new Date(c.created_at).toLocaleDateString('id-ID')}</p>
                             </div>
@@ -112,13 +112,13 @@ export default function PostCommentSection({ postId, initialComments, commentCou
 
             {/* Comment Form - Themed & Relaxed */}
             {currentUserId && (
-                <form ref={formRef} action={handleSubmit} className="flex gap-3 items-center bg-brown-dark/[0.04] dark:bg-slate-900 border border-brown-dark/5 p-2 rounded-[1.5rem] transition-all focus-within:bg-brown-dark/[0.06] dark:focus-within:bg-slate-800 focus-within:border-brown-dark/10">
+                <form ref={formRef} action={handleSubmit} className="flex gap-3 items-center bg-brown-dark/[0.04] dark:bg-brown-dark border border-brown-dark/5 p-2 rounded-[1.5rem] transition-all focus-within:bg-brown-dark/[0.06] dark:focus-within:bg-slate-800 focus-within:border-brown-dark/10">
                     <textarea
                         name="content"
                         placeholder="Tulis sebuah surat..."
                         required
                         disabled={isPending}
-                        className="flex-1 text-sm bg-transparent dark:text-gray-100 p-3 outline-none min-h-[44px] max-h-[120px] resize-none font-medium italic"
+                        className="flex-1 text-sm bg-transparent dark:text-text-accent p-3 outline-none min-h-[44px] max-h-[120px] resize-none font-medium italic"
                         rows={1}
                     />
                     <button

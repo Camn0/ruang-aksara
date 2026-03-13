@@ -8,9 +8,9 @@ export default function AboutPage() {
     const [activeTab, setActiveTab] = useState<'visi' | 'misi'>('visi');
 
     return (
-        <div className="min-h-screen bg-[#F2EAD7]/60 dark:bg-slate-950 transition-colors duration-500 pb-20">
+        <div className="min-h-screen bg-[#F2EAD7]/60 dark:bg-brown-dark transition-colors duration-500 pb-20">
             {/* Header / Nav */}
-            <header className="px-6 h-20 flex items-center justify-between sticky top-0 bg-[#F2EAD7]/80 dark:bg-slate-950/80 backdrop-blur-md z-50 border-b border-[#3B2A22]/5">
+            <header className="px-6 h-20 flex items-center justify-between sticky top-0 bg-[#F2EAD7]/80 dark:bg-brown-dark/80 backdrop-blur-md z-50 border-b border-[#3B2A22]/5">
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="p-2 bg-[#3B2A22] text-[#F2EAD7] rounded-xl group-hover:scale-110 transition-all">
                         <ArrowLeft className="w-5 h-5" />

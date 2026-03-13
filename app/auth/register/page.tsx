@@ -35,15 +35,15 @@ export default function RegisterPage() {
         }
     }
 
-    const inputClass = "appearance-none block w-full py-4 px-5 rounded-2xl border border-[#3B2A22]/20 bg-[#E8DDD0] dark:bg-slate-900 dark:border-slate-700 dark:text-gray-100 text-[#3B2A22] placeholder:text-[#7A553A]/60 focus:outline-none focus:ring-2 focus:ring-[#7A553A]/30 transition-all text-base";
+    const inputClass = "appearance-none block w-full py-4 px-5 rounded-2xl border border-[#3B2A22]/20 bg-[#E8DDD0] dark:bg-brown-dark dark:border-brown-mid dark:text-text-accent text-[#3B2A22] placeholder:text-[#7A553A]/60 focus:outline-none focus:ring-2 focus:ring-[#7A553A]/30 transition-all text-base";
 
     return (
-        <div className="min-h-screen bg-[#F3E9D7] dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
+        <div className="min-h-screen bg-[#F3E9D7] dark:bg-brown-dark flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-[#3B2A22] dark:text-gray-100">
+                <h2 className="mt-6 text-center text-3xl font-extrabold text-[#3B2A22] dark:text-text-accent">
                     Daftar Akun Baru
                 </h2>
-                <p className="mt-2 text-center text-sm text-[#7A553A] dark:text-gray-400">
+                <p className="mt-2 text-center text-sm text-[#7A553A] dark:text-tan-light">
                     Atau{' '}
                     <Link href="/api/auth/signin" className="font-medium text-[#7A553A] dark:text-[#B08968] hover:text-[#3B2A22] dark:hover:text-[#D6BFA6] transition-colors underline underline-offset-2">
                         masuk ke akun yang sudah ada
@@ -52,7 +52,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-[#F3E9D7]/80 dark:bg-slate-900 py-8 px-4 sm:rounded-2xl sm:px-10 border border-[#D6BFA6] dark:border-slate-800 transition-colors duration-300">
+                <div className="bg-[#F3E9D7]/80 dark:bg-brown-dark py-8 px-4 sm:rounded-2xl sm:px-10 border border-[#D6BFA6] dark:border-brown-mid transition-colors duration-300">
 
                     {message && (
                         <div className={`p-4 mb-6 text-sm rounded-2xl text-center font-medium animate-in fade-in slide-in-from-top-2 ${message.type === 'error'

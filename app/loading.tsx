@@ -7,7 +7,7 @@ export default function Loading() {
                 <div className="absolute inset-2 border-2 border-brown-mid/10 rounded-full"></div>
                 <div className="absolute inset-2 border-2 border-b-brown-mid rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
             </div>
-            <p className="text-brown-mid/60 dark:text-gray-400 font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Menyiapkan Ruang Aksara</p>
+            <p className="text-brown-mid/60 dark:text-tan-light font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Menyiapkan Ruang Aksara</p>
         </div>
     );
 }

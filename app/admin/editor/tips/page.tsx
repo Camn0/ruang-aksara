@@ -54,7 +54,7 @@ export default async function TipsStudioPage() {
         <div className="pb-20">
             {/* Page Header: Title & Subtitle */}
             <div className="px-4 sm:px-8 pt-6 sm:pt-10 mb-12 sm:mb-16">
-                <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-gray-100 tracking-tight leading-none uppercase italic mb-2">Tips Studio</h1>
+                <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-text-accent tracking-tight leading-none uppercase italic mb-2">Tips Studio</h1>
                 <p className="text-tan-primary font-extrabold text-[10px] sm:text-xs uppercase tracking-widest leading-none">Panduan Mengasah Pena</p>
             </div>
 
@@ -62,12 +62,12 @@ export default async function TipsStudioPage() {
                 {/* Tips Grid: Menyajikan kartu tips dengan hover effect yang dinamis */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
                     {tips.map((tip, idx) => (
-                        <div key={idx} className="bg-white/80 dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-tan-primary/10 dark:border-slate-800 shadow-xl shadow-brown-dark/5 hover:scale-[1.02] transition-all group backdrop-blur-sm">
+                        <div key={idx} className="bg-white/80 dark:bg-brown-dark p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-tan-primary/10 dark:border-brown-mid shadow-xl shadow-brown-dark/5 hover:scale-[1.02] transition-all group backdrop-blur-sm">
                             <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${tip.bg} transition-transform group-hover:rotate-6`}>
                                 <tip.icon className={`w-5 h-5 sm:w-7 sm:h-7 ${tip.color}`} strokeWidth={2.5} />
                             </div>
-                            <h3 className="text-sm sm:text-xl font-black text-brown-dark dark:text-gray-100 mb-2 sm:mb-3 uppercase tracking-tight">{tip.title}</h3>
-                            <p className="text-[10px] sm:text-[13px] text-brown-dark/60 dark:text-gray-400 font-bold leading-relaxed">{tip.desc}</p>
+                            <h3 className="text-sm sm:text-xl font-black text-brown-dark dark:text-text-accent mb-2 sm:mb-3 uppercase tracking-tight">{tip.title}</h3>
+                            <p className="text-[10px] sm:text-[13px] text-brown-dark/60 dark:text-tan-light font-bold leading-relaxed">{tip.desc}</p>
                         </div>
                     ))}
                 </div>

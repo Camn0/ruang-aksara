@@ -39,7 +39,7 @@ export default function ContinueReadingButton({ karyaId }: { karyaId: string }) 
                     </div>
                     <div>
                         <p className="text-[10px] font-black text-tan-primary uppercase tracking-[0.2em]">Lanjutkan Jejak</p>
-                        <p className="text-sm font-black text-brown-dark dark:text-gray-100 italic">Bab {lastChapter}</p>
+                        <p className="text-sm font-black text-brown-dark dark:text-text-accent italic">Bab {lastChapter}</p>
                     </div>
                 </div>
                 <ArrowLeft className="w-5 h-5 text-tan-primary rotate-180 group-hover:translate-x-1 transition-all" />

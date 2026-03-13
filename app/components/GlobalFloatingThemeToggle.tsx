@@ -27,14 +27,14 @@ export default function GlobalFloatingThemeToggle() {
                 <div className="flex flex-col gap-2 mb-2 animate-in slide-in-from-bottom-2 fade-in duration-200">
                     <button
                         onClick={() => { setTheme("light"); setIsOpen(false); }}
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg border transition-all ${theme === 'light' ? 'bg-white border-tan-primary text-tan-primary' : 'bg-white dark:bg-slate-800 border-tan-light/20 text-gray-400'}`}
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg border transition-all ${theme === 'light' ? 'bg-white border-tan-primary text-tan-primary' : 'bg-white dark:bg-brown-mid border-tan-light/20 text-gray-400'}`}
                         title="Light Mode"
                     >
                         <Sun className="w-4 h-4" />
                     </button>
                     <button
                         onClick={() => { setTheme("dark"); setIsOpen(false); }}
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg border transition-all ${theme === 'dark' ? 'bg-slate-900 border-tan-primary text-tan-primary' : 'bg-white dark:bg-slate-800 border-tan-light/20 text-gray-400'}`}
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg border transition-all ${theme === 'dark' ? 'bg-slate-900 border-tan-primary text-tan-primary' : 'bg-white dark:bg-brown-mid border-tan-light/20 text-gray-400'}`}
                         title="Dark Mode"
                     >
                         <Moon className="w-4 h-4" />

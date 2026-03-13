@@ -63,7 +63,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     })[];
 
     const CoverPlaceholder = ({ title }: { title: string }) => (
-        <div className="w-20 h-28 bg-indigo-50 dark:bg-slate-800 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-indigo-700 dark:text-indigo-300 shadow-sm shrink-0 border border-indigo-100 dark:border-slate-700">
+        <div className="w-20 h-28 bg-indigo-50 dark:bg-brown-mid rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-indigo-700 dark:text-indigo-300 shadow-sm shrink-0 border border-indigo-100 dark:border-brown-mid">
             {title}
         </div>
     );
@@ -79,12 +79,12 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     });
 
     const renderEmptyState = (message: string, subMessage: string) => (
-        <div className="text-center py-24 px-8 border border-dashed border-gray-200 dark:border-slate-700 rounded-3xl bg-white dark:bg-slate-900 transition-colors duration-300">
-            <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 mx-auto">
+        <div className="text-center py-24 px-8 border border-dashed border-gray-200 dark:border-brown-mid rounded-3xl bg-white dark:bg-brown-dark transition-colors duration-300">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-brown-mid rounded-full flex items-center justify-center mb-4 mx-auto">
                 <BookMarked className="w-8 h-8 text-gray-400 dark:text-gray-500" />
             </div>
-            <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-2">{message}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">{subMessage}</p>
+            <h2 className="font-bold text-gray-900 dark:text-text-accent mb-2">{message}</h2>
+            <p className="text-sm text-gray-500 dark:text-tan-light mb-6 leading-relaxed">{subMessage}</p>
             <Link href="/search" className="bg-indigo-600 px-6 py-3 rounded-full text-white font-bold text-sm hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-transform hover:scale-105 inline-block">
                 Cari Cerita
             </Link>
@@ -92,7 +92,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     );
 
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 pb-32 md:pb-12 px-5 pt-8 transition-colors duration-300">
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-32 md:pb-12 px-5 pt-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 {/* Search Bar & Home Icon - Smaller Proportions */}
                 <div className="flex items-center gap-3 mb-8">
@@ -202,14 +202,14 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                                                     <span>Bab {b.last_chapter} / {b.karya._count.bab}</span>
                                                     <span>{formatDistanceToNow(new Date(b.updated_at), { addSuffix: false, locale: localeId })}</span>
                                                 </div>
-                                                <p className="text-[9px] font-black text-brown-dark truncate bg-tan-primary/5 dark:bg-slate-800/50 px-2 py-1 rounded-md border border-tan-primary/10">
+                                                <p className="text-[9px] font-black text-brown-dark truncate bg-tan-primary/5 dark:bg-brown-mid/50 px-2 py-1 rounded-md border border-tan-primary/10">
                                                     {b.karya.bab.find(bc => bc.chapter_no === b.last_chapter)?.title || `Bab ${b.last_chapter}`}
                                                 </p>
                                             </div>
                                         </div>
                                     </Link>
                                     <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-all z-10 scale-[0.6] origin-top-right">
-                                        <div className="bg-white/90 dark:bg-slate-900/90 p-1.5 rounded-full shadow-xl border border-tan-light/20 backdrop-blur-sm">
+                                        <div className="bg-white/90 dark:bg-brown-dark/90 p-1.5 rounded-full shadow-xl border border-tan-light/20 backdrop-blur-sm">
                                             <RemoveBookmarkButton karyaId={b.karya.id} />
                                         </div>
                                     </div>
