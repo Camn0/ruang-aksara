@@ -67,7 +67,7 @@ export default function OnboardingPage() {
                         {/* Button */}
                         <button
                         onClick={handleNext}
-                        className="bg-[#7D5A44] text-[#f2ead7] px-10 py-3 rounded-full text-2xl font-medium active:scale-95 transition-all shadow-lg"
+                        className="bg-[#7D5A44] text-[#f2ead7] px-10 py-3 rounded-full text-2xl font-medium hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
                         >
                         Selanjutnya
                         </button>
@@ -108,7 +108,7 @@ export default function OnboardingPage() {
                         </h1>
                         </div>
 
-                        {/* Dots */}
+                        {/* Pagination dots */}
                         <div className="flex gap-2 mb-10">
                         <div className="w-10 h-10 rounded-full bg-[#3b2a22]"></div>
                         <div className="w-10 h-10 rounded-full border-4 border-[#3b2a22]"></div>
@@ -163,7 +163,7 @@ export default function OnboardingPage() {
 
                             <button 
                                 onClick={handleNext}
-                                className="bg-[#7D5A44] text-white px-10 py-3 rounded-full text-md md:text-2xl font-medium hover:bg-[#5D4232] transition-colors"
+                                className="bg-[#7D5A44] text-white px-10 py-3 rounded-full text-md md:text-2xl font-medium hover:bg-[#5D4232] hover:scale-[1.02] active:scale-95 transition-colors"
                             >
                                 selanjutnya
                             </button>
@@ -173,7 +173,7 @@ export default function OnboardingPage() {
 
 
                 {step === 3 && (
-                    <div className="flex flex-col items-center space-y-10 w-full max-w-md px-3">
+                    <div className="relative flex flex-col items-center space-y-10 w-full max-w-md px-3">
                         <Image
                             src="/logoRuangAksara.png"
                             alt="Ruang Aksara"
@@ -181,7 +181,7 @@ export default function OnboardingPage() {
                             height={100}
                         />
 
-                        <div className="space-y-6 w-full px-1">
+                        <div className="space-y-6 w-full px-1 z-10">
                             <button
                                 onClick={() => router.push("/auth/login?type=admin")}
                                 className="w-full py-5 rounded-3xl border-4 border-solid border-[#3b2a22] bg-[#EFE5D6] flex items-center justify-center transition-all hover:scale-[1.02] active:scale-95"
@@ -195,6 +195,16 @@ export default function OnboardingPage() {
                             >
                                 <span className="text-xl md:text-3xl text-[#f2ead7] [font-family:'Open_Sans-SemiBold',Helvetica] font-semibold tracking-[0] leading-[normal]">Masuk Sebagai Pembaca</span>
                             </button>
+                        </div>
+
+                        <div className="absolute w-full left-0 z-0 md:hidden">
+                            <Image
+                                src="/book2.png" 
+                                alt="Pattern Background"
+                                width={600}
+                                height={300}
+                                className="w-full bottom-0 h-auto"
+                            />
                         </div>
                     </div>
                 )}
