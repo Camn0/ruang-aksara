@@ -5,7 +5,8 @@ import Link from 'next/link';
 import {
     ArrowLeft, UserCircle2, Settings, TrendingUp, BookMarked,
     Star, MessageSquare, Heart, Instagram, Twitter, Globe,
-    Sparkles, Calendar, BookOpen, MessageCircle
+    Sparkles, Calendar, BookOpen, MessageCircle, Search, X,
+    Filter, ArrowUpDown, CheckCircle2, Clock3, Plus, PenTool
 } from 'lucide-react';
 import FollowButton from './FollowButton';
 import ThemeToggle from '@/app/components/ThemeToggle';
@@ -45,7 +46,10 @@ export default function ProfileClient({
     session
 }: ProfileClientProps) {
     const isAuthor = ['admin', 'author'].includes(userProfile.role);
-    const [activeTab, setActiveTab] = useState(isAuthor ? 'karya' : 'aktivitas');
+    const [activeTab, setActiveTab] = useState<string>(isAuthor ? 'karya' : 'aktivitas');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortBy, setSortBy] = useState<'latest' | 'popular' | 'rating'>('latest');
+    const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'ongoing'>('all');
     const [isPending, startTransition] = useTransition();
 
     const handleTabChange = (tab: string) => {
@@ -57,63 +61,164 @@ export default function ProfileClient({
     const renderTabContent = () => {
         switch (activeTab) {
             case 'karya':
+                const filteredWorks = works
+                    .filter(w => {
+                        const matchesSearch = w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                            (w.deskripsi && w.deskripsi.toLowerCase().includes(searchQuery.toLowerCase()));
+                        const matchesStatus = statusFilter === 'all' ? true : 
+                                            statusFilter === 'completed' ? w.is_completed : !w.is_completed;
+                        return matchesSearch && matchesStatus;
+                    })
+                    .sort((a, b) => {
+                        if (sortBy === 'popular') return b.total_views - a.total_views;
+                        if (sortBy === 'rating') return (b.avg_rating || 0) - (a.avg_rating || 0);
+                        return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
+                    });
+
                 return (
-                    <div className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        {works.length === 0 ? (
-                            <div className="py-20 text-center bg-brown-dark/5 rounded-[3rem] border border-dashed border-brown-dark/10">
-                                <BookOpen className="w-12 h-12 text-brown-dark/10 mx-auto mb-4" />
-                                <p className="text-brown-dark/30 font-black uppercase tracking-widest text-[10px]">Belum ada karya</p>
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {/* Advanced Controls Section */}
+                        <div className="bg-brown-dark/[0.02] dark:bg-slate-900/40 p-6 rounded-[2.5rem] border border-brown-dark/5 flex flex-col gap-6">
+                            {/* Search Bar */}
+                            <div className="relative group w-full">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-tan-primary transition-colors group-focus-within:text-brown-dark" />
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Cari dalam koleksi..."
+                                    className="w-full bg-white/50 dark:bg-slate-800/50 border border-brown-dark/10 rounded-2xl py-3.5 pl-11 pr-11 text-[12px] font-black uppercase tracking-widest text-text-main dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-tan-primary/20 placeholder:opacity-30 transition-all"
+                                />
+                                {searchQuery && (
+                                    <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-brown-dark/5 rounded-full transition-all">
+                                        <X className="w-3.5 h-3.5 text-tan-primary" />
+                                    </button>
+                                )}
                             </div>
-                        ) : works.map(karya => (
-                            <Link key={karya.id} href={`/novel/${karya.id}`} className="group flex flex-col sm:flex-row gap-8 p-1 transition-all duration-500">
-                                {/* Cover Section */}
-                                <div className="w-32 h-48 sm:w-40 sm:h-56 shrink-0 relative">
-                                    <div className="absolute inset-0 bg-brown-dark/20 rounded-[1.5rem] blur-xl group-hover:blur-2xl transition-all opacity-50 -z-10 translate-y-2"></div>
-                                    <div className="w-full h-full rounded-[1.5rem] overflow-hidden bg-tan-light/10 border border-brown-dark/10 shadow-lg relative z-10">
-                                        {karya.cover_url ? (
-                                            <img src={karya.cover_url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={karya.title} />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center p-4 text-center bg-tan-light/5">
-                                                <span className="text-[10px] font-black text-brown-mid/30 uppercase tracking-tighter">{karya.title}</span>
+
+                            {/* Filters & Sorting */}
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 sm:pb-0">
+                                    <Filter className="w-3 h-3 text-tan-primary shrink-0 mr-1" />
+                                    {[
+                                        { id: 'all', label: 'Semua' },
+                                        { id: 'ongoing', label: 'Berjalan' },
+                                        { id: 'completed', label: 'Tamat' }
+                                    ].map(filter => (
+                                        <button
+                                            key={filter.id}
+                                            onClick={() => setStatusFilter(filter.id as any)}
+                                            className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${statusFilter === filter.id ? 'bg-brown-dark text-text-accent shadow-md' : 'bg-brown-dark/5 text-tan-primary hover:bg-brown-dark/10'}`}
+                                        >
+                                            {filter.label}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <ArrowUpDown className="w-3 h-3 text-tan-primary shrink-0" />
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value as any)}
+                                        className="bg-transparent text-[10px] font-black uppercase tracking-[0.2em] text-tan-primary outline-none cursor-pointer hover:text-brown-dark transition-colors appearance-none"
+                                    >
+                                        <option value="latest">Urutan: Terbaru</option>
+                                        <option value="popular">Urutan: Populer</option>
+                                        <option value="rating">Urutan: Rating</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* List Section */}
+                        <div className="grid gap-6">
+                            {filteredWorks.length === 0 ? (
+                                <div className="py-24 text-center bg-brown-dark/[0.01] rounded-[3rem] border border-dashed border-brown-dark/10">
+                                    <BookOpen className="w-12 h-12 text-brown-dark/5 mx-auto mb-4" />
+                                    <p className="text-brown-dark/20 font-black uppercase tracking-[0.2em] text-[10px]">
+                                        {searchQuery ? `Tidak ada hasil untuk "${searchQuery}"` : 'Koleksi masih kosong'}
+                                    </p>
+                                </div>
+                            ) : filteredWorks.map(karya => (
+                                <div key={karya.id} className="group bg-brown-dark/[0.015] dark:bg-slate-900/40 rounded-[2.5rem] p-5 sm:p-7 border border-brown-dark/5 hover:border-tan-primary/10 transition-all duration-500 overflow-hidden relative">
+                                    <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start group/card relative z-10">
+                                        {/* Cover Section */}
+                                        <div className="w-32 h-48 sm:w-36 sm:h-52 shrink-0 relative">
+                                            <div className="absolute inset-0 bg-brown-dark/10 rounded-[1.2rem] blur-xl group-hover/card:blur-2xl transition-all opacity-40 -z-10 translate-y-2"></div>
+                                            <Link href={`/novel/${karya.id}`} className="block w-full h-full rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/5 shadow-md relative z-10 transition-transform group-hover/card:-translate-y-1 duration-500">
+                                                {karya.cover_url ? (
+                                                    <img src={karya.cover_url} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700" alt={karya.title} />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center p-4 text-center bg-tan-light/5">
+                                                        <span className="text-[9px] font-black text-brown-mid/30 uppercase tracking-tighter">{karya.title}</span>
+                                                    </div>
+                                                )}
+                                            </Link>
+                                        </div>
+
+                                        {/* Content Section */}
+                                        <div className="flex-1 flex flex-col gap-5 py-1 text-center sm:text-left">
+                                            <div>
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                                                    <Link href={`/novel/${karya.id}`}>
+                                                        <h3 className="text-xl sm:text-2xl font-open-sans font-black text-text-main dark:text-gray-100 italic leading-tight hover:text-tan-primary transition-colors">
+                                                            {karya.title}
+                                                        </h3>
+                                                    </Link>
+                                                    {/* Status Badge */}
+                                                    <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.2em] flex items-center gap-1.5 self-center sm:self-start border ${karya.is_completed 
+                                                        ? 'bg-green-500/5 text-green-600 border-green-500/10' 
+                                                        : 'bg-tan-primary/5 text-tan-primary border-tan-primary/10'}`}>
+                                                        {karya.is_completed ? (
+                                                            <><CheckCircle2 className="w-2.5 h-2.5" /> Tamat</>
+                                                        ) : (
+                                                            <><Clock3 className="w-2.5 h-2.5" /> Berjalan</>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Stats Pills */}
+                                                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-4">
+                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 rounded-full border border-brown-dark/5">
+                                                        <TrendingUp className="w-2.5 h-2.5 text-brown-dark/40" />
+                                                        <span className="text-[8px] font-black text-brown-dark/60 uppercase tracking-widest">{karya.total_views.toLocaleString()}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 bg-brown-dark/5 px-2.5 py-1 rounded-full border border-brown-dark/5">
+                                                        {[1, 2, 3, 4, 5].map((s) => (
+                                                            <Star key={s} className={`w-2 h-2 ${s <= Math.round(karya.avg_rating || 0) ? 'fill-yellow-500 text-yellow-500' : 'text-brown-dark/10'}`} />
+                                                        ))}
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 rounded-full border border-brown-dark/5">
+                                                        <span className="text-[8px] font-black text-brown-dark/60 uppercase tracking-widest">
+                                                            {karya.count_chapters || karya._count?.bab || 0} Bab
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        )}
+
+                                            {/* Description Box - Simplified */}
+                                            <div>
+                                                <p className="text-[13px] text-text-main/50 dark:text-gray-400 line-clamp-3 leading-relaxed font-medium italic">
+                                                    {karya.deskripsi || "Penulis belum menambahkan sinopsis untuk karya indah ini."}
+                                                </p>
+                                            </div>
+
+                                            {/* Author Actions */}
+                                            {isOwnProfile && (
+                                                <div className="flex items-center justify-center sm:justify-start gap-3 mt-2">
+                                                    <Link href={`/admin/editor/karya/${karya.id}`} className="flex items-center gap-2 px-4 py-2 bg-brown-dark text-text-accent text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-brown-mid shadow-lg shadow-brown-dark/10 transition-all active:scale-95 group/btn">
+                                                        <PenTool className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" /> Kelola
+                                                    </Link>
+                                                    <Link href={`/admin/editor/upload?karyaId=${karya.id}`} className="flex items-center gap-2 px-4 py-2 bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95">
+                                                        <Plus className="w-3 h-3" /> Tambah Bab
+                                                    </Link>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-
-                                {/* Content Section */}
-                                <div className="flex-1 flex flex-col gap-3 py-2">
-                                    <h3 className="text-2xl sm:text-3xl font-open-sans font-black text-brown-dark dark:text-gray-100 italic leading-tight group-hover:text-tan-primary transition-colors">
-                                        {karya.title}
-                                    </h3>
-
-                                    {/* Stats Pills */}
-                                    <div className="flex flex-wrap gap-2 mb-2">
-                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 rounded-full border border-brown-dark/5">
-                                            <TrendingUp className="w-3 h-3 text-brown-dark/40" />
-                                            <span className="text-[9px] font-black text-brown-dark/60 uppercase tracking-widest">{karya.total_views.toLocaleString()}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1 bg-brown-dark/5 px-2.5 py-1 rounded-full border border-brown-dark/5">
-                                            {[1, 2, 3, 4, 5].map((s) => (
-                                                <Star key={s} className={`w-2.5 h-2.5 ${s <= Math.round(karya.avg_rating || 0) ? 'fill-yellow-500 text-yellow-500' : 'text-brown-dark/10'}`} />
-                                            ))}
-                                        </div>
-                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 rounded-full border border-brown-dark/5">
-                                            <span className="text-[9px] font-black text-brown-dark/60 uppercase tracking-widest">
-                                                {karya.count_chapters || karya._count?.bab || 0} Bab
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Description Box */}
-                                    <div className="bg-brown-dark/[0.02] dark:bg-slate-900/50 border border-brown-dark/10 p-5 rounded-[1.8rem] relative">
-                                        <span className="text-[9px] font-black uppercase text-brown-dark/30 tracking-widest block mb-1">Deskripsi:</span>
-                                        <p className="text-sm text-text-main/70 dark:text-gray-400 line-clamp-3 leading-relaxed font-medium italic">
-                                            {karya.deskripsi || "Penulis belum menambahkan sinopsis untuk karya indah ini."}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 );
             case 'postingan':
@@ -333,8 +438,8 @@ export default function ProfileClient({
                 </div>
             </header>
 
-            {/* Profile Banner Segment */}
-            <div className="h-64 sm:h-80 bg-olive-banner relative overflow-hidden">
+            {/* Profile Banner Segment - Reduced Height */}
+            <div className="h-48 sm:h-56 bg-olive-banner relative overflow-hidden">
                 {/* Subtle Decorative Elements for "Journal" feel */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none">
                     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
@@ -343,20 +448,20 @@ export default function ProfileClient({
             </div>
 
             <main className="max-w-4xl mx-auto px-6 relative">
-                {/* Avatar Overlap Section */}
-                <div className="relative -mt-24 sm:-mt-32 mb-6">
-                    <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-[3rem] overflow-hidden bg-brown-dark border-[6px] border-bg-cream dark:border-slate-950 shadow-2xl shadow-brown-dark/20 transition-all duration-500 relative z-10">
+                {/* Avatar Overlap Section - Reduced Size & Overlap */}
+                <div className="relative -mt-16 sm:-mt-20 mb-6">
+                    <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-[2.5rem] overflow-hidden bg-brown-dark border-[5px] border-bg-cream dark:border-slate-950 shadow-xl shadow-brown-dark/10 transition-all duration-500 relative z-10">
                         {userProfile.avatar_url ? (
                             <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-brown-mid">
-                                <UserCircle2 className="w-20 h-20 text-text-accent/20" strokeWidth={1} />
+                                <UserCircle2 className="w-16 h-16 text-text-accent/20" strokeWidth={1} />
                             </div>
                         )}
                     </div>
                     {isAuthor && (
-                        <div className="absolute bottom-2 right-2 bg-tan-primary text-text-accent p-2 rounded-xl shadow-lg border-2 border-bg-cream dark:border-slate-950 z-20 transition-transform hover:scale-110">
-                            <Sparkles className="w-4 h-4" />
+                        <div className="absolute bottom-1 right-1 bg-tan-primary text-text-accent p-1.5 rounded-lg shadow-lg border-2 border-bg-cream dark:border-slate-950 z-20 transition-transform hover:scale-110">
+                            <Sparkles className="w-3.5 h-3.5" />
                         </div>
                     )}
                 </div>
@@ -425,9 +530,14 @@ export default function ProfileClient({
 
                 {/* Tab Navigation - Journal Style with Indicator */}
                 <div className="sticky top-0 bg-bg-cream/90 dark:bg-slate-950/90 backdrop-blur-md z-40 -mx-6 px-6 border-b border-brown-dark/10 flex gap-8 mb-8 overflow-x-auto hide-scrollbar">
-                    {isAuthor && [
-                        { id: 'karya', label: 'CERITA' },
-                        { id: 'postingan', label: 'POST' }
+                    {[
+                        ...(isAuthor ? [
+                            { id: 'karya', label: 'CERITA' },
+                            { id: 'postingan', label: 'POST' }
+                        ] : []),
+                        { id: 'aktivitas', label: isAuthor ? 'FEED' : 'AKTIVITAS' },
+                        ...(activeTab === 'pengikut' ? [{ id: 'pengikut', label: 'PENGIKUT' }] : []),
+                        ...(activeTab === 'mengikuti' ? [{ id: 'mengikuti', label: 'MENGIKUTI' }] : [])
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -440,15 +550,6 @@ export default function ProfileClient({
                             )}
                         </button>
                     ))}
-                    <button
-                        onClick={() => handleTabChange('aktivitas')}
-                        className={`py-4 relative text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap ${['aktivitas', 'pengikut', 'mengikuti'].includes(activeTab) ? 'text-text-main dark:text-white' : 'text-text-main/40 dark:text-gray-500 hover:text-text-main'}`}
-                    >
-                        {isAuthor ? 'FEED' : 'AKTIVITAS'}
-                        {['aktivitas', 'pengikut', 'mengikuti'].includes(activeTab) && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-brown-dark rounded-full transition-all animate-in slide-in-from-left duration-300"></div>
-                        )}
-                    </button>
                 </div>
 
                 {/* Content Area */}

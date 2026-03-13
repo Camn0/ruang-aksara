@@ -36,7 +36,7 @@ export default function PostLikeButton({ postId, initialLikes, initialLikedByUse
     }
 
     return (
-        <button onClick={handleLike} disabled={isPending} className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 ${isLiked ? 'text-tan-primary' : 'text-text-main/30 dark:text-gray-500 hover:text-tan-primary'}`}>
+        <button onClick={handleLike} className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 ${isLiked ? 'text-tan-primary' : 'text-text-main/30 dark:text-gray-500 hover:text-tan-primary'}`}>
             <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} /> {likes}
         </button>
     );

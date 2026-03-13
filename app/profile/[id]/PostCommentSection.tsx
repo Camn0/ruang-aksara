@@ -110,9 +110,9 @@ export default function PostCommentSection({ postId, initialComments, commentCou
                 </div>
             )}
 
-            {/* Comment Form */}
+            {/* Comment Form - Themed & Relaxed */}
             {currentUserId && (
-                <form ref={formRef} action={handleSubmit} className="flex gap-3 items-center bg-white dark:bg-slate-900 border border-brown-dark/10 p-2 rounded-[1.5rem] shadow-sm focus-within:shadow-md transition-all">
+                <form ref={formRef} action={handleSubmit} className="flex gap-3 items-center bg-brown-dark/[0.04] dark:bg-slate-900 border border-brown-dark/5 p-2 rounded-[1.5rem] transition-all focus-within:bg-brown-dark/[0.06] dark:focus-within:bg-slate-800 focus-within:border-brown-dark/10">
                     <textarea
                         name="content"
                         placeholder="Tulis sebuah surat..."
