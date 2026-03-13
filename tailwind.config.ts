@@ -18,6 +18,11 @@ const config: Config = {
                 'text-accent': '#F2EAD7',
                 'text-main': '#1B1310',
             },
+            fontFamily: {
+                'inter': ['var(--font-inter)', 'sans-serif'],
+                'lobster': ['var(--font-lobster)', 'cursive'],
+                'open-sans': ['var(--font-open-sans)', 'sans-serif'],
+            },
             backgroundImage: {
                 "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
                 "gradient-conic":
