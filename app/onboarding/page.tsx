@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
+import Image from 'next/image';
 
 export default function OnboardingPage() {
     const [step, setStep] = useState(1);
@@ -13,76 +14,201 @@ export default function OnboardingPage() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-500">
+        <div className={`flex flex-col min-h-screen transition-colors duration-500 selection:bg-pine/30 ${ step === 3 ? 'bg-[#f2ead7]' : 'bg-[#3b2a22]' }`}>
+            <div className="flex-1 flex flex-col items-center justify-center p text-center animate-in fade-in zoom-in duration-500">
                 {step === 1 && (
-                    <div className="space-y-8 flex flex-col items-center">
-                        <div className="w-24 h-24 bg-indigo-600 outline outline-4 outline-offset-4 outline-indigo-200 dark:outline-indigo-500/30 rounded-2xl flex items-center justify-center shadow-2xl mb-6">
-                            <span className="text-white text-4xl font-black font-serif italic">RA</span>
-                        </div>
-                        <h1 className="text-4xl font-black bg-gradient-to-br from-gray-900 dark:from-white to-gray-600 dark:to-gray-400 bg-clip-text text-transparent">
-                            Selamat Datang<br />Ruang Aksara
-                        </h1>
+                <>
+                    {/*MOBILE LAYOUT*/}
+                    <div className="relative min-h-screen w-full overflow-hidden bg-[#f2ead7] md:hidden">
+                    {/*Background pattern */}
+                    <div className="absolute -top-[15%] left-0 w-full h-[60vh] z-0">
+                        <Image
+                            src="/blockpatterns.png" 
+                            alt="Pattern Background"
+                            fill
+                            className="object-contain object-top"
+                            priority
+                        />
                     </div>
+
+                    {/*Mobile content*/}
+                    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
+                        {/* logo container */}
+                        <div className="absolute top-[24%] h-36 w-36 rounded-full bg-[#8a6342]" />
+
+                        {/* logo */}
+                        <div className="relative mb-6">
+                        <Image
+                            src="/logoRuangAksara.png"
+                            alt="Ruang Aksara"
+                            width={170}
+                            height={120}
+                            className="object-contain"
+                        />
+                        </div>
+
+                        {/* Text */}
+                        <div className="mb-6 space-y-1">
+                        <h2 className="text-3xl font-medium text-black">
+                            Selamat Datang <br />
+                            di
+                        </h2>
+                        <h1 className="text-5xl font-black text-black">
+                            Ruang Aksara
+                        </h1>
+                        </div>
+
+                        {/* Pagination dots */}
+                        <div className="flex gap-2 mb-8">
+                        <div className="w-4 h-4 rounded-full bg-black"></div>
+                        <div className="w-4 h-4 rounded-full border-2 border-black"></div>
+                        </div>
+
+                        {/* Button */}
+                        <button
+                        onClick={handleNext}
+                        className="bg-[#7D5A44] text-[#f2ead7] px-10 py-3 rounded-full text-2xl font-medium hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+                        >
+                        Selanjutnya
+                        </button>
+                    </div>
+                    </div>
+
+                    {/*DESKTOP LAYOUT*/}
+                    <div className="relative hidden w-full h-screen overflow-hidden md:flex items-center">
+                    {/*lg = tablet xl = laptop/above */}
+                    <div
+                        className="
+                        absolute top-1/2 -translate-y-1/2 
+                        -left-[45%] lg:-left-[35%] xl:-left-[20%] 
+                        w-[110vw] lg:w-[90vw] xl:w-[75vw] 
+                        aspect-square bg-[#f2ead7] rounded-full z-10 shadow-2xl
+                        "
+                    ></div>
+
+                    {/* main area */}
+                    <div className="relative z-10 w-full md:w-1/2 flex flex-col items-center justify-center p-8 text-center">
+                        <div>
+                        <Image
+                            src="/logoRuangAksara.png"
+                            alt="Ruang Aksara"
+                            width={250}
+                            height={150}
+                        />
+                        </div>
+
+                        {/* Text */}
+                        <div className="text-center space-y-2 mb-10">
+                        <h2 className="text-2xl lg:text-4xl font-medium text-[#3b2a22]">
+                            Selamat Datang <br />
+                            di
+                        </h2>
+                        <h1 className="text-4xl lg:text-6xl font-black text-[#3b2a22]">
+                            Ruang Aksara
+                        </h1>
+                        </div>
+
+                        {/* Pagination dots */}
+                        <div className="flex gap-2 mb-10">
+                        <div className="w-10 h-10 rounded-full bg-[#3b2a22]"></div>
+                        <div className="w-10 h-10 rounded-full border-4 border-[#3b2a22]"></div>
+                        </div>
+
+                        <button
+                        onClick={handleNext}
+                        className="bg-[#7D5A44] text-[#f2ead7] px-12 py-3 rounded-full text-xl font-bold hover:scale-105 active:scale-95 transition-all shadow-lg"
+                        >
+                        selanjutnya
+                        </button>
+                    </div>
+
+                    {/* background book */}
+                    <div className="absolute right-0 top-0 w-full h-full z-0">
+                        <Image
+                        src="/bookPicture.png"
+                        alt="Books"
+                        fill
+                        className="object-cover object"
+                        />
+                    </div>
+                    </div>
+                </>
                 )}
 
                 {step === 2 && (
-                    <div className="space-y-6 flex flex-col items-center">
-                        <div className="w-64 h-64 bg-indigo-50 dark:bg-indigo-900/40 rounded-full flex items-center justify-center relative overflow-hidden mb-4">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-indigo-100 dark:from-indigo-900/50 to-purple-50 dark:to-purple-900/30 opacity-50"></div>
-                            <svg className="w-32 h-32 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
+                    <div className="w-full max-w-2xl mt-16 px-6"> 
+                        {/* white box */}
+                        <div className="relative lg:scale-150 bg-white rounded-xl pt-16 pb-12 px-4 md:px-8 shadow-xl flex flex-col items-center">
+                            
+                            {/* logo container */}
+                            <div className="absolute -top-12 left-1/2 -translate-x-1/2">
+                                <div className="w-24 h-24 md:scale-125 bg-[#B58E6B] rounded-full flex items-center justify-center overflow-hidden">
+                                <Image 
+                                        src="/logoRuangAksara.png" 
+                                        alt="Logo" 
+                                        width={100} 
+                                        height={100} 
+                                        className="object-contain"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Text */}
+                            <h2 className="text-black text-lg md:text-3xl [font-family:'Open_Sans-Regular',Helvetica] font-bold mb-4">
+                                Temukan Ribuan<br />Dunia Baru
+                            </h2>
+                            <p className="text-black text-sm md:text-xl [font-family:'Open_Sans-Regular',Helvetica] leading-relaxed mb-16">
+                                Nikmati karya sastra digital terbaik dari tangan-tangan berbakat di mana pun Anda berada.
+                            </p>
+
+                            <button 
+                                onClick={handleNext}
+                                className="bg-[#7D5A44] text-white px-10 py-3 rounded-full text-md md:text-2xl font-medium hover:bg-[#5D4232] hover:scale-[1.02] active:scale-95 transition-colors"
+                            >
+                                selanjutnya
+                            </button>
                         </div>
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Temukan Ribuan<br />Dunia Baru</h2>
-                        <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed">
-                            Nikmati karya sastra digital terbaik dari tangan-tangan berbakat di mana pun Anda berada.
-                        </p>
                     </div>
                 )}
 
-                {step === 3 && (
-                    <div className="space-y-8 w-full">
-                        <h2 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-12">Mulai</h2>
 
-                        <div className="space-y-4 w-full px-4">
+                {step === 3 && (
+                    <div className="relative flex flex-col items-center space-y-10 w-full max-w-md px-3">
+                        <Image
+                            src="/logoRuangAksara.png"
+                            alt="Ruang Aksara"
+                            width={200}
+                            height={100}
+                        />
+
+                        <div className="space-y-6 w-full px-1 z-10">
                             <button
                                 onClick={() => router.push("/auth/login?type=admin")}
-                                className="w-full py-4 px-6 bg-white dark:bg-slate-900 border-2 border-indigo-600 dark:border-indigo-500 text-indigo-700 dark:text-indigo-400 rounded-2xl font-bold text-lg flex items-center justify-between hover:bg-indigo-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm"
+                                className="w-full py-5 rounded-3xl border-4 border-solid border-[#3b2a22] bg-[#EFE5D6] flex items-center justify-center transition-all hover:scale-[1.02] active:scale-95"
                             >
-                                <span>Masuk Author/Admin</span>
-                                <ChevronRight className="w-5 h-5" />
+                                <span className="text-xl md:text-3xl text-[#3b2a22] [font-family:'Open_Sans-SemiBold',Helvetica] font-semibold tracking-[0] leading-[normal]">Masuk Sebagai Penulis</span>
                             </button>
 
                             <button
                                 onClick={() => router.push("/auth/login?type=reader")}
-                                className="w-full py-4 px-6 bg-indigo-600 dark:bg-indigo-500 text-white rounded-2xl font-bold text-lg flex items-center justify-between hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all active:scale-95 shadow-lg shadow-indigo-200 dark:shadow-none"
+                                className="w-full py-5 rounded-3xl border-4 border-solid border-[#4A2F24] bg-[#3b2a22]  flex items-center justify-center transition-all hover:scale-[1.02] active:scale-95 "
                             >
-                                <span>Masuk Pembaca</span>
-                                <ChevronRight className="w-5 h-5" />
+                                <span className="text-xl md:text-3xl text-[#f2ead7] [font-family:'Open_Sans-SemiBold',Helvetica] font-semibold tracking-[0] leading-[normal]">Masuk Sebagai Pembaca</span>
                             </button>
+                        </div>
+
+                        <div className="absolute w-full left-0 z-0 md:hidden">
+                            <Image
+                                src="/book2.png" 
+                                alt="Pattern Background"
+                                width={600}
+                                height={300}
+                                className="w-full bottom-0 h-auto"
+                            />
                         </div>
                     </div>
                 )}
             </div>
-
-            {/* Pagination / Next Button fixed at bottom */}
-            {step < 3 && (
-                <div className="pb-12 pt-4 px-8 flex flex-col items-center space-y-8 relative z-10">
-                    {/* Dots */}
-                    <div className="flex gap-3">
-                        <div className={`w-3 h-3 rounded-full transition-all duration-300 ${step === 1 ? 'bg-indigo-600 dark:bg-indigo-500 w-8' : 'bg-gray-300 dark:bg-slate-700'}`} />
-                        <div className={`w-3 h-3 rounded-full transition-all duration-300 ${step === 2 ? 'bg-indigo-600 dark:bg-indigo-500 w-8' : 'bg-gray-300 dark:bg-slate-700'}`} />
-                    </div>
-
-                    <button
-                        onClick={handleNext}
-                        className="w-full py-4 bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900 rounded-2xl font-bold text-lg hover:bg-black dark:hover:bg-white transition-all active:scale-95 shadow-xl shadow-gray-200 dark:shadow-none"
-                    >
-                        Next
-                    </button>
-                </div>
-            )}
         </div>
     );
 }
