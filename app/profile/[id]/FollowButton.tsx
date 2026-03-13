@@ -16,18 +16,10 @@ export default function FollowButton({ targetUserId, initialIsFollowing }: { tar
         <button
             onClick={handleFollow}
             disabled={isPending}
-            className={`
-                w-max inline-flex items-center justify-center
-                px-5 py-2 rounded-full
-                font-semibold text-sm tracking-wide
-                transition-all duration-200
-                focus:outline-none
-                disabled:opacity-60 disabled:cursor-not-allowed active:scale-95
-                ${initialIsFollowing
-                    ? 'bg-[#3d2314] text-[#e8d5c0] hover:bg-[#4a2c1a] dark:bg-[#e8d5c0] dark:text-[#2d2118] dark:hover:bg-[#d4c0a8]'
-                    : 'bg-[#3d2314] text-[#e8d5c0] hover:bg-[#4a2c1a] dark:bg-[#e8d5c0] dark:text-[#2d2118] dark:hover:bg-[#d4c0a8]'
-                }
-            `}
+            className={`w-max px-6 py-1.5 rounded-full font-bold text-[11px] uppercase tracking-wider transition-all focus:outline-none focus:ring-2 disabled:opacity-50 ${initialIsFollowing
+                ? 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 focus:ring-gray-200 dark:focus:ring-slate-700 border border-transparent dark:border-slate-700'
+                : 'bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-400 shadow-sm shadow-indigo-200 dark:shadow-none focus:ring-indigo-100 dark:focus:ring-indigo-900 border border-transparent'
+                }`}
         >
             {isPending ? '...' : (initialIsFollowing ? '✓ Mengikuti' : '+ Ikuti')}
         </button>

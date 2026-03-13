@@ -67,12 +67,12 @@ export default function PostCommentSection({ postId, initialComments, commentCou
     }
 
     return (
-        <div className="mt-3 pt-3 border-t border-gray-50 dark:border-slate-800">
+        <div className="mt-4 pt-4 border-t border-brown-dark/5">
             {/* Toggle Comment Section */}
             {commentCount > 0 && (
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition mb-2"
+                    className="flex items-center gap-2 text-[10px] font-black text-tan-primary uppercase tracking-widest hover:text-brown-dark transition-all mb-4 px-1"
                 >
                     {isOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     {isOpen ? 'Sembunyikan' : `Lihat ${commentCount} komentar`}
@@ -83,16 +83,16 @@ export default function PostCommentSection({ postId, initialComments, commentCou
             {isOpen && initialComments.length > 0 && (
                 <div className="space-y-2 mb-3">
                     {initialComments.map((c) => (
-                        <div key={c.id} className="flex gap-2 items-start group">
-                            <div className="w-5 h-5 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-bold text-gray-500 shrink-0">
+                        <div key={c.id} className="flex gap-4 items-start group bg-brown-dark/[0.02] p-3 rounded-2xl border border-brown-dark/5">
+                            <div className="w-8 h-8 rounded-xl bg-tan-light/10 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black text-tan-primary shrink-0 border border-brown-dark/5 shadow-sm">
                                 {c.user?.display_name?.substring(0, 2).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs">
-                                    <Link href={`/profile/${c.user?.username}`} className="font-bold text-gray-900 dark:text-gray-100 hover:underline">{c.user?.display_name}</Link>{' '}
-                                    <span className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{c.content}</span>
+                                <p className="text-[13px] leading-relaxed">
+                                    <Link href={`/profile/${c.user?.username}`} className="font-black text-text-main dark:text-gray-100 uppercase tracking-tight text-[11px] block mb-1 hover:text-tan-primary transition-colors">{c.user?.display_name}</Link>{' '}
+                                    <span className="text-text-main/70 dark:text-gray-400 font-medium italic">&quot;{c.content}&quot;</span>
                                 </p>
-                                <p className="text-[10px] text-gray-400 dark:text-gray-500">{new Date(c.created_at).toLocaleDateString('id-ID')}</p>
+                                <p className="text-[8px] text-tan-primary/40 font-black uppercase tracking-widest mt-2">{new Date(c.created_at).toLocaleDateString('id-ID')}</p>
                             </div>
                             {/* Delete Button */}
                             {(currentUserId === c.user_id || currentUserRole === 'admin') && (
@@ -112,26 +112,26 @@ export default function PostCommentSection({ postId, initialComments, commentCou
 
             {/* Comment Form */}
             {currentUserId && (
-                <form ref={formRef} action={handleSubmit} className="flex gap-2 items-start">
+                <form ref={formRef} action={handleSubmit} className="flex gap-3 items-center bg-white dark:bg-slate-900 border border-brown-dark/10 p-2 rounded-[1.5rem] shadow-sm focus-within:shadow-md transition-all">
                     <textarea
                         name="content"
-                        placeholder="Tulis komentar..."
+                        placeholder="Tulis sebuah surat..."
                         required
                         disabled={isPending}
-                        className="flex-1 text-xs border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-2 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500 min-h-[36px] resize-none"
+                        className="flex-1 text-sm bg-transparent dark:text-gray-100 p-3 outline-none min-h-[44px] max-h-[120px] resize-none font-medium italic"
                         rows={1}
                     />
                     <button
                         type="submit"
                         disabled={isPending}
-                        className="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 shrink-0"
+                        className="bg-brown-dark text-text-accent p-3 rounded-2xl hover:bg-brown-mid transition-all disabled:opacity-50 shrink-0 shadow-lg shadow-brown-dark/20 active:scale-95"
                     >
-                        <Send className="w-3.5 h-3.5" />
+                        <Send className="w-4 h-4" />
                     </button>
                 </form>
             )}
             {success && (
-                <p className="text-xs font-bold text-green-600 dark:text-green-400 mt-1 animate-pulse">{success}</p>
+                <p className="text-[10px] font-black text-tan-primary uppercase tracking-[0.2em] mt-3 animate-pulse text-center">{success}</p>
             )}
         </div>
     );
