@@ -18,7 +18,7 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
     ];
 
     if (userRole === 'admin') {
-        navigation.push({ name: 'Genre', href: '/admin/genre', icon: Settings });
+        navigation.push({ name: 'Pengaturan Admin', href: '/admin/genre', icon: Settings });
     }
 
     return (
