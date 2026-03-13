@@ -1,0 +1,146 @@
+.navigation {
+  position: relative;
+  height: 60px; /* Adjusted based on Figma ratios */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px; /* Rectangle 223 */
+  padding: 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s ease;
+  z-index: 50;
+}
+
+.navigation ul {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  position: relative;
+}
+
+.navigation ul li {
+  position: relative;
+  flex: 1;
+  height: 65px;
+  z-index: 2;
+}
+
+.navigation ul li a {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+
+/* Themes */
+.nav-reader {
+  --nav-bg: #3B2A22; /* Rectangle 223 for Reader */
+  --nav-icon-color: #F8F4E1;
+  --nav-active-icon-color: #3B2A22;
+  --nav-indicator-bg: #F2EAD7; /* Ellipse 33 */
+  --page-bg-color: #F8F4E1;
+  background: var(--nav-bg);
+}
+
+.dark .nav-reader { --page-bg-color: #020617; }
+
+.nav-author {
+  --nav-bg: #D7BFA7; /* Rectangle 223 for Author */
+  --nav-icon-color: #3B2A22;
+  --nav-active-icon-color: #3B2A22;
+  --nav-indicator-bg: #F2EAD7; /* Ellipse 32 */
+  --page-bg-color: #F8F4E1;
+  background: var(--nav-bg);
+}
+
+.dark .nav-author { --page-bg-color: #020617; }
+
+.navigation ul li a .icon {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s;
+  color: var(--nav-icon-color);
+  opacity: 0.6;
+}
+
+.navigation ul li.active a .icon {
+  transform: translateY(-34px); /* Nudged up slightly from -32px to center better in circle */
+  color: var(--nav-active-icon-color);
+  opacity: 1;
+}
+
+/* The floating circle */
+.indicator-circle {
+  position: absolute;
+  top: -30px;
+  width: 60px;
+  height: 60px;
+  background: var(--nav-indicator-bg);
+  border-radius: 50%;
+  border: 6px solid var(--page-bg-color);
+  transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-sizing: border-box;
+  z-index: 1; /* Behind icons */
+}
+
+/* The cutout wings (concave effect) */
+.indicator-cutout {
+  position: absolute;
+  top: -30px;
+  width: 60px;
+  height: 60px;
+  transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
+}
+
+.indicator-cutout::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -16px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-right-radius: 20px;
+  box-shadow: 1px -10px 0 0 var(--page-bg-color); /* Restored for sharper curve if needed, but matched user's hider logic */
+}
+
+.indicator-cutout::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -16px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-left-radius: 20px;
+  box-shadow: -1px -10px 0 0 var(--page-bg-color);
+}
+
+/* Centering Logic */
+/* Reader (4 items) */
+.active-0-4 .indicator-circle, .active-0-4 .indicator-cutout { left: calc(12.5% - 30px); }
+.active-1-4 .indicator-circle, .active-1-4 .indicator-cutout { left: calc(37.5% - 30px); }
+.active-2-4 .indicator-circle, .active-2-4 .indicator-cutout { left: calc(62.5% - 30px); }
+.active-3-4 .indicator-circle, .active-3-4 .indicator-cutout { left: calc(87.5% - 30px); }
+
+/* Author (5 items) */
+.active-0-5 .indicator-circle, .active-0-5 .indicator-cutout { left: calc(10% - 30px); }
+.active-1-5 .indicator-circle, .active-1-5 .indicator-cutout { left: calc(30% - 30px); }
+
+/* Center (Plus) - Hide EVERYTHING as Plus has its own circle & pops out */
+.active-2-5 .indicator-circle, .active-2-5 .indicator-cutout { 
+    transform: scale(0); 
+    opacity: 0; 
+    left: calc(50% - 30px); 
+}
+
+.active-3-5 .indicator-circle, .active-3-5 .indicator-cutout { left: calc(70% - 30px); }
+.active-4-5 .indicator-circle, .active-4-5 .indicator-cutout { left: calc(90% - 30px); }

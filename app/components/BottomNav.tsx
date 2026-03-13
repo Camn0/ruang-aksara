@@ -3,82 +3,83 @@
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Search, BookMarked, PenTool, User, Plus } from "lucide-react";
+import { Home, Search, BookMarked, User, Plus } from "lucide-react";
+import './BottomNav.css';
 
 export default function BottomNav() {
     const { data: session } = useSession();
     const pathname = usePathname();
 
-    // Sembunyikan navbar di halaman auth, onboarding, atau error
+    if (!session?.user) return null;
+
     const hiddenRoutes = ["/onboarding", "/auth/login", "/auth/register"];
-    if (hiddenRoutes.some(route => pathname.startsWith(route))) {
-        return null; // Tidak render
-    }
+    if (hiddenRoutes.some(route => pathname.startsWith(route))) return null;
+    if (pathname.match(/^\/novel\/[^\/]+\/\d+$/)) return null;
 
-    // Sembunyikan BottomNav khusus saat sedang asik membaca bab (rute /novel/[id]/[no])
-    if (pathname.match(/^\/novel\/[^\/]+\/\d+$/)) {
-        return null;
-    }
+    const role = session.user.role;
+    const isAuthor = role === 'admin' || role === 'author';
 
-    // Jangan render jika belum ada sesi dan bukan di rute publik yg diizinkan (opsional)
-    if (!session?.user) {
-        return null;
-    }
+    const readerMenu = [
+        { name: "Home", icon: Home, path: "/user/dashboard" },
+        { name: "Search", icon: Search, path: "/search" },
+        { name: "Library", icon: BookMarked, path: "/library" },
+        { name: "Profile", icon: User, path: `/profile/${session.user.id}` },
+    ];
 
-    const isAdminOrAuthor = session.user.role === 'admin' || session.user.role === 'author';
+    const authorMenu = [
+        { name: "Home", icon: Home, path: "/admin/dashboard" },
+        { name: "Search", icon: Search, path: "/search" },
+        { name: "Add", icon: Plus, path: "/admin/editor/karya" },
+        { name: "Library", icon: BookMarked, path: "/library" },
+        { name: "Profile", icon: User, path: `/profile/${session.user.id}` },
+    ];
 
-    // Tentukan rute aktif
-    const isActive = (path: string) => pathname === path || (path !== "/" && pathname.startsWith(path));
+    const menu = isAuthor ? authorMenu : readerMenu;
+    const activeIndex = menu.findIndex(item => 
+        pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path))
+    );
 
-    const homeUrl = isAdminOrAuthor ? "/admin/dashboard" : "/user/dashboard";
-    const editUrl = "/admin/editor/karya";
-    const libraryUrl = "/library"; // Kita akan buat hlmn library nanti sesuai task 12.6
+    // Default to 0 if not found
+    const currentActiveIndex = activeIndex === -1 ? 0 : activeIndex;
 
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md md:hidden pointer-events-auto">
-            <div className="bg-tan-light rounded-[30px] shadow-xl p-2 relative">
-                <div className="flex justify-between items-center h-12 px-4 relative">
-                    <Link
-                        href={homeUrl}
-                        className={`p-2 transition-all ${isActive(homeUrl) ? 'scale-110' : 'opacity-60'}`}
-                    >
-                        <Home className="w-6 h-6 text-brown-dark" strokeWidth={isActive(homeUrl) ? 2.5 : 2} />
-                    </Link>
-
-                    <Link
-                        href="/search"
-                        className={`p-2 transition-all ${isActive('/search') ? 'scale-110' : 'opacity-60'}`}
-                    >
-                        <Search className="w-6 h-6 text-brown-dark" strokeWidth={isActive('/search') ? 2.5 : 2} />
-                    </Link>
-
-                    {/* Central Add Button */}
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2">
-                        <Link
-                            href={editUrl}
-                            className="bg-brown-dark w-16 h-16 rounded-full flex items-center justify-center text-text-accent shadow-2xl border-4 border-bg-cream transition-transform active:scale-90"
-                        >
-                            <Plus className="w-10 h-10" />
-                        </Link>
-                    </div>
-
-                    {/* Spacer for central button */}
-                    <div className="w-16"></div>
-
-                    <Link
-                        href={libraryUrl}
-                        className={`p-2 transition-all ${isActive(libraryUrl) ? 'scale-110' : 'opacity-60'}`}
-                    >
-                        <BookMarked className="w-6 h-6 text-brown-dark" strokeWidth={isActive(libraryUrl) ? 2.5 : 2} />
-                    </Link>
-
-                    <Link
-                        href={`/profile/${session.user.id}`}
-                        className={`p-2 transition-all ${isActive('/profile') ? 'scale-110' : 'opacity-60'}`}
-                    >
-                        <User className="w-6 h-6 text-brown-dark" strokeWidth={isActive('/profile') ? 2.5 : 2} />
-                    </Link>
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[400px] md:hidden">
+            <div className={`navigation relative ${isAuthor ? 'nav-author' : 'nav-reader'} active-${currentActiveIndex}-${menu.length}`}>
+                {/* 1. Cutout Wings (Inside clipping container that matches bar perfectly) */}
+                <div className="absolute inset-0 overflow-hidden rounded-[30px] pointer-events-none">
+                    <div className="indicator-cutout"></div>
                 </div>
+
+                {/* 2. Floating Circle (Above everything, not clipped) */}
+                <div className="indicator-circle flex items-center justify-center"></div>
+
+                {/* 3. Navigation Items */}
+                <ul className="flex w-full h-full relative z-10 translate-y-[-1px]">
+                    {menu.map((item, index) => {
+                        const isPlus = isAuthor && index === 2; // Middle item
+                        const isActive = currentActiveIndex === index;
+                        
+                        return (
+                            <li key={index} className={`flex-1 ${isActive ? 'active' : ''}`}>
+                                <Link href={item.path} className="flex justify-center items-center h-full w-full relative">
+                                    {isPlus ? (
+                                        <div className="relative flex items-center justify-center translate-y-[-24px]">
+                                            {/* Ellipse 10 */}
+                                            <div className="w-[58px] h-[58px] bg-[#3B2A22] rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 border-[6px] border-[#F8F4E1]">
+                                                {/* Text + using Inter */}
+                                                <span className="text-[#F2EAD7] font-['Inter'] font-light text-5xl leading-none translate-y-[-3px]">+</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <span className="icon flex items-center justify-center h-full">
+                                            <item.icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} />
+                                        </span>
+                                    )}
+                                </Link>
+                            </li>
+                        );
+                    })}
+                </ul>
             </div>
         </div>
     );
