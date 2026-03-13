@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { createAuthorPost } from '@/app/actions/post';
-import { UserCircle2, ImagePlus, X } from 'lucide-react';
+import { UserCircle2, ImagePlus, X, Camera } from 'lucide-react';
 
 export default function CreatePostForm({ userProfile }: { userProfile: any }) {
     const [isPending, setIsPending] = useState(false);
@@ -10,6 +10,46 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
     const [content, setContent] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [showImageInput, setShowImageInput] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const compressImage = (file: File): Promise<string> => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800; // Posts can be a bit larger than avatars
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, width, height);
+                    
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    resolve(dataUrl);
+                };
+            };
+        });
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const compressed = await compressImage(file);
+            setImageUrl(compressed);
+            setShowImageInput(true);
+        }
+    };
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -17,6 +57,9 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
         setIsPending(true);
 
         const formData = new FormData(event.currentTarget);
+        // Force compressed image URL into formData
+        formData.set('image_url', imageUrl);
+
         try {
             const res = await createAuthorPost(formData);
             if (res.error) alert(res.error);
@@ -58,39 +101,33 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
                 />
             </div>
 
-            {/* Image URL Preview */}
+            {/* Image Preview / Input */}
             {imageUrl && (
                 <div className="mb-4 relative px-2">
-                    <img src={imageUrl} alt="Preview" className="w-full max-h-72 object-cover rounded-2xl border border-brown-dark/10 shadow-md transition-transform duration-500" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    <img src={imageUrl} alt="Preview" className="w-full max-h-72 object-cover rounded-2xl border border-brown-dark/10 shadow-md transition-transform duration-500" />
                     <button type="button" onClick={() => { setImageUrl(''); setShowImageInput(false); }} className="absolute top-4 right-6 bg-brown-dark/80 text-text-accent p-1.5 rounded-full hover:bg-brown-dark shadow-lg transition-all active:scale-90">
                         <X className="w-4 h-4" />
                     </button>
+                    <input type="hidden" name="image_url" value={imageUrl} />
                 </div>
             )}
 
-            {/* Image URL Input */}
-            {showImageInput && !imageUrl && (
-                <div className="mb-4 px-2">
-                    <input
-                        type="url"
-                        name="image_url"
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                        placeholder="Tempel URL gambar di sini (Instagram/Pinterest/etc)..."
-                        className="w-full text-[11px] font-black uppercase tracking-widest border border-brown-dark/10 bg-brown-dark/5 dark:bg-slate-800 text-text-main dark:text-gray-100 p-3.5 rounded-xl outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:opacity-30"
-                    />
-                </div>
-            )}
-            {imageUrl && <input type="hidden" name="image_url" value={imageUrl} />}
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/*"
+            />
 
             {(isFocused || content) && (
                 <div className="flex items-center justify-between border-t border-brown-dark/5 pt-4 px-2">
                     <button
                         type="button"
-                        onClick={() => setShowImageInput(!showImageInput)}
-                        className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 ${showImageInput || imageUrl ? 'text-brown-dark' : 'text-tan-primary hover:text-brown-dark'}`}
+                        onClick={() => fileInputRef.current?.click()}
+                        className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 ${imageUrl ? 'text-brown-dark' : 'text-tan-primary hover:text-brown-dark'}`}
                     >
-                        <ImagePlus className="w-4 h-4" /> Tambah Gambar
+                        <ImagePlus className="w-4 h-4" /> {imageUrl ? 'Ganti Gambar' : 'Tambah Gambar'}
                     </button>
                     <div className="flex gap-3">
                         <button type="button" onClick={() => { setIsFocused(false); setContent(''); setImageUrl(''); setShowImageInput(false); }} className="text-tan-primary/60 hover:text-brown-dark text-[10px] font-black uppercase tracking-widest px-4 py-2 transition-all">Batal</button>

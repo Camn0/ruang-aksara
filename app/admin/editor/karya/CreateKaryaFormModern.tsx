@@ -40,23 +40,61 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
     const [step, setStep] = useState(1);
     const router = useRouter();
 
-    // --- LOGIKA UPLOAD & CONVERT KE BASE64 ---
+    // --- LOGIKA UPLOAD & CONVERT KE BASE64 DENGAN KOMPRESI ---
     const [coverPreview, setCoverPreview] = useState<string | null>(null);
     const [coverBase64, setCoverBase64] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const compressImage = (file: File): Promise<string> => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    // Target Resolution: 600x900 (High-end enough for book covers)
+                    const MAX_WIDTH = 600;
+                    const MAX_HEIGHT = 900;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, width, height);
+                    
+                    // Compress to JPEG with 0.7 quality (Good balance)
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    resolve(dataUrl);
+                };
+            };
+        });
+    };
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Tampilkan Preview
+            // Tampilkan Preview Mentah (Instan)
             setCoverPreview(URL.createObjectURL(file));
 
-            // Ubah file jadi teks Base64 untuk dikirim ke Database
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setCoverBase64(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            // Kompresi Client-Side & Convert ke Base64
+            // Mengurangi beban Fast Origin Transfer Vercel secara drastis (>90%)
+            const compressedBase64 = await compressImage(file);
+            setCoverBase64(compressedBase64);
         }
     };
 

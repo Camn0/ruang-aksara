@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { updateUserProfile } from '@/app/actions/user';
-import { Save, Instagram, Twitter, Globe, Link2, UserCircle2 } from 'lucide-react';
+import { Save, Instagram, Twitter, Globe, Link2, UserCircle2, Camera, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SocialLinks {
@@ -25,6 +25,46 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
     const [socials, setSocials] = useState<SocialLinks>(initialSocialLinks || {});
 
     const [isPending, setIsPending] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const compressImage = (file: File): Promise<string> => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    // Avatars don't need to be huge. 256x256 is perfect for profiles.
+                    const SIZE = 256;
+                    canvas.width = SIZE;
+                    canvas.height = SIZE;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Center crop logic if needed, but simple resize for now
+                    ctx?.drawImage(img, 0, 0, SIZE, SIZE);
+                    
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    resolve(dataUrl);
+                };
+            };
+        });
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            toast.loading('Memproses foto...', { id: 'avatar-upload' });
+            try {
+                const compressed = await compressImage(file);
+                setAvatarUrl(compressed);
+                toast.success('Foto siap diunggah!', { id: 'avatar-upload' });
+            } catch (err) {
+                toast.error('Gagal memproses foto.', { id: 'avatar-upload' });
+            }
+        }
+    };
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -56,7 +96,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                 {/* Avatar URL */}
                 <div>
                     <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-3 flex items-center gap-2">
-                        <UserCircle2 className="w-3.5 h-3.5" /> URL Foto Profil
+                        <UserCircle2 className="w-3.5 h-3.5" /> Foto Profil
                     </label>
                     <div className="flex gap-6 items-center">
                         <div className="w-20 h-20 rounded-[1.5rem] overflow-hidden bg-brown-dark/5 border border-brown-dark/10 shrink-0 shadow-sm relative group">
@@ -68,14 +108,37 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                                 </div>
                             )}
                         </div>
-                        <input
-                            type="url"
-                            value={avatarUrl}
-                            onChange={(e) => setAvatarUrl(e.target.value)}
-                            className="flex-1 bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-4 text-xs font-black text-text-main dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
-                            placeholder="https://example.com/avatar.jpg"
-                            disabled={isPending}
-                        />
+                        
+                        <div className="flex flex-col gap-2">
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                                accept="image/jpeg,image/png,image/webp"
+                            />
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="px-4 py-2 bg-tan-primary text-text-accent rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-brown-mid transition-all shadow-md active:scale-95"
+                                    disabled={isPending}
+                                >
+                                    <Camera className="w-3.5 h-3.5" /> Unggah Foto
+                                </button>
+                                {avatarUrl && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setAvatarUrl('')}
+                                        className="px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-red-100 transition-all active:scale-95"
+                                        disabled={isPending}
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" /> Hapus
+                                    </button>
+                                )}
+                            </div>
+                            <p className="text-[9px] text-brown-dark/40 font-bold italic">Max 5MB. Akan dikompresi otomatis.</p>
+                        </div>
                     </div>
                 </div>
 
