@@ -3,15 +3,12 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { UserCircle2, Sparkles, History, Star, BookOpen, Flame, Trophy, TrendingUp, ChevronRight, Heart } from "lucide-react";
+import Image from "next/image";
+import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
 import { unstable_cache } from "next/cache";
 import DashboardStats from "./DashboardStats";
 
-/**
- * Global cache untuk daftar karya yang Sedang Hangat (Trending).
- * Berdasarkan total views tertinggi.
- */
 const getCachedTrending = unstable_cache(
     async () => {
         return prisma.karya.findMany({
@@ -24,9 +21,6 @@ const getCachedTrending = unstable_cache(
     { revalidate: 3600, tags: ['karya-global'] }
 );
 
-/**
- * User-specific Bookmarks Cache
- */
 const getCachedUserBookmarks = (userId: string) => unstable_cache(
     async () => prisma.bookmark.findMany({
         where: { user_id: userId },
@@ -44,9 +38,6 @@ const getCachedUserBookmarks = (userId: string) => unstable_cache(
     { revalidate: 60, tags: [`library-${userId}`] }
 )();
 
-/**
- * User-specific Stats
- */
 async function getUserStats(userId: string) {
     let stats = await (prisma as any).userStats.findUnique({
         where: { user_id: userId }
@@ -60,9 +51,6 @@ async function getUserStats(userId: string) {
     return stats;
 }
 
-/**
- * Fetch followed authors
- */
 async function getFollowedAuthors(userId: string) {
     return prisma.follow.findMany({
         where: { follower_id: userId },
@@ -88,7 +76,6 @@ export default async function UserDashboardPage() {
         redirect('/onboarding');
     }
 
-    // Paralelkan pengambilan data
     const [bookmarksRaw, trendingRaw, stats, followedAuthorsRaw] = await Promise.all([
         getCachedUserBookmarks(session.user.id),
         getCachedTrending(),
@@ -97,20 +84,21 @@ export default async function UserDashboardPage() {
     ]);
 
     const bookmarks = bookmarksRaw as any[];
-
-    // Hero: Most recently read
-    const lastRead = bookmarks[0];
-
     const trending = (trendingRaw as any[]).slice(0, 8);
-
 
     return (
         <div className="min-h-screen bg-bg-cream dark:bg-brown-dark transition-colors duration-500 pb-32">
-            {/* Header with warm aesthetic */}
+            {/* Header */}
             <header className="px-6 pt-12 pb-6 flex justify-between items-center bg-bg-cream/70 dark:bg-brown-dark/70 backdrop-blur-xl sticky top-0 z-30 border-b border-tan-light dark:border-brown-mid transition-all">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-tan-primary rounded-xl flex items-center justify-center text-text-accent font-lobster text-sm shadow-md transition-transform hover:rotate-3">
-                        RA
+                    <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shrink-0">
+                        <Image
+                            src="/icon.png"
+                            alt="Ruang Aksara"
+                            width={40}
+                            height={40}
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                     <div>
                         <h1 className="text-xl font-open-sans font-bold text-text-main dark:text-text-accent leading-none tracking-tight">Ruang Aksara</h1>
@@ -134,13 +122,12 @@ export default async function UserDashboardPage() {
                     <section className="relative">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent italic">Lanjutkan Membaca</h2>
-                            <Link href="/library" className="text-[10px] font-bold uppercase tracking-widest text-tan-primary hover:text-brown-dark transition-colors">Perpustakaan</Link>
+                            <Link href="/library" className="text-[10px] font-bold uppercase tracking-widest text-tan-primary hover:text-brown-dark dark:hover:text-text-accent transition-colors">Perpustakaan</Link>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Primary Hero */}
                             <Link href={`/novel/${bookmarks[0].karya.id}/${bookmarks[0].last_chapter}`} className="block group md:col-span-2">
-                                <div className="bg-white dark:bg-brown-dark rounded-[2.5rem] p-4 border border-tan-light dark:border-brown-mid shadow-xl shadow-tan-light/10 dark:shadow-none flex gap-5 items-center group-active:scale-[0.98] transition-all border-l-4 border-l-tan-primary">
+                                <div className="bg-tan-light/20 dark:bg-brown-mid/20 rounded-[2.5rem] p-4 border border-tan-light dark:border-brown-mid shadow-xl shadow-tan-light/10 dark:shadow-none flex gap-5 items-center group-active:scale-[0.98] transition-all border-l-4 border-l-tan-primary">
                                     <div className="w-20 h-28 rounded-2xl overflow-hidden shadow-2xl shrink-0 border border-tan-light dark:border-brown-mid">
                                         {bookmarks[0].karya.cover_url ? (
                                             <img src={bookmarks[0].karya.cover_url} alt={bookmarks[0].karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -154,9 +141,8 @@ export default async function UserDashboardPage() {
                                             <h3 className="text-sm font-bold text-text-main dark:text-text-accent leading-tight truncate">{bookmarks[0].karya.title}</h3>
                                         </div>
                                         <p className="text-[10px] text-tan-primary font-bold mb-3 uppercase tracking-tighter">Bab {bookmarks[0].last_chapter}</p>
-
                                         <div className="space-y-1">
-                                            <div className="flex justify-between text-[9px] font-black text-brown-mid uppercase tracking-tighter italic">
+                                            <div className="flex justify-between text-[9px] font-black text-brown-mid dark:text-tan-light uppercase tracking-tighter italic">
                                                 <span>Progres</span>
                                                 <span>{bookmarks[0].karya._count.bab > 0 ? Math.round((bookmarks[0].last_chapter / bookmarks[0].karya._count.bab) * 100) : 0}%</span>
                                             </div>
@@ -171,12 +157,11 @@ export default async function UserDashboardPage() {
                                 </div>
                             </Link>
 
-                            {/* Secondary Items */}
                             {bookmarks.slice(1, 4).map((b: any) => {
                                 const progress = b.karya._count.bab > 0 ? Math.round((b.last_chapter / b.karya._count.bab) * 100) : 0;
                                 return (
                                     <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} className="block group">
-                                        <div className="bg-white dark:bg-brown-dark rounded-3xl p-3 border border-tan-light/50 dark:border-brown-mid shadow-md shadow-tan-light/10 dark:shadow-none flex gap-4 items-center group-active:scale-[0.98] transition-all">
+                                        <div className="bg-tan-light/20 dark:bg-brown-mid/20 rounded-3xl p-3 border border-tan-light/50 dark:border-brown-mid shadow-md shadow-tan-light/10 dark:shadow-none flex gap-4 items-center group-active:scale-[0.98] transition-all">
                                             <div className="w-12 h-16 rounded-xl overflow-hidden shadow shrink-0 border border-tan-light/30">
                                                 {b.karya.cover_url ? (
                                                     <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -189,7 +174,7 @@ export default async function UserDashboardPage() {
                                                 <div className="flex items-center gap-2">
                                                     <p className="text-[9px] text-tan-primary font-bold uppercase tracking-tighter">Bab {b.last_chapter}</p>
                                                     <span className="w-1 h-1 bg-tan-light rounded-full" />
-                                                    <p className="text-[9px] text-brown-mid font-black uppercase tracking-tighter">{progress}%</p>
+                                                    <p className="text-[9px] text-brown-mid dark:text-tan-light font-black uppercase tracking-tighter">{progress}%</p>
                                                 </div>
                                                 <div className="h-1 bg-tan-light/20 rounded-full mt-2 overflow-hidden w-24">
                                                     <div className="h-full bg-tan-primary" style={{ width: `${progress}%` }} />
@@ -204,12 +189,12 @@ export default async function UserDashboardPage() {
                     </section>
                 )}
 
-                {/* Section: Penulis yang Diikuti */}
+                {/* Penulis Favorit */}
                 <section>
                     <div className="flex items-center justify-between mb-5">
                         <div className="flex items-center gap-2">
-                            <div className="p-2 bg-tan-light rounded-xl">
-                                <Heart className="w-5 h-5 text-brown-dark" />
+                            <div className="p-2 bg-tan-light/50 dark:bg-brown-mid/40 rounded-xl">
+                                <Heart className="w-5 h-5 text-brown-dark dark:text-text-accent" />
                             </div>
                             <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent">Penulis Favoritmu</h2>
                         </div>
@@ -217,19 +202,19 @@ export default async function UserDashboardPage() {
 
                     <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar scrollbar-hide">
                         {followedAuthorsRaw.length === 0 ? (
-                            <div className="w-full py-8 px-6 bg-white dark:bg-brown-dark rounded-[2.5rem] border border-dashed border-tan-light text-center">
+                            <div className="w-full py-8 px-6 bg-tan-light/20 dark:bg-brown-mid/20 rounded-[2.5rem] border border-dashed border-tan-light dark:border-brown-mid text-center">
                                 <p className="text-xs text-tan-primary font-bold mb-3 uppercase tracking-tighter">Belum ada penulis yang diikuti</p>
-                                <Link href="/search" className="inline-block py-2 px-6 bg-tan-light/20 text-tan-primary rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-tan-light hover:text-brown-dark transition-all">Temukan Penulis</Link>
+                                <Link href="/search" className="inline-block py-2 px-6 bg-tan-light/30 dark:bg-brown-mid/30 text-tan-primary dark:text-tan-light rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-tan-light hover:text-brown-dark transition-all">Temukan Penulis</Link>
                             </div>
                         ) : (
                             followedAuthorsRaw.map((f: any) => (
                                 <Link key={f.following.id} href={`/profile/${f.following.username}`} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-                                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white dark:border-brown-mid shadow-lg group-hover:border-tan-primary transition-all group-active:scale-95">
+                                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-tan-light dark:border-brown-mid shadow-lg group-hover:border-tan-primary transition-all group-active:scale-95">
                                         {f.following.avatar_url ? (
                                             <img src={f.following.avatar_url} alt={f.following.display_name} className="w-full h-full object-cover" />
                                         ) : (
-                                            <div className="w-full h-full bg-tan-light/10 flex items-center justify-center">
-                                                <UserCircle2 className="w-8 h-8 text-tan-light" />
+                                            <div className="w-full h-full bg-tan-light/20 dark:bg-brown-mid/30 flex items-center justify-center">
+                                                <UserCircle2 className="w-8 h-8 text-tan-primary" />
                                             </div>
                                         )}
                                     </div>
@@ -240,12 +225,12 @@ export default async function UserDashboardPage() {
                     </div>
                 </section>
 
-                {/* Section: Sedang Hangat */}
+                {/* Sedang Hangat */}
                 <section>
                     <div className="flex items-center justify-between mb-5">
                         <div className="flex items-center gap-2">
-                            <div className="p-2 bg-tan-light rounded-xl">
-                                <Flame className="w-5 h-5 text-brown-dark" />
+                            <div className="p-2 bg-tan-light/50 dark:bg-brown-mid/40 rounded-xl">
+                                <Flame className="w-5 h-5 text-brown-dark dark:text-text-accent" />
                             </div>
                             <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent">Sedang Hangat</h2>
                         </div>
@@ -254,11 +239,11 @@ export default async function UserDashboardPage() {
                     <div className="flex gap-4 overflow-x-auto pb-6 snap-x hide-scrollbar scrollbar-hide">
                         {trending.map((f: any) => (
                             <Link key={f.id} href={`/novel/${f.id}`} className="snap-start shrink-0 w-36 flex flex-col gap-3 group">
-                                <div className="relative aspect-[3/4.2] w-full rounded-[2.5rem] overflow-hidden shadow-lg border border-tan-light/30">
+                                <div className="relative aspect-[3/4.2] w-full rounded-[2.5rem] overflow-hidden shadow-lg border border-tan-light/30 dark:border-brown-mid/40">
                                     {f.cover_url ? (
                                         <img src={f.cover_url} alt={f.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     ) : (
-                                        <div className="w-full h-full bg-tan-light/10 flex items-center justify-center p-4 text-center text-xs text-tan-primary font-bold uppercase">{f.title}</div>
+                                        <div className="w-full h-full bg-tan-light/20 dark:bg-brown-mid/30 flex items-center justify-center p-4 text-center text-xs text-tan-primary font-bold uppercase">{f.title}</div>
                                     )}
                                     <div className="absolute top-3 right-3 bg-brown-dark/60 backdrop-blur-md text-text-accent text-[9px] px-2 py-1 rounded-full flex items-center gap-1 font-black">
                                         <Star className="w-2.5 h-2.5 fill-tan-primary text-tan-primary" />
@@ -274,21 +259,21 @@ export default async function UserDashboardPage() {
                     </div>
                 </section>
 
-                {/* Section: Perpustakaan Shortcut */}
-                <section className="bg-white dark:bg-brown-dark rounded-[3rem] p-6 border border-tan-light shadow-xl shadow-tan-light/10 dark:shadow-none mb-12">
+                {/* Perpustakaan Shortcut */}
+                <section className="bg-tan-light/20 dark:bg-brown-mid/20 rounded-[3rem] p-6 border border-tan-light dark:border-brown-mid shadow-xl shadow-tan-light/10 dark:shadow-none mb-12">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2">
                             <BookOpen className="w-5 h-5 text-tan-primary" />
                             <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent italic">Perpustakaan</h2>
                         </div>
-                        <Link href="/library" className="w-9 h-9 rounded-full bg-tan-light/20 flex items-center justify-center text-tan-primary hover:bg-tan-primary hover:text-text-accent transition-all border border-tan-light">
+                        <Link href="/library" className="w-9 h-9 rounded-full bg-tan-light/30 dark:bg-brown-mid/30 flex items-center justify-center text-tan-primary hover:bg-tan-primary hover:text-text-accent transition-all border border-tan-light dark:border-brown-mid">
                             <History className="w-4 h-4" />
                         </Link>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
                         {bookmarks.slice(0, 8).map(b => (
-                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-3 p-2 bg-tan-light/5 dark:bg-brown-mid/50 rounded-2xl hover:bg-tan-light/20 border border-transparent hover:border-tan-light transition-all group overflow-hidden">
+                            <Link key={b.id} href={`/novel/${b.karya.id}`} className="flex items-center gap-3 p-2 bg-tan-light/20 dark:bg-brown-mid/30 rounded-2xl hover:bg-tan-light/40 dark:hover:bg-brown-mid/50 border border-transparent hover:border-tan-light dark:hover:border-brown-mid transition-all group overflow-hidden">
                                 <div className="w-10 h-14 rounded-xl overflow-hidden shrink-0 shadow-sm border border-tan-light/20">
                                     {b.karya.cover_url ? (
                                         <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
@@ -303,7 +288,7 @@ export default async function UserDashboardPage() {
                             </Link>
                         ))}
                         {(bookmarks.length === 0 || bookmarks.length < 8) && (
-                            <Link href="/search" className="flex items-center justify-center gap-2 py-4 border-2 border-dashed border-tan-light rounded-3xl text-tan-primary hover:bg-tan-light/10 transition-all group">
+                            <Link href="/search" className="flex items-center justify-center gap-2 py-4 border-2 border-dashed border-tan-light dark:border-brown-mid rounded-3xl text-tan-primary hover:bg-tan-light/20 dark:hover:bg-brown-mid/20 transition-all group">
                                 <BookOpen className="w-4 h-4" />
                                 <span className="text-[10px] font-black uppercase tracking-tighter">Cari Baru</span>
                             </Link>
