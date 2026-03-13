@@ -9,6 +9,15 @@ const config: Config = {
     ],
     theme: {
         extend: {
+            colors: {
+                'bg-cream': '#F8F4E1',
+                'tan-primary': '#AF8F6F',
+                'tan-light': '#D7BFA7',
+                'brown-dark': '#3B2A22',
+                'brown-mid': '#7A553A',
+                'text-accent': '#F2EAD7',
+                'text-main': '#1B1310',
+            },
             backgroundImage: {
                 "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
                 "gradient-conic":

@@ -30,70 +30,70 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     return (
         <div className="space-y-4">
             {/* Level Card - Full Width */}
-            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group">
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-tan-light/30 dark:border-slate-800 shadow-xl shadow-tan-light/10 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group">
                 <div className="flex justify-between items-center relative z-10">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none">
-                            <Star className="w-6 h-6 fill-white" />
+                        <div className="w-12 h-12 bg-tan-primary rounded-2xl flex items-center justify-center text-text-accent shadow-lg">
+                            <Star className="w-6 h-6 fill-text-accent" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Peringkat Anda</p>
-                            <h3 className="text-xl font-black text-gray-900 dark:text-gray-100">Level {level}</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-tan-primary">Peringkat Anda</p>
+                            <h3 className="text-xl font-open-sans font-bold text-text-main dark:text-gray-100">Level {level}</h3>
                         </div>
                     </div>
                     <button
                         onClick={() => setShowLevelInfo(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all active:scale-95"
+                        className="flex items-center gap-2 px-4 py-2 bg-tan-light/20 text-tan-primary rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-tan-light hover:text-brown-dark transition-all active:scale-95"
                     >
-                        Info Benefit <ChevronRight className="w-3 h-3" />
+                        Benefit <ChevronRight className="w-3 h-3" />
                     </button>
                 </div>
 
                 <div className="space-y-2 relative z-10">
-                    <div className="flex justify-between text-[11px] font-black text-gray-400 uppercase tracking-tighter">
+                    <div className="flex justify-between text-[11px] font-bold text-tan-primary uppercase tracking-tighter">
                         <span>Progress Level</span>
-                        <span className="text-indigo-600 dark:text-indigo-400">{progressToNextLevel}%</span>
+                        <span className="text-brown-dark">{progressToNextLevel}%</span>
                     </div>
-                    <div className="h-3 bg-gray-50 dark:bg-slate-800 rounded-full overflow-hidden border border-gray-100 dark:border-slate-700">
+                    <div className="h-3 bg-tan-light/10 dark:bg-slate-800 rounded-full overflow-hidden border border-tan-light/20">
                         <div
-                            className="h-full bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 bg-[length:200%_auto] animate-gradient-x transition-all duration-1000"
+                            className="h-full bg-tan-primary transition-all duration-1000"
                             style={{ width: `${progressToNextLevel}%` }}
                         />
                     </div>
-                    <p className="text-[9px] text-gray-400 font-bold italic">Butuh {nextLevelPoints - stats.points} poin lagi untuk naik level.</p>
+                    <p className="text-[9px] text-tan-primary/70 font-bold italic">Butuh {nextLevelPoints - stats.points} poin lagi untuk naik level.</p>
                 </div>
 
-                <Star className="absolute -right-6 -bottom-6 w-32 h-32 text-gray-50 dark:text-slate-800 opacity-50 pointer-events-none" />
+                <Star className="absolute -right-6 -bottom-6 w-32 h-32 text-tan-light/10 dark:text-slate-800 pointer-events-none" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <button
                     onClick={() => setShowStreakInfo(true)}
-                    className="bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl p-5 text-white shadow-xl shadow-orange-100 dark:shadow-none relative overflow-hidden group border border-white/10 text-left transition-all active:scale-[0.98] cursor-pointer"
+                    className="bg-brown-dark rounded-[2.5rem] p-5 text-text-accent shadow-xl shadow-brown-dark/10 relative overflow-hidden group border border-white/10 text-left transition-all active:scale-[0.98] cursor-pointer"
                 >
-                    <Flame className="absolute -right-4 -bottom-4 w-24 h-24 opacity-20 group-hover:scale-110 transition-transform" />
+                    <Flame className="absolute -right-4 -bottom-4 w-24 h-24 opacity-10 group-hover:scale-110 transition-transform" />
                     <div className="flex justify-between items-start mb-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Streak</p>
-                        <Info className="w-4 h-4 opacity-50" />
+                        <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Streak</p>
+                        <Info className="w-4 h-4 opacity-40" />
                     </div>
                     <div className="flex items-end gap-1">
                         <span className="text-3xl font-black">{stats.reading_streak}</span>
-                        <span className="text-sm font-bold mb-1 opacity-80">Hari</span>
+                        <span className="text-sm font-bold mb-1 opacity-60">Hari</span>
                     </div>
                 </button>
 
                 <button
                     onClick={() => setShowPointsInfo(true)}
-                    className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-3xl p-5 text-white shadow-xl shadow-indigo-100 dark:shadow-none relative overflow-hidden group border border-white/10 text-left transition-all active:scale-[0.98] cursor-pointer"
+                    className="bg-brown-mid rounded-[2.5rem] p-5 text-text-accent shadow-xl shadow-brown-mid/10 relative overflow-hidden group border border-white/10 text-left transition-all active:scale-[0.98] cursor-pointer"
                 >
-                    <Trophy className="absolute -right-4 -bottom-4 w-24 h-24 opacity-20 group-hover:scale-110 transition-transform" />
+                    <Trophy className="absolute -right-4 -bottom-4 w-24 h-24 opacity-10 group-hover:scale-110 transition-transform" />
                     <div className="flex justify-between items-start mb-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Poin</p>
-                        <Info className="w-4 h-4 opacity-50" />
+                        <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Poin</p>
+                        <Info className="w-4 h-4 opacity-40" />
                     </div>
                     <div className="flex items-end gap-1">
                         <span className="text-3xl font-black">{stats.points}</span>
-                        <span className="text-sm font-bold mb-1 opacity-80">Pts</span>
+                        <span className="text-sm font-bold mb-1 opacity-60">Pts</span>
                     </div>
                 </button>
             </div>
@@ -101,34 +101,34 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             {/* Level Info Modal */}
             {showLevelInfo && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setShowLevelInfo(false)} />
-                    <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-gray-100 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+                    <div className="absolute inset-0 bg-brown-dark/80 backdrop-blur-sm" onClick={() => setShowLevelInfo(false)} />
+                    <div className="bg-bg-cream dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 italic">Level Guide</h2>
-                                    <p className="text-[10px] text-indigo-600 font-black uppercase tracking-widest mt-1">Sistem Reputasi Pembaca</p>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 italic">Level Guide</h2>
+                                    <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Sistem Reputasi Pembaca</p>
                                 </div>
-                                <button onClick={() => setShowLevelInfo(false)} className="p-2 bg-gray-50 dark:bg-slate-800 rounded-full text-gray-400 hover:text-gray-600 transition-colors">
+                                <button onClick={() => setShowLevelInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
 
                             <div className="space-y-4">
                                 {levelTiers.map((tier, i) => (
-                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-indigo-50/50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800' : 'bg-gray-50/50 dark:bg-slate-800/50 border-transparent'}`}>
+                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-white dark:bg-indigo-900/20 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-slate-800/50 border-transparent'}`}>
                                         <div className="flex justify-between mb-1">
-                                            <span className="text-[9px] font-black bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow-sm text-indigo-600">LV {tier.lv}</span>
-                                            <span className="text-[11px] font-black text-gray-900 dark:text-gray-100">{tier.title}</span>
+                                            <span className="text-[9px] font-black bg-tan-primary text-text-accent px-2 py-0.5 rounded shadow-sm">LV {tier.lv}</span>
+                                            <span className="text-[11px] font-bold text-text-main dark:text-gray-100">{tier.title}</span>
                                         </div>
-                                        <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold mt-1">{tier.benefit}</p>
+                                        <p className="text-[10px] text-tan-primary font-bold mt-1 line-clamp-2">{tier.benefit}</p>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="mt-8 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-100 dark:border-amber-800">
-                                <p className="text-[10px] text-amber-700 dark:text-amber-400 font-bold leading-relaxed">
-                                    Setiap 1 Bab yang kamu baca memberikan <strong>10 Poin</strong>. Terus baca untuk meningkatkan reputasimu di Ruang Aksara!
+                            <div className="mt-8 p-4 bg-brown-dark rounded-2xl border border-white/10">
+                                <p className="text-[11px] text-text-accent font-bold leading-relaxed">
+                                    Setiap 1 Bab yang kamu baca memberikan <span className="text-tan-primary">10 Poin</span>. Terus baca untuk tingkatkan levelmu!
                                 </p>
                             </div>
                         </div>
@@ -139,26 +139,26 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             {/* Streak Info Modal */}
             {showStreakInfo && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setShowStreakInfo(false)} />
-                    <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-gray-100 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+                    <div className="absolute inset-0 bg-brown-dark/80 backdrop-blur-sm" onClick={() => setShowStreakInfo(false)} />
+                    <div className="bg-bg-cream dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 italic">Streak Baca</h2>
-                                    <p className="text-[10px] text-orange-600 font-black uppercase tracking-widest mt-1">Konsistensi adalah Kunci</p>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 italic">Streak Baca</h2>
+                                    <p className="text-[10px] text-brown-mid font-black uppercase tracking-widest mt-1">Konsistensi adalah Kunci</p>
                                 </div>
-                                <button onClick={() => setShowStreakInfo(false)} className="p-2 bg-gray-50 dark:bg-slate-800 rounded-full text-gray-400 hover:text-gray-600 transition-colors">
+                                <button onClick={() => setShowStreakInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="space-y-4 text-gray-600 dark:text-gray-400 text-xs font-medium leading-relaxed">
+                            <div className="space-y-4 text-text-main/70 dark:text-gray-400 text-xs font-bold leading-relaxed">
                                 <p>Streak menunjukkan berapa hari berturut-turut kamu membaca di Ruang Aksara.</p>
-                                <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-100 dark:border-orange-800">
-                                    <p className="text-orange-700 dark:text-orange-400 font-bold">
-                                        Baca minimal 1 Bab setiap hari untuk mempertahankan apimu. Jika terputus satu hari saja, streak-mu akan kembali ke 0!
+                                <div className="p-4 bg-white dark:bg-orange-900/20 rounded-2xl border border-tan-light shadow-sm">
+                                    <p className="text-brown-dark font-bold leading-relaxed">
+                                        Baca minimal 1 Bab setiap hari untuk mempertahankan apimu. Jangan sampai terputus!
                                     </p>
                                 </div>
-                                <p>Gunakan streak-mu untuk memamerkan dedikasimu di profil global.</p>
+                                <p>Tunjukkan dedikasimu di profil global Ruang Aksara.</p>
                             </div>
                         </div>
                     </div>
@@ -168,31 +168,31 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             {/* Points Info Modal */}
             {showPointsInfo && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setShowPointsInfo(false)} />
-                    <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-gray-100 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+                    <div className="absolute inset-0 bg-brown-dark/80 backdrop-blur-sm" onClick={() => setShowPointsInfo(false)} />
+                    <div className="bg-bg-cream dark:bg-slate-900 w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-tan-light animate-in zoom-in-95 duration-300">
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 italic">Poin Aksara</h2>
-                                    <p className="text-[10px] text-indigo-600 font-black uppercase tracking-widest mt-1">Kumpulkan untuk Naik Level</p>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 italic">Poin Aksara</h2>
+                                    <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Kumpulkan poin untuk naik level</p>
                                 </div>
-                                <button onClick={() => setShowPointsInfo(false)} className="p-2 bg-gray-50 dark:bg-slate-800 rounded-full text-gray-400 hover:text-gray-600 transition-colors">
+                                <button onClick={() => setShowPointsInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="space-y-4 text-gray-600 dark:text-gray-400 text-xs font-medium leading-relaxed">
-                                <p>Poin dikumpulkan melalui aktivitas membaca dan berinteraksi di platform.</p>
-                                <ul className="space-y-2">
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                            <div className="space-y-4 text-text-main/70 dark:text-gray-400 text-xs font-bold leading-relaxed">
+                                <p>Setiap aktivitasmu diapresiasi dengan poin yang akan mengakumulasi peringkatmu.</p>
+                                <ul className="space-y-3">
+                                    <li className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-tan-primary shadow-sm" />
                                         <span>Baca 1 Bab: <strong>+10 Poin</strong></span>
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                                    <li className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-tan-primary shadow-sm" />
                                         <span>Streak Bonus (7 Hari): <strong>+50 Poin</strong></span>
                                     </li>
                                 </ul>
-                                <p className="italic text-[10px]">Poin tidak akan berkurang dan digunakan sebagai penentu Level utama kamu.</p>
+                                <p className="italic text-[10px] text-tan-primary/60">Poin bersifat permanen dan tidak dapat berkurang.</p>
                             </div>
                         </div>
                     </div>

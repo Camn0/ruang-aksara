@@ -146,26 +146,26 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     const typedKarya = karya as any; // Temporary cast for relation access
 
     const CoverPlaceholder = () => (
-        <div className="w-32 h-48 sm:w-40 sm:h-56 bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-2xl shadow-lg border border-indigo-100 flex items-center justify-center text-center p-4">
-            <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest">{karya.title}</span>
+        <div className="w-32 h-48 sm:w-40 sm:h-56 bg-tan-light/10 rounded-2xl shadow-lg border border-tan-light/30 flex items-center justify-center text-center p-4">
+            <span className="text-[10px] font-bold text-tan-primary uppercase tracking-widest">{karya.title}</span>
         </div>
     );
 
     const firstChapter = karya.bab.length > 0 ? karya.bab[0].chapter_no : null;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
-            <header className="px-6 h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
-                <Link href="/" className="p-2 -ml-2 text-gray-900 dark:text-gray-100 active:bg-gray-100 dark:active:bg-slate-800 rounded-full transition-colors">
+        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 pb-24 transition-colors duration-300">
+            <header className="px-6 h-16 bg-white dark:bg-slate-900 border-b border-tan-light/20 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
+                <Link href="/" className="p-2 -ml-2 text-tan-primary active:bg-tan-light/20 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="font-bold text-lg text-gray-900 dark:text-gray-100 absolute left-1/2 -translate-x-1/2 w-48 text-center truncate">
+                <h1 className="font-lobster text-xl text-text-main dark:text-gray-100 absolute left-1/2 -translate-x-1/2">
                     Detail Karya
                 </h1>
                 <div className="w-10"></div>
             </header>
 
-            <div className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 pt-8 pb-8 px-6 transition-colors duration-300">
+            <div className="bg-white dark:bg-slate-900 border-b border-tan-light/10 pt-8 pb-8 px-6 transition-colors duration-300">
                 <div className="flex gap-6 items-start">
                     {karya.cover_url ? (
                         <img src={karya.cover_url} alt={karya.title} className="w-32 h-48 sm:w-40 sm:h-56 object-cover rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800 shrink-0" />
@@ -174,11 +174,11 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                     )}
 
                     <div className="flex-1 min-w-0 py-1">
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-2 line-clamp-3">
+                        <h1 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 leading-tight mb-2 line-clamp-3 italic">
                             {karya.title}
                         </h1>
                         <div className="flex items-center gap-2 mb-3">
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Oleh <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:underline font-bold transition-colors">{karya.penulis_alias}</Link></p>
+                            <p className="text-sm font-medium text-text-main/70 dark:text-gray-400">Oleh <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-tan-primary hover:text-brown-dark hover:underline font-bold transition-colors">{karya.penulis_alias}</Link></p>
                             {session && session.user.id !== karya.uploader_id && (
                                 <FollowButton
                                     targetUserId={karya.uploader_id}
@@ -193,17 +193,17 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                 <Link
                                     key={g.id}
                                     href={`/search?q=&genreId=${g.id}`}
-                                    className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[10px] uppercase font-bold px-2 py-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
+                                    className="bg-tan-light/10 dark:bg-slate-800 text-tan-primary text-[10px] uppercase font-black px-2 py-1 rounded-lg hover:bg-tan-primary hover:text-text-accent transition-all"
                                 >
                                     {g.name}
                                 </Link>
                             ))}
                             {karya.is_completed ? (
-                                <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-black px-2 py-1 rounded transition-colors">
+                                <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-black px-2 py-1 rounded-lg transition-colors">
                                     Tamat
                                 </span>
                             ) : (
-                                <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-[10px] uppercase font-black px-2 py-1 rounded transition-colors">
+                                <span className="bg-brown-dark/10 text-brown-dark text-[10px] uppercase font-black px-2 py-1 rounded-lg transition-colors">
                                     Ongoing
                                 </span>
                             )}
@@ -228,7 +228,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
                 <div className="mt-8 flex gap-2">
                     {firstChapter ? (
-                        <Link href={`/novel/${karya.id}/${firstChapter}`} className="flex-1 text-center py-3.5 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl font-black text-sm shadow-xl shadow-indigo-200 dark:shadow-none active:scale-95 transition-all flex items-center justify-center">
+                        <Link href={`/novel/${karya.id}/${firstChapter}`} className="flex-1 text-center py-4 bg-tan-primary text-text-accent rounded-2xl font-black text-sm shadow-xl shadow-tan-primary/10 active:scale-[0.98] transition-all flex items-center justify-center">
                             Mulai Membaca
                         </Link>
                     ) : (
@@ -299,10 +299,10 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 {session ? (
                     <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
                 ) : (
-                    <div className="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-3xl text-center border border-indigo-100 dark:border-indigo-900/30 transition-colors">
-                        <p className="text-sm font-black text-indigo-900 dark:text-indigo-300 mb-2 uppercase tracking-widest">Tertarik Memberi Rating?</p>
-                        <p className="text-xs text-indigo-700 dark:text-indigo-400 mb-6 px-4 leading-relaxed font-bold">Masuk ke akunmu untuk meninggalkan jejak dan mendukung penulis ini.</p>
-                        <Link href="/onboarding" className="inline-block px-8 py-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 dark:shadow-none transition-transform active:scale-95">
+                    <div className="bg-tan-light/10 dark:bg-slate-800/50 p-8 rounded-[2rem] text-center border border-tan-light/30 transition-colors">
+                        <p className="text-[10px] font-black text-tan-primary mb-2 uppercase tracking-[0.2em]">Tertarik Memberi Rating?</p>
+                        <p className="text-xs text-text-main/70 dark:text-gray-400 mb-6 px-4 leading-relaxed font-bold">Masuk ke akunmu untuk meninggalkan jejak dan mendukung penulis ini.</p>
+                        <Link href="/auth/login" className="inline-block px-10 py-3.5 bg-brown-dark text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-brown-dark/10 transition-transform active:scale-95">
                             Mulai Masuk
                         </Link>
                     </div>

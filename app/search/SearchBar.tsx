@@ -48,17 +48,17 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Cari judul atau penulis..."
-                className="w-full pl-12 pr-12 py-3.5 bg-gray-100 dark:bg-slate-800 dark:text-gray-200 dark:placeholder-gray-500 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white dark:focus:bg-slate-900 transition-all shadow-sm"
+                className="w-full bg-tan-primary text-text-accent placeholder:text-text-accent/70 rounded-full py-4 pl-14 pr-12 text-lg focus:outline-none focus:ring-2 focus:ring-brown-mid transition-all shadow-md"
             />
-            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400" />
+            <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-text-accent transition-colors group-focus-within:text-white" />
 
             {q && (
                 <button
                     type="button"
                     onClick={clearSearch}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-all"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-brown-dark/20 text-text-accent transition-all"
                 >
-                    <X className="w-4 h-4" />
+                    <X className="w-5 h-5" />
                 </button>
             )}
             <button type="submit" className="hidden">Cari</button>

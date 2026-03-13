@@ -36,10 +36,10 @@ export default function RemoveBookmarkButton({ karyaId, onRemoved }: { karyaId: 
         <button
             onClick={handleRemove}
             disabled={removing}
-            className="absolute top-1.5 right-1.5 z-20 w-6 h-6 bg-black/50 backdrop-blur-sm text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 active:scale-90"
+            className="absolute top-2 right-2 z-20 w-7 h-7 bg-brown-dark/60 backdrop-blur-sm text-text-accent rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-brown-dark active:scale-90 shadow-md border border-white/10"
             title="Hapus dari perpustakaan"
         >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4" />
         </button>
     );
 }
