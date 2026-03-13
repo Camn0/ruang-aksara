@@ -2,7 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { createAuthorPost } from '@/app/actions/post';
-import { UserCircle2, ImagePlus, X, Camera } from 'lucide-react';
+import { UserCircle2, Image as ImageIcon, X, Send, Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function CreatePostForm({ userProfile }: { userProfile: any }) {
     const [isPending, setIsPending] = useState(false);
@@ -35,8 +36,8 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
                     const ctx = canvas.getContext('2d');
                     ctx?.drawImage(img, 0, 0, width, height);
                     
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    resolve(dataUrl);
+                    const compressedBase64 = canvas.toDataURL('image/webp', 0.8);
+                resolve(compressedBase64);
                 };
             };
         });
@@ -45,9 +46,22 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const compressed = await compressImage(file);
-            setImageUrl(compressed);
-            setShowImageInput(true);
+            // Check file size (5MB limit for safety)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error("Ukuran gambar terlalu besar! Maksimal 5MB.");
+                e.target.value = '';
+                return;
+            }
+
+            const loadingToast = toast.loading('Memproses gambar...');
+            try {
+                const compressed = await compressImage(file);
+                setImageUrl(compressed);
+                setShowImageInput(true);
+                toast.success('Gambar siap!', { id: loadingToast });
+            } catch (err) {
+                toast.error('Gagal memproses gambar.', { id: loadingToast });
+            }
         }
     };
 
@@ -127,7 +141,7 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
                         onClick={() => fileInputRef.current?.click()}
                         className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 ${imageUrl ? 'text-brown-dark' : 'text-tan-primary hover:text-brown-dark'}`}
                     >
-                        <ImagePlus className="w-4 h-4" /> {imageUrl ? 'Ganti Gambar' : 'Tambah Gambar'}
+                        <ImageIcon className="w-4 h-4" /> {imageUrl ? 'Ganti Gambar' : 'Tambah Gambar'}
                     </button>
                     <div className="flex gap-3">
                         <button type="button" onClick={() => { setIsFocused(false); setContent(''); setImageUrl(''); setShowImageInput(false); }} className="text-tan-primary/60 hover:text-brown-dark text-[10px] font-black uppercase tracking-widest px-4 py-2 transition-all">Batal</button>

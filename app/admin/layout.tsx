@@ -42,7 +42,7 @@ export default async function AdminLayout({
                     <Link href="/admin/dashboard" className="flex flex-col items-center group/logo transition-all duration-500">
                         <div className="w-24 h-20 bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 transition-all">
                             <img
-                                src="/logoRuangAksara.png"
+                                src="/logoRuangAksara.webp"
                                 alt="Ruang Aksara Logo"
                                 className="w-full h-full object-cover rounded-2xl"
                             />

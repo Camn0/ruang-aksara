@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { createKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface Genre {
     id: string;
@@ -78,8 +79,8 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                     ctx?.drawImage(img, 0, 0, width, height);
                     
                     // Compress to JPEG with 0.7 quality (Good balance)
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    resolve(dataUrl);
+                    const compressedBase64 = canvas.toDataURL('image/webp', 0.8);
+                    resolve(compressedBase64);
                 };
             };
         });
@@ -88,13 +89,25 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error("Ukuran file terlalu besar! Maksimal 5MB.");
+                e.target.value = ''; // Reset input
+                return;
+            }
+
             // Tampilkan Preview Mentah (Instan)
             setCoverPreview(URL.createObjectURL(file));
 
-            // Kompresi Client-Side & Convert ke Base64
-            // Mengurangi beban Fast Origin Transfer Vercel secara drastis (>90%)
-            const compressedBase64 = await compressImage(file);
-            setCoverBase64(compressedBase64);
+            const loadingToast = toast.loading('Memproses gambar...');
+            try {
+                // Kompresi Client-Side & Convert ke Base64 (WebP)
+                const compressedBase64 = await compressImage(file);
+                setCoverBase64(compressedBase64);
+                toast.success('Gambar berhasil diproses!', { id: loadingToast });
+            } catch (error) {
+                toast.error('Gagal memproses gambar.', { id: loadingToast });
+            }
         }
     };
 

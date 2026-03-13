@@ -45,8 +45,8 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     // Center crop logic if needed, but simple resize for now
                     ctx?.drawImage(img, 0, 0, SIZE, SIZE);
                     
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    resolve(dataUrl);
+                    const compressedBase64 = canvas.toDataURL('image/webp', 0.8);
+                    resolve(compressedBase64);
                 };
             };
         });
@@ -55,6 +55,13 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error("Ukuran file terlalu besar! Maksimal 5MB.");
+                e.target.value = ''; // Reset input
+                return;
+            }
+
             toast.loading('Memproses foto...', { id: 'avatar-upload' });
             try {
                 const compressed = await compressImage(file);

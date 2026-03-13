@@ -53,7 +53,7 @@ function DesktopIntroAnimation({
                 <div className="relative flex items-center justify-center w-[220px] h-[220px]">
                     <div className="absolute w-[140px] h-[140px] rounded-full bg-[#8a6342]" />
                     <Image
-                        src="/logoRuangAksara.png"
+                        src="/logoRuangAksara.webp"
                         alt="Ruang Aksara"
                         width={170}
                         height={120}
@@ -74,7 +74,7 @@ function DesktopIntroAnimation({
                 }`}
             >
                 <Image
-                    src="/logoRuangAksara.png"
+                    src="/logoRuangAksara.webp"
                     alt="Ruang Aksara"
                     width={420}
                     height={280}
@@ -114,7 +114,7 @@ function DesktopIntroAnimation({
                 }`}
             >
                 <Image
-                    src="/bookPicture.png"
+                    src="/bookPicture.webp"
                     alt="Books"
                     fill
                     className="object-cover"
@@ -131,7 +131,7 @@ function DesktopIntroAnimation({
                 <div className="relative z-10 w-full md:w-1/2 flex flex-col items-center justify-center p-8 text-center">
                     <div>
                         <Image
-                            src="/logoRuangAksara.png"
+                            src="/logoRuangAksara.webp"
                             alt="Ruang Aksara"
                             width={250}
                             height={150}
@@ -194,7 +194,7 @@ export default function OnboardingPage() {
                                 {/* Background pattern */}
                                 <div className="absolute -top-[15%] left-0 w-full h-[60vh] z-0">
                                     <Image
-                                        src="/blockpatterns.png"
+                                        src="/blockpatterns.webp"
                                         alt="Pattern Background"
                                         fill
                                         className="object-contain object-top"
@@ -210,7 +210,7 @@ export default function OnboardingPage() {
 
                                     <div className="relative mb-6">
                                         <Image
-                                            src="/logoRuangAksara.png"
+                                            src="/logoRuangAksara.webp"
                                             alt="Ruang Aksara"
                                             width={170}
                                             height={120}
@@ -259,7 +259,7 @@ export default function OnboardingPage() {
                                 <div className="relative z-10 w-full md:w-1/2 flex flex-col items-center justify-center p-8 text-center">
                                     <div>
                                         <Image
-                                            src="/logoRuangAksara.png"
+                                            src="/logoRuangAksara.webp"
                                             alt="Ruang Aksara"
                                             width={250}
                                             height={150}
@@ -294,7 +294,7 @@ export default function OnboardingPage() {
                                 {/* background book */}
                                 <div className="absolute right-0 top-0 w-full h-full z-0">
                                     <Image
-                                        src="/bookPicture.png"
+                                        src="/bookPicture.webp"
                                         alt="Books"
                                         fill
                                         className="object-cover object"
@@ -313,7 +313,7 @@ export default function OnboardingPage() {
                                 <div className="absolute -top-12 left-1/2 -translate-x-1/2">
                                     <div className="w-24 h-24 md:scale-125 bg-[#B58E6B] rounded-full flex items-center justify-center overflow-hidden">
                                         <Image
-                                            src="/logoRuangAksara.png"
+                                            src="/logoRuangAksara.webp"
                                             alt="Logo"
                                             width={100}
                                             height={100}
@@ -346,7 +346,7 @@ export default function OnboardingPage() {
                     {step === 3 && (
                         <div className="relative flex flex-col items-center space-y-10 w-full max-w-md px-3">
                             <Image
-                                src="/logoRuangAksara.png"
+                                src="/logoRuangAksara.webp"
                                 alt="Ruang Aksara"
                                 width={200}
                                 height={100}
@@ -374,7 +374,7 @@ export default function OnboardingPage() {
 
                             <div className="absolute w-full left-0 z-0 md:hidden">
                                 <Image
-                                    src="/book2.png"
+                                    src="/book2.webp"
                                     alt="Pattern Background"
                                     width={600}
                                     height={300}

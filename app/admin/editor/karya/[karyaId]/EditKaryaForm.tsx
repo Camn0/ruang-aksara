@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { editKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react'; 
+import { toast } from 'sonner';
 
 interface Genre { id: string; name: string; }
 interface Karya {
@@ -59,7 +60,7 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx?.drawImage(img, 0, 0, width, height);
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    const dataUrl = canvas.toDataURL('image/webp', 0.8);
                     resolve(dataUrl);
                 };
             };
@@ -69,12 +70,25 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error("Ukuran file terlalu besar! Maksimal 5MB.");
+                e.target.value = ''; // Reset input
+                return;
+            }
+
             // Tampilkan Preview Mentah (Instan)
             setCoverPreview(URL.createObjectURL(file));
 
-            // Kompresi & Convert ke Base64 (Hemat Bandwidth Vercel)
-            const compressedBase64 = await compressImage(file);
-            setCoverBase64(compressedBase64);
+            const loadingToast = toast.loading('Memproses gambar...');
+            try {
+                // Kompresi & Convert ke Base64 (Hemat Bandwidth Vercel)
+                const compressedBase64 = await compressImage(file);
+                setCoverBase64(compressedBase64);
+                toast.success('Gambar siap!', { id: loadingToast });
+            } catch (error) {
+                toast.error('Gagal memproses gambar.', { id: loadingToast });
+            }
         }
     };
 

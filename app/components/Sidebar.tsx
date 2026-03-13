@@ -47,7 +47,7 @@ export default function Sidebar() {
                     <div className={`transition-all duration-500 bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
                         {/* New Brand Logo Placeholder */}
                         <img
-                            src="/logoRuangAksara.png"
+                            src="/logoRuangAksara.webp"
                             alt="Ruang Aksara Logo"
                             className="w-full h-full object-cover rounded-2xl"
                         />
@@ -55,7 +55,7 @@ export default function Sidebar() {
                     {isExpanded && (
                         <div className="w-full px-2 mt-1 flex justify-center animate-in fade-in slide-in-from-top-2 duration-700">
                             <img
-                                src="/ruangAksaraText.png"
+                                src="/ruangAksaraText.webp"
                                 alt="Ruang Aksara"
                                 className="h-10 w-auto object-contain brightness-110"
                             />

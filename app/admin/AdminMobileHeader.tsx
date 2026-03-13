@@ -24,7 +24,7 @@ export default function AdminMobileHeader({ session }: AdminMobileHeaderProps) {
                     </button>
                     <Link href="/admin/dashboard" className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center p-0.5 shadow-inner">
-                            <img src="/logoRuangAksara.png" alt="Logo" className="w-full h-full object-cover rounded-lg" />
+                            <img src="/logoRuangAksara.webp" alt="Logo" className="w-full h-full object-cover rounded-lg" />
                         </div>
                         <span className="font-black text-sm tracking-[0.2em] uppercase italic">Studio</span>
                     </Link>
