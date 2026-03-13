@@ -17,7 +17,7 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
                 {/* Overlay for expanded sidebar */}
                 {isExpanded && (
                     <div 
-                        className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-20 transition-all duration-500 ease-in-out md:block hidden animate-in fade-in"
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[60] transition-all duration-500 ease-in-out md:block hidden animate-in fade-in"
                         onClick={() => setIsExpanded(false)}
                     />
                 )}
