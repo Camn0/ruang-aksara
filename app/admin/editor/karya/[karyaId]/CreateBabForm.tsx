@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { createBab } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
-import { Save } from 'lucide-react';
+import { Save, Plus, ArrowLeft, Upload } from 'lucide-react';
 
 export default function CreateBabForm({ karyaId }: { karyaId: string }) {
     const [isPending, setIsPending] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [content, setContent] = useState('');
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
     const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
@@ -14,12 +15,14 @@ export default function CreateBabForm({ karyaId }: { karyaId: string }) {
     const draftKey = `draft-bab-${karyaId}`;
 
     useEffect(() => {
-        const savedDraft = localStorage.getItem(draftKey);
-        if (savedDraft) {
-            setContent(savedDraft);
-            setLastSaved(new Date());
+        if (isOpen) {
+            const savedDraft = localStorage.getItem(draftKey);
+            if (savedDraft) {
+                setContent(savedDraft);
+                setLastSaved(new Date());
+            }
         }
-    }, [draftKey]);
+    }, [isOpen, draftKey]);
 
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
@@ -38,15 +41,15 @@ export default function CreateBabForm({ karyaId }: { karyaId: string }) {
 
         try {
             const result = await createBab(formData);
-            if (result.error) {
-                setMessage({ type: 'error', text: result.error });
-            } else {
+            if (result.error) setMessage({ type: 'error', text: result.error });
+            else {
                 setMessage({ type: 'success', text: 'Berhasil mengunggah bab baru!' });
                 localStorage.removeItem(draftKey);
                 setContent('');
                 setLastSaved(null);
-                (event.target as HTMLFormElement).reset(); // Kosongkan form setelah sukses
-                router.refresh(); // Segarkan route untuk mengambil list bab terbaru dari database
+                (event.target as HTMLFormElement).reset();
+                setIsOpen(false); 
+                router.refresh();
             }
         } catch (error) {
             console.error(error);
@@ -57,63 +60,47 @@ export default function CreateBabForm({ karyaId }: { karyaId: string }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-gray-50 dark:bg-slate-900/50 p-6 rounded-xl border border-gray-200 dark:border-slate-800 mt-8 transition-colors duration-300">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Tulis Bab Baru</h3>
-
-            {message && (
-                <div className={`p-4 mb-4 text-sm rounded-lg ${message.type === 'error' ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-400' : 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-400'}`}>
-                    {message.text}
-                </div>
+        <>
+            {!isOpen && (
+                <button type="button" onClick={() => setIsOpen(true)} className="w-full h-[77px] bg-[#af8f6f] rounded flex items-center justify-center gap-4 hover:bg-[#9c7f62] transition-colors shadow-sm">
+                    <Plus className="w-8 h-8 text-[#3b2a22]" strokeWidth={3} />
+                    <span className="font-normal text-[#3b2a22] text-[25px]">Tambah Bab Baru</span>
+                </button>
             )}
 
-            <div className="mb-4">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Judul Bab <span className="text-gray-400 dark:text-gray-500 font-normal">(opsional)</span>
-                </label>
-                <input
-                    id="title"
-                    name="title"
-                    type="text"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors"
-                    placeholder="contoh: Perkenalan Sang Tokoh"
-                />
-            </div>
-
-            <div className="mb-4">
-                <div className="flex justify-between items-end mb-1">
-                    <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Konten Bab
-                    </label>
-                    {lastSaved && (
-                        <div className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-500 font-medium">
-                            <Save className="w-3 h-3" />
-                            <span>Draft tersimpan {lastSaved.toLocaleTimeString('id-ID')}</span>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] bg-[#f2ead7] overflow-y-auto font-sans flex flex-col items-center pt-14 pb-24 px-6 sm:px-12 animate-in fade-in zoom-in-95 duration-200">
+                    <form onSubmit={handleSubmit} className="w-full max-w-[1055px] flex flex-col min-h-full">
+                        <div className="flex justify-between items-center mb-8 w-full">
+                            <button type="button" onClick={() => setIsOpen(false)} className="hover:scale-105 transition-transform text-[#3b2a22]">
+                                <ArrowLeft className="w-12 h-12" strokeWidth={3} />
+                            </button>
+                            <button type="submit" disabled={isPending} className="w-[180px] h-[54px] bg-[#3b2a22] hover:bg-[#2a1e18] rounded-[8.49px] flex items-center justify-center gap-3 transition-colors active:scale-95 disabled:opacity-50 shadow-md">
+                                <span className="font-semibold text-[#f2ead7] text-[29.3px]">{isPending ? 'Proses' : 'Unggah'}</span>
+                                {!isPending && <Upload className="w-7 h-7 text-[#f2ead7]" strokeWidth={2.5} />}
+                            </button>
                         </div>
-                    )}
-                </div>
-                <textarea
-                    id="content"
-                    name="content"
-                    required
-                    value={content}
-                    onChange={handleContentChange}
-                    rows={12}
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors"
-                    placeholder="Pada suatu hari di sudut Fakultas Sastra..."
-                ></textarea>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Nomor Bab akan dibuatkan secara otomatis (Auto-increment).
-                </p>
-            </div>
+                        
+                        {message && (
+                            <div className={`w-full p-4 mb-6 text-xl font-semibold rounded-lg ${message.type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                                {message.text}
+                            </div>
+                        )}
 
-            <button
-                type="submit"
-                disabled={isPending}
-                className={`w-full bg-indigo-600 dark:bg-indigo-500 text-white font-semibold py-2.5 px-4 rounded-md shadow-sm transition-colors ${isPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-indigo-700 dark:hover:bg-indigo-400'
-                    }`}
-            >
-                {isPending ? 'Mengunggah...' : 'Publikasikan Bab'}
-            </button>
-        </form>
+                        <div className="mb-6 w-full h-[75px] bg-[#3b2a22] rounded-[10px] overflow-hidden shrink-0">
+                            <input name="title" type="text" placeholder="Masukkan Judul Bab" className="w-full h-full bg-transparent px-[35px] font-bold text-[#f2ead7] text-[30.1px] placeholder-[#f2ead7]/80 outline-none" />
+                        </div>
+                        {lastSaved && (
+                            <div className="flex items-center gap-2 text-[#3b2a22] font-semibold mb-2 ml-2">
+                                <Save className="w-4 h-4" /> <span>Draft tersimpan otomatis {lastSaved.toLocaleTimeString('id-ID')}</span>
+                            </div>
+                        )}
+                        <div className="w-full flex-1 bg-[#dec8b2] rounded-[10px] overflow-hidden shadow-sm flex flex-col min-h-[500px]">
+                            <textarea name="content" required value={content} onChange={handleContentChange} placeholder="Tulis Cerita" className="w-full h-full flex-1 bg-transparent px-[39px] py-[26px] font-normal text-black text-[25.7px] placeholder-black/60 outline-none resize-none" />
+                        </div>
+                    </form>
+                </div>
+            )}
+        </>
     );
 }
