@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Home, Search, BookMarked, Info, User, Plus, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, Search, Menu, Info, User, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
 import { useSidebar } from './SidebarContext';
@@ -25,17 +25,17 @@ export default function Sidebar() {
         { name: 'Profile', href: session ? `/profile/${session.user.id}` : '/auth/login', icon: User },
         { name: 'Home', href: '/', icon: Home },
         { name: 'Search', href: '/search', icon: Search },
-        { name: 'Library', href: '/library', icon: BookMarked },
+        { name: 'Library', href: '/library', icon: Menu },
         { name: 'Tentang Kami', href: '/about', icon: Info },
     ];
 
     return (
         <>
-            <aside 
-                className={`hidden md:flex flex-col h-full bg-tan-primary fixed left-0 top-0 py-8 z-50 transition-all duration-500 ease-in-out shadow-2xl ${isExpanded ? 'w-72 px-6' : 'w-20 px-2'}`}
+            <aside
+                className={`hidden md:flex flex-col h-full bg-tan-primary fixed left-0 top-0 py-6 z-50 transition-all duration-500 ease-in-out shadow-2xl ${isExpanded ? 'w-64 px-4' : 'w-20 px-2'}`}
             >
                 {/* Toggle Button */}
-                <button 
+                <button
                     onClick={toggleSidebar}
                     className="absolute -right-3 top-10 w-6 h-6 bg-brown-dark text-text-accent rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform z-[60]"
                 >
@@ -43,27 +43,37 @@ export default function Sidebar() {
                 </button>
 
                 {/* Logo Section */}
-                <div className={`flex flex-col items-center mb-10 transition-all duration-500`}>
-                    <div className={`transition-all duration-500 bg-white/10 rounded-2xl flex items-center justify-center p-3 mb-2 ${isExpanded ? 'w-20 h-20' : 'w-14 h-14'}`}>
-                        {/* Single rounded box for logo placeholder */}
-                        <div className="w-full h-full bg-text-accent rounded-xl shadow-lg flex items-center justify-center">
-                             <BookMarked className="text-tan-primary w-8 h-8" />
-                        </div>
+                <Link href="/" className={`flex flex-col items-center mb-8 transition-all duration-500 group/logo`}>
+                    <div className={`transition-all duration-500 bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-14 h-14 mb-2'}`}>
+                        {/* New Brand Logo Placeholder */}
+                        <img
+                            src="/logoRuangAksara.png"
+                            alt="Ruang Aksara Logo"
+                            className="w-full h-full object-cover rounded-2xl"
+                        />
                     </div>
-                    {isExpanded && <h1 className="font-lobster text-2xl text-text-accent whitespace-nowrap animate-in fade-in slide-in-from-left-2">Ruang Aksara</h1>}
-                </div>
+                    {isExpanded && (
+                        <div className="w-full px-2 mt-1 flex justify-center animate-in fade-in slide-in-from-top-2 duration-700">
+                            <img
+                                src="/ruangAksaraText.png"
+                                alt="Ruang Aksara"
+                                className="h-10 w-auto object-contain brightness-110"
+                            />
+                        </div>
+                    )}
+                </Link>
 
                 {/* Navigation links */}
-                <nav className="flex-grow space-y-4 overflow-y-auto py-4 scrollbar-hide px-1">
+                <nav className={`flex-grow space-y-1.5 py-4 px-1`}>
                     {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
                             title={!isExpanded ? item.name : ''}
-                            className={`flex items-center gap-3 transition-all duration-300 rounded-xl p-3 ${isExpanded ? 'justify-end' : 'justify-center'} ${isActive(item.href) ? 'bg-brown-dark/20 text-text-main font-bold ring-1 ring-brown-dark/10' : 'text-text-accent hover:bg-white/5'}`}
+                            className={`flex items-center gap-4 transition-all duration-300 rounded-xl p-1.5 ${isExpanded ? 'justify-end pr-4' : 'justify-center'} ${isActive(item.href) ? 'text-text-main font-bold' : 'text-text-accent hover:text-white'}`}
                         >
-                            {isExpanded && <span className="font-open-sans text-lg whitespace-nowrap animate-in fade-in slide-in-from-right-2">{item.name}</span>}
-                            <item.icon className={`shrink-0 transition-all duration-300 ${isExpanded ? 'w-6 h-6' : 'w-7 h-7'} ${isActive(item.href) ? 'text-text-accent fill-text-accent scale-110' : 'text-text-accent'}`} />
+                            {isExpanded && <span className="font-open-sans text-sm whitespace-nowrap animate-in fade-in slide-in-from-right-2">{item.name}</span>}
+                            <item.icon className={`shrink-0 transition-all duration-300 ${isExpanded ? 'w-4 h-4' : 'w-7 h-7'} ${isActive(item.href) ? 'text-text-accent scale-110' : 'text-text-accent'}`} />
                         </Link>
                     ))}
                 </nav>
@@ -73,13 +83,13 @@ export default function Sidebar() {
                     {/* Unggah Button */}
                     <Link
                         href="/admin/editor/upload"
-                        className={`flex items-center gap-3 bg-brown-dark text-white rounded-2xl hover:bg-brown-mid transition-all shadow-lg group ${isExpanded ? 'p-3' : 'p-3 justify-center'}`}
-                        title={!isExpanded ? 'Unggah Cerita' : ''}
+                        className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1.5 justify-center'}`}
+                        title={!isExpanded ? 'Unggah Cerita Baru' : ''}
                     >
-                        <div className={`bg-brown-mid rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform ${isExpanded ? 'w-10 h-10' : 'w-8 h-8'}`}>
-                            <Plus className="w-6 h-6 text-white" />
+                        <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-10 h-10'}`}>
+                            <Plus className="w-6 h-6 text-white" strokeWidth={3} />
                         </div>
-                        {isExpanded && <span className="font-open-sans text-sm font-bold whitespace-nowrap animate-in fade-in">Unggah Cerita</span>}
+                        {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Unggah Cerita</span>}
                     </Link>
 
                     {/* Utils */}
