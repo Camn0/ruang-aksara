@@ -11,7 +11,6 @@ export default async function CreateKaryaPage() {
     });
 
     return (
-        // Wrapper ini disederhanakan agar full krem dan langsung memuat Form Anda
         <div className="bg-[#f2ead7] min-h-screen">
             <CreateKaryaFormModern genres={daftarGenre} />
         </div>

@@ -72,7 +72,7 @@ export default function CommentItem({
     const hasReplies = comment.replies && comment.replies.length > 0;
 
     return (
-        <div className={`relative ${visualDepth > 0 ? 'ml-4 sm:ml-6 mt-4' : 'mb-8'}`}>
+        <div id={`comment-${comment.id}`} className={`relative ${visualDepth > 0 ? 'ml-4 sm:ml-6 mt-4' : 'mb-8'}`}>
             {/* Thread Navigation & Rail Logic */}
             {visualDepth > 0 && (
                 <div className="absolute -left-4 sm:-left-6 top-0 bottom-0 w-4 sm:w-6 pointer-events-none">

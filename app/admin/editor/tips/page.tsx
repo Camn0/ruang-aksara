@@ -25,28 +25,28 @@ export default async function TipsStudioPage() {
             desc: "Berikan kelemahan pada karakter utamamu agar mereka terasa nyata.",
             icon: Users,
             color: "text-rose-500",
-            bg: "bg-rose-50 dark:bg-rose-900/20"
+            bg: "bg-rose-50/50 dark:bg-rose-900/20"
         },
         {
             title: "Alur yang Memikat",
             desc: "Pastikan setiap bab memiliki 'pertanyaan' yang membuat pembaca ingin lanjut.",
             icon: TrendingUp,
-            color: "text-indigo-500",
-            bg: "bg-indigo-50 dark:bg-indigo-900/20"
+            color: "text-tan-primary",
+            bg: "bg-tan-primary/10 dark:bg-tan-primary/20"
         },
         {
             title: "Dunia yang Hidup",
             desc: "Tunjukkan, jangan katakan. Gambarkan suasana melalui panca indera.",
             icon: Star,
-            color: "text-amber-500",
-            bg: "bg-amber-50 dark:bg-amber-900/20"
+            color: "text-[#C6A982]",
+            bg: "bg-[#C6A982]/10 dark:bg-[#C6A982]/20"
         },
         {
             title: "Disiplin Menulis",
             desc: "Tulislah setiap hari, meski hanya 100 kata. Konsistensi adalah kunci.",
             icon: PenTool,
-            color: "text-emerald-500",
-            bg: "bg-emerald-50 dark:bg-emerald-900/20"
+            color: "text-brown-mid",
+            bg: "bg-brown-mid/10 dark:bg-brown-mid/20"
         }
     ];
 
@@ -54,32 +54,32 @@ export default async function TipsStudioPage() {
         <div className="pb-20">
             {/* Page Header: Title & Subtitle */}
             <div className="px-4 sm:px-8 pt-6 sm:pt-10 mb-12 sm:mb-16">
-                <h1 className="text-2xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-none uppercase italic mb-2">Tips Studio</h1>
-                <p className="text-indigo-500 font-extrabold text-[10px] sm:text-xs uppercase tracking-widest leading-none">Panduan Mengasah Pena</p>
+                <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-gray-100 tracking-tight leading-none uppercase italic mb-2">Tips Studio</h1>
+                <p className="text-tan-primary font-extrabold text-[10px] sm:text-xs uppercase tracking-widest leading-none">Panduan Mengasah Pena</p>
             </div>
 
             <main className="w-full mx-auto px-4 sm:px-8 -mt-6 sm:-mt-8">
                 {/* Tips Grid: Menyajikan kartu tips dengan hover effect yang dinamis */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
                     {tips.map((tip, idx) => (
-                        <div key={idx} className="bg-white dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-100/50 dark:shadow-none hover:scale-[1.02] transition-all group">
+                        <div key={idx} className="bg-white/80 dark:bg-slate-900 p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-tan-primary/10 dark:border-slate-800 shadow-xl shadow-brown-dark/5 hover:scale-[1.02] transition-all group backdrop-blur-sm">
                             <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${tip.bg} transition-transform group-hover:rotate-6`}>
-                                <tip.icon className={`w-5 h-5 sm:w-7 sm:h-7 ${tip.color}`} />
+                                <tip.icon className={`w-5 h-5 sm:w-7 sm:h-7 ${tip.color}`} strokeWidth={2.5} />
                             </div>
-                            <h3 className="text-sm sm:text-xl font-black text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 uppercase tracking-tight">{tip.title}</h3>
-                            <p className="text-[10px] sm:text-[13px] text-gray-500 dark:text-gray-400 font-bold leading-relaxed">{tip.desc}</p>
+                            <h3 className="text-sm sm:text-xl font-black text-brown-dark dark:text-gray-100 mb-2 sm:mb-3 uppercase tracking-tight">{tip.title}</h3>
+                            <p className="text-[10px] sm:text-[13px] text-brown-dark/60 dark:text-gray-400 font-bold leading-relaxed">{tip.desc}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* Promotional Banner: Siapkan untuk fitur interaktif di masa depan */}
-                <div className="mt-8 sm:mt-12 bg-indigo-600 rounded-[2rem] sm:rounded-[4.5rem] p-6 sm:p-12 text-white text-center shadow-2xl shadow-indigo-500/20 relative overflow-hidden group">
+                <div className="mt-8 sm:mt-12 bg-brown-dark rounded-[2rem] sm:rounded-[4.5rem] p-6 sm:p-12 text-white text-center shadow-2xl shadow-brown-dark/20 relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] group-hover:scale-110 transition-transform duration-1000"></div>
                     <div className="relative z-10 max-w-lg mx-auto">
-                        <Bookmark className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-4 sm:mb-6 opacity-50 group-hover:scale-110 transition-transform" />
+                        <Bookmark className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-4 sm:mb-6 text-tan-primary opacity-50 group-hover:scale-110 transition-transform" />
                         <h2 className="text-lg sm:text-2xl font-black italic mb-3 sm:mb-4">Siap Melangkah Lebih Jauh?</h2>
-                        <p className="text-[9px] sm:text-[11px] font-bold text-indigo-100 uppercase tracking-widest leading-relaxed mb-6 sm:mb-10 opacity-80">Kami sedang menyiapkan fitur bimbingan menulis langsung dari editor profesional.</p>
-                        <button className="bg-white text-indigo-600 px-6 sm:px-10 py-3 sm:py-4 rounded-full font-black text-[9px] sm:text-[11px] uppercase tracking-widest transition-all hover:scale-110 active:scale-95 shadow-xl">Kirim Saran Fitur</button>
+                        <p className="text-[9px] sm:text-[11px] font-bold text-[#F2EAD7]/60 uppercase tracking-widest leading-relaxed mb-6 sm:mb-10 opacity-80">Kami sedang menyiapkan fitur bimbingan menulis langsung dari editor profesional.</p>
+                        <button className="bg-tan-primary text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-black text-[9px] sm:text-[11px] uppercase tracking-widest transition-all hover:scale-110 active:scale-95 shadow-xl">Kirim Saran Fitur</button>
                     </div>
                 </div>
             </main>

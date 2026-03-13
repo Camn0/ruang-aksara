@@ -15,6 +15,7 @@ const config: Config = {
                 'tan-light': '#D7BFA7',
                 'brown-dark': '#3B2A22',
                 'brown-mid': '#7A553A',
+                'olive-banner': '#3B3722',
                 'text-accent': '#F2EAD7',
                 'text-main': '#1B1310',
             },

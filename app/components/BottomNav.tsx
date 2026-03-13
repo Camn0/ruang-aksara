@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Search, BookMarked, User, Plus } from "lucide-react";
+import { Home, Search, BookMarked, User, Sparkles } from "lucide-react";
 import './BottomNav.css';
 
 export default function BottomNav() {
@@ -12,7 +12,7 @@ export default function BottomNav() {
 
     if (!session?.user) return null;
 
-    const hiddenRoutes = ["/onboarding", "/auth/login", "/auth/register"];
+    const hiddenRoutes = ["/onboarding", "/auth/login", "/auth/register", "/admin"];
     if (hiddenRoutes.some(route => pathname.startsWith(route))) return null;
     if (pathname.match(/^\/novel\/[^\/]+\/\d+$/)) return null;
 
@@ -27,9 +27,9 @@ export default function BottomNav() {
     ];
 
     const authorMenu = [
-        { name: "Home", icon: Home, path: "/admin/dashboard" },
+        { name: "Home", icon: Home, path: "/user/dashboard" },
         { name: "Search", icon: Search, path: "/search" },
-        { name: "Add", icon: Plus, path: "/admin/editor/karya" },
+        { name: "Studio", icon: Sparkles, path: "/admin/dashboard" },
         { name: "Library", icon: BookMarked, path: "/library" },
         { name: "Profile", icon: User, path: `/profile/${session.user.id}` },
     ];
@@ -56,18 +56,17 @@ export default function BottomNav() {
                 {/* 3. Navigation Items */}
                 <ul className="flex w-full h-full relative z-10 translate-y-[-1px]">
                     {menu.map((item, index) => {
-                        const isPlus = isAuthor && index === 2; // Middle item
+                        const isStudio = isAuthor && index === 2; // Middle item
                         const isActive = currentActiveIndex === index;
                         
                         return (
-                            <li key={index} className={`flex-1 ${isActive ? 'active' : ''}`}>
+                             <li key={index} className={`flex-1 ${isActive ? 'active' : ''}`}>
                                 <Link href={item.path} className="flex justify-center items-center h-full w-full relative">
-                                    {isPlus ? (
+                                    {isStudio ? (
                                         <div className="relative flex items-center justify-center translate-y-[-24px]">
                                             {/* Ellipse 10 */}
                                             <div className="w-[58px] h-[58px] bg-[#3B2A22] rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 border-[6px] border-[#F8F4E1]">
-                                                {/* Text + using Inter */}
-                                                <span className="text-[#F2EAD7] font-['Inter'] font-light text-5xl leading-none translate-y-[-3px]">+</span>
+                                                <item.icon className="w-7 h-7 text-[#F2EAD7] transition-all" strokeWidth={2.5} />
                                             </div>
                                         </div>
                                     ) : (

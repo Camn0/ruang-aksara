@@ -34,13 +34,15 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/50 rounded-2xl p-4 shadow-sm mb-4 transition-all duration-300">
-            <div className="flex items-start gap-3 mb-3">
-                <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-gray-100 dark:bg-slate-800">
+        <form onSubmit={handleSubmit} className="bg-bg-cream/50 dark:bg-slate-900 border border-brown-dark/10 rounded-[2rem] p-5 shadow-sm mb-6 transition-all duration-500 group">
+            <div className="flex items-start gap-4 mb-4">
+                <div className="w-10 h-10 rounded-2xl overflow-hidden shrink-0 bg-tan-light/10 border border-brown-dark/10 shadow-sm relative">
                     {userProfile.avatar_url ? (
                         <img src={userProfile.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                        <UserCircle2 className="w-full h-full text-gray-400" />
+                        <div className="w-full h-full flex items-center justify-center bg-brown-dark/5">
+                            <UserCircle2 className="w-6 h-6 text-brown-dark/20" />
+                        </div>
                     )}
                 </div>
                 <textarea
@@ -49,8 +51,8 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
                     onChange={(e) => setContent(e.target.value)}
                     onFocus={() => setIsFocused(true)}
                     placeholder="Bagikan pembaruan ke penggemarmu..."
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 border-none outline-none focus:ring-0 min-h-10 resize-none"
-                    rows={isFocused || content ? 3 : 1}
+                    className="w-full bg-transparent text-[15px] text-text-main/80 dark:text-gray-300 border-none outline-none focus:ring-0 min-h-12 resize-none font-medium italic leading-relaxed placeholder:text-brown-dark/20"
+                    rows={isFocused || content ? 4 : 1}
                     required
                     disabled={isPending}
                 />
@@ -58,9 +60,9 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
 
             {/* Image URL Preview */}
             {imageUrl && (
-                <div className="mb-3 relative">
-                    <img src={imageUrl} alt="Preview" className="w-full max-h-64 object-cover rounded-xl border border-gray-100 dark:border-slate-800" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                    <button type="button" onClick={() => { setImageUrl(''); setShowImageInput(false); }} className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full hover:bg-black/80 transition">
+                <div className="mb-4 relative px-2">
+                    <img src={imageUrl} alt="Preview" className="w-full max-h-72 object-cover rounded-2xl border border-brown-dark/10 shadow-md transition-transform duration-500" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    <button type="button" onClick={() => { setImageUrl(''); setShowImageInput(false); }} className="absolute top-4 right-6 bg-brown-dark/80 text-text-accent p-1.5 rounded-full hover:bg-brown-dark shadow-lg transition-all active:scale-90">
                         <X className="w-4 h-4" />
                     </button>
                 </div>
@@ -68,32 +70,32 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
 
             {/* Image URL Input */}
             {showImageInput && !imageUrl && (
-                <div className="mb-3">
+                <div className="mb-4 px-2">
                     <input
                         type="url"
                         name="image_url"
                         value={imageUrl}
                         onChange={(e) => setImageUrl(e.target.value)}
-                        placeholder="Tempel URL gambar di sini..."
-                        className="w-full text-xs border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-2.5 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500"
+                        placeholder="Tempel URL gambar di sini (Instagram/Pinterest/etc)..."
+                        className="w-full text-[11px] font-black uppercase tracking-widest border border-brown-dark/10 bg-brown-dark/5 dark:bg-slate-800 text-text-main dark:text-gray-100 p-3.5 rounded-xl outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:opacity-30"
                     />
                 </div>
             )}
             {imageUrl && <input type="hidden" name="image_url" value={imageUrl} />}
 
             {(isFocused || content) && (
-                <div className="flex items-center justify-between border-t border-gray-100 dark:border-slate-800 pt-3">
+                <div className="flex items-center justify-between border-t border-brown-dark/5 pt-4 px-2">
                     <button
                         type="button"
                         onClick={() => setShowImageInput(!showImageInput)}
-                        className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${showImageInput || imageUrl ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400'}`}
+                        className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 ${showImageInput || imageUrl ? 'text-brown-dark' : 'text-tan-primary hover:text-brown-dark'}`}
                     >
                         <ImagePlus className="w-4 h-4" /> Tambah Gambar
                     </button>
-                    <div className="flex gap-2">
-                        <button type="button" onClick={() => { setIsFocused(false); setContent(''); setImageUrl(''); setShowImageInput(false); }} className="text-gray-500 hover:text-gray-700 text-xs font-bold px-4 py-1.5 transition">Batal</button>
-                        <button type="submit" disabled={isPending || !content.trim()} className="bg-indigo-600 text-white text-xs font-bold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition disabled:opacity-50">
-                            {isPending ? 'Mengeposkan...' : 'Buat Postingan'}
+                    <div className="flex gap-3">
+                        <button type="button" onClick={() => { setIsFocused(false); setContent(''); setImageUrl(''); setShowImageInput(false); }} className="text-tan-primary/60 hover:text-brown-dark text-[10px] font-black uppercase tracking-widest px-4 py-2 transition-all">Batal</button>
+                        <button type="submit" disabled={isPending || !content.trim()} className="bg-brown-dark hover:bg-brown-dark/90 text-text-accent text-[10px] font-black uppercase tracking-[0.2em] px-6 py-2.5 rounded-full shadow-lg shadow-brown-dark/10 transition-all active:scale-95 disabled:opacity-50">
+                            {isPending ? 'Mengeposkan...' : 'Terbitkan'}
                         </button>
                     </div>
                 </div>

@@ -30,12 +30,12 @@ export function GenreForm() {
                 type="text"
                 placeholder="Nama Genre Baru (e.g. Romance)"
                 required
-                className="flex-1 bg-gray-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500/20 focus:bg-white dark:focus:bg-slate-800 focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-gray-900 dark:text-gray-100 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                className="flex-1 bg-brown-dark/5 dark:bg-slate-800 border-2 border-transparent focus:border-tan-primary/20 focus:bg-white dark:focus:bg-slate-800 focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-brown-dark dark:text-gray-100 transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500"
             />
             <button
                 type="submit"
                 disabled={isPending}
-                className="bg-indigo-600 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-lg active:scale-95 flex items-center justify-center min-w-[100px]"
+                className="bg-brown-dark text-white px-6 sm:px-10 py-3 sm:py-4 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest hover:bg-black disabled:opacity-50 transition-all shadow-lg active:scale-95 flex items-center justify-center min-w-[100px]"
             >
                 {isPending ? '...' : 'Tambah'}
             </button>
@@ -60,7 +60,7 @@ export function DeleteGenreButton({ id }: { id: string }) {
         <button
             onClick={handleDelete}
             disabled={isPending}
-            className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+            className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all p-2 hover:bg-red-50/50 dark:hover:bg-red-900/20 rounded-lg"
         >
             {isPending ? '...' : 'Hapus'}
         </button>

@@ -479,10 +479,54 @@ export async function togglePinReview(reviewId: string, karyaId: string) {
             data: { is_pinned: !(review as any).is_pinned }
         });
 
-        revalidateTag(`karya-${karyaId}`);
+revalidateTag(`karya-${karyaId}`);
         return { success: true };
     } catch (error) {
         console.error("[togglePinReview] Error:", error);
         return { error: "Gagal memproses sematan ulasan." };
+    }
+}
+
+// ==============================================================================
+// 8. MUTASI ADMIN/AUTHOR: MODERASI KOMENTAR
+// ==============================================================================
+/**
+ * Server Action: Menghapus komentar.
+ * 
+ * Otorisasi:
+ *   - Admin bisa hapus semua komentar.
+ *   - Author hanya bisa hapus komentar pada karya miliknya.
+ */
+export async function deleteComment(id: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session || (session.user?.role !== 'admin' && session.user?.role !== 'author')) {
+            return { error: "Unauthorized." };
+        }
+
+        const comment = await prisma.comment.findUnique({
+            where: { id },
+            include: {
+                bab: {
+                    include: {
+                        karya: true
+                    }
+                }
+            }
+        });
+
+        if (!comment) return { error: "Komentar tidak ditemukan." };
+
+        // Otorisasi: Admin atau Pemilik Karya asal komentar
+        if (session.user.role === 'author' && comment.bab.karya.uploader_id !== session.user.id) {
+            return { error: "Forbidden: Anda tidak memiliki hak untuk menghapus komentar ini." };
+        }
+
+        await prisma.comment.delete({ where: { id } });
+
+        return { success: true };
+    } catch (error) {
+        console.error("[deleteComment] Error:", error);
+        return { error: "Gagal menghapus komentar." };
     }
 }

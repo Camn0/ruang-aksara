@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { createKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 
@@ -40,6 +40,34 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
     const [step, setStep] = useState(1);
     const router = useRouter();
 
+    // --- LOGIKA UPLOAD & CONVERT KE BASE64 ---
+    const [coverPreview, setCoverPreview] = useState<string | null>(null);
+    const [coverBase64, setCoverBase64] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Tampilkan Preview
+            setCoverPreview(URL.createObjectURL(file));
+
+            // Ubah file jadi teks Base64 untuk dikirim ke Database
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setCoverBase64(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setCoverPreview(null);
+        setCoverBase64(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ""; 
+        }
+    };
+
     async function handeSubmitAction(formData: FormData) {
         setIsPending(true);
         try {
@@ -49,6 +77,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                 alert(result.error);
             } else {
                 alert("Berhasil membuat karya baru!");
+                router.push('/admin/dashboard'); // Bisa disesuaikan mau di-redirect ke mana setelah sukses
                 router.refresh();
             }
         } catch (err) {
@@ -63,6 +92,10 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
         <div className="w-full min-h-[810px] relative font-sans overflow-x-hidden pt-14 pb-24">
             <form action={handeSubmitAction} className="w-full h-full">
                 
+                {/* Input tersembunyi untuk mengirim teks Base64 ke Backend */}
+                <input type="hidden" name="cover_url" value={coverBase64 || ""} />
+
+                {/* ================= STEP 1: METADATA ================= */}
                 <div className={step === 1 ? "block" : "hidden"}>
                     <div className="w-full max-w-[1200px] mx-auto px-6 sm:px-12 animate-in fade-in duration-300">
                         <div className="flex justify-between items-center mb-16">
@@ -75,14 +108,40 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                         </div>
 
                         <div className="flex flex-col lg:flex-row gap-12 sm:gap-20">
+                            
+                            {/* Area Cover */}
                             <div className="flex flex-col gap-4">
                                 <label className="font-semibold text-black text-xl sm:text-[25.7px]">Cover</label>
-                                <div className="w-[183px] h-[239px] bg-[#886750] rounded-[24.75px] flex items-center justify-center cursor-pointer relative hover:bg-[#7a5c48] transition-colors">
-                                    <input type="file" name="cover" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
-                                    <FiRrPlus className="w-12 h-12" />
+                                <div className="w-[183px] h-[239px] bg-[#886750] rounded-[24.75px] flex items-center justify-center relative hover:bg-[#7a5c48] transition-colors overflow-hidden group">
+                                    
+                                    {/* Input File (TIDAK ADA NAME agar tidak tabrakan dengan hidden input) */}
+                                    <input 
+                                        type="file" 
+                                        ref={fileInputRef}
+                                        onChange={handleImageChange}
+                                        className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${coverPreview ? 'hidden' : 'block'}`} 
+                                        accept="image/*" 
+                                    />
+
+                                    {coverPreview ? (
+                                        <>
+                                            <img src={coverPreview} alt="Preview" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 z-20 backdrop-blur-sm">
+                                                <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-white/20 border border-white/50 text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-white/40 transition-colors text-sm w-20 cursor-pointer">
+                                                    Ganti
+                                                </button>
+                                                <button type="button" onClick={handleRemoveImage} className="bg-red-500/80 text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-red-500 transition-colors text-sm w-20 cursor-pointer">
+                                                    Hapus
+                                                </button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <FiRrPlus className="w-12 h-12" />
+                                    )}
                                 </div>
                             </div>
 
+                            {/* Area Input */}
                             <div className="flex-1 flex flex-col gap-10">
                                 <div className="flex flex-col gap-3">
                                     <label className="font-semibold text-black text-xl sm:text-[25.7px]">Judul</label>
@@ -91,7 +150,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                         type="text"
                                         required
                                         placeholder="masukkan judul"
-                                        className="w-full h-[60px] bg-[#886750] rounded-[16.5px] px-5 font-normal text-[#f2ead7] text-xl sm:text-[25.7px] placeholder-[#f2ead7] outline-none"
+                                        className="w-full h-[60px] bg-[#886750] rounded-[16.5px] px-5 font-normal text-[#f2ead7] text-xl sm:text-[25.7px] placeholder-[#f2ead7]/70 outline-none"
                                     />
                                 </div>
 
@@ -102,7 +161,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                         type="text"
                                         required
                                         placeholder="contoh: Andrea Hirata"
-                                        className="w-full h-[60px] bg-[#886750] rounded-[16.5px] px-5 font-normal text-[#f2ead7] text-xl sm:text-[25.7px] placeholder-[#f2ead7] outline-none"
+                                        className="w-full h-[60px] bg-[#886750] rounded-[16.5px] px-5 font-normal text-[#f2ead7] text-xl sm:text-[25.7px] placeholder-[#f2ead7]/70 outline-none"
                                     />
                                 </div>
 
@@ -136,6 +195,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                     </div>
                 </div>
 
+                {/* ================= STEP 2: BAB & KONTEN ================= */}
                 <div className={step === 2 ? "block" : "hidden"}>
                     <div className="w-full max-w-[1200px] mx-auto px-6 sm:px-12 flex flex-col h-full animate-in fade-in slide-in-from-right-8 duration-300">
                         <div className="flex justify-between items-center mb-16">
@@ -146,7 +206,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             <button
                                 type="submit"
                                 disabled={isPending}
-                                className="w-[180px] h-[54px] bg-[#3b2a22] hover:bg-[#2a1e18] rounded-[8.49px] flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 transition-colors"
+                                className="w-[180px] h-[54px] bg-[#3b2a22] hover:bg-[#2a1e18] rounded-[8.49px] flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 transition-colors shadow-md"
                             >
                                 <span className="font-semibold text-[#f2ead7] text-[29.3px]">
                                     {isPending ? 'Proses' : 'Unggah'}
@@ -160,15 +220,15 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                 type="text"
                                 name="bab_title"
                                 placeholder="Masukkan Judul Bab"
-                                className="w-full h-full bg-transparent px-[35px] font-bold text-[#f2ead7] text-[30.1px] placeholder-[#f2ead7] outline-none"
+                                className="w-full h-full bg-transparent px-[35px] font-bold text-[#f2ead7] text-[30.1px] placeholder-[#f2ead7]/70 outline-none"
                             />
                         </div>
 
-                        <div className="w-full h-[409px] bg-[#dec8b2] rounded-[10px]">
+                        <div className="w-full h-[409px] bg-[#dec8b2] rounded-[10px] shadow-sm">
                             <textarea
                                 name="bab_content"
                                 placeholder="Tulis Cerita"
-                                className="w-full h-full bg-transparent px-[39px] pt-[26px] font-normal text-black text-[25.7px] placeholder-black outline-none resize-none"
+                                className="w-full h-full bg-transparent px-[39px] pt-[26px] font-normal text-black text-[25.7px] placeholder-black/60 outline-none resize-none"
                             />
                         </div>
                     </div>
