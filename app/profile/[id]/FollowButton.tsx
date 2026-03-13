@@ -24,8 +24,8 @@ export default function FollowButton({ targetUserId, initialIsFollowing }: { tar
                 focus:outline-none
                 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95
                 ${initialIsFollowing
-                    ? 'bg-[#2d2118] text-[#c4a882] hover:bg-[#3d2f22]'
-                    : 'bg-[#2d2118] text-white hover:bg-[#3d2f22]'
+                    ? 'bg-[#3d2314] text-[#e8d5c0] hover:bg-[#4a2c1a] dark:bg-[#e8d5c0] dark:text-[#2d2118] dark:hover:bg-[#d4c0a8]'
+                    : 'bg-[#3d2314] text-[#e8d5c0] hover:bg-[#4a2c1a] dark:bg-[#e8d5c0] dark:text-[#2d2118] dark:hover:bg-[#d4c0a8]'
                 }
             `}
         >
