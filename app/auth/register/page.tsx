@@ -35,59 +35,62 @@ export default function RegisterPage() {
         }
     }
 
+    const inputClass = "appearance-none block w-full py-4 px-5 rounded-2xl border border-[#3B2A22]/20 bg-[#E8DDD0] dark:bg-slate-900 dark:border-slate-700 dark:text-gray-100 text-[#3B2A22] placeholder:text-[#7A553A]/60 focus:outline-none focus:ring-2 focus:ring-[#7A553A]/30 transition-all text-base";
+
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
+        <div className="min-h-screen bg-[#F3E9D7] dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+                <h2 className="mt-6 text-center text-3xl font-extrabold text-[#3B2A22] dark:text-gray-100">
                     Daftar Akun Baru
                 </h2>
-                <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                <p className="mt-2 text-center text-sm text-[#7A553A] dark:text-gray-400">
                     Atau{' '}
-                    <Link href="/api/auth/signin" className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors">
+                    <Link href="/api/auth/signin" className="font-medium text-[#7A553A] dark:text-[#B08968] hover:text-[#3B2A22] dark:hover:text-[#D6BFA6] transition-colors underline underline-offset-2">
                         masuk ke akun yang sudah ada
                     </Link>
                 </p>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white dark:bg-slate-900 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100 dark:border-slate-800 transition-colors duration-300">
+                <div className="bg-[#F3E9D7]/80 dark:bg-slate-900 py-8 px-4 sm:rounded-2xl sm:px-10 border border-[#D6BFA6] dark:border-slate-800 transition-colors duration-300">
 
                     {message && (
-                        <div className={`p-4 mb-6 text-sm rounded-lg ${message.type === 'error' ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800/50' : 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800/50'}`}>
+                        <div className={`p-4 mb-6 text-sm rounded-2xl text-center font-medium animate-in fade-in slide-in-from-top-2 ${message.type === 'error'
+                            ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                            : 'bg-[#D6BFA6]/50 text-[#3B2A22] dark:bg-green-900/30 dark:text-green-400'
+                        }`}>
                             {message.text}
                         </div>
                     )}
 
-                    <form className="space-y-6" onSubmit={handleSubmit}>
+                    <form className="space-y-5" onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor="display_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Nama Penampilan
+                            <label htmlFor="display_name" className="block text-xs font-bold text-[#7A553A] dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                                Display Name
                             </label>
-                            <div className="mt-1">
-                                <input id="display_name" name="display_name" type="text" required className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:border-indigo-400 sm:text-sm" />
-                            </div>
+                            <input id="display_name" name="display_name" type="text" placeholder='Enter your display name' required className={inputClass} />
                         </div>
 
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label htmlFor="username" className="block text-xs font-bold text-[#7A553A] dark:text-gray-300 mb-1.5 uppercase tracking-wider">
                                 Username
                             </label>
-                            <div className="mt-1">
-                                <input id="username" name="username" type="text" required className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:border-indigo-400 sm:text-sm" />
-                            </div>
+                            <input id="username" name="username" type="text" placeholder='Enter your username' required className={inputClass} />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label htmlFor="password" className="block text-xs font-bold text-[#7A553A] dark:text-gray-300 mb-1.5 uppercase tracking-wider">
                                 Password
                             </label>
-                            <div className="mt-1">
-                                <input id="password" name="password" type="password" required className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:border-indigo-400 sm:text-sm" />
-                            </div>
+                            <input id="password" name="password" type="password" placeholder='Enter your password' required className={inputClass} />
                         </div>
 
-                        <div>
-                            <button type="submit" disabled={isPending} className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isPending ? 'opacity-70 cursor-not-allowed' : 'hover:bg-indigo-700 dark:hover:bg-indigo-600'}`}>
+                        <div className="pt-2">
+                            <button
+                                type="submit"
+                                disabled={isPending}
+                                className={`w-full flex justify-center py-4 px-4 rounded-2xl font-semibold text-base text-[#F3E9D7] bg-[#3B2A22] dark:bg-[#F3E9D7] dark:text-[#3B2A22] transition-all active:scale-95 focus:outline-none ${isPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#7A553A] dark:hover:bg-[#D6BFA6]'}`}
+                            >
                                 {isPending ? 'Mendaftar...' : 'Daftar Sekarang'}
                             </button>
                         </div>
