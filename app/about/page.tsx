@@ -20,29 +20,29 @@ export default function AboutPage() {
             </header>
 
             <main className="max-w-4xl mx-auto px-6 pt-16">
-                {/* Title Section with Mockup Overlap */}
-                <div className="relative mb-24">
+                {/* Title Section with Relaxed Overlap */}
+                <div className="relative mb-32 sm:mb-40">
                     <div className="flex flex-col items-center">
-                        <div className="relative group pr-12 pb-4">
-                            <div className="bg-[#3B2A22] text-white px-10 py-6 rounded-2xl shadow-2xl relative z-10">
-                                <h2 className="text-5xl font-black italic uppercase tracking-tighter">Tentang</h2>
+                        <div className="relative group pr-20 pb-10">
+                            <div className="bg-[#3B2A22] text-white px-12 py-8 rounded-[2rem] shadow-2xl relative z-10">
+                                <h2 className="text-6xl sm:text-7xl font-black italic uppercase tracking-tighter">Tentang</h2>
                             </div>
-                            <div className="absolute -bottom-6 -right-6 bg-[#3B2A22] text-white px-10 py-6 rounded-2xl shadow-xl z-20 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform">
-                                <h2 className="text-5xl font-black italic uppercase tracking-tighter">Kami</h2>
+                            <div className="absolute -bottom-10 -right-10 bg-[#3B2A22] text-white px-12 py-8 rounded-[2rem] shadow-xl z-20 group-hover:translate-x-4 group-hover:translate-y-4 transition-transform duration-500">
+                                <h2 className="text-6xl sm:text-7xl font-black italic uppercase tracking-tighter">Kami</h2>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Subtitle / Intro */}
-                <div className="prose prose-stone dark:prose-invert max-w-none text-center mb-24">
-                    <p className="text-lg text-[#3B2A22]/80 dark:text-gray-300 italic font-medium leading-relaxed max-w-2xl mx-auto">
+                {/* Subtitle / Intro - Improved Line Height and Margins */}
+                <div className="prose prose-stone dark:prose-invert max-w-none text-center mb-32 sm:mb-40">
+                    <p className="text-xl sm:text-2xl text-[#3B2A22]/80 dark:text-gray-300 italic font-medium leading-[1.8] max-w-3xl mx-auto">
                         "Ruang Aksara adalah rumah bagi setiap imajinasi yang ingin terbang bebas. Kami percaya bahwa setiap orang memiliki cerita yang layak untuk dibagikan, dan setiap kata adalah langkah menuju dunia yang lebih berwarna."
                     </p>
                 </div>
 
-                {/* Visi Misi Section */}
-                <div className="grid md:grid-cols-2 gap-12 items-center mb-32">
+                {/* Visi Misi Section - Increased Gap */}
+                <div className="grid md:grid-cols-2 gap-20 items-center mb-40 sm:mb-48">
                     {/* Left side: Image/Illustration */}
                     <div className="relative group">
                         <div className="w-full aspect-[4/5] bg-[#3B2A22]/5 rounded-[3rem] overflow-hidden border border-[#3B2A22]/10 relative">
@@ -58,8 +58,8 @@ export default function AboutPage() {
                         </div>
                     </div>
 
-                    {/* Right side: Visi Misi Tabs */}
-                    <div className="bg-[#B59F84]/20 p-10 rounded-[4rem] border border-[#3B2A22]/5">
+                    {/* Right side: Visi Misi Tabs - Increased Padding */}
+                    <div className="bg-[#B59F84]/15 p-12 sm:p-16 rounded-[4rem] border border-[#3B2A22]/5">
                         <div className="flex gap-4 p-1.5 bg-[#3B2A22] rounded-full mb-10 w-fit mx-auto md:mx-0">
                             <button 
                                 onClick={() => setActiveTab('visi')}

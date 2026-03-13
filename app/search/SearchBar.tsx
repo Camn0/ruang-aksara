@@ -2,14 +2,12 @@
 
 import { useState, FormEvent, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search as SearchIcon, X } from 'lucide-react';
+import { Home, Search, X } from 'lucide-react';
+import Link from 'next/link';
 
 /**
- * SearchBar (Client Component)
- * 
- * Mengapa: Menggunakan standard <form> menyebabkan Hard Reload (Halaman putih sekelebat).
- * Dengan useRouter().push(), navigasi tetap berada dalam Single Page Application (SPA),
- * menjaga Progress Bar tetap aktif dan transisi halus.
+ * Redesigned SearchBar (Client Component)
+ * Implementation matches the high-end "Library" aesthetic for consistency.
  */
 export default function SearchBar({ initialQ, filter, genreId }: { initialQ: string, filter: string, genreId: string }) {
     const [q, setQ] = useState(initialQ);
@@ -23,13 +21,10 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-
-        // Membangun query string secara manual agar tetap SPA
         const params = new URLSearchParams();
         if (q) params.set('q', q);
         if (filter) params.set('filter', filter);
         if (genreId) params.set('genreId', genreId);
-
         router.push(`/search?${params.toString()}`);
     };
 
@@ -42,26 +37,42 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
     }
 
     return (
-        <form className="relative group" onSubmit={handleSearch}>
-            <input
-                type="text"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Cari judul atau penulis..."
-                className="w-full bg-tan-primary text-text-accent placeholder:text-text-accent/70 rounded-full py-4 pl-14 pr-12 text-lg focus:outline-none focus:ring-2 focus:ring-brown-mid transition-all shadow-md"
-            />
-            <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-text-accent transition-colors group-focus-within:text-white" />
+        <div className="flex items-center gap-3 w-full">
+            {/* Home Link - Standardized with Library */}
+            <Link 
+                href="/" 
+                className="bg-tan-primary p-2.5 rounded-full text-text-accent hover:opacity-80 transition-all shadow-md shrink-0"
+            >
+                <Home className="w-5 h-5" />
+            </Link>
 
-            {q && (
-                <button
-                    type="button"
-                    onClick={clearSearch}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-brown-dark/20 text-text-accent transition-all"
-                >
-                    <X className="w-5 h-5" />
-                </button>
-            )}
-            <button type="submit" className="hidden">Cari</button>
-        </form>
+            {/* Main Search Container - Exact copy of Library proportions */}
+            <form 
+                onSubmit={handleSearch}
+                className="relative flex-1"
+            >
+                <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none z-10">
+                    <Search className="w-4 h-4 text-text-accent" />
+                </div>
+                <input
+                    type="text"
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Cari karya..."
+                    className="w-full bg-tan-primary text-text-accent placeholder:text-text-accent/60 rounded-full py-3.5 pl-12 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-brown-mid transition-all shadow-md font-black italic uppercase tracking-tighter"
+                />
+                
+                {q && (
+                    <button
+                        type="button"
+                        onClick={clearSearch}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-text-accent hover:opacity-50 transition-all p-1"
+                    >
+                        <X className="w-4 h-4" />
+                    </button>
+                )}
+                <button type="submit" className="hidden">Cari</button>
+            </form>
+        </div>
     );
 }

@@ -136,7 +136,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                     activeTab === 'riwayat' ? "Perpustakaan kosong" : "Belum ada cerita yang tamat",
                     "Mulai jelajahi karya-karya hebat lainnya di Ruang Aksara."
                 ) : (
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-x-3 gap-y-10">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12">
                         {filteredBookmarks.map((b, index) => {
                             const isOdd = index % 2 !== 0; 
                             const hasNewChapters = b.karya._count.bab > b.last_chapter;
@@ -152,26 +152,26 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                                                 <div className={`w-full h-full flex items-center justify-center p-3 text-center text-[8px] text-text-accent font-bold leading-tight ${b.karya.is_completed ? 'bg-black/40' : ''}`}>{b.karya.title}</div>
                                             )}
 
-                                            {/* Hover Overlay - Smaller Text */}
-                                            <div className="absolute inset-0 bg-brown-dark/90 backdrop-blur-sm opacity-0 group-hover/card:opacity-100 transition-all duration-500 flex flex-col p-3 justify-center items-center text-center">
-                                                <p className="text-[8px] text-text-accent font-medium line-clamp-4 leading-normal italic mb-2">
+                                            {/* Hover Overlay - Improved Readability */}
+                                            <div className="absolute inset-0 bg-brown-dark/90 backdrop-blur-sm opacity-0 group-hover/card:opacity-100 transition-all duration-500 flex flex-col p-4 justify-center items-center text-center">
+                                                <p className="text-[10px] sm:text-xs text-text-accent font-medium line-clamp-6 leading-relaxed italic mb-3">
                                                     {b.karya.deskripsi || "Tanpa deskripsi."}
                                                 </p>
-                                                <div className="flex items-center gap-1 bg-tan-primary/30 px-2 py-0.5 rounded-full border border-text-accent/10">
-                                                    <Star className="w-2 h-2 fill-tan-primary text-tan-primary" />
-                                                    <span className="text-[8px] font-black text-text-accent">{b.karya.avg_rating.toFixed(1)}</span>
+                                                <div className="flex items-center gap-1.5 bg-tan-primary/30 px-3 py-1 rounded-full border border-text-accent/10">
+                                                    <Star className="w-3 h-3 fill-tan-primary text-tan-primary" />
+                                                    <span className="text-[10px] sm:text-xs font-black text-text-accent">{b.karya.avg_rating.toFixed(1)}</span>
                                                 </div>
                                             </div>
 
-                                            {/* Status Badges Container - Compact */}
-                                            <div className="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none group-hover/card:opacity-0 transition-opacity">
+                                            {/* Status Badges Container - Compact but Larger Text */}
+                                            <div className="absolute top-3 left-3 flex flex-col gap-1.5 pointer-events-none group-hover/card:opacity-0 transition-opacity">
                                                 {hasNewChapters && (
-                                                    <div className="bg-red-500 text-white px-1.5 py-0.5 rounded-full text-[6px] font-black animate-pulse shadow-lg">
+                                                    <div className="bg-red-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black animate-pulse shadow-lg">
                                                         {b.karya._count.bab - b.last_chapter} NEW
                                                     </div>
                                                 )}
                                                 {b.last_chapter === b.karya._count.bab && b.karya._count.bab > 0 && (
-                                                    <div className="bg-green-500/90 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full text-[6px] font-black shadow-lg border border-white/20 uppercase">
+                                                    <div className="bg-green-500/90 backdrop-blur-sm text-white px-2 py-0.5 rounded-full text-[8px] font-black shadow-lg border border-white/20 uppercase">
                                                         SELESAI
                                                     </div>
                                                 )}
@@ -188,21 +188,21 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                                             )}
                                         </div>
 
-                                        <div className="flex flex-col px-0.5">
-                                            <h3 className="font-open-sans font-bold text-[10px] text-text-main line-clamp-1 leading-tight mb-0.5 group-hover/card:text-tan-primary transition-colors">{b.karya.title}</h3>
-                                            <div className="flex items-center gap-1.5 opacity-70 mb-1">
-                                                <p className="text-[8px] font-bold text-tan-primary truncate">{b.karya.penulis_alias || 'Anonim'}</p>
-                                                <span className="w-0.5 h-0.5 bg-tan-primary/40 rounded-full shrink-0" />
-                                                <p className="text-[8px] font-black text-brown-mid">{progressPercent.toFixed(0)}%</p>
+                                        <div className="flex flex-col px-0.5 mt-1">
+                                            <h3 className="font-open-sans font-black text-[12px] sm:text-sm text-text-main line-clamp-1 leading-tight mb-1 group-hover/card:text-tan-primary transition-colors uppercase tracking-tight italic">{b.karya.title}</h3>
+                                            <div className="flex items-center gap-2 opacity-80 mb-1.5">
+                                                <p className="text-[10px] font-black text-tan-primary truncate uppercase tracking-widest">{b.karya.penulis_alias || 'Anonim'}</p>
+                                                <span className="w-1 h-1 bg-tan-primary/40 rounded-full shrink-0" />
+                                                <p className="text-[10px] font-black text-brown-mid">{progressPercent.toFixed(0)}%</p>
                                             </div>
 
-                                            {/* Detailed Stats - Ultra Thin Fonts */}
-                                            <div className="space-y-0.5">
-                                                <div className="flex justify-between items-center text-[7px] font-black uppercase tracking-tighter text-brown-mid/60">
+                                            {/* Detailed Stats - Improved Text Size */}
+                                            <div className="space-y-1">
+                                                <div className="flex justify-between items-center text-[8.5px] font-black uppercase tracking-widest text-brown-mid/60">
                                                     <span>Bab {b.last_chapter} / {b.karya._count.bab}</span>
                                                     <span>{formatDistanceToNow(new Date(b.updated_at), { addSuffix: false, locale: localeId })}</span>
                                                 </div>
-                                                <p className="text-[7.5px] font-bold text-brown-dark truncate bg-tan-light/10 px-1.5 py-0.5 rounded-sm">
+                                                <p className="text-[9px] font-black text-brown-dark truncate bg-tan-primary/5 dark:bg-slate-800/50 px-2 py-1 rounded-md border border-tan-primary/10">
                                                     {b.karya.bab.find(bc => bc.chapter_no === b.last_chapter)?.title || `Bab ${b.last_chapter}`}
                                                 </p>
                                             </div>

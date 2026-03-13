@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { Search as SearchIcon, Star, TrendingUp, BookOpen } from "lucide-react";
+import { Star, TrendingUp, BookOpen, PlusCircle, ArrowUp, Flame, CheckCircle, Library, Search as SearchIcon, Eye, Users, MessageSquare } from "lucide-react";
 import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import SearchBar from "./SearchBar";
 
 /**
@@ -16,11 +18,16 @@ const getCachedGenres = unstable_cache(
 /**
  * Caching Search Results
  */
-const getCachedSearchResults = (q: string, filter: string, genreId: string) => unstable_cache(
+const SORT_OPTIONS = ['terbaru', 'rating', 'sedanghangat', 'banyakbab'];
+const FILTER_OPTIONS = ['diikuti', 'selesai'];
+
+const getCachedSearchResults = (q: string, filterStr: string, genreIds: string[], userId?: string) => unstable_cache(
     async () => {
         let orderBy: any = {};
         let where: any = { AND: [] };
         let authors: any[] = [];
+        
+        const activeFilters = filterStr.split(',').filter(Boolean);
 
         if (q) {
             const terms = q.trim().split(/\s+/).filter(t => t.length > 0);
@@ -54,17 +61,37 @@ const getCachedSearchResults = (q: string, filter: string, genreId: string) => u
             }
         }
 
-        if (genreId) {
-            where.AND.push({ genres: { some: { id: genreId } } });
+        if (genreIds && genreIds.length > 0) {
+            genreIds.forEach(id => {
+                where.AND.push({ genres: { some: { id } } });
+            });
         }
 
-        if (filter === "terbaru") {
-            orderBy = { id: 'desc' };
-        } else if (filter === "rating") {
-            orderBy = { avg_rating: 'desc' };
-        } else if (filter === "selesai") {
+        // Apply Filters (WHERE)
+        if (activeFilters.includes('diikuti')) {
+            if (userId) {
+                where.AND.push({ bookmarks: { some: { user_id: userId } } });
+            } else {
+                return { results: [], authors: [] };
+            }
+        }
+        if (activeFilters.includes('selesai')) {
             where.is_completed = true;
-            orderBy = { total_views: 'desc' };
+        }
+
+        // Apply Sort (ORDER BY)
+        const activeSort = activeFilters.find(f => SORT_OPTIONS.includes(f)) || 'sedanghangat';
+
+        if (activeSort === "terbaru") {
+            orderBy = { id: 'desc' };
+        } else if (activeSort === "rating") {
+            orderBy = { avg_rating: 'desc' };
+        } else if (activeSort === "banyakbab") {
+            orderBy = {
+                bab: {
+                    _count: 'desc'
+                }
+            };
         } else {
             orderBy = { total_views: 'desc' };
         }
@@ -76,7 +103,7 @@ const getCachedSearchResults = (q: string, filter: string, genreId: string) => u
             orderBy,
             include: {
                 genres: true,
-                _count: { select: { bab: true } },
+                _count: { select: { bab: true, bookmarks: true, reviews: true, ratings: true } },
                 bab: {
                     orderBy: { created_at: 'desc' },
                     take: 1,
@@ -88,7 +115,7 @@ const getCachedSearchResults = (q: string, filter: string, genreId: string) => u
 
         return { results, authors };
     },
-    [`search-v3-${q}-${filter}-${genreId || 'all'}`],
+    [`search-v5-multi-${q}-${filterStr}-${genreIds.sort().join(',') || 'all'}-${userId || 'anon'}`],
     { revalidate: 300, tags: ['karya-global'] }
 )();
 
@@ -99,12 +126,15 @@ export default async function SearchPage({
 }) {
     const q = searchParams.q || "";
     const filter = searchParams.filter || "sedanghangat";
-    const genreId = searchParams.genreId || "";
+    const genreIds = searchParams.genreId ? searchParams.genreId.split(',').filter(Boolean) : [];
+
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     // Eksekusi query secara paralel via Cache
     const [allGenres, searchData] = await Promise.all([
         getCachedGenres(),
-        getCachedSearchResults(q, filter, genreId)
+        getCachedSearchResults(q, filter, genreIds, userId)
     ]);
 
     const results = searchData.results as (any & {
@@ -117,180 +147,249 @@ export default async function SearchPage({
     const authors = searchData.authors as any[];
 
     const CoverPlaceholder = ({ title }: { title: string }) => (
-        <div className="w-24 h-32 bg-gray-200 dark:bg-slate-800 rounded-lg flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400 shadow-sm shrink-0">
+        <div className="w-24 h-32 bg-tan-primary/10 rounded-lg flex items-center justify-center p-3 text-center text-[10px] text-brown-dark/40 shadow-inner shrink-0 border border-brown-dark/5 font-black uppercase italic tracking-tighter">
             {title}
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
-            {/* Header / Search Bar */}
-            <header className="px-6 pt-12 pb-4 bg-white dark:bg-slate-900 sticky top-0 z-10 border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
-                <SearchBar initialQ={q} filter={filter} genreId={genreId} />
+        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 pb-24 transition-colors duration-300">
+            {/* Header / Search Bar - Standardized colors & Fixed Z-Index */}
+            <header className="px-6 pt-5 pb-5 sticky top-0 z-0 bg-bg-cream/90 dark:bg-slate-950/90 shadow-sm border-b border-tan-primary/10 backdrop-blur-md">
+                <SearchBar initialQ={q} filter={filter} genreId={genreIds.join(',')} />
+            </header>
 
-                <div className="flex gap-2 mt-4 overflow-x-auto pb-2 snap-x hide-scrollbar border-b border-gray-50 dark:border-slate-800/50 mb-3">
+            <main className="max-w-6xl mx-auto px-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     {[
-                        { id: 'sedanghangat', label: 'Sedang Hangat' },
-                        { id: 'terbaru', label: 'Terbaru' },
-                        { id: 'rating', label: 'Rating Tertinggi' },
-                        { id: 'selesai', label: 'Tamat' },
-                    ].map(f => (
-                        <Link
-                            key={f.id}
-                            href={`/search?q=${q}&filter=${f.id}${genreId ? `&genreId=${genreId}` : ''}`}
-                            className={`snap-start shrink-0 px-4 py-1.5 rounded-full text-[11px] font-bold transition-all border ${filter === f.id
-                                ? 'bg-indigo-600 dark:bg-indigo-500 text-white border-indigo-600 dark:border-indigo-500 shadow-md shadow-indigo-200 dark:shadow-none'
-                                : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800'
-                                }`}
-                        >
-                            {f.label}
-                        </Link>
-                    ))}
+                        { id: 'diikuti', label: 'Diikuti Olehmu', icon: PlusCircle, desc: 'Lihat cerita yang sebelumnya telah kamu ikuti!', color: 'bg-brown-mid' },
+                        { id: 'terbaru', label: 'Unggahan Baru', icon: ArrowUp, desc: 'Cerita-cerita yang baru saja diunggah!', color: 'bg-brown-mid' },
+                        { id: 'sedanghangat', label: 'Sedang Hangat', icon: Flame, desc: 'Cerita yang sedang hangat saat ini!', color: 'bg-brown-mid' },
+                        { id: 'rating', label: 'Rating Tinggi', icon: Star, desc: 'Cerita yang diberikan rating tinggi oleh pengguna RuangAksara!', color: 'bg-brown-mid' },
+                        { id: 'banyakbab', label: 'Banyak Bab', icon: Library, desc: 'Cerita-cerita yang memiliki banyak bab!', color: 'bg-brown-mid' },
+                        { id: 'selesai', label: 'Cerita Selesai', icon: CheckCircle, desc: 'Lihat cerita yang sudah selesai ditulis!', color: 'bg-brown-mid' },
+                    ].map((f) => {
+                        const Icon = f.icon;
+                        const activeFilters = filter.split(',').filter(Boolean);
+                        const isActive = activeFilters.includes(f.id);
+                        
+                        let newFilters = [...activeFilters];
+                        if (SORT_OPTIONS.includes(f.id)) {
+                            // Replace current sort with this one
+                            newFilters = newFilters.filter(id => !SORT_OPTIONS.includes(id));
+                            newFilters.push(f.id);
+                        } else {
+                            // Toggle this filter
+                            if (isActive) {
+                                newFilters = newFilters.filter(id => id !== f.id);
+                            } else {
+                                newFilters.push(f.id);
+                            }
+                        }
+
+                        const filterStr = newFilters.join(',');
+
+                        return (
+                            <Link
+                                key={f.id}
+                                href={`/search?q=${q}&filter=${filterStr}${genreIds.length > 0 ? `&genreId=${genreIds.join(',')}` : ''}`}
+                                className={`group relative overflow-hidden rounded-[2rem] border-2 transition-all duration-500 hover:-translate-y-1 ${isActive
+                                        ? 'border-brown-mid bg-brown-mid shadow-2xl'
+                                        : 'border-tan-primary/10 bg-tan-primary/5 hover:border-tan-primary/30 hover:bg-tan-primary/10'
+                                    }`}
+                            >
+                                <div className="flex">
+                                    {/* Left Icon Panel - Scaled down */}
+                                    <div className={`w-16 sm:w-20 flex items-center justify-center border-r transition-colors duration-500 ${isActive ? 'border-text-accent/20 text-text-accent' : 'border-tan-primary/10 text-brown-mid'
+                                        }`}>
+                                        <Icon className={`w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-500 group-hover:scale-110 ${isActive ? 'fill-text-accent/20' : 'fill-brown-mid/5'}`} />
+                                    </div>
+                                    {/* Right Content Panel - Scaled padding */}
+                                    <div className="flex-1 p-4 sm:p-5">
+                                        <h3 className={`font-black text-xs sm:text-base mb-0.5 uppercase tracking-tighter transition-colors duration-500 ${isActive ? 'text-text-accent' : 'text-text-main'
+                                            }`}>
+                                            {f.label}
+                                        </h3>
+                                        <p className={`text-[10px] sm:text-xs leading-relaxed font-medium transition-colors duration-500 ${isActive ? 'text-text-accent/70' : 'text-brown-mid/60'
+                                            }`}>
+                                            {f.desc}
+                                        </p>
+                                    </div>
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
 
-                {/* Genre Filter Pills */}
-                <div className="flex gap-1.5 overflow-x-auto pb-2 snap-x hide-scrollbar">
+                {/* Genre Filter Pills - Refined for Admin Palette */}
+                <div className="flex gap-2 overflow-x-auto pb-6 snap-x hide-scrollbar mb-8">
                     <Link
                         href={`/search?q=${q}&filter=${filter}`}
-                        className={`snap-start shrink-0 px-3 py-1 rounded text-[10px] uppercase font-black tracking-wider transition-all ${!genreId
-                            ? 'bg-gray-900 dark:bg-indigo-500 text-white'
-                            : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700'
+                        className={`snap-start shrink-0 px-5 py-2 rounded-full text-[10px] uppercase font-black tracking-widest transition-all shadow-sm ${genreIds.length === 0
+                            ? 'bg-brown-mid text-text-accent'
+                            : 'bg-tan-primary/20 text-brown-mid hover:bg-tan-primary/40'
                             }`}
                     >
                         Semua Genre
                     </Link>
-                    {allGenres.map(g => (
-                        <Link
-                            key={g.id}
-                            href={`/search?q=${q}&filter=${filter}&genreId=${g.id}`}
-                            className={`snap-start shrink-0 px-3 py-1 rounded text-[10px] uppercase font-black tracking-wider transition-all ${genreId === g.id
-                                ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
-                                : 'bg-white dark:bg-slate-900 text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800'
-                                }`}
-                        >
-                            {g.name}
-                        </Link>
-                    ))}
-                </div>
-            </header>
+                    {allGenres.map(g => {
+                        const isSelected = genreIds.includes(g.id);
+                        const newGenreIds = isSelected
+                            ? genreIds.filter(id => id !== g.id)
+                            : [...genreIds, g.id];
 
-            {/* Dual Search: Authors section */}
-            {authors.length > 0 && (
-                <div className="px-6 mb-2">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3 ml-1">Penulis Ditemukan</h3>
-                    <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
-                        {authors.map(author => (
-                            <Link key={author.id} href={`/profile/${author.username}`} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-                                <div className="w-14 h-14 rounded-full overflow-hidden bg-white dark:bg-slate-800 border-2 border-indigo-100 dark:border-slate-800 group-hover:border-indigo-500 transition-all shadow-sm">
-                                    {author.avatar_url ? (
-                                        <img src={author.avatar_url} alt={author.display_name} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-indigo-300 font-bold text-xl">
-                                            {author.display_name.charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
-                                </div>
-                                <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 w-16 text-center truncate">{author.display_name}</span>
+                        return (
+                            <Link
+                                key={g.id}
+                                href={`/search?q=${q}&filter=${filter}${newGenreIds.length > 0 ? `&genreId=${newGenreIds.join(',')}` : ''}`}
+                                className={`snap-start shrink-0 px-5 py-2 rounded-full text-[10px] uppercase font-black tracking-widest transition-all border shadow-sm ${isSelected
+                                    ? 'bg-brown-mid text-text-accent border-brown-mid shadow-lg'
+                                    : 'bg-white/50 dark:bg-slate-900/50 text-brown-mid/60 border-tan-primary/10 hover:border-tan-primary/40'
+                                    }`}
+                            >
+                                {g.name}
                             </Link>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Results */}
-            <div className="px-6 py-4 flex flex-col gap-4">
-                <div className="flex justify-between items-center mb-1">
-                    <h2 className="text-xs font-bold text-gray-400 dark:text-gray-500">
-                        {q ? `Hasil pencarian untuk "${q}"` : genreId ? `Genre: ${allGenres.find(g => g.id === genreId)?.name}` : 'Eksplorasi Mahakarya'}
-                    </h2>
-                    <span className="text-[10px] font-bold text-gray-400">{results.length} Karya</span>
+                        );
+                    })}
                 </div>
 
-                {results.length === 0 ? (
-                    <div className="text-center py-20 px-8 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl bg-white dark:bg-slate-900 transition-colors mt-2">
-                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 mx-auto">
-                            <SearchIcon className="w-8 h-8 text-gray-400 dark:text-gray-500" />
-                        </div>
-                        <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Karya Tidak Ditemukan</h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
-                            Coba gunakan kata kunci lain, atau hapus filter tipe / genre yang sedang aktif untuk memperluas hasil pencarian.
-                        </p>
-                        <Link href="/search" className="bg-indigo-600 px-6 py-2.5 rounded-full text-white font-bold text-sm hover:bg-indigo-700 shadow-md shadow-indigo-200 dark:shadow-none inline-block transition-transform hover:scale-105 active:scale-95">
-                            Reset Semua Filter
-                        </Link>
-                    </div>
-                ) : (
-                    <div className="flex flex-col gap-4">
-                        {results.map((item) => (
-                            <div key={item.id} className="group bg-white dark:bg-slate-900 overflow-hidden rounded-2xl border border-gray-100 dark:border-slate-800 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex gap-0 hover:shadow-md transition-all active:scale-[0.98]">
-                                <Link href={`/novel/${item.id}`} className="w-28 relative shrink-0 bg-gray-100 dark:bg-slate-800 overflow-hidden">
-                                    {item.cover_url ? (
-                                        <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center p-2 text-center text-[10px] text-gray-500 dark:text-gray-400">
-                                            {item.title}
-                                        </div>
-                                    )}
-                                    <div className="absolute top-2 left-2 flex flex-col gap-1">
-                                        {item.is_completed ? (
-                                            <span className="bg-green-500/90 backdrop-blur-sm text-white text-[8px] uppercase font-black px-1.5 py-0.5 rounded shadow-sm">Tamat</span>
+                {/* Dual Search: Authors section - Refined Palette */}
+                {authors.length > 0 && (
+                    <div className="px-6 mb-8">
+                        <h3 className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-brown-mid/40 mb-4 ml-1">Penulis Ditemukan</h3>
+                        <div className="flex gap-6 overflow-x-auto pb-4 snap-x hide-scrollbar">
+                            {authors.map(author => (
+                                <Link key={author.id} href={`/profile/${author.username}`} className="snap-start shrink-0 flex flex-col items-center gap-3 group">
+                                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-white dark:bg-slate-800 border-2 border-tan-primary/20 group-hover:border-brown-mid transition-all shadow-md">
+                                        {author.avatar_url ? (
+                                            <img src={author.avatar_url} alt={author.display_name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                         ) : (
-                                            <span className="bg-blue-500/90 backdrop-blur-sm text-white text-[8px] uppercase font-black px-1.5 py-0.5 rounded shadow-sm">Ongoing</span>
+                                            <div className="w-full h-full flex items-center justify-center text-tan-primary font-black text-2xl bg-brown-dark/5">
+                                                {author.display_name.charAt(0).toUpperCase()}
+                                            </div>
                                         )}
                                     </div>
+                                    <span className="text-[10px] sm:text-xs font-black text-brown-mid/70 w-20 text-center truncate group-hover:text-brown-mid transition-colors">{author.display_name}</span>
                                 </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-                                <div className="flex-1 min-w-0 p-4 flex flex-col justify-between">
-                                    <div>
-                                        <Link href={`/novel/${item.id}`}>
-                                            <h3 className="font-black text-gray-900 dark:text-gray-100 text-[16px] leading-tight line-clamp-2 mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{item.title}</h3>
-                                        </Link>
-                                        <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest mb-2">{item.penulis_alias}</p>
+                {/* Results */}
+                <div className="px-6 py-4 flex flex-col gap-4">
+                    <div className="flex justify-between items-center mb-6 px-1">
+                    <h2 className="text-[11px] sm:text-xs font-black text-brown-mid/40 uppercase tracking-widest italic">
+                        {q ? `Hasil pencarian untuk "${q}"` : genreIds.length > 0 ? `Genre: ${genreIds.map(id => allGenres.find(g => g.id === id)?.name).join(', ')}` : 'Eksplorasi Mahakarya'}
+                    </h2>
+                    <span className="text-[10px] font-black text-brown-mid/30 uppercase tracking-tighter">{results.length} KARYA TERSEDIA</span>
+                </div>
 
-                                        {/* Tags - Interactive - FIXED Nested Link */}
-                                        <div className="flex flex-wrap gap-1 mb-3">
-                                            {(item as any).genres?.map((g: any) => (
-                                                <Link
-                                                    key={g.id}
-                                                    href={`/search?genreId=${g.id}&filter=${filter}`}
-                                                    className="text-[9px] px-2 py-0.5 bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 rounded font-black uppercase tracking-wider border border-gray-100 dark:border-slate-800 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 dark:hover:bg-indigo-500 transition-all"
-                                                >
-                                                    {g.name}
-                                                </Link>
-                                            ))}
-                                        </div>
-
-                                        {/* Sinopsis Singkat */}
-                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed mb-3">
-                                            {item.deskripsi || "Belum ada deskripsi untuk karya ini."}
-                                        </p>
-                                    </div>
-
-                                    {/* Stats */}
-                                    <div className="flex gap-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 items-baseline justify-between border-t border-gray-50 dark:border-slate-800/50 pt-3 shrink-0">
-                                        <div className="flex items-center gap-3">
-                                            <span className="flex items-center gap-1 text-amber-500 dark:text-amber-400">
-                                                <Star className="w-3.5 h-3.5 fill-current" /> {item.avg_rating.toFixed(1)}
-                                            </span>
-                                            <span className="flex items-center gap-1 text-gray-400">
-                                                <BookOpen className="w-3 h-3" /> {(item as any)._count?.bab || 0} Bab
-                                            </span>
-                                        </div>
-                                        <div className="text-[9px] font-bold text-gray-400 bg-gray-50 dark:bg-slate-800 px-2 py-0.5 rounded flex items-center gap-1.5 uppercase tracking-tighter">
-                                            {item.bab && item.bab[0] && (
-                                                <>
-                                                    <TrendingUp className="w-3 h-3 text-indigo-500" />
-                                                    <span>Update {new Date(item.bab[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
-                                                </>
+                    {results.length === 0 ? (
+                        <div className="text-center py-24 sm:py-32 px-8 border-2 border-dashed border-tan-primary/20 rounded-[3rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm transition-colors mt-4">
+                            <div className="w-20 h-20 bg-tan-primary/5 rounded-full flex items-center justify-center mb-6 mx-auto">
+                                <SearchIcon className="w-10 h-10 text-tan-primary/20" />
+                            </div>
+                            <h2 className="text-xl sm:text-2xl font-black text-text-main mb-3 uppercase tracking-tighter italic">Karya Tidak Ditemukan</h2>
+                            <p className="text-xs sm:text-sm text-brown-mid/60 dark:text-gray-400 mb-8 leading-relaxed max-w-sm mx-auto font-medium">
+                                Coba gunakan kata kunci lain, atau hapus filter tipe / genre yang sedang aktif untuk memperluas hasil pencarian.
+                            </p>
+                            <Link href="/search" className="bg-brown-mid px-8 py-3 rounded-full text-text-accent font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 shadow-lg shadow-black/10 transition-all inline-block">
+                                Reset Semua Filter
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-4">
+                            {results.map((item) => (
+                                <div key={item.id} className="group bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm overflow-hidden rounded-[2.5rem] border-2 border-tan-primary/5 shadow-sm flex gap-0 hover:border-tan-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
+                                    <Link href={`/novel/${item.id}`} className="w-32 sm:w-40 relative shrink-0 bg-tan-primary/5 overflow-hidden">
+                                        {item.cover_url ? (
+                                            <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center p-4 text-center text-[10px] font-black text-tan-primary/30 uppercase italic tracking-tighter">
+                                                {item.title}
+                                            </div>
+                                        )}
+                                        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                                            {item.is_completed ? (
+                                                <span className="bg-brown-mid text-text-accent text-[8px] sm:text-[9px] uppercase font-black px-2 py-1 rounded-md shadow-lg backdrop-blur-md">SELESAI</span>
+                                            ) : (
+                                                <span className="bg-tan-primary text-text-accent text-[8px] sm:text-[9px] uppercase font-black px-2 py-1 rounded-md shadow-lg backdrop-blur-md">BERJALAN</span>
                                             )}
+                                        </div>
+                                    </Link>
+
+                                    <div className="flex-1 min-w-0 p-4 sm:p-6 flex flex-col justify-between">
+                                        <div>
+                                            <Link href={`/novel/${item.id}`}>
+                                            <h3 className="font-black text-text-main dark:text-gray-100 text-sm sm:text-base leading-tight line-clamp-1 mb-0.5 group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{item.title}</h3>
+                                        </Link>
+                                        <p className="text-[10px] sm:text-[11px] text-brown-mid font-black uppercase tracking-widest mb-2">{item.penulis_alias}</p>
+
+                                            {/* Tags - Refined Palette */}
+                                            <div className="flex flex-wrap gap-1.5 mb-4">
+                                                {(item as any).genres?.map((g: any) => {
+                                                    const isSelected = genreIds.includes(g.id);
+                                                    const newGenreIds = isSelected
+                                                        ? genreIds.filter(id => id !== g.id)
+                                                        : [...genreIds, g.id];
+
+                                                    return (
+                                                        <Link
+                                                            key={g.id}
+                                                            href={`/search?filter=${filter}${newGenreIds.length > 0 ? `&genreId=${newGenreIds.join(',')}` : ''}`}
+                                                            className={`text-[9px] sm:text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider border transition-all ${isSelected
+                                                                    ? 'bg-brown-mid text-text-accent border-brown-mid'
+                                                                    : 'bg-tan-primary/10 text-brown-mid border-tan-primary/10 hover:bg-brown-mid hover:text-text-accent'
+                                                                }`}
+                                                        >
+                                                            {g.name}
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            {/* Sinopsis Singkat - Larger */}
+                                            <p className="text-[11px] sm:text-sm text-brown-mid/60 dark:text-gray-400 line-clamp-3 leading-relaxed mb-4">
+                                                {item.deskripsi || "Belum ada deskripsi untuk karya ini."}
+                                            </p>
+                                        </div>
+
+                                        {/* Stats - Integrated Palette */}
+                                        <div className="flex flex-wrap gap-4 text-[10px] sm:text-[11px] font-black text-brown-mid/40 items-center justify-between border-t border-tan-primary/5 pt-4 shrink-0">
+                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                                <span className="flex items-center gap-1 text-amber-600">
+                                                    <Star className="w-3.5 h-3.5 fill-current" /> {item.avg_rating.toFixed(1)}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Eye className="w-3.5 h-3.5" /> {item.total_views.toLocaleString()}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Users className="w-3.5 h-3.5" /> {(item as any)._count?.bookmarks || 0}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <BookOpen className="w-3.5 h-3.5" /> {(item as any)._count?.bab || 0} BAB
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <MessageSquare className="w-3.5 h-3.5" /> {(item as any)._count?.reviews || 0}
+                                                </span>
+                                            </div>
+                                            <div className="text-[9px] sm:text-[10px] font-black text-brown-mid/30 bg-tan-primary/5 px-2.5 py-1 rounded-full flex items-center gap-1.5 uppercase tracking-widest border border-tan-primary/5">
+                                                {item.bab && item.bab[0] && (
+                                                    <>
+                                                        <TrendingUp className="w-3.5 h-3.5 text-brown-mid" />
+                                                        <span>Update {new Date(item.bab[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </main>
         </div>
     );
 }

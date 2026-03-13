@@ -1,8 +1,13 @@
 export default function Loading() {
     return (
         <div className="flex-1 flex flex-col items-center justify-center p-12 min-h-[60vh] h-full w-full">
-            <div className="w-10 h-10 border-4 border-indigo-200 dark:border-indigo-900 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-500 dark:text-gray-400 font-bold text-sm animate-pulse">Memuat Halaman...</p>
+            <div className="relative w-12 h-12 mb-6">
+                <div className="absolute inset-0 border-4 border-tan-primary/20 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-t-tan-primary rounded-full animate-spin"></div>
+                <div className="absolute inset-2 border-2 border-brown-mid/10 rounded-full"></div>
+                <div className="absolute inset-2 border-2 border-b-brown-mid rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
+            </div>
+            <p className="text-brown-mid/60 dark:text-gray-400 font-black text-[10px] uppercase tracking-[0.2em] animate-pulse">Menyiapkan Ruang Aksara</p>
         </div>
     );
 }
