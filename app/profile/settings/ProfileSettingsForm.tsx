@@ -50,18 +50,18 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-8">
                 {/* Display Name */}
                 <div>
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-2 block ml-1">
+                    <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-3 block ml-1">
                         Nama Tampilan
                     </label>
                     <input
                         type="text"
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
-                        className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-4 text-sm font-black text-text-main dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20 italic"
                         placeholder="Nama yang muncul di profil..."
                         required
                         disabled={isPending}
@@ -70,66 +70,66 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
 
                 {/* Bio */}
                 <div>
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-2 block ml-1">
+                    <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-3 block ml-1">
                         Bio / Deskripsi Diri
                     </label>
                     <textarea
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
-                        rows={3}
-                        className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
+                        rows={4}
+                        className="w-full bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-4 text-sm text-text-main/80 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all resize-none font-medium italic leading-relaxed placeholder:text-brown-dark/20"
                         placeholder="Ceritakan sedikit tentang dirimu..."
                         disabled={isPending}
                     />
                 </div>
 
                 {/* Social Links Section */}
-                <div className="pt-4 border-t border-gray-50 dark:border-slate-800">
-                    <label className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-widest mb-4 block ml-1 flex items-center gap-2">
-                        <Link2 className="w-3 h-3" /> Tautan Sosial
+                <div className="pt-8 border-t border-brown-dark/5">
+                    <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-3 flex items-center gap-2">
+                        <Link2 className="w-3.5 h-3.5" /> Tautan Sosial
                     </label>
 
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                         {/* Instagram */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-pink-600 shrink-0">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-brown-dark/[0.04] flex items-center justify-center text-brown-dark shrink-0 border border-brown-dark/5 shadow-sm">
                                 <Instagram className="w-5 h-5" />
                             </div>
                             <input
                                 type="url"
                                 value={socials.instagram || ''}
                                 onChange={(e) => updateSocial('instagram', e.target.value)}
-                                className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+                                className="flex-1 bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
                                 placeholder="https://instagram.com/username"
                                 disabled={isPending}
                             />
                         </div>
 
                         {/* Twitter/X */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-slate-900/10 dark:bg-slate-800 flex items-center justify-center text-gray-900 dark:text-gray-100 shrink-0">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-brown-dark/[0.04] flex items-center justify-center text-brown-dark shrink-0 border border-brown-dark/5 shadow-sm">
                                 <Twitter className="w-5 h-5" />
                             </div>
                             <input
                                 type="url"
                                 value={socials.twitter || ''}
                                 onChange={(e) => updateSocial('twitter', e.target.value)}
-                                className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all"
+                                className="flex-1 bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
                                 placeholder="https://x.com/username"
                                 disabled={isPending}
                             />
                         </div>
 
                         {/* Website */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 shrink-0">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-brown-dark/[0.04] flex items-center justify-center text-brown-dark shrink-0 border border-brown-dark/5 shadow-sm">
                                 <Globe className="w-5 h-5" />
                             </div>
                             <input
                                 type="url"
                                 value={socials.website || ''}
                                 onChange={(e) => updateSocial('website', e.target.value)}
-                                className="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                className="flex-1 bg-brown-dark/[0.03] dark:bg-slate-950 border border-brown-dark/10 rounded-2xl px-5 py-3.5 text-xs font-black text-text-main/70 focus:outline-none focus:ring-2 focus:ring-tan-primary/30 transition-all placeholder:text-brown-dark/20"
                                 placeholder="https://yourwebsite.com"
                                 disabled={isPending}
                             />
@@ -139,21 +139,24 @@ export default function ProfileSettingsForm({ initialDisplayName, initialBio, in
             </div>
 
             {message && (
-                <div className={`p-3 rounded-xl text-xs font-bold animate-in fade-in slide-in-from-top-1 ${message.type === 'success'
-                    ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-900/30'
-                    : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30'
+                <div className={`p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest animate-in fade-in slide-in-from-top-1 border transition-all ${message.type === 'success'
+                    ? 'bg-green-500/5 text-green-600 border-green-500/10'
+                    : 'bg-red-500/5 text-red-600 border-red-500/10'
                     }`}>
-                    {message.text}
+                    <div className="flex items-center gap-2">
+                        <div className={`w-1.5 h-1.5 rounded-full ${message.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`} />
+                        {message.text}
+                    </div>
                 </div>
             )}
 
             <button
                 type="submit"
                 disabled={isPending}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-100 dark:shadow-none transition-all active:scale-[0.98]"
+                className="w-full bg-brown-dark hover:bg-brown-dark/90 disabled:bg-brown-dark/50 text-text-accent font-open-sans font-black py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-brown-dark/10 transition-all active:scale-[0.98] mt-10"
             >
                 <Save className="w-5 h-5" />
-                {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                <span className="uppercase tracking-[0.2em] text-xs">{isPending ? 'Menyimpan...' : 'Simpan Perubahan'}</span>
             </button>
         </form>
     );
