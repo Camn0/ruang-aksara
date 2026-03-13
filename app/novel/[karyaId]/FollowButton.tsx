@@ -2,7 +2,6 @@
 
 import { useTransition } from "react";
 import { toggleFollow } from "@/app/actions/user";
-import { UserPlus, UserMinus } from "lucide-react";
 
 interface FollowButtonProps {
     targetUserId: string;
@@ -27,23 +26,24 @@ export default function FollowButton({ targetUserId, initialIsFollowing, karyaId
         <button
             onClick={handleFollow}
             disabled={isPending}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all disabled:opacity-50 ${initialIsFollowing
-                    ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700'
-                    : 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-100 dark:border-indigo-800'
-                }`}
+            className={`
+                inline-flex items-center justify-center gap-1.5
+                px-5 py-2 rounded-full
+                font-semibold text-sm
+                transition-all duration-200
+                disabled:opacity-60 disabled:cursor-not-allowed
+                ${initialIsFollowing
+                    ? 'bg-[#2d2118] text-[#c4a882] hover:bg-[#3d2f22]'
+                    : 'bg-[#2d2118] text-white hover:bg-[#3d2f22] active:scale-95'
+                }
+            `}
         >
             {isPending ? (
-                '...'
+                <span className="tracking-wide">...</span>
             ) : initialIsFollowing ? (
-                <>
-                    <UserMinus className="w-3.5 h-3.5" />
-                    <span>Diikuti</span>
-                </>
+                <span className="tracking-wide">✓ Diikuti</span>
             ) : (
-                <>
-                    <UserPlus className="w-3.5 h-3.5" />
-                    <span>Ikuti Penulis</span>
-                </>
+                <span className="tracking-wide">+ Ikuti</span>
             )}
         </button>
     );
