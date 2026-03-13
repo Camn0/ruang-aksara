@@ -123,26 +123,54 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                             const isOdd = index % 2 !== 0; // Simple alternating logic
                             return (
                                 <div key={b.id} className="group relative flex flex-col gap-4">
-                                    <Link href={activeTab === 'riwayat' ? `/novel/${b.karya.id}/${b.last_chapter}` : `/novel/${b.karya.id}`} className="flex flex-col gap-3">
-                                        <div className={`aspect-[3/4.5] relative rounded-[32px] overflow-hidden shadow-xl transition-transform duration-500 group-hover:scale-105 ${isOdd ? 'bg-brown-dark' : 'bg-brown-mid'}`}>
+                                    <Link href={activeTab === 'riwayat' ? `/novel/${b.karya.id}/${b.last_chapter}` : `/novel/${b.karya.id}`} className="group/card flex flex-col gap-3">
+                                        <div className={`aspect-[3/4.5] relative rounded-[32px] overflow-hidden shadow-xl transition-all duration-500 group-hover/card:shadow-2xl group-hover/card:-translate-y-2 ${isOdd ? 'bg-brown-dark' : 'bg-brown-mid'}`}>
                                             {b.karya.cover_url ? (
-                                                <img src={b.karya.cover_url} alt={b.karya.title} className="w-full h-full object-cover group-hover:opacity-60 transition-opacity" />
+                                                <img src={b.karya.cover_url} alt={b.karya.title} className={`w-full h-full object-cover transition-all duration-700 ${b.karya.is_completed ? 'grayscale-[0.4] brightness-50' : 'group-hover/card:scale-110'}`} />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center p-6 text-center text-xs text-text-accent font-bold leading-relaxed">{b.karya.title}</div>
+                                                <div className={`w-full h-full flex items-center justify-center p-6 text-center text-xs text-text-accent font-bold leading-relaxed ${b.karya.is_completed ? 'bg-black/40' : ''}`}>{b.karya.title}</div>
+                                            )}
+
+                                            {/* Completed Badge & Darkening */}
+                                            {b.karya.is_completed && (
+                                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                    <div className="bg-brown-dark/80 text-text-accent px-4 py-1 rounded-full text-[10px] font-black tracking-[0.2em] border border-text-accent/20 backdrop-blur-sm">
+                                                        TAMAT
+                                                    </div>
+                                                </div>
                                             )}
                                             
-                                            {/* Overlays for Riwayat */}
+                                            {/* Last Read Progress (Premium Bar) */}
                                             {activeTab === 'riwayat' && (
-                                                <div className="absolute bottom-0 left-0 right-0 h-2 bg-black/20">
-                                                    <div className="h-full bg-text-accent transition-all duration-1000" style={{ width: `${b.karya._count.bab > 0 ? Math.min((b.last_chapter / b.karya._count.bab) * 100, 100) : 0}%` }}></div>
+                                                <div className="absolute bottom-4 left-4 right-4 h-1.5 bg-black/40 rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
+                                                    <div 
+                                                        className="h-full bg-gradient-to-r from-tan-light to-text-accent transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(242,234,215,0.5)]" 
+                                                        style={{ width: `${b.karya._count.bab > 0 ? Math.min((b.last_chapter / b.karya._count.bab) * 100, 100) : 0}%` }}
+                                                    />
+                                                </div>
+                                            )}
+
+                                            {/* Aesthetic Corner Bookmark for History */}
+                                            {activeTab === 'riwayat' && (
+                                                <div className="absolute top-0 right-6 w-6 h-8 bg-tan-primary shadow-md flex items-start justify-center pt-1 animate-in slide-in-from-top-4 duration-700">
+                                                    <div className="w-2 h-2 rounded-full bg-white/40" />
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="text-center px-2">
-                                            <h3 className="font-open-sans font-bold text-xl text-text-main line-clamp-1 mb-1 group-hover:text-brown-mid transition-colors">{b.karya.title}</h3>
-                                            {activeTab === 'riwayat' && (
-                                                <p className="text-xs font-bold text-tan-primary">Bab {b.last_chapter}</p>
-                                            )}
+
+                                        <div className="flex flex-col text-center px-1">
+                                            <h3 className="font-open-sans font-extrabold text-sm text-text-main line-clamp-2 leading-tight mb-1 group-hover/card:text-brown-mid transition-colors min-h-[2.5rem] flex items-center justify-center">{b.karya.title}</h3>
+                                            <p className="text-[10px] font-bold text-tan-primary/80 mb-2">{b.karya.penulis_alias || 'Anonim'}</p>
+                                            
+                                            <div className="mt-auto pt-2 border-t border-tan-primary/10">
+                                                {activeTab === 'riwayat' ? (
+                                                    <p className="text-[10px] font-black text-brown-dark bg-tan-light/20 py-1.5 rounded-xl border border-tan-primary/10">
+                                                        Lanjut: Bab {b.last_chapter}
+                                                    </p>
+                                                ) : (
+                                                    <p className="text-[10px] font-extrabold text-brown-dark opacity-60 uppercase tracking-widest">{b.karya._count.bab} Bab</p>
+                                                )}
+                                            </div>
                                         </div>
                                     </Link>
                                     <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">

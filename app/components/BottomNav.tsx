@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Search, BookMarked, PenTool, User, PlusCircle } from "lucide-react";
+import { Home, Search, BookMarked, PenTool, User, Plus } from "lucide-react";
 
 export default function BottomNav() {
     const { data: session } = useSession();
@@ -58,7 +58,7 @@ export default function BottomNav() {
                             href={editUrl}
                             className="bg-brown-dark w-16 h-16 rounded-full flex items-center justify-center text-text-accent shadow-2xl border-4 border-bg-cream transition-transform active:scale-90"
                         >
-                            <PlusCircle className="w-10 h-10" />
+                            <Plus className="w-10 h-10" />
                         </Link>
                     </div>
 
