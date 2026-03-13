@@ -97,8 +97,8 @@ export default function CommentItem({
                     title={isCollapsed ? "Buka percakapan" : "Sembunyikan percakapan"}
                 >
                     <div className={`h-full w-[2.5px] mx-auto transition-all rounded-full ${isCollapsed
-                        ? 'bg-indigo-500 shadow-sm shadow-indigo-200'
-                        : 'bg-transparent group-hover:bg-indigo-300/30'
+                        ? 'bg-tan-primary shadow-sm shadow-tan-primary/20'
+                        : 'bg-transparent group-hover:bg-tan-primary/30'
                         }`} />
                 </button>
             )}
@@ -113,16 +113,16 @@ export default function CommentItem({
                 <div className="flex flex-col items-center gap-0.5 min-w-[28px] pt-1.5 sticky top-24">
                     <button
                         onClick={() => handleVote(1)}
-                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === 1 ? 'text-orange-500 bg-orange-50 dark:bg-orange-950/30 ring-1 ring-orange-200 shadow-sm' : 'text-gray-400 hover:text-orange-500 hover:bg-orange-50'}`}
+                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === 1 ? 'text-amber-600 bg-amber-50 dark:bg-amber-950/30 ring-1 ring-amber-200 shadow-sm' : 'text-tan-primary/30 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/10'}`}
                     >
                         <ChevronUp className={`w-5 h-5 ${comment.userVote === 1 ? 'fill-current stroke-[3]' : ''}`} />
                     </button>
-                    <span className={`text-[10px] font-black ${comment.userVote === 1 ? 'text-orange-600' : comment.userVote === -1 ? 'text-indigo-600' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <span className={`text-[10px] font-black ${comment.userVote === 1 ? 'text-amber-600' : comment.userVote === -1 ? 'text-tan-primary' : 'text-tan-primary/40 dark:text-gray-500'}`}>
                         {comment.score}
                     </span>
                     <button
                         onClick={() => handleVote(-1)}
-                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === -1 ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 ring-1 ring-indigo-200 shadow-sm' : 'text-gray-400 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === -1 ? 'text-tan-primary bg-tan-primary/5 dark:bg-slate-800 ring-1 ring-tan-primary/20 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary hover:bg-tan-primary/5'}`}
                     >
                         <ChevronDown className={`w-5 h-5 ${comment.userVote === -1 ? 'fill-current stroke-[3]' : ''}`} />
                     </button>
@@ -143,11 +143,11 @@ export default function CommentItem({
                     <div className="flex-1 min-w-0">
                         {/* Header */}
                         <div className="flex items-center gap-2 mb-1 flex-wrap pt-1">
-                            <Link href={`/profile/${comment.user.username}`} className="text-xs font-black text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors uppercase tracking-tight">
+                            <Link href={`/profile/${comment.user.username}`} className="text-xs font-black text-brown-dark dark:text-gray-100 hover:text-tan-primary transition-colors uppercase tracking-tight italic">
                                 {comment.user.display_name}
                             </Link>
                             {isAuthor && (
-                                <span className="text-[7px] font-black bg-indigo-600 text-white px-1.5 py-0.5 rounded-sm uppercase tracking-tighter shadow-sm">Penulis</span>
+                                <span className="text-[7px] font-black bg-brown-dark text-text-accent px-2 py-0.5 rounded-sm uppercase tracking-tighter shadow-sm italic">Penulis</span>
                             )}
                             <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold truncate">
                                 {new Date(comment.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
@@ -162,9 +162,9 @@ export default function CommentItem({
                             {hasReplies && (
                                 <button
                                     onClick={() => setIsCollapsed(!isCollapsed)}
-                                    className={`ml-auto flex items-center gap-1.5 px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${isCollapsed
-                                        ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
-                                        : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800'
+                                    className={`ml-auto flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all italic ${isCollapsed
+                                        ? 'bg-tan-primary/10 text-tan-primary'
+                                        : 'text-tan-primary/40 hover:text-brown-dark hover:bg-tan-primary/5'
                                         }`}
                                 >
                                     {isCollapsed ? (
@@ -182,10 +182,10 @@ export default function CommentItem({
                         </p>
 
                         {/* Actions - ALWAYS VISIBLE */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-5">
                             <button
                                 onClick={() => setIsReplying(!isReplying)}
-                                className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 ${isReplying ? 'text-indigo-600' : 'text-gray-400 hover:text-indigo-600'}`}
+                                className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 italic ${isReplying ? 'text-brown-dark bg-tan-primary/10 px-2.5 py-1 rounded-lg' : 'text-tan-primary/40 hover:text-brown-dark'}`}
                             >
                                 <MessageCircle className="w-3.5 h-3.5" />
                                 Balas
@@ -195,9 +195,9 @@ export default function CommentItem({
                                 <button
                                     onClick={() => handleTogglePin(comment.id)}
                                     disabled={isPinning === comment.id}
-                                    className={`flex items-center gap-1.5 text-[10px] font-black transition-all uppercase tracking-widest active:scale-95 ${comment.is_pinned
-                                        ? 'text-indigo-600'
-                                        : 'text-gray-400 hover:text-gray-600'
+                                    className={`flex items-center gap-1.5 text-[10px] font-black transition-all uppercase tracking-widest active:scale-95 italic ${comment.is_pinned
+                                        ? 'text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg'
+                                        : 'text-tan-primary/40 hover:text-brown-dark'
                                         }`}
                                 >
                                     {comment.is_pinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}

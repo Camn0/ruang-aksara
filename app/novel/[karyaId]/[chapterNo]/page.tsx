@@ -120,7 +120,7 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
     const comments = buildCommentTree(allRawComments);
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 text-gray-900 dark:text-gray-100 pb-28">
+        <div className="min-h-screen bg-[#FDFBF7] dark:bg-slate-950 text-brown-dark dark:text-gray-100 pb-28">
             <ReadingInterface
                 karyaId={params.karyaId}
                 babId={chapter.id}
@@ -137,9 +137,9 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
 
             <div className="max-w-2xl mx-auto px-6 mt-12 pt-12 border-t border-gray-100 dark:border-slate-800">
                 <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-xl font-black italic">Komentar</h2>
-                    <span className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full text-xs font-bold text-gray-500">
-                        {allRawComments.length}
+                    <h2 className="text-xl font-black italic text-brown-dark dark:text-gray-100 uppercase tracking-tight">Komentar</h2>
+                    <span className="bg-tan-primary/10 dark:bg-slate-800 px-3 py-1 rounded-full text-[10px] font-black text-tan-primary uppercase tracking-widest">
+                        {allRawComments.length} Goresan
                     </span>
                 </div>
 

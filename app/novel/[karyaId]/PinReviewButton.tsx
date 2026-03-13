@@ -27,9 +27,9 @@ export default function PinReviewButton({ reviewId, karyaId, initialIsPinned }: 
             onClick={handlePin}
             disabled={isPending}
             title={initialIsPinned ? "Lepas Sematan" : "Sematkan Ulasan"}
-            className={`p-1.5 rounded-lg transition-all ${initialIsPinned
-                    ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800'
-                    : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-600 dark:hover:text-gray-200'
+            className={`p-2 rounded-xl transition-all border ${initialIsPinned
+                    ? 'bg-amber-500/10 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                    : 'text-tan-primary/40 border-tan-primary/5 hover:bg-tan-primary/5 hover:text-tan-primary'
                 }`}
         >
             {isPending ? (

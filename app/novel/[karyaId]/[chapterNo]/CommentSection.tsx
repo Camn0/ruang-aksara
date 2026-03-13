@@ -71,10 +71,10 @@ export default function CommentSection({
     return (
         <div className="space-y-8">
             {/* Main Form */}
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm transition-all">
-                <h3 className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                    <MessageCircle className="w-4 h-4" />
-                    Diskusi Bab
+            <div className="bg-white/60 dark:bg-slate-900/60 p-8 rounded-[3rem] border border-tan-primary/10 shadow-sm transition-all">
+                <h3 className="text-[10px] font-black text-brown-dark dark:text-gray-100 uppercase tracking-[0.3em] mb-6 flex items-center gap-3 italic">
+                    <MessageCircle className="w-5 h-5 text-tan-primary" />
+                    Diskusi Goresan
                 </h3>
                 <CommentForm babId={babId} />
             </div>
@@ -86,13 +86,13 @@ export default function CommentSection({
                     <div className="flex gap-2">
                         <button
                             onClick={() => setSortBy('score')}
-                            className={`text-[9px] uppercase font-black px-4 py-1.5 rounded-full transition-all tracking-widest ${sortBy === 'score' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-none' : 'bg-gray-100 dark:bg-slate-800 text-gray-400 hover:text-gray-600'}`}
+                            className={`text-[9px] uppercase font-black px-5 py-2 rounded-full transition-all tracking-[0.15em] ${sortBy === 'score' ? 'bg-brown-dark text-text-accent shadow-lg shadow-brown-dark/20' : 'bg-tan-primary/5 dark:bg-slate-800 text-tan-primary/40 hover:text-tan-primary'}`}
                         >
                             Populer
                         </button>
                         <button
                             onClick={() => setSortBy('newest')}
-                            className={`text-[9px] uppercase font-black px-4 py-1.5 rounded-full transition-all tracking-widest ${sortBy === 'newest' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-none' : 'bg-gray-100 dark:bg-slate-800 text-gray-400 hover:text-gray-600'}`}
+                            className={`text-[9px] uppercase font-black px-5 py-2 rounded-full transition-all tracking-[0.15em] ${sortBy === 'newest' ? 'bg-brown-dark text-text-accent shadow-lg shadow-brown-dark/20' : 'bg-tan-primary/5 dark:bg-slate-800 text-tan-primary/40 hover:text-tan-primary'}`}
                         >
                             Terbaru
                         </button>
@@ -103,11 +103,11 @@ export default function CommentSection({
             {/* Comments List */}
             <div className="space-y-2">
                 {sortedComments.length === 0 ? (
-                    <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-[3rem] border border-dashed border-gray-200 dark:border-slate-800">
-                        <div className="w-16 h-16 bg-gray-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <MessageCircle className="w-8 h-8 text-gray-200 dark:text-gray-700" />
+                    <div className="py-24 text-center bg-white/40 dark:bg-slate-900 rounded-[3rem] border border-dashed border-tan-primary/20">
+                        <div className="w-20 h-20 bg-tan-primary/5 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <MessageCircle className="w-8 h-8 text-tan-primary/20" />
                         </div>
-                        <p className="text-gray-400 dark:text-gray-500 text-sm font-black uppercase tracking-widest">Belum Ada Suara</p>
+                        <p className="text-tan-primary/30 dark:text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] italic">Belum Ada Suara Terukir</p>
                     </div>
                 ) : (
                     sortedComments.map((comment, index) => (

@@ -95,9 +95,9 @@ export default function CommentForm({
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition shadow-sm bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 px-3 py-1.5 rounded"
+                className="text-[10px] font-black text-brown-dark dark:text-tan-primary hover:text-tan-primary transition-all shadow-sm bg-tan-primary/10 dark:bg-tan-900/10 border border-tan-primary/10 px-4 py-2 rounded-xl uppercase tracking-widest italic"
             >
-                {replyToUsername ? 'Balas ini' : 'Balas Komentar'}
+                {replyToUsername ? 'Gores Balasan' : 'Gores Komentar'}
             </button>
         );
     }
@@ -107,15 +107,15 @@ export default function CommentForm({
             ref={formRef}
             id={parentId ? `comment-form-${parentId}` : "comment-form"}
             onSubmit={handleSubmit}
-            className={`${isReply ? 'mt-3 border-l-2 border-indigo-300 dark:border-indigo-700 pl-4 py-2' : ''}`}
+            className={`${isReply ? 'mt-4 border-l border-tan-primary/20 pl-6 py-2' : ''}`}
         >
-            {!isReply && <h3 className="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-200">Tinggalkan Komentar</h3>}
+            {!isReply && <h3 className="font-black text-lg mb-6 text-brown-dark dark:text-gray-100 italic uppercase tracking-tighter">Terakan Jejakmu</h3>}
 
             <textarea
                 ref={textAreaRef}
                 name="content"
                 defaultValue={replyToUsername ? `@${replyToUsername} ` : ""}
-                className={`w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 ${isReply ? 'min-h-[60px] text-sm' : 'min-h-[100px]'}`}
+                className={`w-full bg-tan-primary/5 border border-tan-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-gray-100 p-5 rounded-[1.5rem] outline-none focus:ring-2 focus:ring-tan-primary/20 transition-all font-bold italic ${isReply ? 'min-h-[80px] text-xs' : 'min-h-[120px] text-sm'}`}
                 placeholder={isReply ? "Tulis balasan Anda..." : "Tuliskan analisis atau apresiasi Anda di sini..."}
                 required
                 disabled={isPending}
@@ -125,20 +125,20 @@ export default function CommentForm({
                 <p className="text-xs font-bold text-green-600 dark:text-green-400 mt-2 animate-pulse">{successMessage}</p>
             )}
 
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-3 mt-4">
                 <button
                     type="submit"
                     disabled={isPending}
-                    className={`bg-indigo-600 dark:bg-indigo-500 text-white font-medium px-6 rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed ${isReply ? 'py-1.5 text-xs' : 'py-2'}`}
+                    className={`bg-brown-dark text-text-accent font-black rounded-full px-8 hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest italic shadow-lg shadow-brown-dark/10 ${isReply ? 'py-2 text-[10px]' : 'py-3 text-xs'}`}
                 >
-                    {isPending ? 'Mengirim...' : (isReply ? 'Kirim Balasan' : 'Kirim Komentar')}
+                    {isPending ? 'Mengirim...' : (isReply ? 'Kirim Goresan' : 'Kirim Goresan')}
                 </button>
 
                 {isReply && (
                     <button
                         type="button"
                         onClick={() => setIsOpen(false)}
-                        className="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium py-1.5 px-4 rounded-xl text-xs hover:bg-gray-300 dark:hover:bg-slate-600 transition"
+                        className="bg-tan-primary/10 dark:bg-slate-800 text-tan-primary/60 font-black py-2 px-6 rounded-full text-[10px] uppercase tracking-widest transition-all hover:bg-tan-primary/20"
                     >
                         Batal
                     </button>

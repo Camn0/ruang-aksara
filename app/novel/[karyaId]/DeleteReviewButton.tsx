@@ -39,9 +39,9 @@ export default function DeleteReviewButton({ reviewId, path, isSmall = false }: 
         <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className={`flex items-center gap-1.5 font-bold transition-colors ${isSmall
-                    ? 'text-[10px] text-gray-400 hover:text-red-500 uppercase tracking-widest'
-                    : 'p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-full'
+            className={`flex items-center gap-1.5 font-black transition-colors ${isSmall
+                    ? 'text-[10px] text-tan-primary/40 hover:text-red-500 uppercase tracking-widest italic'
+                    : 'p-2 text-tan-primary/40 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl'
                 }`}
             title="Hapus Ulasan"
         >

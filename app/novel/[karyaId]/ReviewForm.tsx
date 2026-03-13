@@ -49,16 +49,16 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800 p-6 rounded-xl transition-colors duration-300">
-            <h3 className="text-sm font-black text-gray-900 dark:text-gray-100 mb-4 uppercase tracking-wider">
+        <form onSubmit={handleSubmit} className="bg-white/40 dark:bg-slate-900/40 border border-tan-primary/10 p-8 rounded-[2rem] transition-colors duration-300 shadow-sm backdrop-blur-sm">
+            <h3 className="text-xs font-black text-brown-dark/40 dark:text-gray-100 mb-6 uppercase tracking-[0.2em] italic">
                 Penilaian & Ulasan
             </h3>
 
             <input type="hidden" name="karya_id" value={karyaId} />
             <input type="hidden" name="rating" value={score} />
 
-            <div className="mb-4">
-                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Beri Rating</label>
+            <div className="mb-6">
+                <label className="block text-[10px] font-black text-tan-primary/60 dark:text-gray-400 mb-3 uppercase tracking-widest">Beri Rating</label>
                 <div className="flex items-center gap-4">
                     <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map(star => (
@@ -66,7 +66,7 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                                 key={star}
                                 type="button"
                                 onClick={() => setScore(star)}
-                                className={`text-2xl transition-transform hover:scale-110 ${star <= score ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+                                className={`text-3xl transition-transform hover:scale-110 active:scale-90 ${star <= score ? 'text-amber-500 drop-shadow-sm' : 'text-tan-primary/10 dark:text-gray-600'}`}
                             >
                                 ★
                             </button>
@@ -80,14 +80,14 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                 </div>
             </div>
 
-            <div className="mb-4">
-                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Ulasan (Opsional)</label>
+            <div className="mb-8">
+                <label className="block text-[10px] font-black text-tan-primary/60 dark:text-gray-400 mb-3 uppercase tracking-widest">Ulasan (Opsional)</label>
                 <textarea
                     name="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Tulis pendapat Anda tentang karya ini..."
-                    className="w-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none min-h-[80px] transition-colors"
+                    placeholder="Bagikan goresan pikiranmu tentang karya ini..."
+                    className="w-full border border-tan-primary/10 dark:border-slate-700 bg-white/50 dark:bg-slate-800 text-brown-dark dark:text-gray-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-tan-primary/20 outline-none min-h-[120px] transition-all placeholder:text-tan-primary/20 font-medium italic"
                 ></textarea>
             </div>
 
@@ -98,7 +98,7 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
             <button
                 type="submit"
                 disabled={isPending || (score === 0 && !content.trim())}
-                className="bg-indigo-600 dark:bg-indigo-500 text-white font-bold py-2.5 px-6 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm"
+                className="bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark font-black py-4 px-10 rounded-full hover:bg-brown-mid dark:hover:bg-tan-light disabled:opacity-50 disabled:cursor-not-allowed transition-all text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-brown-dark/10 active:scale-95"
             >
                 {isPending ? 'Menyimpan...' : (existingReview ? 'Update' : (content.trim() ? 'Publikasi Ulasan' : 'Simpan Rating'))}
             </button>

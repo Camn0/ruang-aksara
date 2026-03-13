@@ -82,7 +82,7 @@ function parseMentions(text: string) {
         if (part.match(/^@\w+$/)) {
             const username = part.slice(1);
             return (
-                <Link key={i} href={`/profile/${username}`} className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline" target="_blank">
+                <Link key={i} href={`/profile/${username}`} className="text-tan-primary dark:text-tan-light font-bold hover:underline" target="_blank">
                     {part}
                 </Link>
             );
@@ -154,31 +154,34 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     const firstChapter = karya.bab.length > 0 ? karya.bab[0].chapter_no : null;
 
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 pb-24 transition-colors duration-300">
-            <header className="px-6 h-16 bg-white dark:bg-slate-900 border-b border-tan-light/20 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300">
-                <Link href="/" className="p-2 -ml-2 text-tan-primary active:bg-tan-light/20 rounded-full transition-colors">
+        <div className="min-h-screen bg-bg-cream dark:bg-slate-950 pb-24 transition-colors duration-300 selection:bg-tan-primary/30">
+            <header className="px-6 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300 shadow-sm shadow-brown-dark/5">
+                <Link href="/" className="p-2 -ml-2 text-tan-primary hover:bg-tan-primary/10 rounded-full transition-all active:scale-95">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
-                <h1 className="font-lobster text-xl text-text-main dark:text-gray-100 absolute left-1/2 -translate-x-1/2">
+                <h1 className="font-lobster text-2xl text-brown-dark dark:text-gray-100 absolute left-1/2 -translate-x-1/2 italic">
                     Detail Karya
                 </h1>
                 <div className="w-10"></div>
-            </header>
+            </header>            <div className="bg-white/40 dark:bg-slate-900/40 border-b border-tan-primary/5 pt-8 pb-10 px-6 transition-colors duration-300 relative overflow-hidden">
+                {/* Background artistic pattern snippet */}
+                <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none">
+                    <TrendingUp className="w-full h-full text-tan-primary rotate-12" />
+                </div>
 
-            <div className="bg-white dark:bg-slate-900 border-b border-tan-light/10 pt-8 pb-8 px-6 transition-colors duration-300">
-                <div className="flex gap-6 items-start">
+                <div className="flex gap-6 items-start relative z-10">
                     {karya.cover_url ? (
-                        <img src={karya.cover_url} alt={karya.title} className="w-32 h-48 sm:w-40 sm:h-56 object-cover rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800 shrink-0" />
+                        <img src={karya.cover_url} alt={karya.title} className="w-32 h-48 sm:w-44 sm:h-64 object-cover rounded-3xl shadow-xl shadow-brown-dark/10 border border-white/50 dark:border-slate-800 shrink-0 transform -rotate-1 hover:rotate-0 transition-transform duration-500" />
                     ) : (
                         <CoverPlaceholder />
                     )}
-
+ 
                     <div className="flex-1 min-w-0 py-1">
-                        <h1 className="text-2xl font-open-sans font-bold text-text-main dark:text-gray-100 leading-tight mb-2 line-clamp-3 italic">
+                        <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-gray-100 leading-tight mb-3 italic tracking-tight">
                             {karya.title}
                         </h1>
-                        <div className="flex items-center gap-2 mb-3">
-                            <p className="text-sm font-medium text-text-main/70 dark:text-gray-400">Oleh <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-tan-primary hover:text-brown-dark hover:underline font-bold transition-colors">{karya.penulis_alias}</Link></p>
+                        <div className="flex items-center gap-2 mb-4">
+                            <p className="text-sm font-bold text-brown-dark/60 dark:text-gray-400">Tinta dari <Link href={`/profile/${karya.uploader?.username || karya.uploader_id}`} className="text-tan-primary hover:text-brown-mid hover:underline font-black transition-colors">{karya.penulis_alias}</Link></p>
                             {session && session.user.id !== karya.uploader_id && (
                                 <FollowButton
                                     targetUserId={karya.uploader_id}
@@ -188,39 +191,39 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                             )}
                         </div>
 
-                        <div className="flex flex-wrap gap-1.5 mb-4">
+                        <div className="flex flex-wrap gap-2 mb-6">
                             {(karya as any).genres?.map((g: any) => (
                                 <Link
                                     key={g.id}
                                     href={`/search?q=&genreId=${g.id}`}
-                                    className="bg-tan-light/10 dark:bg-slate-800 text-tan-primary text-[10px] uppercase font-black px-2 py-1 rounded-lg hover:bg-tan-primary hover:text-text-accent transition-all"
+                                    className="bg-tan-primary/10 dark:bg-slate-800 text-tan-primary text-[10px] uppercase font-black px-3 py-1.5 rounded-full hover:bg-tan-primary hover:text-text-accent transition-all tracking-wider shadow-sm shadow-tan-primary/5"
                                 >
                                     {g.name}
                                 </Link>
                             ))}
                             {karya.is_completed ? (
-                                <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-black px-2 py-1 rounded-lg transition-colors">
+                                <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-[10px] uppercase font-black px-3 py-1.5 rounded-full transition-colors tracking-wider border border-emerald-200/50">
                                     Tamat
                                 </span>
                             ) : (
-                                <span className="bg-brown-dark/10 text-brown-dark text-[10px] uppercase font-black px-2 py-1 rounded-lg transition-colors">
-                                    Ongoing
+                                <span className="bg-brown-dark/10 text-brown-dark dark:text-tan-primary text-[10px] uppercase font-black px-3 py-1.5 rounded-full transition-colors tracking-wider border border-brown-dark/5">
+                                    Berjalan
                                 </span>
                             )}
                         </div>
 
-                        <div className="flex flex-wrap gap-x-5 gap-y-3 mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 text-xs font-bold text-gray-600 dark:text-gray-400 transition-colors duration-300">
-                            <span className="flex items-center gap-1.5 min-w-[30%]">
-                                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                                <span className="text-gray-900 dark:text-gray-100 text-sm">{karya.avg_rating.toFixed(1)} <span className="text-gray-400 dark:text-gray-500 font-medium text-[10px]">/ 5</span></span>
+                        <div className="flex flex-wrap gap-x-8 gap-y-4 mt-6 pt-6 border-t border-tan-primary/10 text-[11px] font-black text-brown-dark/50 dark:text-gray-400 uppercase tracking-widest">
+                            <span className="flex items-center gap-2">
+                                <Star className="w-5 h-5 text-amber-500 fill-amber-500 drop-shadow-sm" />
+                                <span className="text-brown-dark dark:text-gray-100 text-base">{karya.avg_rating.toFixed(1)} <span className="text-brown-dark/30 font-bold text-xs">/ 5</span></span>
                             </span>
-                            <span className="flex items-center gap-1.5 min-w-[30%]">
-                                <TrendingUp className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-                                <span className="text-gray-900 dark:text-gray-100 text-sm">{karya.total_views.toLocaleString()}</span>
+                            <span className="flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-tan-primary" />
+                                <span className="text-brown-dark dark:text-gray-100 text-base">{karya.total_views.toLocaleString()} <span className="text-brown-dark/30 text-[10px]">Baca</span></span>
                             </span>
-                            <span className="flex items-center gap-1.5 min-w-[30%]">
-                                <BookOpen className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                                <span className="text-gray-900 dark:text-gray-100 text-sm">{karya.bab.length} Bab</span>
+                            <span className="flex items-center gap-2">
+                                <BookOpen className="w-5 h-5 text-brown-mid/40" />
+                                <span className="text-brown-dark dark:text-gray-100 text-base">{karya.bab.length} <span className="text-brown-dark/30 text-[10px]">Pena</span></span>
                             </span>
                         </div>
                     </div>
@@ -228,8 +231,8 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
                 <div className="mt-8 flex gap-2">
                     {firstChapter ? (
-                        <Link href={`/novel/${karya.id}/${firstChapter}`} className="flex-1 text-center py-4 bg-tan-primary text-text-accent rounded-2xl font-black text-sm shadow-xl shadow-tan-primary/10 active:scale-[0.98] transition-all flex items-center justify-center">
-                            Mulai Membaca
+                        <Link href={`/novel/${karya.id}/${firstChapter}`} className="flex-1 text-center py-4 bg-brown-dark text-text-accent rounded-[2rem] font-black text-[13px] uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 active:scale-[0.98] transition-all flex items-center justify-center hover:bg-brown-mid">
+                            Mulai Perjalanan
                         </Link>
                     ) : (
                         <button disabled className="flex-1 text-center py-3.5 bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 rounded-xl font-bold text-sm cursor-not-allowed transition-colors">
@@ -246,10 +249,10 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 <ContinueReadingButton karyaId={karya.id} />
             </div>
 
-            <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 transition-colors duration-300">
-                <div className="p-6 border-b border-gray-100 dark:border-slate-800">
-                    <h2 className="text-base font-black text-gray-900 dark:text-gray-100">Daftar Isi</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{karya.bab.length} Bab Tersedia</p>
+            <div className="bg-white/60 dark:bg-slate-900/60 mt-3 border-y border-tan-primary/5 shadow-sm transition-colors duration-300">
+                <div className="p-6 border-b border-tan-primary/5">
+                    <h2 className="text-base font-black text-brown-dark dark:text-gray-100 uppercase tracking-widest italic">Daftar Isi</h2>
+                    <p className="text-[10px] font-bold text-tan-primary/60 uppercase tracking-widest mt-1.5">{karya.bab.length} Pena Terukir</p>
                 </div>
 
                 <div className="divide-y divide-gray-100 dark:divide-slate-800">
@@ -280,55 +283,55 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
             </div>
 
             {karya.deskripsi && (
-                <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
-                    <h2 className="text-base font-black text-gray-900 dark:text-gray-100 mb-3">Sinopsis</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
+                <div className="bg-white/60 dark:bg-slate-900/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
+                    <h2 className="text-base font-black text-brown-dark dark:text-gray-100 mb-4 uppercase tracking-widest italic">Sinopsis</h2>
+                    <p className="text-sm text-brown-dark/70 dark:text-gray-400 leading-loose whitespace-pre-wrap font-medium">
                         {karya.deskripsi}
                     </p>
                 </div>
             )}
 
-            <div className="bg-white dark:bg-slate-900 mt-2 border-y border-gray-100 dark:border-slate-800 p-6 transition-colors duration-300">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-2 italic">
-                        <MessageSquareQuote className="w-5 h-5 text-indigo-600 dark:text-indigo-400 non-italic" />
-                        Tulis Ulasan
+            <div className="bg-white/60 dark:bg-slate-900/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
+                <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-xl font-black text-brown-dark dark:text-gray-100 flex items-center gap-3 italic uppercase tracking-tighter">
+                        <MessageSquareQuote className="w-6 h-6 text-tan-primary non-italic" />
+                        Goresan Ulasan
                     </h2>
                 </div>
 
                 {session ? (
                     <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
                 ) : (
-                    <div className="bg-tan-light/10 dark:bg-slate-800/50 p-8 rounded-[2rem] text-center border border-tan-light/30 transition-colors">
-                        <p className="text-[10px] font-black text-tan-primary mb-2 uppercase tracking-[0.2em]">Tertarik Memberi Rating?</p>
-                        <p className="text-xs text-text-main/70 dark:text-gray-400 mb-6 px-4 leading-relaxed font-bold">Masuk ke akunmu untuk meninggalkan jejak dan mendukung penulis ini.</p>
-                        <Link href="/auth/login" className="inline-block px-10 py-3.5 bg-brown-dark text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-brown-dark/10 transition-transform active:scale-95">
-                            Mulai Masuk
+                    <div className="bg-tan-primary/5 dark:bg-slate-800/50 p-10 rounded-[2.5rem] text-center border border-tan-primary/10 transition-colors shadow-inner">
+                        <p className="text-[11px] font-black text-tan-primary mb-3 uppercase tracking-[0.25em]">Ingin Menulis Kesan?</p>
+                        <p className="text-xs text-brown-dark/50 dark:text-gray-400 mb-8 px-6 leading-loose font-bold italic">Masuk ke Ruang Aksara untuk memberikan apresiasi pada sang penulis.</p>
+                        <Link href="/auth/login" className="inline-block px-12 py-4 bg-brown-dark text-text-accent rounded-full text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 transition-all hover:scale-105 active:scale-95 hover:bg-brown-mid">
+                            Mulai Perjalanan
                         </Link>
                     </div>
                 )}
             </div>
 
             <CollapsibleReviewSection count={karya._count.reviews}>
-                <div className="flex justify-end mb-6">
+                <div className="flex justify-end mb-8">
                     <ReviewSortToggle karyaId={karya.id} />
                 </div>
 
                 <div className="space-y-4">
                     {karya.reviews.map((review: any) => (
-                        <div key={review.id} className="p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-gray-100 dark:border-slate-800 shadow-sm transition-colors group">
-                            <div className="flex items-start justify-between gap-4 mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 border-2 border-white dark:border-slate-950 shadow-sm">
+                        <div key={review.id} className="p-8 bg-white/80 dark:bg-slate-900/80 rounded-[2.5rem] border border-tan-primary/10 shadow-xl shadow-brown-dark/5 transition-all group backdrop-blur-sm">
+                            <div className="flex items-start justify-between gap-4 mb-6">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl overflow-hidden bg-tan-primary/5 border border-tan-primary/10 shadow-inner p-0.5">
                                         {review.user.avatar_url ? (
-                                            <img src={review.user.avatar_url} alt={review.user.display_name} className="w-full h-full object-cover" />
+                                            <img src={review.user.avatar_url} alt={review.user.display_name} className="w-full h-full object-cover rounded-[0.9rem]" />
                                         ) : (
-                                            <UserCircle2 className="w-full h-full text-gray-300" />
+                                            <UserCircle2 className="w-full h-full text-tan-primary/20" />
                                         )}
                                     </div>
                                     <div>
-                                        <p className="text-xs font-black text-gray-900 dark:text-gray-100">{review.user.display_name}</p>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                        <p className="text-sm font-black text-brown-dark dark:text-gray-100 tracking-tight">{review.user.display_name}</p>
+                                        <p className="text-[10px] font-black text-tan-primary/60 uppercase tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                                     </div>
                                 </div>
 
@@ -357,11 +360,11 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                             )}
 
                             {review.rating !== null && review.rating > 0 && (
-                                <div className="flex text-amber-400 fill-amber-400 mb-3 drop-shadow-sm">
+                                <div className="flex text-amber-500 fill-amber-500 mb-4 drop-shadow-sm scale-110 origin-left">
                                     {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                                 </div>
                             )}
-                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium mb-4">"{parseMentions(review.content)}"</p>
+                            <p className="text-[15px] text-brown-dark/80 dark:text-gray-300 leading-loose font-medium mb-6 italic">"{parseMentions(review.content)}"</p>
 
                             <ReviewInteraction
                                 reviewId={review.id}

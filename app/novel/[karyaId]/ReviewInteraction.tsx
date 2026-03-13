@@ -99,21 +99,21 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
     }
 
     return (
-        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-slate-800/50">
+        <div className="mt-6 pt-6 border-t border-tan-primary/5">
             <div className="flex items-center gap-4">
                 {/* Tombol Upvote */}
                 <button
                     onClick={handleUpvote}
-                    className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${isUpvoted ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400'}`}
+                    className={`flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest transition-colors ${isUpvoted ? 'text-tan-primary' : 'text-brown-dark/40 hover:text-tan-primary dark:hover:text-tan-light'}`}
                     disabled={isPending}
                 >
-                    <ThumbsUp className={`w-3.5 h-3.5 ${isUpvoted ? 'fill-current' : ''}`} /> {upvotes} Membantu
+                    <ThumbsUp className={`w-3.5 h-3.5 ${isUpvoted ? 'fill-current' : ''}`} /> {upvotes} <span className="opacity-60">Membantu</span>
                 </button>
 
                 {/* Tombol Toggle Form Balas */}
                 <button
                     onClick={() => setShowReplyForm(!showReplyForm)}
-                    className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                    className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-brown-dark/40 hover:text-tan-primary dark:hover:text-tan-light transition-colors"
                 >
                     <MessageSquare className="w-3.5 h-3.5" /> Balas ({localReplyCount})
                 </button>
@@ -121,28 +121,28 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
 
             {/* Render Form Balas (Conditional Rendering) */}
             {showReplyForm && (
-                <form ref={formRef} action={handleReplySubmit} className="mt-3 flex gap-2 items-start">
+                <form ref={formRef} action={handleReplySubmit} className="mt-4 flex gap-3 items-start p-2 bg-tan-primary/5 rounded-2xl border border-tan-primary/5">
                     <textarea
                         name="content"
-                        placeholder="Tulis balasan untuk ulasan ini..."
+                        placeholder="Ukir balasanmu..."
                         required
                         disabled={replyPending}
-                        className="flex-1 text-xs border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100 p-2 rounded-lg outline-none focus:ring-1 focus:ring-indigo-500 min-h-[40px] resize-none"
-                        rows={2}
+                        className="flex-1 text-xs bg-transparent dark:bg-slate-800 dark:text-gray-100 p-2 rounded-xl outline-none min-h-[44px] resize-none font-medium italic placeholder:text-tan-primary/20"
+                        rows={1}
                     />
                     <button
                         type="submit"
                         disabled={replyPending}
-                        className="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 shrink-0"
+                        className="bg-brown-dark text-text-accent p-2.5 rounded-xl hover:bg-brown-mid transition-all disabled:opacity-50 shrink-0 shadow-lg shadow-brown-dark/10"
                     >
-                        <Send className="w-3.5 h-3.5" />
+                        <Send className="w-4 h-4" />
                     </button>
                 </form>
             )}
 
             {/* Toast Sederhana */}
             {replySuccess && (
-                <p className="text-xs font-bold text-green-600 dark:text-green-400 mt-2 animate-pulse">{replySuccess}</p>
+                <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 mt-3 animate-pulse uppercase tracking-[0.2em] italic">Goresan terkirim!</p>
             )}
         </div>
     );
