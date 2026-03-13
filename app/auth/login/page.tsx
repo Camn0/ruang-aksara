@@ -83,7 +83,7 @@ function LoginForm() {
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Username/email"
+                                placeholder="Username"
                                 className="w-full py-5 px-7 rounded-2xl border-[3px] border-[#4a3228] bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#5a4a43] focus:outline-none transition-all text-xl"
                                 required
                             />
