@@ -32,7 +32,7 @@ export function GenreForm() {
                 type="text"
                 placeholder="Nama Genre Baru (e.g. Romance)"
                 required
-                className="flex-1 bg-text-main/5 dark:bg-white/5 border-2 border-transparent focus:border-tan-primary/20 focus:bg-white dark:focus:bg-brown-mid focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-text-main dark:text-bg-cream transition-all placeholder:text-text-main/30 dark:placeholder:text-white/30"
+                className="flex-1 bg-text-main/5 dark:bg-white/5 border-2 border-transparent focus:border-tan-primary/20 focus:bg-white dark:focus:bg-brown-mid focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-text-main dark:text-bg-cream transition-all placeholder:text-text-main/50 dark:placeholder:text-tan-light/50"
             />
             <button
                 type="submit"
@@ -65,7 +65,7 @@ export function DeleteGenreButton({ id }: { id: string }) {
         <button
             onClick={handleDelete}
             disabled={isPending}
-            className="text-text-main/40 dark:text-tan-primary/40 hover:text-red-500 dark:hover:text-red-400 text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all p-2 hover:bg-red-500/5 dark:hover:bg-red-500/10 rounded-xl flex items-center gap-1 group/del"
+            className="text-text-main/60 dark:text-tan-light hover:text-red-500 dark:hover:text-red-400 text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all p-2 hover:bg-red-500/5 dark:hover:bg-red-500/10 rounded-xl flex items-center gap-1 group/del"
         >
             <span className="opacity-0 group-hover/del:opacity-100 transition-opacity">{isPending ? '...' : 'Hapus'}</span>
             <div className="w-1.5 h-1.5 rounded-full bg-current"></div>

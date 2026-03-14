@@ -174,17 +174,17 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                 <div className="flex-1 flex flex-col gap-8">
                     <div className="flex flex-col gap-3">
                         <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Judul Karya</label>
-                        <input name="title" type="text" required defaultValue={karya.title} placeholder="Tuliskan judul mahakaryamu..." className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all" />
+                        <input name="title" type="text" required defaultValue={karya.title} placeholder="Tuliskan judul mahakaryamu..." className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/40 dark:placeholder-tan-light/50 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all" />
                     </div>
 
                     <div className="flex flex-col gap-3">
                         <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Alias Penulis</label>
-                        <input name="penulis_alias" type="text" defaultValue={karya.penulis_alias.replace(/\s\([^)]+\)$/, '')} placeholder="Nama yang akan terukir di sampul..." className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all" />
+                        <input name="penulis_alias" type="text" defaultValue={karya.penulis_alias.replace(/\s\([^)]+\)$/, '')} placeholder="Nama yang akan terukir di sampul..." className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/40 dark:placeholder-tan-light/50 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all" />
                     </div>
 
                     <div className="flex flex-col gap-3">
                         <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sinopsis / Deskripsi</label>
-                        <textarea name="deskripsi" rows={6} defaultValue={karya.deskripsi || ""} placeholder="Gambarkan garis besar ceritamu..." className="w-full bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] p-8 font-bold italic text-brown-dark dark:text-text-accent text-xl placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all resize-none leading-relaxed" />
+                        <textarea name="deskripsi" rows={6} defaultValue={karya.deskripsi || ""} placeholder="Gambarkan garis besar ceritamu..." className="w-full bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] p-8 font-bold italic text-brown-dark dark:text-text-accent text-xl placeholder-brown-dark/40 dark:placeholder-tan-light/50 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all resize-none leading-relaxed" />
                     </div>
 
                     <div className="flex flex-col gap-3">
@@ -212,7 +212,7 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                         <div className="flex flex-col gap-4">
                             <label className="flex items-center gap-4 cursor-pointer group">
                                 <input form="edit-karya-form" type="checkbox" name="is_completed" value="true" defaultChecked={karya.is_completed} className="w-6 h-6 rounded-lg border-2 border-tan-primary/20 bg-white/40 dark:bg-brown-dark/40 text-brown-dark focus:ring-0 cursor-pointer transition-all checked:bg-brown-dark" />
-                                <span className="font-black text-brown-dark dark:text-text-accent text-lg sm:text-xl italic uppercase tracking-tighter opacity-60 group-hover:opacity-100 transition-opacity">Tandai Cerita Telah Selesai (Tamat)</span>
+                                <span className="font-black text-brown-dark/70 dark:text-tan-light text-lg sm:text-xl italic uppercase tracking-tighter group-hover:opacity-100 transition-opacity">Tandai Cerita Telah Selesai (Tamat)</span>
                             </label>
 
                             <button form="edit-karya-form" type="submit" disabled={isPending} className="w-full sm:w-fit px-12 h-[65px] bg-brown-dark text-text-accent rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20 disabled:opacity-50">

@@ -11,7 +11,7 @@ export default async function CreateKaryaPage() {
     });
 
     return (
-        <div className="bg-bg-cream min-h-screen transition-colors duration-300">
+        <div className="bg-bg-cream/60 dark:bg-brown-dark min-h-screen transition-colors duration-500">
             <CreateKaryaFormModern genres={daftarGenre} />
         </div>
     );

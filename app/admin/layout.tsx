@@ -49,7 +49,7 @@ export default async function AdminLayout({
                             />
                         </div>
                         <div className="mt-4 flex flex-col items-center">
-                            <span className="text-[10px] font-black text-white/40 dark:text-tan-primary/40 uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
+                            <span className="text-[10px] font-black text-white/50 dark:text-tan-light uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
                             <span className="font-black text-xl tracking-tighter text-text-main dark:text-bg-cream italic uppercase">STUDIO</span>
                         </div>
                     </Link>
@@ -67,7 +67,7 @@ export default async function AdminLayout({
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-black text-text-main dark:text-bg-cream truncate uppercase tracking-tight italic group-hover/profile:text-brown-dark dark:group-hover/profile:text-tan-primary transition-colors">{session.user.name}</span>
-                                <span className="text-[8px] text-text-main/40 dark:text-bg-cream/40 font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
+                                <span className="text-[10px] text-text-main/50 dark:text-tan-light font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
                             </div>
                         </Link>
                         <LogoutButton />

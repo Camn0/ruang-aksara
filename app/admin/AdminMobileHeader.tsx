@@ -53,7 +53,7 @@ export default function AdminMobileHeader({ session }: AdminMobileHeaderProps) {
                     </div>
                     <button 
                         onClick={() => setIsOpen(false)}
-                        className="p-2 hover:bg-white/10 rounded-xl transition-colors text-[#3B2A22]"
+                        className="p-2 hover:bg-white/10 rounded-xl transition-colors text-text-main dark:text-bg-cream"
                     >
                         <X className="w-6 h-6" />
                     </button>

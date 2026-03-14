@@ -60,7 +60,7 @@ export default async function CommentManagementPage() {
                     </div>
                     <div>
                         <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-tan-primary uppercase tracking-tighter italic leading-none">Diskusi Komunitas</h1>
-                        <p className="text-[9px] sm:text-[11px] font-black text-brown-dark/40 dark:text-gray-500 uppercase tracking-[0.3em] mt-1 sm:mt-2">Suara dari Pembaca Ruang Aksara</p>
+                        <p className="text-[9px] sm:text-[11px] font-black text-brown-dark/40 dark:text-bg-cream/40 uppercase tracking-[0.3em] mt-1 sm:mt-2">Suara dari Pembaca Ruang Aksara</p>
                     </div>
                 </div>
                 <div className="h-1 sm:h-2 w-24 sm:w-32 bg-brown-mid rounded-full mb-6 sm:mb-10 opacity-20" />
