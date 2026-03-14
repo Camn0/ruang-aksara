@@ -141,7 +141,7 @@ export default function ReadingInterface({
     return (
         <>
             {/* Header Sticky Atas */}
-            <header className="px-4 h-16 bg-[#FDFBF7]/95 dark:bg-brown-dark/95 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-40 shadow-sm transition-transform duration-300">
+            <header className="px-4 h-16 bg-bg-cream/95 dark:bg-brown-dark/95 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-40 shadow-sm transition-all duration-300">
                 <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-brown-dark dark:text-text-accent hover:bg-tan-primary/10 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
@@ -169,7 +169,7 @@ export default function ReadingInterface({
 
                     {/* Dropdown Settings */}
                     {showSettings && (
-                        <div className="absolute top-full right-0 mt-3 w-64 bg-white dark:bg-brown-dark border border-tan-primary/10 rounded-[2rem] shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="absolute top-full right-0 mt-3 w-64 bg-bg-cream dark:bg-brown-dark border border-tan-primary/10 rounded-[2rem] shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2">
                             <div className="flex items-center justify-between mb-6">
                                 <span className="text-[10px] font-black text-tan-primary/40 uppercase tracking-[0.2em]">Pengaturan</span>
                                 <button onClick={() => setShowSettings(false)} className="text-tan-primary/40 hover:text-tan-primary rounded-full p-1.5 bg-tan-primary/5 transition-colors">
@@ -183,7 +183,7 @@ export default function ReadingInterface({
                                     <div className="flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-1.5 shadow-inner">
                                         <button
                                             onClick={() => handleSetFontSize(fontSize - 2)}
-                                            className="p-2.5 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                                            className="p-2.5 hover:bg-bg-cream dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                                             disabled={fontSize <= 12}
                                         >
                                             <Minus className="w-4 h-4" />
@@ -191,7 +191,7 @@ export default function ReadingInterface({
                                         <span className="text-sm font-black text-brown-dark dark:text-text-accent min-w-[3rem] text-center italic">{fontSize}px</span>
                                         <button
                                             onClick={() => handleSetFontSize(fontSize + 2)}
-                                            className="p-2.5 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                                            className="p-2.5 hover:bg-bg-cream dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                                             disabled={fontSize >= 32}
                                         >
                                             <Plus className="w-4 h-4" />
@@ -203,7 +203,7 @@ export default function ReadingInterface({
                                     <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Suasana Jelajah</label>
                                     <button
                                         onClick={toggleTheme}
-                                        className="w-full flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-4 hover:bg-white dark:hover:bg-slate-700 transition-all active:scale-95 text-brown-dark dark:text-gray-200 shadow-sm group"
+                                        className="w-full flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-4 hover:bg-bg-cream dark:hover:bg-slate-700 transition-all active:scale-95 text-brown-dark dark:text-gray-200 shadow-sm group"
                                     >
                                         <span className="text-xs font-black uppercase tracking-widest italic">{mounted && theme === 'dark' ? 'Hening Terang' : 'Hening Gelap'}</span>
                                         {mounted && theme === 'dark' ? (
@@ -226,7 +226,7 @@ export default function ReadingInterface({
 
             <main className="px-6 py-8 sm:px-12 md:max-w-2xl md:mx-auto min-h-[70vh]">
                 <article
-                    className="prose dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-[#2c2c2c] dark:text-[#d4d4d4] font-serif max-w-none transition-all duration-200"
+                    className="prose dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-brown-dark dark:text-tan-light/90 font-serif max-w-none transition-all duration-200"
                     style={{ fontSize: `${fontSize}px` }}
                 >
                     {content}
@@ -253,7 +253,7 @@ export default function ReadingInterface({
                                 >
                                     <div className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center text-2xl transition-all border-2 ${isActive
                                         ? 'bg-brown-dark border-brown-dark shadow-xl shadow-brown-dark/20 scale-110'
-                                        : 'bg-white dark:bg-brown-dark border-tan-primary/10 dark:border-brown-mid hover:border-tan-primary group-hover:bg-tan-primary/5'
+                                        : 'bg-bg-cream/50 dark:bg-brown-dark/40 border-tan-primary/10 dark:border-brown-mid hover:border-tan-primary group-hover:bg-tan-primary/5'
                                         }`}>
                                         {r.emoji}
                                     </div>
@@ -279,7 +279,7 @@ export default function ReadingInterface({
 
             {/* Bottom Floating Navigation - Adjusted Position (bottom-6) */}
             <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-300">
-                <div className="flex bg-white/95 dark:bg-brown-dark/95 backdrop-blur-2xl border border-tan-primary/10 shadow-[0_20px_50px_-15px_rgba(59,42,34,0.3)] p-2 rounded-[2rem] items-center gap-2 transition-colors">
+                <div className="flex bg-bg-cream/98 dark:bg-brown-dark/95 backdrop-blur-2xl border border-tan-primary/10 shadow-[0_20px_50px_-15px_rgba(59,42,34,0.3)] p-2 rounded-[2rem] items-center gap-2 transition-colors">
                     {/* Prev Chapter */}
                     {prevChapter ? (
                         <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-3 text-tan-primary/60 hover:text-brown-dark hover:bg-tan-primary/10 rounded-full transition-all active:scale-90" title="Bab Sebelumnya">

@@ -31,14 +31,14 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
 
     if (karya.uploader_id !== session.user.id && session.user.role !== 'admin') {
         return (
-            <div className="p-8 text-center text-red-600 font-bold bg-[#f2ead7] min-h-screen">
+            <div className="p-8 text-center text-red-600 font-bold bg-bg-cream min-h-screen">
                 Unauthorized: Anda tidak memiliki akses ke karya ini.
             </div>
         );
     }
 
     return (
-        <div className="bg-[#f2ead7] min-h-screen">
+        <div className="bg-bg-cream min-h-screen transition-colors duration-300">
             <EditKaryaForm karya={karya} allGenres={allGenres}>
                 
                 {/* List Bab */}

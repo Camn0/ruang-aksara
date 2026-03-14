@@ -15,7 +15,6 @@ import ShareButton from "./ShareButton";
 import FollowButton from "./FollowButton";
 import ReviewSortToggle from "./ReviewSortToggle";
 import PinReviewButton from "./PinReviewButton";
-import CollapsibleReviewSection from "./CollapsibleReviewSection";
 import DeleteReviewButton from "./DeleteReviewButton";
 import ReviewCommentSection from "./ReviewCommentSection";
 
@@ -102,11 +101,12 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     let userPreviousRating = 0;
     let userPreviousReview = null;
     let isBookmarked = false;
+    let bookmarkContext: any = null;
     let isFollowing = false;
     let userUpvotedReviews: string[] = [];
 
     if (userId) {
-        const [ratingContext, prevReview, bookmarkContext, upvotes] = await Promise.all([
+        const [ratingContext, prevReview, bContext, upvotes] = await Promise.all([
             prisma.rating.findUnique({
                 where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
             }),
@@ -127,6 +127,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
         if (ratingContext) userPreviousRating = ratingContext.score;
         userPreviousReview = prevReview;
+        bookmarkContext = bContext;
         if (bookmarkContext) isBookmarked = true;
         userUpvotedReviews = upvotes.map((u: any) => u.review_id);
 
@@ -196,34 +197,65 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                                 <Link
                                     key={g.id}
                                     href={`/search?q=&genreId=${g.id}`}
-                                    className="bg-tan-primary/10 dark:bg-brown-mid text-tan-primary text-[10px] uppercase font-black px-3 py-1.5 rounded-full hover:bg-tan-primary hover:text-text-accent transition-all tracking-wider shadow-sm shadow-tan-primary/5"
+                                    className="bg-tan-primary/20 dark:bg-brown-mid/60 text-tan-primary dark:text-tan-light text-[10px] uppercase font-black px-3 py-1.5 rounded-full hover:bg-tan-primary hover:text-white transition-all tracking-wider border border-tan-primary/20"
                                 >
                                     {g.name}
                                 </Link>
                             ))}
                             {karya.is_completed ? (
-                                <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-[10px] uppercase font-black px-3 py-1.5 rounded-full transition-colors tracking-wider border border-emerald-200/50">
+                                <span className="bg-green-500/10 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] uppercase font-black px-3 py-1.5 rounded-full transition-colors tracking-wider border border-green-500/20">
                                     Tamat
                                 </span>
                             ) : (
-                                <span className="bg-brown-dark/10 text-brown-dark dark:text-tan-primary text-[10px] uppercase font-black px-3 py-1.5 rounded-full transition-colors tracking-wider border border-brown-dark/5">
+                                <span className="bg-brown-dark/10 dark:bg-brown-mid/40 text-brown-dark dark:text-tan-primary text-[10px] uppercase font-black px-3 py-1.5 rounded-full transition-colors tracking-wider border border-brown-dark/10">
                                     Berjalan
                                 </span>
                             )}
                         </div>
 
+                        {/* [NEW] Top Synopsis - Relocated for better visibility */}
+                        {karya.deskripsi && (
+                            <div className="mb-6 relative">
+                                <p className="text-[13px] text-brown-dark/80 dark:text-tan-light/80 leading-relaxed font-medium italic line-clamp-3">
+                                    "{karya.deskripsi}"
+                                </p>
+                                <div className="absolute -bottom-1 left-0 w-8 h-[2px] bg-tan-primary/30"></div>
+                            </div>
+                        )}
+
+                        {/* [NEW] Personalized Progress Bar */}
+                        {isBookmarked && session && karya.bab.length > 0 && bookmarkContext && (
+                            <div className="mb-6 bg-tan-primary/5 dark:bg-brown-mid/20 p-5 rounded-[2rem] border border-tan-primary/10 shadow-inner group">
+                                <div className="flex justify-between items-center mb-3">
+                                    <div className="flex items-center gap-2">
+                                        <BookOpen className="w-4 h-4 text-tan-primary" />
+                                        <span className="text-[10px] font-black text-tan-primary uppercase tracking-[0.2em]">Progress Membaca</span>
+                                    </div>
+                                    <span className="text-[10px] font-black text-brown-dark/40 dark:text-tan-light/40 uppercase tracking-widest">
+                                        {bookmarkContext.last_chapter} / {karya.bab.length} Bab
+                                    </span>
+                                </div>
+                                <div className="w-full h-2 bg-tan-primary/10 rounded-full overflow-hidden border border-tan-primary/5">
+                                    <div 
+                                        className="h-full bg-tan-primary transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(var(--tan-primary-rgb),0.3)]" 
+                                        style={{ width: `${Math.min(100, (bookmarkContext.last_chapter / karya.bab.length) * 100)}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="flex flex-wrap gap-x-8 gap-y-4 mt-6 pt-6 border-t border-tan-primary/10 text-[11px] font-black text-brown-dark/50 dark:text-tan-light uppercase tracking-widest">
                             <span className="flex items-center gap-2">
-                                <Star className="w-5 h-5 text-amber-500 fill-amber-500 drop-shadow-sm" />
-                                <span className="text-brown-dark dark:text-text-accent text-base">{karya.avg_rating.toFixed(1)} <span className="text-brown-dark/30 font-bold text-xs">/ 5</span></span>
+                                <Star className="w-5 h-5 text-amber-500 fill-amber-500 drop-shadow-[0_2px_4px_rgba(245,158,11,0.2)]" />
+                                <span className="text-brown-dark dark:text-text-accent text-base tracking-tighter">{karya.avg_rating.toFixed(1)} <span className="text-brown-dark/20 dark:text-tan-light/20 font-bold text-[10px]">/ 5.0</span></span>
                             </span>
                             <span className="flex items-center gap-2">
-                                <TrendingUp className="w-5 h-5 text-tan-primary" />
-                                <span className="text-brown-dark dark:text-text-accent text-base">{karya.total_views.toLocaleString()} <span className="text-brown-dark/30 text-[10px]">Baca</span></span>
+                                <TrendingUp className="w-5 h-5 text-tan-primary opacity-60" />
+                                <span className="text-brown-dark dark:text-text-accent text-base tracking-tighter">{karya.total_views.toLocaleString()} <span className="text-brown-dark/20 dark:text-tan-light/20 text-[10px]">Wujud</span></span>
                             </span>
                             <span className="flex items-center gap-2">
-                                <BookOpen className="w-5 h-5 text-brown-mid/40" />
-                                <span className="text-brown-dark dark:text-text-accent text-base">{karya.bab.length} <span className="text-brown-dark/30 text-[10px]">Pena</span></span>
+                                <BookOpen className="w-5 h-5 text-brown-mid/30" />
+                                <span className="text-brown-dark dark:text-text-accent text-base tracking-tighter">{karya.bab.length} <span className="text-brown-dark/20 dark:text-tan-light/20 text-[10px]">Pena</span></span>
                             </span>
                         </div>
                     </div>
@@ -249,32 +281,34 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 <ContinueReadingButton karyaId={karya.id} />
             </div>
 
-            <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 shadow-sm transition-colors duration-300">
-                <div className="p-6 border-b border-tan-primary/5">
-                    <h2 className="text-base font-black text-brown-dark dark:text-text-accent uppercase tracking-widest italic">Daftar Isi</h2>
-                    <p className="text-[10px] font-bold text-tan-primary/60 uppercase tracking-widest mt-1.5">{karya.bab.length} Pena Terukir</p>
+            <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 shadow-sm transition-colors duration-300 overflow-hidden">
+                <div className="p-6 border-b border-tan-primary/10 bg-tan-primary/[0.02]">
+                    <h2 className="text-base font-black text-brown-dark dark:text-text-accent uppercase tracking-[0.2em] italic">Daftar Isi</h2>
+                    <p className="text-[10px] font-bold text-tan-primary/40 uppercase tracking-widest mt-1.5">{karya.bab.length} Pena Terukir</p>
                 </div>
 
-                <div className="divide-y divide-gray-100 dark:divide-slate-800">
+                <div className="divide-y divide-tan-primary/5">
                     {karya.bab.length === 0 ? (
-                        <div className="p-8 text-center text-gray-400 dark:text-gray-500 text-sm">
-                            Belum ada bab yang dirilis.
+                        <div className="p-10 text-center text-brown-dark/20 dark:text-tan-light/20 text-xs font-bold uppercase tracking-widest italic">
+                            Belum ada bab yang dirilis...
                         </div>
                     ) : (
                         karya.bab.map((chapter: any) => (
                             <Link
                                 key={chapter.id}
                                 href={`/novel/${karya.id}/${chapter.chapter_no}`}
-                                className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 active:bg-gray-100 dark:active:bg-slate-800 transition-colors"
+                                className="flex items-center justify-between p-5 hover:bg-tan-primary/[0.03] dark:hover:bg-brown-mid/10 active:scale-[0.99] transition-all group"
                             >
                                 <div className="flex flex-col pr-4">
-                                    <span className="font-bold text-gray-900 dark:text-text-accent text-sm">Bab {chapter.chapter_no}{chapter.title ? `: ${chapter.title}` : ''}</span>
-                                    <span className="text-xs text-gray-500 dark:text-tan-light mt-1 line-clamp-1 italic text-left">
-                                        Klik untuk mulai membaca...
+                                    <span className="font-black text-brown-dark dark:text-text-accent text-[13px] uppercase tracking-wide group-hover:text-tan-primary transition-colors italic">
+                                        Bab {chapter.chapter_no}{chapter.title ? `: ${chapter.title}` : ''}
+                                    </span>
+                                    <span className="text-[10px] text-brown-dark/30 dark:text-tan-light/30 mt-1 uppercase tracking-widest font-black">
+                                        Selami lebih dalam perjalanan ini
                                     </span>
                                 </div>
-                                <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-brown-mid border border-gray-200 dark:border-brown-mid flex items-center justify-center shrink-0 transition-colors">
-                                    <ArrowLeft className="w-4 h-4 text-gray-400 dark:text-gray-500 rotate-180" />
+                                <div className="w-8 h-8 rounded-xl bg-tan-primary/5 dark:bg-brown-mid/20 border border-tan-primary/10 flex items-center justify-center shrink-0 group-hover:bg-tan-primary group-hover:text-white transition-all">
+                                    <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
                                 </div>
                             </Link>
                         ))
@@ -282,27 +316,21 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 </div>
             </div>
 
-            {karya.deskripsi && (
-                <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
-                    <h2 className="text-base font-black text-brown-dark dark:text-text-accent mb-4 uppercase tracking-widest italic">Sinopsis</h2>
-                    <p className="text-sm text-brown-dark/70 dark:text-tan-light leading-loose whitespace-pre-wrap font-medium">
-                        {karya.deskripsi}
-                    </p>
-                </div>
-            )}
-
-            <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 p-6 shadow-sm transition-colors duration-300">
+            <div className="bg-white/40 dark:bg-brown-dark/40 mt-6 border-y border-tan-primary/5 p-8 shadow-sm transition-colors duration-300">
                 <div className="flex items-center justify-between mb-8">
                     <h2 className="text-xl font-black text-brown-dark dark:text-text-accent flex items-center gap-3 italic uppercase tracking-tighter">
                         <MessageSquareQuote className="w-6 h-6 text-tan-primary non-italic" />
-                        Goresan Ulasan
+                        Tanggapan Pembaca
                     </h2>
+                    <div className="px-3 py-1 bg-tan-primary/5 dark:bg-tan-primary/10 rounded-full border border-tan-primary/10">
+                        <span className="text-[10px] font-black text-tan-primary uppercase tracking-widest">{karya._count.reviews} Ulasan</span>
+                    </div>
                 </div>
 
                 {session ? (
                     <ReviewForm karyaId={karya.id} existingReview={userPreviousReview} defaultScore={userPreviousRating} />
                 ) : (
-                    <div className="bg-tan-primary/5 dark:bg-brown-mid/50 p-10 rounded-[2.5rem] text-center border border-tan-primary/10 transition-colors shadow-inner">
+                    <div className="bg-tan-primary/5 dark:bg-brown-mid/50 p-10 rounded-[2.5rem] text-center border border-tan-primary/10 transition-colors shadow-inner mb-8">
                         <p className="text-[11px] font-black text-tan-primary mb-3 uppercase tracking-[0.25em]">Ingin Menulis Kesan?</p>
                         <p className="text-xs text-brown-dark/50 dark:text-tan-light mb-8 px-6 leading-loose font-bold italic">Masuk ke Ruang Aksara untuk memberikan apresiasi pada sang penulis.</p>
                         <Link href="/auth/login" className="inline-block px-12 py-4 bg-brown-dark text-text-accent rounded-full text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 transition-all hover:scale-105 active:scale-95 hover:bg-brown-mid">
@@ -310,81 +338,81 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                         </Link>
                     </div>
                 )}
-            </div>
 
-            <CollapsibleReviewSection count={karya._count.reviews}>
-                <div className="flex justify-end mb-8">
-                    <ReviewSortToggle karyaId={karya.id} />
-                </div>
+                <div className="mt-12">
+                    <div className="flex justify-end mb-8">
+                        <ReviewSortToggle karyaId={karya.id} />
+                    </div>
 
-                <div className="space-y-4">
-                    {karya.reviews.map((review: any) => (
-                        <div key={review.id} className="p-8 bg-white/80 dark:bg-brown-dark/80 rounded-[2.5rem] border border-tan-primary/10 shadow-xl shadow-brown-dark/5 transition-all group backdrop-blur-sm">
-                            <div className="flex items-start justify-between gap-4 mb-6">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl overflow-hidden bg-tan-primary/5 border border-tan-primary/10 shadow-inner p-0.5">
-                                        {review.user.avatar_url ? (
-                                            <img src={review.user.avatar_url} alt={review.user.display_name} className="w-full h-full object-cover rounded-[0.9rem]" />
-                                        ) : (
-                                            <UserCircle2 className="w-full h-full text-tan-primary/20" />
+                    <div className="space-y-4">
+                        {karya.reviews.map((review: any) => (
+                            <div key={review.id} className="p-8 bg-white/80 dark:bg-brown-dark/80 rounded-[2.5rem] border border-tan-primary/10 shadow-xl shadow-brown-dark/5 transition-all group backdrop-blur-sm">
+                                <div className="flex items-start justify-between gap-4 mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl overflow-hidden bg-tan-primary/5 border border-tan-primary/10 shadow-inner p-0.5">
+                                            {review.user.avatar_url ? (
+                                                <img src={review.user.avatar_url} alt={review.user.display_name} className="w-full h-full object-cover rounded-[0.9rem]" />
+                                            ) : (
+                                                <UserCircle2 className="w-full h-full text-tan-primary/20" />
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-black text-brown-dark dark:text-text-accent tracking-tight">{review.user.display_name}</p>
+                                            <p className="text-[10px] font-black text-tan-primary/60 uppercase tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {(session?.user?.role === 'admin' || session?.user?.id === karya.uploader_id) && (
+                                            <PinReviewButton
+                                                reviewId={review.id}
+                                                karyaId={karya.id}
+                                                initialIsPinned={(review as any).is_pinned}
+                                            />
+                                        )}
+                                        {(session?.user?.role === 'admin' || session?.user?.id === review.user_id || session?.user?.id === karya.uploader_id) && (
+                                            <DeleteReviewButton
+                                                reviewId={review.id}
+                                                path={`/novel/${karya.id}`}
+                                            />
                                         )}
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-black text-brown-dark dark:text-text-accent tracking-tight">{review.user.display_name}</p>
-                                        <p className="text-[10px] font-black text-tan-primary/60 uppercase tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                </div>
+
+                                {review.is_pinned && (
+                                    <div className="flex items-center gap-1.5 mb-4 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full w-fit uppercase tracking-[0.1em] border border-amber-100 dark:border-amber-900/40">
+                                        <Pin className="w-3 h-3 fill-amber-500" />
+                                        Review Pilihan Penulis
                                     </div>
-                                </div>
+                                )}
 
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {(session?.user?.role === 'admin' || session?.user?.id === karya.uploader_id) && (
-                                        <PinReviewButton
-                                            reviewId={review.id}
-                                            karyaId={karya.id}
-                                            initialIsPinned={(review as any).is_pinned}
-                                        />
-                                    )}
-                                    {(session?.user?.role === 'admin' || session?.user?.id === review.user_id || session?.user?.id === karya.uploader_id) && (
-                                        <DeleteReviewButton
-                                            reviewId={review.id}
-                                            path={`/novel/${karya.id}`}
-                                        />
-                                    )}
-                                </div>
+                                {review.rating !== null && review.rating > 0 && (
+                                    <div className="flex text-amber-500 fill-amber-500 mb-4 drop-shadow-sm scale-110 origin-left">
+                                        {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                                    </div>
+                                )}
+                                <p className="text-[15px] text-brown-dark/80 dark:text-gray-300 leading-loose font-medium mb-6 italic">"{parseMentions(review.content)}"</p>
+
+                                <ReviewInteraction
+                                    reviewId={review.id}
+                                    initialUpvotes={review._count.upvotes}
+                                    initialUpvoted={userUpvotedReviews.includes(review.id)}
+                                    replyCount={review._count.comments}
+                                    currentPath={`/novel/${karya.id}`}
+                                />
+
+                                <ReviewCommentSection
+                                    comments={review.comments}
+                                    karyaUploaderId={karya.uploader_id}
+                                    currentUser={session?.user}
+                                    path={`/novel/${karya.id}`}
+                                    reviewId={review.id}
+                                />
                             </div>
-
-                            {review.is_pinned && (
-                                <div className="flex items-center gap-1.5 mb-4 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full w-fit uppercase tracking-[0.1em] border border-amber-100 dark:border-amber-900/40">
-                                    <Pin className="w-3 h-3 fill-amber-500" />
-                                    Review Pilihan Penulis
-                                </div>
-                            )}
-
-                            {review.rating !== null && review.rating > 0 && (
-                                <div className="flex text-amber-500 fill-amber-500 mb-4 drop-shadow-sm scale-110 origin-left">
-                                    {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                                </div>
-                            )}
-                            <p className="text-[15px] text-brown-dark/80 dark:text-gray-300 leading-loose font-medium mb-6 italic">"{parseMentions(review.content)}"</p>
-
-                            <ReviewInteraction
-                                reviewId={review.id}
-                                initialUpvotes={review._count.upvotes}
-                                initialUpvoted={userUpvotedReviews.includes(review.id)}
-                                replyCount={review._count.comments}
-                                currentPath={`/novel/${karya.id}`}
-                            />
-
-                            <ReviewCommentSection
-                                comments={review.comments}
-                                karyaUploaderId={karya.uploader_id}
-                                currentUser={session?.user}
-                                path={`/novel/${karya.id}`}
-                                reviewId={review.id}
-                            />
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </CollapsibleReviewSection>
+            </div>
         </div>
     );
 }

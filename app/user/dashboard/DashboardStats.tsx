@@ -1,12 +1,13 @@
 'use client';
 
-import { Flame, Trophy, Star, ChevronRight, X, Info } from "lucide-react";
+import { Flame, Trophy, Star, ChevronRight, X, Info, BookOpen } from "lucide-react";
 import { useState } from "react";
 
 interface DashboardStatsProps {
     stats: {
         reading_streak: number;
         points: number;
+        total_chapters_read: number;
     };
 }
 
@@ -66,36 +67,39 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                 <Star className="absolute -right-6 -bottom-6 w-32 h-32 text-tan-light/10 dark:text-slate-800 pointer-events-none" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-3">
                 <button
                     onClick={() => setShowStreakInfo(true)}
-                    className="bg-brown-dark rounded-[2.5rem] p-5 text-text-accent shadow-xl shadow-brown-dark/10 relative overflow-hidden group border border-white/10 text-left transition-all active:scale-[0.98] cursor-pointer"
+                    className="bg-brown-dark rounded-3xl p-4 text-text-accent shadow-lg shadow-brown-dark/10 relative overflow-hidden group border border-white/5 text-center transition-all active:scale-[0.98] cursor-pointer"
                 >
-                    <Flame className="absolute -right-4 -bottom-4 w-24 h-24 opacity-10 group-hover:scale-110 transition-transform" />
-                    <div className="flex justify-between items-start mb-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Streak</p>
-                        <Info className="w-4 h-4 opacity-40" />
-                    </div>
-                    <div className="flex items-end gap-1">
-                        <span className="text-3xl font-black">{stats.reading_streak}</span>
-                        <span className="text-sm font-bold mb-1 opacity-60">Hari</span>
+                    <Flame className="absolute -right-2 -bottom-2 w-16 h-16 opacity-10 group-hover:scale-110 transition-transform" />
+                    <p className="text-[8px] font-black uppercase tracking-widest opacity-60 mb-1">Streak</p>
+                    <div className="flex items-baseline justify-center gap-0.5">
+                        <span className="text-xl font-black">{stats.reading_streak}</span>
+                        <span className="text-[8px] font-bold opacity-40 uppercase">Hari</span>
                     </div>
                 </button>
 
                 <button
                     onClick={() => setShowPointsInfo(true)}
-                    className="bg-brown-mid rounded-[2.5rem] p-5 text-text-accent shadow-xl shadow-brown-mid/10 relative overflow-hidden group border border-white/10 text-left transition-all active:scale-[0.98] cursor-pointer"
+                    className="bg-brown-mid rounded-3xl p-4 text-text-accent shadow-lg shadow-brown-mid/10 relative overflow-hidden group border border-white/5 text-center transition-all active:scale-[0.98] cursor-pointer"
                 >
-                    <Trophy className="absolute -right-4 -bottom-4 w-24 h-24 opacity-10 group-hover:scale-110 transition-transform" />
-                    <div className="flex justify-between items-start mb-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Poin</p>
-                        <Info className="w-4 h-4 opacity-40" />
-                    </div>
-                    <div className="flex items-end gap-1">
-                        <span className="text-3xl font-black">{stats.points}</span>
-                        <span className="text-sm font-bold mb-1 opacity-60">Pts</span>
+                    <Trophy className="absolute -right-2 -bottom-2 w-16 h-16 opacity-10 group-hover:scale-110 transition-transform" />
+                    <p className="text-[8px] font-black uppercase tracking-widest opacity-60 mb-1">Poin</p>
+                    <div className="flex items-baseline justify-center gap-0.5">
+                        <span className="text-xl font-black">{stats.points}</span>
+                        <span className="text-[8px] font-bold opacity-40 uppercase">Pts</span>
                     </div>
                 </button>
+
+                <div className="bg-white dark:bg-brown-dark rounded-3xl p-4 text-text-main dark:text-text-accent shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid text-center relative overflow-hidden">
+                    <BookOpen className="absolute -right-2 -bottom-2 w-16 h-16 opacity-5 pointer-events-none" />
+                    <p className="text-[8px] font-black uppercase tracking-widest text-tan-primary opacity-60 mb-1">Total Baca</p>
+                    <div className="flex items-baseline justify-center gap-0.5">
+                        <span className="text-xl font-black">{stats.total_chapters_read}</span>
+                        <span className="text-[8px] font-bold opacity-40 uppercase">Bab</span>
+                    </div>
+                </div>
             </div>
 
             {/* Level Info Modal */}

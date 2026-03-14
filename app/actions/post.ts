@@ -222,3 +222,37 @@ export async function deletePostComment(commentId: string) {
         return { error: "Gagal menghapus komentar." };
     }
 }
+
+// ==============================================================================
+// 5. MUTASI AUTHOR/ADMIN: HAPUS POSTINGAN AUTHOR
+// ==============================================================================
+/**
+ * Server Action: Menghapus postingan Author.
+ *
+ * Otorisasi:
+ *   - Hanya pemilik postingan atau admin yang boleh menghapus.
+ *
+ * @param postId - ID postingan yang akan dihapus.
+ * @returns `{ success: true }` | `{ error: string }`.
+ */
+export async function deleteAuthorPost(postId: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) return { error: "Unauthorized." };
+
+        const existing = await (prisma as any).authorPost.findUnique({ where: { id: postId } });
+        if (!existing) return { error: "Postingan tidak ditemukan." };
+
+        if (existing.author_id !== session.user.id && session.user.role !== 'admin') {
+            return { error: "Forbidden." };
+        }
+
+        await (prisma as any).authorPost.delete({ where: { id: postId } });
+
+        revalidatePath('/profile/[id]', 'page');
+        return { success: true };
+    } catch (e) {
+        console.error("[deleteAuthorPost] Error:", e);
+        return { error: "Gagal menghapus postingan." };
+    }
+}

@@ -28,14 +28,14 @@ export default function PinReviewButton({ reviewId, karyaId, initialIsPinned }: 
             disabled={isPending}
             title={initialIsPinned ? "Lepas Sematan" : "Sematkan Ulasan"}
             className={`p-2 rounded-xl transition-all border ${initialIsPinned
-                    ? 'bg-amber-500/10 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                    ? 'bg-tan-primary/10 dark:bg-brown-mid text-brown-dark dark:text-text-accent border-tan-primary/10'
                     : 'text-tan-primary/40 border-tan-primary/5 hover:bg-tan-primary/5 hover:text-tan-primary'
                 }`}
         >
             {isPending ? (
                 <span className="animate-pulse">...</span>
             ) : initialIsPinned ? (
-                <PinOff className="w-4 h-4 fill-amber-500" />
+                <PinOff className="w-4 h-4" />
             ) : (
                 <Pin className="w-4 h-4" />
             )}

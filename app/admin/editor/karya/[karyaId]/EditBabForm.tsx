@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { editBab } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { Save, Pencil, ArrowLeft, Upload } from 'lucide-react';
+import DeleteBabButton from './DeleteBabButton';
 
 export default function EditBabForm({ babId, initialContent, title }: { babId: string, initialContent: string, title?: string }) {
     const [isPending, setIsPending] = useState(false);
@@ -65,38 +66,42 @@ export default function EditBabForm({ babId, initialContent, title }: { babId: s
     return (
         <>
             {!isOpen && (
-                <div className="w-full h-[77px] bg-[#7a553a] border-[1.5px] border-[#3b2a22] rounded flex items-center justify-between px-6 shadow-sm">
-                    <span className="font-normal text-[#f2ead7] text-[25px] truncate max-w-[70%]">{displayTitle}</span>
-                    <button type="button" onClick={() => setIsOpen(true)} className="flex items-center gap-3 text-[#f2ead7] hover:opacity-70 transition-opacity">
-                        <Pencil className="w-5 h-5" />
-                        <span className="font-normal text-[25px]">Edit</span>
-                    </button>
+                <div className="w-full h-[80px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-2xl flex items-center justify-between px-8 shadow-sm group hover:border-tan-primary/30 transition-all">
+                    <span className="font-bold italic text-brown-dark dark:text-text-accent text-xl truncate max-w-[50%]">{displayTitle}</span>
+                    <div className="flex items-center gap-4">
+                        <button type="button" onClick={() => setIsOpen(true)} className="flex items-center gap-3 text-brown-dark dark:text-tan-primary hover:text-tan-primary transition-all font-black text-sm uppercase tracking-widest italic">
+                            <Pencil className="w-4 h-4" />
+                            <span>Sunting</span>
+                        </button>
+                        <div className="h-4 w-px bg-tan-primary/20" />
+                        <DeleteBabButton babId={babId} />
+                    </div>
                 </div>
             )}
 
             {isOpen && (
-                <div className="fixed inset-0 z-[100] bg-[#f2ead7] overflow-y-auto font-sans flex flex-col items-center pt-14 pb-24 px-6 sm:px-12 animate-in fade-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 z-[100] bg-bg-cream dark:bg-brown-dark overflow-y-auto flex flex-col items-center pt-14 pb-24 px-6 sm:px-12 animate-in fade-in zoom-in-95 duration-200">
                     <form onSubmit={handleSubmit} className="w-full max-w-[1055px] flex flex-col min-h-full">
                         <div className="flex justify-between items-center mb-10 w-full">
-                            <button type="button" onClick={() => setIsOpen(false)} className="hover:scale-105 transition-transform text-[#3b2a22]">
-                                <ArrowLeft className="w-12 h-12" strokeWidth={3} />
+                            <button type="button" onClick={() => setIsOpen(false)} className="hover:scale-105 transition-transform text-brown-dark dark:text-tan-primary">
+                                <ArrowLeft className="w-12 h-12" strokeWidth={2.5} />
                             </button>
-                            <button type="submit" disabled={isPending} className="w-[180px] h-[54px] bg-[#3b2a22] hover:bg-[#2a1e18] rounded-[8.49px] flex items-center justify-center gap-3 transition-colors active:scale-95 disabled:opacity-50 shadow-md">
-                                <span className="font-semibold text-[#f2ead7] text-[29.3px]">{isPending ? 'Proses' : 'Unggah'}</span>
-                                {!isPending && <Upload className="w-7 h-7 text-[#f2ead7]" strokeWidth={2.5} />}
+                            <button type="submit" disabled={isPending} className="h-[60px] px-10 bg-brown-dark hover:bg-brown-mid text-text-accent rounded-full flex items-center justify-center gap-4 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-brown-dark/20 group">
+                                <span className="font-black text-lg uppercase tracking-[0.2em] italic">{isPending ? 'Mengukir...' : 'Simpan Bab'}</span>
+                                {!isPending && <Upload className="w-5 h-5 group-hover:-translate-y-1 transition-transform" strokeWidth={2.5} />}
                             </button>
                         </div>
-                        <div className="mb-6 w-full h-[75px] bg-[#3b2a22] rounded-[10px] overflow-hidden shrink-0">
+                        <div className="mb-6 w-full h-[75px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-2xl overflow-hidden shrink-0 group focus-within:ring-4 focus-within:ring-tan-primary/5 transition-all">
                             {/* Input judul diset default sesuai judul bersih yang sudah difilter */}
-                            <input name="title" type="text" defaultValue={title && title !== "null" ? title : ""} placeholder="Masukkan Judul Bab" className="w-full h-full bg-transparent px-[35px] font-bold text-[#f2ead7] text-[30.1px] placeholder-[#f2ead7]/80 outline-none" />
+                            <input name="title" type="text" defaultValue={title && title !== "null" ? title : ""} placeholder="Masukkan Judul Bab..." className="w-full h-full bg-transparent px-10 font-bold italic text-brown-dark dark:text-text-accent text-2xl placeholder-brown-dark/20 dark:placeholder-tan-light/20 outline-none" />
                         </div>
                         {lastSaved && (
                             <div className="flex items-center gap-2 text-[#3b2a22] font-semibold mb-2 ml-2">
                                 <Save className="w-4 h-4" /> <span>Draft tersimpan otomatis {lastSaved.toLocaleTimeString('id-ID')}</span>
                             </div>
                         )}
-                        <div className="w-full flex-1 bg-[#dec8b2] rounded-[10px] overflow-hidden shadow-sm flex flex-col min-h-[500px]">
-                            <textarea name="content" required value={content} onChange={handleContentChange} placeholder="Tulis Cerita" className="w-full h-full flex-1 bg-transparent px-[39px] py-[26px] font-normal text-black text-[25.7px] placeholder-black/60 outline-none resize-none" />
+                        <div className="w-full flex-1 bg-white/30 dark:bg-brown-dark/30 border-2 border-tan-primary/5 dark:border-brown-mid rounded-3xl overflow-hidden shadow-inner flex flex-col min-h-[500px] group focus-within:ring-4 focus-within:ring-tan-primary/5 transition-all">
+                            <textarea name="content" required value={content} onChange={handleContentChange} placeholder="Mulailah menggoreskan imajinasimu di sini..." className="w-full h-full flex-1 bg-transparent px-10 py-8 font-medium italic text-brown-dark dark:text-tan-light text-xl placeholder-brown-dark/20 dark:placeholder-tan-light/20 outline-none resize-none leading-relaxed" />
                         </div>
                     </form>
                 </div>

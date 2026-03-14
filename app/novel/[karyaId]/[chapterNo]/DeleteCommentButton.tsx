@@ -26,7 +26,7 @@ export default function DeleteCommentButton({ commentId, isSmall = false }: { co
         <button
             onClick={handleDelete}
             disabled={isPending}
-            className={`${isSmall ? 'text-[10px]' : 'text-xs ml-3'} text-red-500 hover:text-red-700 font-bold hover:underline disabled:opacity-50 transition-colors flex items-center gap-1`}
+            className={`${isSmall ? 'text-[9px]' : 'text-xs ml-3'} text-red-900/40 hover:text-red-900/70 font-black uppercase tracking-widest disabled:opacity-50 transition-colors flex items-center gap-1 italic`}
         >
             {isPending ? '...' : 'Hapus'}
         </button>

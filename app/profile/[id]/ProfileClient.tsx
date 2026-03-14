@@ -6,8 +6,10 @@ import {
     ArrowLeft, UserCircle2, Settings, TrendingUp, BookMarked,
     Star, MessageSquare, Heart, Instagram, Twitter, Globe,
     Sparkles, Calendar, BookOpen, MessageCircle, Search, X,
-    Filter, ArrowUpDown, CheckCircle2, Clock3, Plus, PenTool
+    Filter, ArrowUpDown, CheckCircle2, Clock3, Plus, PenTool,
+    Trash2
 } from 'lucide-react';
+import { deleteAuthorPost } from '@/app/actions/post';
 import FollowButton from './FollowButton';
 import ThemeToggle from '@/app/components/ThemeToggle';
 import CreatePostForm from './CreatePostForm';
@@ -160,11 +162,14 @@ export default function ProfileClient({
                                         <div className="flex-1 flex flex-col gap-5 py-1 text-center sm:text-left">
                                             <div>
                                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                                                    <Link href={`/novel/${karya.id}`}>
-                                                        <h3 className="text-xl sm:text-2xl font-open-sans font-black text-text-main dark:text-text-accent italic leading-tight hover:text-tan-primary transition-colors">
-                                                            {karya.title}
-                                                        </h3>
-                                                    </Link>
+                                                    <div className="flex-1">
+                                                        <Link href={`/novel/${karya.id}`}>
+                                                            <h3 className="text-xl sm:text-2xl font-open-sans font-black text-text-main dark:text-text-accent italic leading-tight hover:text-tan-primary transition-colors">
+                                                                {karya.title}
+                                                            </h3>
+                                                        </Link>
+                                                        <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">{karya.penulis_alias || userProfile.display_name}</p>
+                                                    </div>
                                                     {/* Status Badge */}
                                                     <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.2em] flex items-center gap-1.5 self-center sm:self-start border ${karya.is_completed 
                                                         ? 'bg-green-500/5 text-green-600 border-green-500/10' 
@@ -177,22 +182,30 @@ export default function ProfileClient({
                                                     </div>
                                                 </div>
 
-                                                {/* Stats Pills */}
+                                                {/* Stats Pills & Genres */}
                                                 <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-4">
-                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 rounded-full border border-brown-dark/5">
-                                                        <TrendingUp className="w-2.5 h-2.5 text-brown-dark/40" />
-                                                        <span className="text-[8px] font-black text-brown-dark/60 uppercase tracking-widest">{karya.total_views.toLocaleString()}</span>
+                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 dark:bg-brown-mid/20 rounded-full border border-brown-dark/5 dark:border-brown-mid">
+                                                        <TrendingUp className="w-2.5 h-2.5 text-brown-dark/40 dark:text-tan-light/40" />
+                                                        <span className="text-[8px] font-black text-brown-dark/60 dark:text-tan-light uppercase tracking-widest">{karya.total_views.toLocaleString()}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1 bg-brown-dark/5 px-2.5 py-1 rounded-full border border-brown-dark/5">
+                                                    <div className="flex items-center gap-1 bg-brown-dark/5 dark:bg-brown-mid/20 px-2.5 py-1 rounded-full border border-brown-dark/5 dark:border-brown-mid">
                                                         {[1, 2, 3, 4, 5].map((s) => (
-                                                            <Star key={s} className={`w-2 h-2 ${s <= Math.round(karya.avg_rating || 0) ? 'fill-yellow-500 text-yellow-500' : 'text-brown-dark/10'}`} />
+                                                            <Star key={s} className={`w-2 h-2 ${s <= Math.round(karya.avg_rating || 0) ? 'fill-yellow-500 text-yellow-500' : 'text-brown-dark/10 dark:text-tan-light/10'}`} />
                                                         ))}
                                                     </div>
-                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 rounded-full border border-brown-dark/5">
-                                                        <span className="text-[8px] font-black text-brown-dark/60 uppercase tracking-widest">
+                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 dark:bg-brown-mid/20 rounded-full border border-brown-dark/5 dark:border-brown-mid">
+                                                        <span className="text-[8px] font-black text-brown-dark/60 dark:text-tan-light uppercase tracking-widest">
                                                             {karya.count_chapters || karya._count?.bab || 0} Bab
                                                         </span>
                                                     </div>
+                                                    {/* [NEW] Genre Badges */}
+                                                    {(karya.genres || []).map((genre: any) => (
+                                                        <div key={genre.id} className="flex items-center gap-1.5 px-3 py-1 bg-tan-primary/5 dark:bg-tan-primary/10 rounded-full border border-tan-primary/10">
+                                                            <span className="text-[8px] font-black text-tan-primary uppercase tracking-widest">
+                                                                {genre.name}
+                                                            </span>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
 
@@ -250,22 +263,43 @@ export default function ProfileClient({
                                                 </div>
                                             )}
                                         </div>
-                                        <div>
+                                        <div className="flex-1">
                                             <p className="font-black text-[13px] text-text-main dark:text-white uppercase tracking-tight">{userProfile.display_name}</p>
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="w-3 h-3 text-tan-primary" />
                                                 <p className="text-[9px] text-tan-primary font-black uppercase tracking-widest">{new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                             </div>
                                         </div>
+
+                                        {(isOwnProfile || session?.user?.role === 'admin') && (
+                                            <button 
+                                                onClick={() => handleDeletePost(post.id)}
+                                                className="p-2 text-tan-primary/40 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl transition-all active:scale-90"
+                                                title="Hapus Postingan"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        )}
                                     </div>
 
                                     {/* Post Content with Quote Style */}
-                                    <div className="mb-8 relative">
+                                    <div className="mb-6 relative">
                                         <div className="absolute -left-2 top-0 text-4xl text-brown-dark/5 font-serif inline-block">&quot;</div>
                                         <p className="text-text-main/80 dark:text-gray-300 whitespace-pre-wrap leading-relaxed font-medium text-[15px] italic">
                                             {post.content}
                                         </p>
                                     </div>
+
+                                    {/* Post Image Display */}
+                                    {post.image_url && (
+                                        <div className="mb-8 rounded-[2rem] overflow-hidden border border-brown-dark/10 shadow-lg group-hover:shadow-xl transition-all duration-500">
+                                            <img 
+                                                src={post.image_url} 
+                                                alt="Post attachment" 
+                                                className="w-full h-auto max-h-[500px] object-cover hover:scale-[1.02] transition-transform duration-700"
+                                            />
+                                        </div>
+                                    )}
 
                                     <div className="flex gap-6 pt-5 border-t border-brown-dark/5">
                                         <PostLikeButton postId={post.id} initialLikes={post._count.likes} initialLikedByUser={session ? post.likes && post.likes.length > 0 : false} />
@@ -418,6 +452,19 @@ export default function ProfileClient({
                 );
             default:
                 return null;
+        }
+    };
+
+    const handleDeletePost = async (postId: string) => {
+        if (!window.confirm('Apakah Anda yakin ingin menghapus postingan ini?')) return;
+        
+        try {
+            const res = await deleteAuthorPost(postId);
+            if (res.error) {
+                alert(res.error);
+            }
+        } catch (err) {
+            alert('Gagal menghapus postingan.');
         }
     };
 

@@ -31,6 +31,12 @@ export default async function AdminDashboardPage() {
         include: {
             _count: {
                 select: { bookmarks: true, bab: true }
+            },
+            genres: { take: 2 },
+            bab: {
+                orderBy: { created_at: 'desc' },
+                take: 1,
+                select: { created_at: true }
             }
         }
     });
@@ -190,25 +196,42 @@ export default async function AdminDashboardPage() {
                                                         )}
                                                     </div>
 
-                                                    {/* Meta Stats Pills in Mockup Style */}
+                                                    <div className="flex flex-wrap gap-2 items-center mb-3">
+                                                        <div className="flex items-center gap-1 bg-[#3B2A22]/5 px-2 py-0.5 rounded-full">
+                                                            <Eye className="w-2.5 h-2.5 text-[#3B2A22]/40" />
+                                                            <span className="text-[9px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item.total_views.toLocaleString()}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1 bg-[#3B2A22]/5 px-2 py-0.5 rounded-full">
+                                                            <Bookmark className="w-2.5 h-2.5 text-[#3B2A22]/40" />
+                                                            <span className="text-[9px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item._count.bookmarks}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1 bg-amber-400/10 px-2 py-0.5 rounded-full">
+                                                            <Star className="w-2.5 h-2.5 fill-amber-400 text-transparent" />
+                                                            <span className="text-[9px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item.avg_rating.toFixed(1)}</span>
+                                                        </div>
+                                                    </div>
+
                                                     <div className="flex flex-wrap gap-2 items-center mb-4">
-                                                        <div className="flex items-center gap-1">
-                                                            <Eye className="w-3 h-3 text-[#3B2A22]/40" />
-                                                            <span className="text-[10px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item.total_views.toLocaleString()}</span>
+                                                        <div className="bg-[#3B2A22]/5 px-3 py-1 rounded-full">
+                                                            <span className="text-[8px] font-black text-[#3B2A22]/60 uppercase tracking-[0.2em]">{item._count.bab} Bab</span>
                                                         </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <Star className="w-3 h-3 fill-amber-400 text-transparent" />
-                                                            <span className="text-[10px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item.avg_rating.toFixed(1)}</span>
-                                                        </div>
+                                                        {item.genres.map((g: any) => (
+                                                            <div key={g.id} className="bg-[#C6A982]/10 border border-[#C6A982]/20 px-3 py-1 rounded-full">
+                                                                <span className="text-[8px] font-black text-[#C6A982] uppercase tracking-[0.1em]">{g.name}</span>
+                                                            </div>
+                                                        ))}
                                                     </div>
 
-                                                    <div className="bg-[#3B2A22]/5 px-3 py-1 rounded-full w-fit mb-4">
-                                                        <span className="text-[8px] font-black text-[#3B2A22]/60 uppercase tracking-[0.2em]">{item._count.bab} Bab</span>
+                                                    <div className="flex items-center justify-between gap-4 mt-2">
+                                                        <Link href={`/admin/editor/karya/${item.id}`} className="bg-[#3B2A22] text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-[#4E382C] transition-all active:scale-95 group/btn">
+                                                            edit
+                                                        </Link>
+                                                        {item.bab[0] && (
+                                                            <span className="text-[8px] font-bold text-[#3B2A22]/30 uppercase tracking-tighter">
+                                                                Update: {new Date(item.bab[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                                                            </span>
+                                                        )}
                                                     </div>
-
-                                                    <Link href={`/admin/editor/karya/${item.id}`} className="inline-flex items-center gap-2 bg-[#3B2A22] text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-[#4E382C] transition-all active:scale-95 group/btn">
-                                                        edit
-                                                    </Link>
                                                 </div>
                                             </div>
                                         ))}

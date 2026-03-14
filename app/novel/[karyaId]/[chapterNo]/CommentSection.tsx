@@ -71,7 +71,7 @@ export default function CommentSection({
     return (
         <div className="space-y-8">
             {/* Main Form */}
-            <div className="bg-white/60 dark:bg-brown-dark/60 p-8 rounded-[3rem] border border-tan-primary/10 shadow-sm transition-all">
+            <div className="bg-bg-cream/40 dark:bg-brown-dark/60 p-8 rounded-[3rem] border border-tan-primary/10 shadow-sm transition-all">
                 <h3 className="text-[10px] font-black text-brown-dark dark:text-text-accent uppercase tracking-[0.3em] mb-6 flex items-center gap-3 italic">
                     <MessageCircle className="w-5 h-5 text-tan-primary" />
                     Diskusi Goresan
@@ -103,7 +103,7 @@ export default function CommentSection({
             {/* Comments List */}
             <div className="space-y-2">
                 {sortedComments.length === 0 ? (
-                    <div className="py-24 text-center bg-white/40 dark:bg-brown-dark rounded-[3rem] border border-dashed border-tan-primary/20">
+                    <div className="py-24 text-center bg-bg-cream/40 dark:bg-brown-dark rounded-[3rem] border border-dashed border-tan-primary/20">
                         <div className="w-20 h-20 bg-tan-primary/5 dark:bg-brown-mid rounded-full flex items-center justify-center mx-auto mb-6">
                             <MessageCircle className="w-8 h-8 text-tan-primary/20" />
                         </div>

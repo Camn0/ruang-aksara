@@ -91,7 +91,10 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         prisma.karya.findMany({
             where: { uploader_id: userProfile.id },
             orderBy: { total_views: 'desc' },
-            include: { _count: { select: { bookmarks: true, ratings: true, bab: true } } }
+            include: { 
+                _count: { select: { bookmarks: true, ratings: true, bab: true } },
+                genres: { take: 3 }
+            }
         }),
         // 4. Postingan (If Author)
         (prisma as any).authorPost.findMany({

@@ -120,7 +120,7 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
     const comments = buildCommentTree(allRawComments);
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] dark:bg-brown-dark text-brown-dark dark:text-text-accent pb-28">
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark text-brown-dark dark:text-text-accent pb-28 transition-colors duration-300">
             <ReadingInterface
                 karyaId={params.karyaId}
                 babId={chapter.id}

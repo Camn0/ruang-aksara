@@ -53,13 +53,13 @@ export default function ChapterPicker({
             />
 
             {/* The "Sheet" / Sidebar */}
-            <div className="relative w-full md:w-[420px] h-[95vh] md:h-full bg-[#FDFBF7] dark:bg-brown-dark mt-auto md:mt-0 rounded-t-[3.5rem] md:rounded-t-none md:rounded-l-[3.5rem] shadow-[-20px_0_60px_-15px_rgba(59,42,34,0.15)] flex flex-col overflow-hidden animate-in slide-in-from-bottom md:slide-in-from-right duration-500 ease-out border-l border-tan-primary/10">
+            <div className="relative w-full md:w-[420px] h-[95vh] md:h-full bg-bg-cream dark:bg-brown-dark mt-auto md:mt-0 rounded-t-[3.5rem] md:rounded-t-none md:rounded-l-[3.5rem] shadow-[-20px_0_60px_-15px_rgba(59,42,34,0.15)] flex flex-col overflow-hidden animate-in slide-in-from-bottom md:slide-in-from-right duration-500 ease-out border-l border-tan-primary/10">
 
                 {/* Drag Handle for Mobile */}
                 <div className="w-12 h-1.5 bg-gray-200 dark:bg-brown-mid rounded-full mx-auto mt-4 md:hidden shrink-0" />
 
                 {/* Header Section */}
-                <div className="px-10 pt-10 pb-8 border-b border-tan-primary/5 flex items-center justify-between sticky top-0 z-10 bg-[#FDFBF7]/80 dark:bg-brown-dark/80 backdrop-blur-md">
+                <div className="px-10 pt-10 pb-8 border-b border-tan-primary/5 flex items-center justify-between sticky top-0 z-10 bg-bg-cream/80 dark:bg-brown-dark/80 backdrop-blur-md">
                     <div>
                         <h3 className="font-black text-3xl text-brown-dark dark:text-text-accent flex items-center gap-4 italic tracking-tighter uppercase">
                             <List className="w-7 h-7 text-tan-primary" />
@@ -91,7 +91,7 @@ export default function ChapterPicker({
                                     onClick={() => setIsOpen(false)}
                                     className={`flex items-center gap-4 px-8 py-6 rounded-[2.5rem] transition-all group relative overflow-hidden border ${isActive
                                         ? 'bg-brown-dark text-text-accent border-brown-dark shadow-2xl shadow-brown-dark/20 translate-x-2'
-                                        : 'bg-white dark:bg-brown-dark border-tan-primary/5 dark:border-brown-mid hover:border-tan-primary/20 hover:bg-tan-primary/5'
+                                        : 'bg-bg-cream/50 dark:bg-brown-dark/40 border-tan-primary/5 dark:border-brown-mid hover:border-tan-primary/20 hover:bg-tan-primary/5'
                                         }`}
                                 >
                                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 shadow-inner ${isActive ? 'bg-white/10' : 'bg-tan-primary/5 dark:bg-brown-mid text-tan-primary/40'}`}>
@@ -125,7 +125,7 @@ export default function ChapterPicker({
                 </div>
 
                 {/* Footer / Quick Navigation Action */}
-                <div className="p-10 border-t border-tan-primary/5 bg-[#FDFBF7]/80 dark:bg-brown-dark/80 backdrop-blur-md">
+                <div className="p-10 border-t border-tan-primary/5 bg-bg-cream/80 dark:bg-brown-dark/80 backdrop-blur-md">
                     <Link
                         href={`/novel/${karyaId}`}
                         className="w-full h-16 bg-brown-dark text-text-accent rounded-full flex items-center justify-center font-black text-[10px] uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 gap-4 group"

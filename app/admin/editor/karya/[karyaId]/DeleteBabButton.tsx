@@ -26,9 +26,9 @@ export default function DeleteBabButton({ babId }: { babId: string }) {
         <button
             onClick={handleDelete}
             disabled={isPending}
-            className="px-4 py-2 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 font-medium transition disabled:opacity-50"
+            className="px-4 py-1.5 text-red-900/40 hover:text-red-900/70 font-black text-[10px] uppercase tracking-widest italic transition-colors disabled:opacity-50"
         >
-            {isPending ? 'Mengahapus...' : 'Hapus'}
+            {isPending ? 'Mengapus...' : 'Hapus'}
         </button>
     );
 }

@@ -5,6 +5,7 @@ import { editKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react'; 
 import { toast } from 'sonner';
+import DeleteKaryaButton from './DeleteKaryaButton';
 
 interface Genre { id: string; name: string; }
 interface Karya {
@@ -14,7 +15,7 @@ interface Karya {
 
 const FiRrPlus = ({ className }: { className?: string }) => (
     <div className={`flex items-center justify-center ${className || ""}`}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="#f2ead7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
@@ -118,14 +119,14 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
     }
 
     return (
-        <div className="w-full max-w-[1200px] mx-auto pt-14 px-6 sm:px-12 animate-in fade-in duration-300 font-sans pb-24">
+        <div className="w-full max-w-[1200px] mx-auto pt-14 px-6 sm:px-12 animate-in fade-in duration-300 pb-24">
             
             <div className="flex justify-between items-center mb-16">
-                <button type="button" onClick={() => router.back()} className="hover:scale-105 transition-transform">
-                    <ArrowLeft className="w-12 h-12 text-[#121212]" strokeWidth={2.5} />
+                <button type="button" onClick={() => router.back()} className="hover:scale-105 transition-transform text-brown-dark dark:text-tan-primary">
+                    <ArrowLeft className="w-12 h-12" strokeWidth={2.5} />
                 </button>
-                <button type="button" className="font-semibold text-[#121212] text-3xl sm:text-[45px] lowercase hover:opacity-70 transition-opacity">
-                    skip
+                <button type="button" className="font-lobster text-brown-dark dark:text-tan-primary text-3xl sm:text-[45px] lowercase hover:opacity-70 transition-opacity">
+                    Sunting Karya
                 </button>
             </div>
 
@@ -137,8 +138,8 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                 <input type="hidden" name="cover_url" value={coverBase64 || ""} />
 
                 <div className="flex flex-col gap-4 shrink-0">
-                    <label className="font-semibold text-black text-xl sm:text-[25.7px]">Cover</label>
-                    <div className="w-[183px] h-[239px] bg-[#886750] rounded-[24.75px] flex items-center justify-center relative hover:bg-[#7a5c48] transition-colors overflow-hidden group">
+                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sampul</label>
+                    <div className="w-[183px] h-[239px] bg-white/40 dark:bg-brown-dark/40 border-2 border-dashed border-tan-primary/20 rounded-[24.75px] flex items-center justify-center relative hover:bg-tan-primary/5 transition-colors overflow-hidden group">
                         
                         {/* Input File (TIDAK DIBERI NAME agar tidak membingungkan backend) */}
                         <input 
@@ -152,17 +153,19 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                         {coverPreview ? (
                             <>
                                 <img src={coverPreview} alt="Cover" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 z-20 backdrop-blur-sm">
-                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-white/20 border border-white/50 text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-white/40 transition-colors text-sm w-20 cursor-pointer">
+                                <div className="absolute inset-0 bg-brown-dark/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 z-20 backdrop-blur-sm">
+                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-white/10 border border-white/30 text-white font-black px-4 py-1.5 rounded-xl hover:bg-white/20 transition-colors text-[10px] uppercase tracking-widest italic w-24">
                                         Ganti
                                     </button>
-                                    <button type="button" onClick={handleRemoveImage} className="bg-red-500/80 text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-red-500 transition-colors text-sm w-20 cursor-pointer">
+                                    <button type="button" onClick={handleRemoveImage} className="bg-red-900/40 text-white font-black px-4 py-1.5 rounded-xl hover:bg-red-900/60 transition-colors text-[10px] uppercase tracking-widest italic w-24">
                                         Hapus
                                     </button>
                                 </div>
                             </>
                         ) : (
-                            <FiRrPlus className="w-12 h-12" />
+                            <div className="text-brown-dark/40 dark:text-tan-primary/40 group-hover:text-brown-dark dark:group-hover:text-tan-primary transition-colors">
+                                <FiRrPlus className="w-12 h-12" />
+                            </div>
                         )}
                     </div>
                 </div>
@@ -170,26 +173,26 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                 {/* Kolom Kanan: Inputs Metadata */}
                 <div className="flex-1 flex flex-col gap-8">
                     <div className="flex flex-col gap-3">
-                        <label className="font-semibold text-black text-xl sm:text-[25.7px]">Judul</label>
-                        <input name="title" type="text" required defaultValue={karya.title} placeholder="masukkan judul" className="w-full h-[60px] bg-[#886750] rounded-[16.5px] px-5 font-normal text-[#f2ead7] text-xl sm:text-[25.7px] placeholder-[#f2ead7]/70 outline-none" />
+                        <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Judul Karya</label>
+                        <input name="title" type="text" required defaultValue={karya.title} placeholder="Tuliskan judul mahakaryamu..." className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all" />
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        <label className="font-semibold text-black text-xl sm:text-[25.7px]">Nama Alias Penulis</label>
-                        <input name="penulis_alias" type="text" defaultValue={karya.penulis_alias.replace(/\s\([^)]+\)$/, '')} placeholder="contoh: Andrea Hirata" className="w-full h-[60px] bg-[#886750] rounded-[16.5px] px-5 font-normal text-[#f2ead7] text-xl sm:text-[25.7px] placeholder-[#f2ead7]/70 outline-none" />
+                        <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Alias Penulis</label>
+                        <input name="penulis_alias" type="text" defaultValue={karya.penulis_alias.replace(/\s\([^)]+\)$/, '')} placeholder="Nama yang akan terukir di sampul..." className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all" />
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        <label className="font-semibold text-black text-xl sm:text-[25.7px]">Deskripsi</label>
-                        <textarea name="deskripsi" rows={6} defaultValue={karya.deskripsi || ""} placeholder="masukkan deskripsi" className="w-full bg-[#886750] rounded-[16.5px] p-5 font-normal text-[#f2ead7] text-xl sm:text-[25.7px] placeholder-[#f2ead7]/70 outline-none resize-none" />
+                        <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sinopsis / Deskripsi</label>
+                        <textarea name="deskripsi" rows={6} defaultValue={karya.deskripsi || ""} placeholder="Gambarkan garis besar ceritamu..." className="w-full bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] p-8 font-bold italic text-brown-dark dark:text-text-accent text-xl placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all resize-none leading-relaxed" />
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        <label className="font-semibold text-black text-xl sm:text-[25.7px]">Pilih Genre</label>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-[#886750] p-6 rounded-[16.5px]">
+                        <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Aliran Cerita (Genre)</label>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-white/20 dark:bg-brown-dark/20 p-6 rounded-[1.5rem] border border-tan-primary/5">
                             {allGenres.map(g => (
-                                <label key={g.id} className="flex items-center space-x-3 text-[#f2ead7] cursor-pointer text-lg">
-                                    <input type="checkbox" name="genres" value={g.id} defaultChecked={karya.genres.some(existing => existing.id === g.id)} className="w-5 h-5 rounded border-none bg-white/20 text-[#3b2a22] focus:ring-0 cursor-pointer" />
+                                <label key={g.id} className="flex items-center space-x-3 text-brown-dark/60 dark:text-tan-light/60 cursor-pointer text-sm font-bold group transition-all hover:text-brown-dark dark:hover:text-text-accent italic">
+                                    <input type="checkbox" name="genres" value={g.id} defaultChecked={karya.genres.some(existing => existing.id === g.id)} className="w-5 h-5 rounded-lg border-2 border-tan-primary/20 bg-white/40 dark:bg-brown-dark/40 text-brown-dark focus:ring-0 cursor-pointer transition-all checked:bg-brown-dark" />
                                     <span>{g.name}</span>
                                 </label>
                             ))}
@@ -205,14 +208,20 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                     
                     {children}
                     
-                    <label className="flex items-center gap-4 cursor-pointer mt-6 w-fit">
-                        <input form="edit-karya-form" type="checkbox" name="is_completed" value="true" defaultChecked={karya.is_completed} className="w-6 h-6 text-[#1a130f] border-[#3b2a22] rounded focus:ring-0 bg-transparent cursor-pointer" />
-                        <span className="font-semibold text-black text-xl sm:text-[22px]">Tandai Cerita Selesai (Tamat)</span>
-                    </label>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mt-12 border-t border-tan-primary/10 pt-12">
+                        <div className="flex flex-col gap-4">
+                            <label className="flex items-center gap-4 cursor-pointer group">
+                                <input form="edit-karya-form" type="checkbox" name="is_completed" value="true" defaultChecked={karya.is_completed} className="w-6 h-6 rounded-lg border-2 border-tan-primary/20 bg-white/40 dark:bg-brown-dark/40 text-brown-dark focus:ring-0 cursor-pointer transition-all checked:bg-brown-dark" />
+                                <span className="font-black text-brown-dark dark:text-text-accent text-lg sm:text-xl italic uppercase tracking-tighter opacity-60 group-hover:opacity-100 transition-opacity">Tandai Cerita Telah Selesai (Tamat)</span>
+                            </label>
 
-                    <button form="edit-karya-form" type="submit" disabled={isPending} className="w-full sm:w-[284px] h-[56px] bg-[#1a130f] rounded-[13.66px] flex items-center justify-center text-[#f2ead7] text-[25px] font-normal hover:bg-black transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
-                        {isPending ? 'Menyimpan...' : 'Selesaikan Cerita'}
-                    </button>
+                            <button form="edit-karya-form" type="submit" disabled={isPending} className="w-full sm:w-fit px-12 h-[65px] bg-brown-dark text-text-accent rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20 disabled:opacity-50">
+                                {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                            </button>
+                        </div>
+
+                        <DeleteKaryaButton karyaId={karya.id} />
+                    </div>
                 </div>
             </div>
         </div>

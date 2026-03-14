@@ -77,14 +77,14 @@ export default function CommentItem({
             {visualDepth > 0 && (
                 <div className="absolute -left-4 sm:-left-6 top-0 bottom-0 w-4 sm:w-6 pointer-events-none">
                     {/* Vertical line: Top to Branch Point */}
-                    <div className="absolute left-1/2 -translate-x-1/2 top-0 h-6 w-[2px] bg-gray-100 dark:bg-brown-mid" />
+                    <div className="absolute left-1/2 -translate-x-1/2 top-0 h-6 w-[2px] bg-tan-primary/20 dark:bg-brown-mid" />
 
                     {/* Horizontal Branch Line (L-shape) */}
-                    <div className="absolute left-1/2 -translate-x-[1px] top-6 h-[2px] w-[calc(50%+2px)] bg-gray-100 dark:bg-brown-mid rounded-bl-xl origin-left" />
+                    <div className="absolute left-1/2 -translate-x-[1px] top-6 h-[2px] w-[calc(50%+2px)] bg-tan-primary/20 dark:bg-brown-mid rounded-bl-xl origin-left" />
 
                     {/* Vertical line continuation: Branch Point to Bottom (Only if NOT last) */}
                     {!isLast && (
-                        <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-0 w-[2px] bg-gray-100 dark:bg-brown-mid" />
+                        <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-0 w-[2px] bg-tan-primary/20 dark:bg-brown-mid" />
                     )}
                 </div>
             )}
@@ -105,33 +105,33 @@ export default function CommentItem({
 
             {/* Bridge line from parent to its first child */}
             {hasReplies && !isCollapsed && (
-                <div className="absolute left-4 sm:left-5 top-28 bottom-0 w-[2px] bg-gray-100 dark:bg-brown-mid pointer-events-none" />
+                <div className="absolute left-4 sm:left-5 top-28 bottom-0 w-[2px] bg-tan-primary/20 dark:bg-brown-mid pointer-events-none" />
             )}
 
-            <div className="flex gap-2.5 sm:gap-4 items-start relative bg-white dark:bg-brown-dark z-10">
+            <div className="flex gap-2.5 sm:gap-4 items-start relative bg-transparent z-10">
                 {/* Voting Tray - Reddit Style Sidebar */}
                 <div className="flex flex-col items-center gap-0.5 min-w-[28px] pt-1.5 sticky top-24">
                     <button
                         onClick={() => handleVote(1)}
-                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === 1 ? 'text-amber-600 bg-amber-50 dark:bg-amber-950/30 ring-1 ring-amber-200 shadow-sm' : 'text-tan-primary/30 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/10'}`}
+                        className={`p-0.5 rounded-md transition-all active:scale-110 ${comment.userVote === 1 ? 'text-tan-primary bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/20 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary hover:bg-tan-primary/5'}`}
                     >
-                        <ChevronUp className={`w-5 h-5 ${comment.userVote === 1 ? 'fill-current stroke-[3]' : ''}`} />
+                        <ChevronUp className={`w-5 h-5 ${comment.userVote === 1 ? 'stroke-[3]' : ''}`} />
                     </button>
-                    <span className={`text-[10px] font-black ${comment.userVote === 1 ? 'text-amber-600' : comment.userVote === -1 ? 'text-tan-primary' : 'text-tan-primary/40 dark:text-gray-500'}`}>
+                    <span className={`text-[10px] font-black ${comment.userVote === 1 ? 'text-tan-primary' : comment.userVote === -1 ? 'text-tan-primary/60' : 'text-tan-primary/40 dark:text-gray-500'}`}>
                         {comment.score}
                     </span>
                     <button
                         onClick={() => handleVote(-1)}
-                        className={`p-0.5 rounded-md transition-all active:scale-125 ${comment.userVote === -1 ? 'text-tan-primary bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/20 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary hover:bg-tan-primary/5'}`}
+                        className={`p-0.5 rounded-md transition-all active:scale-110 ${comment.userVote === -1 ? 'text-tan-primary/60 bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/10 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary/60 hover:bg-tan-primary/5'}`}
                     >
-                        <ChevronDown className={`w-5 h-5 ${comment.userVote === -1 ? 'fill-current stroke-[3]' : ''}`} />
+                        <ChevronDown className={`w-5 h-5 ${comment.userVote === -1 ? 'stroke-[3]' : ''}`} />
                     </button>
                 </div>
 
                 <div className="flex-1 min-w-0 flex gap-3 items-start">
                     {/* Avatar */}
                     <Link href={`/profile/${comment.user.username}`} className="shrink-0 relative z-10 pt-1">
-                        <div className={`rounded-xl overflow-hidden bg-white dark:bg-brown-mid border-2 border-gray-50 dark:border-brown-mid group-hover:border-indigo-500 transition-all shadow-sm ${depth === 0 ? 'w-10 h-10' : 'w-8 h-8'}`}>
+                        <div className={`rounded-xl overflow-hidden bg-bg-cream dark:bg-brown-mid border-2 border-tan-primary/5 dark:border-brown-mid group-hover:border-tan-primary transition-all shadow-sm ${depth === 0 ? 'w-10 h-10' : 'w-8 h-8'}`}>
                             {comment.user.avatar_url ? (
                                 <img src={comment.user.avatar_url} alt={comment.user.display_name} className="w-full h-full object-cover" />
                             ) : (
@@ -153,7 +153,7 @@ export default function CommentItem({
                                 {new Date(comment.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                             </span>
                             {comment.is_pinned && (
-                                <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tighter border border-amber-100 dark:border-amber-800">
+                                <div className="flex items-center gap-1 bg-tan-primary/10 dark:bg-brown-mid text-brown-dark dark:text-text-accent text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tighter border border-tan-primary/10">
                                     <Pin className="w-2 h-2" />
                                     Semat
                                 </div>
@@ -196,8 +196,8 @@ export default function CommentItem({
                                     onClick={() => handleTogglePin(comment.id)}
                                     disabled={isPinning === comment.id}
                                     className={`flex items-center gap-1.5 text-[10px] font-black transition-all uppercase tracking-widest active:scale-95 italic ${comment.is_pinned
-                                        ? 'text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg'
-                                        : 'text-tan-primary/40 hover:text-brown-dark'
+                                        ? 'text-brown-dark dark:text-text-accent bg-tan-primary/10 px-2.5 py-1 rounded-lg'
+                                        : 'text-tan-primary/40 hover:text-brown-dark dark:hover:text-text-accent'
                                         }`}
                                 >
                                     {comment.is_pinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}

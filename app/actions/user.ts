@@ -284,27 +284,80 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
             }
         });
 
-        if (existing && existing.last_chapter === chapterNo) {
-            // Jika sudah di bab yang sama, tidak perlu update DB & Revalidate (Hemat Request)
+        if (existing && existing.last_chapter >= chapterNo) {
+            // Jika sudah di bab yang sama atau lebih tinggi, tidak perlu update DB (Hemat Request)
             return { success: true, cached: true };
         }
 
-        // [2] Lakukan Update (Upsert)
-        await prisma.bookmark.upsert({
-            where: {
-                user_id_karya_id: {
+        // [2] Lakukan Update (Upsert) dalam Transaksi bersama UserStats
+        await prisma.$transaction(async (tx) => {
+            // [A] Update/Create Bookmark - Selalu simpan progres agar user tidak kehilangan posisi
+            await tx.bookmark.upsert({
+                where: {
+                    user_id_karya_id: {
+                        user_id: userId,
+                        karya_id: karyaId
+                    }
+                },
+                update: {
+                    last_chapter: chapterNo,
+                    updated_at: new Date()
+                },
+                create: {
                     user_id: userId,
-                    karya_id: karyaId
+                    karya_id: karyaId,
+                    last_chapter: chapterNo
                 }
-            },
-            update: {
-                last_chapter: chapterNo,
-                updated_at: new Date()
-            },
-            create: {
-                user_id: userId,
-                karya_id: karyaId,
-                last_chapter: chapterNo
+            });
+
+            // [B] Update UserStats (Gamification) + Anti-Cheat Speed
+            const stats = await (tx as any).userStats.findUnique({ where: { user_id: userId } });
+            const MIN_READ_TIME = 30 * 1000; // 30 Detik threshold anti-cheat
+            const now = new Date();
+            
+            if (stats) {
+                const lastRead = stats.last_read_at ? new Date(stats.last_read_at) : null;
+                const timeDiff = lastRead ? now.getTime() - lastRead.getTime() : Infinity;
+
+                // Cek Kecepatan: Jika terlalu cepat (< 30s), skip poin & total baca
+                const isFastFlip = timeDiff < MIN_READ_TIME;
+
+                if (!isFastFlip) {
+                    let newStreak = stats.reading_streak;
+                    if (lastRead) {
+                        const diffDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays === 1) {
+                            newStreak += 1;
+                        } else if (diffDays > 1) {
+                            newStreak = 1;
+                        }
+                    } else {
+                        newStreak = 1;
+                    }
+
+                    await (tx as any).userStats.update({
+                        where: { user_id: userId },
+                        data: {
+                            total_chapters_read: { increment: 1 },
+                            points: { increment: 10 },
+                            last_read_at: now,
+                            reading_streak: newStreak
+                        }
+                    });
+                }
+                // Jika Fast Flip: Bookmark tetap terupdate (di step [A]), tapi stats User (Poin/Count) tidak berubah.
+            } else {
+                // Initial creation stats (First time use)
+                await (tx as any).userStats.create({
+                    data: {
+                        user_id: userId,
+                        total_chapters_read: 1,
+                        points: 10,
+                        last_read_at: now,
+                        reading_streak: 1
+                    }
+                });
             }
         });
 

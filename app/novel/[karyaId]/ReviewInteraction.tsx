@@ -107,7 +107,7 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
                     className={`flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest transition-colors ${isUpvoted ? 'text-tan-primary' : 'text-brown-dark/40 hover:text-tan-primary dark:hover:text-tan-light'}`}
                     disabled={isPending}
                 >
-                    <ThumbsUp className={`w-3.5 h-3.5 ${isUpvoted ? 'fill-current' : ''}`} /> {upvotes} <span className="opacity-60">Membantu</span>
+                    <ThumbsUp className={`w-3.5 h-3.5 ${isUpvoted ? 'stroke-[2.5]' : ''}`} /> {upvotes} <span className="opacity-60">Membantu</span>
                 </button>
 
                 {/* Tombol Toggle Form Balas */}
