@@ -33,10 +33,10 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-[#F2EAD7]/20 dark:bg-brown-dark transition-colors duration-500 w-full">
+        <div className="flex min-h-screen bg-bg-cream/20 dark:bg-brown-dark transition-colors duration-500 w-full">
 
             {/* --- DESKTOP SIDEBAR --- */}
-            <aside className="hidden lg:flex flex-col w-64 bg-[#AF8F6F] border-r border-[#3B2A22]/5 fixed left-0 top-0 h-screen z-30 transition-colors shadow-2xl">
+            <aside className="hidden lg:flex flex-col w-64 bg-brown-dark border-r border-text-main/5 fixed left-0 top-0 h-screen z-30 transition-colors shadow-2xl">
                 {/* Brand / Logo Section */}
                 <div className="p-8">
                     <Link href="/admin/dashboard" className="flex flex-col items-center group/logo transition-all duration-500">
@@ -49,7 +49,7 @@ export default async function AdminLayout({
                         </div>
                         <div className="mt-4 flex flex-col items-center">
                             <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
-                            <span className="font-black text-xl tracking-tighter text-[#3B2A22] italic uppercase">STUDIO</span>
+                            <span className="font-black text-xl tracking-tighter text-bg-cream italic uppercase">STUDIO</span>
                         </div>
                     </Link>
                 </div>
@@ -59,14 +59,14 @@ export default async function AdminLayout({
 
                 {/* Footer Sidebar: User Profile & Logout */}
                 <div className="p-6 mt-auto">
-                    <div className="bg-[#3B2A22]/5 rounded-[2.5rem] p-5 mb-4 border border-[#3B2A22]/5">
+                    <div className="bg-white/5 dark:bg-brown-mid/20 rounded-[2.5rem] p-5 mb-4 border border-white/5">
                         <Link href={`/profile/${session.user.id}`} className="flex items-center gap-3 mb-4 group/profile">
-                            <div className="w-10 h-10 rounded-2xl bg-[#3B2A22] flex items-center justify-center text-[#F2EAD7] shadow-lg transition-transform group-hover/profile:scale-110">
+                            <div className="w-10 h-10 rounded-2xl bg-bg-cream/10 dark:bg-bg-cream text-bg-cream dark:text-brown-dark flex items-center justify-center shadow-lg transition-transform group-hover/profile:scale-110">
                                 <UserCircle2 className="w-6 h-6" />
                             </div>
                             <div className="flex flex-col min-w-0">
-                                <span className="text-[10px] font-black text-[#3B2A22] truncate uppercase tracking-tight italic group-hover/profile:text-[#AF8F6F] transition-colors">{session.user.name}</span>
-                                <span className="text-[8px] text-[#3B2A22]/40 font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
+                                <span className="text-[10px] font-black text-bg-cream truncate uppercase tracking-tight italic group-hover/profile:text-tan-primary transition-colors">{session.user.name}</span>
+                                <span className="text-[8px] text-bg-cream/40 font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
                             </div>
                         </Link>
                         <LogoutButton />
@@ -83,7 +83,7 @@ export default async function AdminLayout({
                 <AdminMobileHeader session={session} />
 
                 {/* Main Content Injector */}
-                <main className="flex-1 w-full max-w-full overflow-x-hidden bg-[#F2EAD7]/30">
+                <main className="flex-1 w-full max-w-full overflow-x-hidden bg-bg-cream/30 dark:bg-brown-dark/20">
                     {children}
                 </main>
             </div>

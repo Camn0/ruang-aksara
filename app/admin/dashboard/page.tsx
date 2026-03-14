@@ -17,6 +17,7 @@ import {
     Plus, ChevronRight, BarChart3, Bookmark, Sparkles, Eye,
     BarChart
 } from "lucide-react";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
 export default async function AdminDashboardPage() {
     // [1] AUTHENTICATION & SESSION
@@ -78,14 +79,17 @@ export default async function AdminDashboardPage() {
                     <h1 className="text-4xl font-black text-[#3B2A22] dark:text-text-accent tracking-tight leading-none uppercase italic">Dashboard</h1>
                     <div className="w-12 h-1 bg-[#3B2A22]/20 mt-4"></div>
                 </div>
-                <div className="flex items-center gap-3 bg-white/40 dark:bg-brown-dark/40 px-4 py-2 rounded-2xl border border-[#3B2A22]/5">
-                    <span className="text-[10px] text-[#3B2A22] dark:text-tan-primary font-black uppercase tracking-[0.2em]">
-                        {session.user.role === 'admin' ? 'Administrator' : 'Author'}
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-[#3B2A22]/20"></span>
-                    <span className="text-[10px] text-[#3B2A22]/60 dark:text-tan-light font-bold uppercase tracking-widest">
-                        {session.user.name}
-                    </span>
+                <div className="flex items-center gap-3">
+                    <ThemeToggle />
+                    <div className="flex items-center gap-3 bg-white/40 dark:bg-brown-dark/40 px-4 py-2 rounded-2xl border border-[#3B2A22]/5">
+                        <span className="text-[10px] text-[#3B2A22] dark:text-tan-primary font-black uppercase tracking-[0.2em]">
+                            {session.user.role === 'admin' ? 'Administrator' : 'Author'}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-[#3B2A22]/20"></span>
+                        <span className="text-[10px] text-[#3B2A22]/60 dark:text-tan-light font-bold uppercase tracking-widest">
+                            {session.user.name}
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -93,7 +97,7 @@ export default async function AdminDashboardPage() {
                 {/* --- TOP STATISTICS GRID (2x2 Mobile, uneven Desktop) --- */}
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-16">
                     {/* Engagement - Top Left on Mobile, Vertical on Desktop */}
-                    <div className="lg:row-span-2 bg-[#3B2A22] text-white p-4 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-[#3B2A22]/20 flex flex-col justify-between group overflow-hidden relative min-h-[150px] md:min-h-[400px]">
+                    <Link href="/admin/dashboard" className="lg:row-span-2 bg-[#3B2A22] dark:bg-brown-mid text-white p-4 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-[#3B2A22]/20 dark:shadow-none flex flex-col justify-between group overflow-hidden relative min-h-[150px] md:min-h-[400px] hover:scale-[1.02] transition-transform">
                         <div className="relative z-10">
                             <div className="w-8 h-8 md:w-12 md:h-12 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6 border border-white/10 shadow-inner group-hover:rotate-6 transition-transform">
                                 <BarChart className="w-4 h-4 md:w-6 md:h-6 text-white" />
@@ -102,17 +106,17 @@ export default async function AdminDashboardPage() {
                         </div>
                         <div className="relative z-10">
                             <h2 className="text-2xl md:text-6xl font-black italic mb-1">{totalViews.toLocaleString()}</h2>
-                            <p className="text-[9px] md:text-[14px] font-bold uppercase tracking-[0.2em] opacity-60 flex items-center gap-1">
+                            <p className="text-[9px] md:text-[14px] font-bold uppercase tracking-[0.2em] opacity-60 flex items-center gap-1 text-white">
                                 <span className="w-4 md:w-8 h-[1px] bg-white/20"></span>
                                 Views
                             </p>
                         </div>
                         {/* Decorative Blur */}
                         <div className="absolute top-0 right-0 w-32 h-32 md:w-64 md:h-64 bg-white/5 rounded-full blur-[40px] md:blur-[80px] -mr-10 -mt-10"></div>
-                    </div>
+                    </Link>
 
                     {/* Kepuasan - Top Right on Mobile */}
-                    <div className="bg-[#7A553A] text-[#F8F4E1] p-4 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-xl shadow-[#7A553A]/10 group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0">
+                    <Link href="/admin/community" className="bg-[#7A553A] dark:bg-brown-dark text-[#F8F4E1] p-4 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-xl shadow-[#7A553A]/10 group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0 hover:scale-[1.02]">
                         <div className="relative z-10 flex justify-between items-start">
                             <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em] opacity-70">Kepuasan</p>
                             <div className="w-7 h-7 md:w-10 md:h-10 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-[#7A553A] transition-all">
@@ -124,10 +128,10 @@ export default async function AdminDashboardPage() {
                             <span className="text-[9px] md:text-[12px] font-black uppercase tracking-widest opacity-60">Stars</span>
                         </div>
                         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full blur-[30px] -ml-12 -mb-12"></div>
-                    </div>
+                    </Link>
 
                     {/* Disimpan - Bottom Left on Mobile */}
-                    <div className="bg-[#3B2A22]/90 text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-xl group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0">
+                    <Link href="/admin/dashboard" className="bg-[#3B2A22]/90 dark:bg-brown-mid text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-xl group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0 hover:scale-[1.02]">
                         <div className="relative z-10 flex justify-between items-start">
                             <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em] opacity-70">Disimpan</p>
                             <div className="w-7 h-7 md:w-10 md:h-10 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-[#3B2A22] transition-all">
@@ -138,10 +142,10 @@ export default async function AdminDashboardPage() {
                             <p className="text-3xl md:text-5xl font-black italic">{totalBookmarks.toLocaleString()}</p>
                             <span className="text-[9px] md:text-[12px] font-black uppercase tracking-widest opacity-60">Saves</span>
                         </div>
-                    </div>
+                    </Link>
 
                     {/* Koleksi - Bottom Right on Mobile, Horizontal on Desktop */}
-                    <div className="lg:col-span-2 bg-[#C6A982] text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-xl shadow-[#C6A982]/10 group flex flex-col justify-between relative overflow-hidden min-h-[150px] md:min-h-0">
+                    <Link href="/admin/editor/karya" className="lg:col-span-2 bg-[#C6A982] dark:bg-brown-mid/50 text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-xl shadow-[#C6A982]/10 dark:shadow-none group flex flex-col justify-between relative overflow-hidden min-h-[150px] md:min-h-0 hover:scale-[1.01]">
                         <div className="relative z-10 flex justify-between items-start">
                             <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em] opacity-70">Koleksi</p>
                             <div className="w-7 h-7 md:w-10 md:h-10 bg-white/20 rounded-xl md:rounded-2xl flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-[#C6A982] transition-all">
@@ -153,7 +157,7 @@ export default async function AdminDashboardPage() {
                             <span className="text-[9px] md:text-[14px] font-black uppercase tracking-[0.2em] opacity-70">Karya</span>
                         </div>
                         <div className="absolute top-1/2 left-0 w-32 md:w-48 h-10 md:h-12 bg-white/5 -rotate-45 -translate-x-12"></div>
-                    </div>
+                    </Link>
                 </div>
 
                 <div className="grid lg:grid-cols-12 gap-12">
@@ -177,7 +181,7 @@ export default async function AdminDashboardPage() {
                                 ) : (
                                     <>
                                         {daftarKarya.map((item) => (
-                                            <div key={item.id} className="bg-white/40 dark:bg-brown-dark/40 rounded-[2.5rem] p-5 border border-[#3B2A22]/5 flex gap-4 items-center group/card transition-all hover:bg-white/60">
+                                            <div key={item.id} className="bg-bg-cream/40 dark:bg-brown-mid/10 rounded-[2.5rem] p-5 border border-text-main/5 dark:border-tan-primary/10 flex gap-4 items-center group/card transition-all hover:bg-bg-cream/60 dark:hover:bg-brown-mid/20 shadow-sm">
                                                 {/* Cover Thumbnail */}
                                                 <div className="w-20 h-28 rounded-[1.2rem] overflow-hidden shrink-0 shadow-lg border-2 border-white/50 relative">
                                                     {item.cover_url ? (
@@ -197,23 +201,23 @@ export default async function AdminDashboardPage() {
                                                     </div>
 
                                                     <div className="flex flex-wrap gap-2 items-center mb-3">
-                                                        <div className="flex items-center gap-1 bg-[#3B2A22]/5 px-2 py-0.5 rounded-full">
-                                                            <Eye className="w-2.5 h-2.5 text-[#3B2A22]/40" />
-                                                            <span className="text-[9px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item.total_views.toLocaleString()}</span>
+                                                        <div className="flex items-center gap-1 bg-text-main/5 dark:bg-bg-cream/5 px-2 py-0.5 rounded-full">
+                                                            <Eye className="w-2.5 h-2.5 text-text-main/40 dark:text-tan-primary/40" />
+                                                            <span className="text-[9px] font-black text-text-main/60 dark:text-tan-primary/60 uppercase tracking-widest">{item.total_views.toLocaleString()}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-1 bg-[#3B2A22]/5 px-2 py-0.5 rounded-full">
-                                                            <Bookmark className="w-2.5 h-2.5 text-[#3B2A22]/40" />
-                                                            <span className="text-[9px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item._count.bookmarks}</span>
+                                                        <div className="flex items-center gap-1 bg-text-main/5 dark:bg-bg-cream/5 px-2 py-0.5 rounded-full">
+                                                            <Bookmark className="w-2.5 h-2.5 text-text-main/40 dark:text-tan-primary/40" />
+                                                            <span className="text-[9px] font-black text-text-main/60 dark:text-tan-primary/60 uppercase tracking-widest">{item._count.bookmarks}</span>
                                                         </div>
                                                         <div className="flex items-center gap-1 bg-amber-400/10 px-2 py-0.5 rounded-full">
                                                             <Star className="w-2.5 h-2.5 fill-amber-400 text-transparent" />
-                                                            <span className="text-[9px] font-black text-[#3B2A22]/60 uppercase tracking-widest">{item.avg_rating.toFixed(1)}</span>
+                                                            <span className="text-[9px] font-black text-text-main/60 dark:text-tan-primary/60 uppercase tracking-widest">{item.avg_rating.toFixed(1)}</span>
                                                         </div>
                                                     </div>
 
                                                     <div className="flex flex-wrap gap-2 items-center mb-4">
-                                                        <div className="bg-[#3B2A22]/5 px-3 py-1 rounded-full">
-                                                            <span className="text-[8px] font-black text-[#3B2A22]/60 uppercase tracking-[0.2em]">{item._count.bab} Bab</span>
+                                                        <div className="bg-text-main/5 dark:bg-bg-cream/5 px-3 py-1 rounded-full">
+                                                            <span className="text-[8px] font-black text-text-main/60 dark:text-tan-primary/60 uppercase tracking-[0.2em]">{item._count.bab} Bab</span>
                                                         </div>
                                                         {item.genres.map((g: any) => (
                                                             <div key={g.id} className="bg-[#C6A982]/10 border border-[#C6A982]/20 px-3 py-1 rounded-full">
@@ -223,11 +227,11 @@ export default async function AdminDashboardPage() {
                                                     </div>
 
                                                     <div className="flex items-center justify-between gap-4 mt-2">
-                                                        <Link href={`/admin/editor/karya/${item.id}`} className="bg-[#3B2A22] text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-[#4E382C] transition-all active:scale-95 group/btn">
+                                                        <Link href={`/admin/editor/karya/${item.id}`} className="bg-text-main dark:bg-tan-primary text-bg-cream dark:text-brown-dark px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 group/btn">
                                                             edit
                                                         </Link>
                                                         {item.bab[0] && (
-                                                            <span className="text-[8px] font-bold text-[#3B2A22]/30 uppercase tracking-tighter">
+                                                            <span className="text-[8px] font-bold text-text-main/30 dark:text-tan-primary/30 uppercase tracking-tighter">
                                                                 Update: {new Date(item.bab[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                                             </span>
                                                         )}
@@ -249,9 +253,9 @@ export default async function AdminDashboardPage() {
                     {/* --- SIDEBAR: RECENT COMMUNITY --- */}
                     <div className="lg:col-span-4 space-y-12">
                         {/* Recent Comments Section */}
-                        <section className="bg-white/40 dark:bg-brown-dark/40 rounded-[3rem] p-8 border border-[#3B2A22]/5">
-                            <h2 className="text-2xl font-black text-[#3B2A22] dark:text-text-accent mb-8 flex items-center gap-4 italic tracking-tight uppercase">
-                                <MessageSquare className="w-6 h-6 text-[#3B2A22]" /> Komunitas
+                        <section className="bg-bg-cream/40 dark:bg-brown-mid/10 rounded-[3rem] p-8 border border-text-main/5 dark:border-tan-primary/10 shadow-sm">
+                            <h2 className="text-2xl font-black text-text-main dark:text-text-accent mb-8 flex items-center gap-4 italic tracking-tight uppercase">
+                                <MessageSquare className="w-6 h-6 text-text-main dark:text-tan-primary" /> Komunitas
                             </h2>
 
                             {latestComments.length === 0 ? (
@@ -264,23 +268,23 @@ export default async function AdminDashboardPage() {
                                     {latestComments.map(c => (
                                         <div key={c.id} className="group cursor-default">
                                             <div className="flex items-center gap-3 mb-3">
-                                                <div className="w-10 h-10 rounded-xl bg-[#3B2A22] flex items-center justify-center text-[10px] font-black text-[#F2EAD7]">
+                                                <div className="w-10 h-10 rounded-xl bg-text-main dark:bg-tan-primary flex items-center justify-center text-[10px] font-black text-bg-cream dark:text-brown-dark shadow-md">
                                                     {c.user.display_name[0].toUpperCase()}
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <span className="text-[11px] font-black text-[#3B2A22] dark:text-text-accent uppercase tracking-tight">{c.user.display_name}</span>
-                                                    <span className="text-[9px] text-[#3B2A22]/40 font-bold uppercase tracking-widest">{new Date(c.created_at).toLocaleDateString('id-ID')}</span>
+                                                    <span className="text-[11px] font-black text-text-main dark:text-text-accent uppercase tracking-tight">{c.user.display_name}</span>
+                                                    <span className="text-[9px] text-text-main/40 dark:text-tan-primary/40 font-bold uppercase tracking-widest">{new Date(c.created_at).toLocaleDateString('id-ID')}</span>
                                                 </div>
                                             </div>
-                                            <div className="bg-[#3B2A22]/5 p-5 rounded-[2rem] border border-transparent transition-all mb-3">
-                                                <p className="text-[13px] text-[#3B2A22]/80 dark:text-tan-light leading-relaxed italic font-medium">"{c.content}"</p>
+                                            <div className="bg-text-main/5 dark:bg-bg-cream/5 p-5 rounded-[2rem] border border-transparent transition-all mb-3 group-hover:bg-text-main/10 dark:group-hover:bg-bg-cream/10">
+                                                <p className="text-[13px] text-text-main/80 dark:text-tan-light leading-relaxed italic font-medium">"{c.content}"</p>
                                             </div>
-                                            <Link href={`/admin/editor/karya/${c.bab.karya.id}`} className="text-[9px] text-[#3B2A22]/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-[#3B2A22] flex items-center gap-2 ml-2 transition-all">
+                                            <Link href={`/admin/editor/karya/${c.bab.karya.id}`} className="text-[9px] text-text-main/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-text-main dark:hover:text-text-accent flex items-center gap-2 ml-2 transition-all">
                                                 <BookOpen className="w-3 h-3" strokeWidth={3} /> {c.bab.karya.title}
                                             </Link>
                                         </div>
                                     ))}
-                                    <Link href="/admin/community" className="w-full text-center py-4 bg-[#3B2A22]/5 rounded-[1.5rem] text-[9px] font-black text-[#3B2A22] uppercase tracking-[0.2em] hover:bg-[#3B2A22]/10 transition-all block mt-8">Manajemen Komentar</Link>
+                                    <Link href="/admin/community" className="w-full text-center py-4 bg-text-main/5 dark:bg-bg-cream/5 rounded-[1.5rem] text-[9px] font-black text-text-main dark:text-tan-primary uppercase tracking-[0.2em] hover:bg-text-main/10 dark:hover:bg-bg-cream/10 transition-all block mt-8">Manajemen Komentar</Link>
                                 </div>
                             )}
                         </section>

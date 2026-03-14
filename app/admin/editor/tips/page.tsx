@@ -72,16 +72,6 @@ export default async function TipsStudioPage() {
                     ))}
                 </div>
 
-                {/* Promotional Banner: Siapkan untuk fitur interaktif di masa depan */}
-                <div className="mt-8 sm:mt-12 bg-brown-dark rounded-[2rem] sm:rounded-[4.5rem] p-6 sm:p-12 text-white text-center shadow-2xl shadow-brown-dark/20 relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] group-hover:scale-110 transition-transform duration-1000"></div>
-                    <div className="relative z-10 max-w-lg mx-auto">
-                        <Bookmark className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-4 sm:mb-6 text-tan-primary opacity-50 group-hover:scale-110 transition-transform" />
-                        <h2 className="text-lg sm:text-2xl font-black italic mb-3 sm:mb-4">Siap Melangkah Lebih Jauh?</h2>
-                        <p className="text-[9px] sm:text-[11px] font-bold text-[#F2EAD7]/60 uppercase tracking-widest leading-relaxed mb-6 sm:mb-10 opacity-80">Kami sedang menyiapkan fitur bimbingan menulis langsung dari editor profesional.</p>
-                        <button className="bg-tan-primary text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-black text-[9px] sm:text-[11px] uppercase tracking-widest transition-all hover:scale-110 active:scale-95 shadow-xl">Kirim Saran Fitur</button>
-                    </div>
-                </div>
             </main>
         </div>
     );
