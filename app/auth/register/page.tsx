@@ -3,11 +3,14 @@
 import { useState } from 'react';
 import { registerUser } from '@/app/actions/auth';
 import { useRouter } from 'next/navigation';
+import { Eye, EyeOff } from "lucide-react";
 import Link from 'next/link';
+
 
 export default function RegisterPage() {
     const [isPending, setIsPending] = useState(false);
     const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -35,67 +38,98 @@ export default function RegisterPage() {
         }
     }
 
-    const inputClass = "appearance-none block w-full py-4 px-5 rounded-2xl border border-[#3B2A22]/20 bg-[#E8DDD0] dark:bg-brown-dark dark:border-brown-mid dark:text-text-accent text-[#3B2A22] placeholder:text-[#7A553A]/60 focus:outline-none focus:ring-2 focus:ring-[#7A553A]/30 transition-all text-base";
+    const borderedInputClass =
+        "w-full py-5 px-7 rounded-[24px] border-[3px] border-[#4a3228] bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#4a3228] focus:outline-none transition-all text-xl";
+
+    const plainInputClass =
+        "w-full py-5 px-7 rounded-[24px] bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#4a3228] focus:outline-none transition-all text-xl";
 
     return (
-        <div className="min-h-screen bg-[#F3E9D7] dark:bg-brown-dark flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-[#3B2A22] dark:text-text-accent">
-                    Daftar Akun Baru
-                </h2>
-                <p className="mt-2 text-center text-sm text-[#7A553A] dark:text-tan-light">
-                    Atau{' '}
-                    <Link href="/api/auth/signin" className="font-medium text-[#7A553A] dark:text-[#B08968] hover:text-[#3B2A22] dark:hover:text-[#D6BFA6] transition-colors underline underline-offset-2">
-                        masuk ke akun yang sudah ada
-                    </Link>
+        <div className="flex flex-col min-h-screen bg-[#f2ead7] transition-colors duration-300">
+            <div className="flex-1 flex flex-col justify-center px-8 md:px-20 lg:px-24 -mt-10">
+                <h1 className="text-5xl md:text-7xl text-center font-semibold [font-family:'Open_Sans-SemiBold',Helvetica] text-[#3b2a22] mb-14 tracking-wide">
+                    Register
+                </h1>
+
+                <p className="mb-8 [font-family:'Open_Sans-Regular',Helvetica] font-normal text-[#3b2a22] text-xl md:text-2xl">
+                    Please fill your details to login.
                 </p>
-            </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-[#F3E9D7]/80 dark:bg-brown-dark py-8 px-4 sm:rounded-2xl sm:px-10 border border-[#D6BFA6] dark:border-brown-mid transition-colors duration-300">
-
+                <form onSubmit={handleSubmit} className="w-full space-y-6">
                     {message && (
-                        <div className={`p-4 mb-6 text-sm rounded-2xl text-center font-medium animate-in fade-in slide-in-from-top-2 ${message.type === 'error'
-                            ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                            : 'bg-[#D6BFA6]/50 text-[#3B2A22] dark:bg-green-900/30 dark:text-green-400'
-                        }`}>
+                        <div
+                            className={`p-4 rounded-2xl text-center font-medium text-sm animate-in fade-in slide-in-from-top-2 ${
+                                message.type === 'error'
+                                    ? 'bg-red-100 text-red-700'
+                                    : 'bg-[#e2d6c3] text-[#3b2a22]'
+                            }`}
+                        >
                             {message.text}
                         </div>
                     )}
 
-                    <form className="space-y-5" onSubmit={handleSubmit}>
-                        <div>
-                            <label htmlFor="display_name" className="block text-xs font-bold text-[#7A553A] dark:text-gray-300 mb-1.5 uppercase tracking-wider">
-                                Display Name
-                            </label>
-                            <input id="display_name" name="display_name" type="text" placeholder='Enter your display name' required className={inputClass} />
+                    <div className="space-y-6">
+                        <div className="relative">
+                            <input
+                                id="display_name"
+                                name="display_name"
+                                type="text"
+                                placeholder="Email"
+                                required
+                                className={borderedInputClass}
+                            />
                         </div>
 
-                        <div>
-                            <label htmlFor="username" className="block text-xs font-bold text-[#7A553A] dark:text-gray-300 mb-1.5 uppercase tracking-wider">
-                                Username
-                            </label>
-                            <input id="username" name="username" type="text" placeholder='Enter your username' required className={inputClass} />
+                        <div className="relative">
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="Create Username"
+                                required
+                                className={borderedInputClass}
+                            />
                         </div>
 
-                        <div>
-                            <label htmlFor="password" className="block text-xs font-bold text-[#7A553A] dark:text-gray-300 mb-1.5 uppercase tracking-wider">
-                                Password
-                            </label>
-                            <input id="password" name="password" type="password" placeholder='Enter your password' required className={inputClass} />
-                        </div>
-
-                        <div className="pt-2">
+                        <div className="relative">
+                            <input
+                                id="password"
+                                name="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                required
+                                className={`${plainInputClass} pr-16`}
+                            />
                             <button
-                                type="submit"
-                                disabled={isPending}
-                                className={`w-full flex justify-center py-4 px-4 rounded-2xl font-semibold text-base text-[#F3E9D7] bg-[#3B2A22] dark:bg-[#F3E9D7] dark:text-[#3B2A22] transition-all active:scale-95 focus:outline-none ${isPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#7A553A] dark:hover:bg-[#D6BFA6]'}`}
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-6 top-1/2 -translate-y-1/2 text-[#4a3228] hover:text-[#3b2a22] transition-colors"
                             >
-                                {isPending ? 'Mendaftar...' : 'Daftar Sekarang'}
+                                {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isPending}
+                        className="w-full max-w-[560px] mx-auto mt-12 py-5 bg-[#4a2f24] text-[#f2ead7] rounded-[22px] font-medium text-2xl hover:opacity-95 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 block"
+                    >
+                        {isPending ? 'Mendaftar...' : 'Get Started'}
+                    </button>
+
+                    <div className="mt-10 text-center">
+                        <p className="text-[#3b2a22] text-xl md:text-2xl">
+                            Already have an account?{" "}
+                            <Link
+                                href="/api/auth/signin"
+                                className="font-bold hover:underline"
+                            >
+                                Login
+                            </Link>
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
     );
