@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight, Home, Settings, Type, List, RotateCcw, Plus, Minus, X, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Star, MessageSquare, Heart, Settings, List, ArrowRight, RotateCcw,
+    ChevronLeft, ChevronRight, ChevronDown, Home, X, Plus, Minus, Sun, Moon, Type
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -278,48 +280,46 @@ export default function ReadingInterface({
             />
 
             {/* Bottom Floating Navigation - Adjusted Position (bottom-6) */}
-            <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 transition-all duration-300">
-                <div className="flex bg-bg-cream/98 dark:bg-brown-dark/95 backdrop-blur-2xl border border-tan-primary/10 shadow-[0_20px_50px_-15px_rgba(59,42,34,0.3)] p-2 rounded-[2rem] items-center gap-2 transition-colors">
-                    {/* Prev Chapter */}
+            <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 z-40 transition-all duration-300">
+                <div className="bg-stone-900/90 dark:bg-stone-900/95 backdrop-blur-2xl px-2 py-2 rounded-full flex items-center gap-2 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] border border-white/5">
+                    {/* Previous Chapter Button */}
                     {prevChapter ? (
-                        <Link href={`/novel/${karyaId}/${prevChapter}`} className="p-3 text-tan-primary/60 hover:text-brown-dark hover:bg-tan-primary/10 rounded-full transition-all active:scale-90" title="Bab Sebelumnya">
-                            <ArrowLeft className="w-5 h-5" />
+                        <Link 
+                            href={`/novel/${karyaId}/${prevChapter}`} 
+                            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+                            title="Bab Sebelumnya"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
                         </Link>
                     ) : (
-                        <div className="p-3 text-tan-primary/20 cursor-not-allowed">
-                            <ArrowLeft className="w-5 h-5" />
+                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/10 cursor-not-allowed">
+                            <ChevronLeft className="w-6 h-6" />
                         </div>
                     )}
 
-                    <div className="w-[1px] h-6 bg-tan-primary/10" />
-
-                    <Link href={`/novel/${karyaId}`} className="p-3 text-tan-primary/60 hover:text-brown-dark hover:bg-tan-primary/10 rounded-full transition-all active:scale-90" title="Kembali ke Detail Novel">
-                        <Home className="w-5 h-5" />
-                    </Link>
-
+                    {/* Chapter Picker Trigger */}
                     <button
                         onClick={() => setIsOpenPicker(true)}
-                        className={`p-3 border-4 border-white dark:border-slate-950 rounded-full shadow-lg hover:scale-110 active:scale-90 transition-all font-black ${prevChapter
-                            ? 'bg-brown-dark text-text-accent shadow-brown-dark/20'
-                            : 'bg-tan-primary/10 text-tan-primary'
-                            }`}
-                        title="Daftar Isi"
+                        className="flex items-center gap-3 px-6 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all active:scale-95 group"
                     >
-                        <List className="w-6 h-6" />
+                        <span className="text-[12px] font-black text-white/90 uppercase tracking-[0.2em] italic">
+                            Bab {chapterNo}
+                        </span>
+                        <ChevronDown className="w-4 h-4 text-tan-primary group-hover:rotate-180 transition-transform duration-500" />
                     </button>
 
-                    <div className="w-[1px] h-6 bg-tan-primary/10" />
-
-                    {/* Next Chapter */}
+                    {/* Next Chapter Button */}
                     {nextChapter ? (
-                        <Link href={`/novel/${karyaId}/${nextChapter}`} className="p-3 bg-brown-dark text-text-accent rounded-full shadow-lg shadow-brown-dark/20 hover:scale-105 transition-all active:scale-90 flex items-center gap-1.5 pl-4 pr-5 group" title="Bab Selanjutnya">
-                            <span className="text-[10px] font-black uppercase tracking-widest italic">Lanjut</span>
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <Link 
+                            href={`/novel/${karyaId}/${nextChapter}`} 
+                            className="w-12 h-12 flex items-center justify-center rounded-full bg-tan-primary text-brown-dark shadow-lg shadow-tan-primary/20 hover:scale-105 transition-all active:scale-90"
+                            title="Bab Selanjutnya"
+                        >
+                            <ChevronRight className="w-6 h-6" />
                         </Link>
                     ) : (
-                        <div className="p-3 pr-5 text-tan-primary/30 flex items-center gap-2" title="Bab Terakhir">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] italic">Tamat</span>
-                            <RotateCcw className="w-4 h-4 opacity-50" />
+                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/20 cursor-not-allowed" title="Bab Terakhir">
+                            <RotateCcw className="w-5 h-5 opacity-50" />
                         </div>
                     )}
                 </div>

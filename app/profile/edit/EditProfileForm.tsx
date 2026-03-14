@@ -16,16 +16,19 @@ interface EditProfileFormProps {
     initialBio: string | null;
     initialSocialLinks: SocialLinks | null;
     initialAvatarUrl: string | null;
+    initialBannerUrl: string | null;
 }
 
-export default function EditProfileForm({ initialDisplayName, initialBio, initialSocialLinks, initialAvatarUrl }: EditProfileFormProps) {
+export default function EditProfileForm({ initialDisplayName, initialBio, initialSocialLinks, initialAvatarUrl, initialBannerUrl }: EditProfileFormProps) {
     const [displayName, setDisplayName] = useState(initialDisplayName);
     const [bio, setBio] = useState(initialBio || '');
     const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl || '');
+    const [bannerUrl, setBannerUrl] = useState(initialBannerUrl || '');
     const [socials, setSocials] = useState<SocialLinks>(initialSocialLinks || {});
 
     const [isPending, setIsPending] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const bannerInputRef = useRef<HTMLInputElement>(null);
 
     const compressImage = (file: File): Promise<string> => {
         return new Promise((resolve) => {
@@ -36,14 +39,12 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                 img.src = event.target?.result as string;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    // Avatars don't need to be huge. 256x256 is perfect for profiles.
-                    const SIZE = 256;
-                    canvas.width = SIZE;
-                    canvas.height = SIZE;
+                    // Preservation of original dimensions as requested.
+                    canvas.width = img.width;
+                    canvas.height = img.height;
                     const ctx = canvas.getContext('2d');
                     
-                    // Center crop logic if needed, but simple resize for now
-                    ctx?.drawImage(img, 0, 0, SIZE, SIZE);
+                    ctx?.drawImage(img, 0, 0, img.width, img.height);
                     
                     const compressedBase64 = canvas.toDataURL('image/webp', 0.8);
                     resolve(compressedBase64);
@@ -52,7 +53,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
         });
     };
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'avatar' | 'banner') => {
         const file = e.target.files?.[0];
         if (file) {
             // Check file size (5MB limit)
@@ -62,13 +63,14 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                 return;
             }
 
-            toast.loading('Memproses foto...', { id: 'avatar-upload' });
+            toast.loading(`Memproses ${type === 'avatar' ? 'foto' : 'banner'}...`, { id: 'file-upload' });
             try {
                 const compressed = await compressImage(file);
-                setAvatarUrl(compressed);
-                toast.success('Foto siap diunggah!', { id: 'avatar-upload' });
+                if (type === 'avatar') setAvatarUrl(compressed);
+                else setBannerUrl(compressed);
+                toast.success(`${type === 'avatar' ? 'Foto' : 'Banner'} siap diunggah!`, { id: 'file-upload' });
             } catch (err) {
-                toast.error('Gagal memproses foto.', { id: 'avatar-upload' });
+                toast.error(`Gagal memproses ${type}.`, { id: 'file-upload' });
             }
         }
     };
@@ -81,6 +83,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
         formData.append('displayName', displayName);
         formData.append('bio', bio);
         formData.append('avatarUrl', avatarUrl);
+        formData.append('bannerUrl', bannerUrl);
         formData.append('socialLinks', JSON.stringify(socials));
 
         const res = await updateUserProfile(formData);
@@ -98,9 +101,48 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-8">
-                {/* Avatar URL */}
+        <form onSubmit={handleSubmit} className="space-y-12">
+            <div className="space-y-10">
+                {/* Banner Section */}
+                <div className="relative group">
+                    <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-4 block ml-1">Sampul Profil</label>
+                    <div className="w-full h-40 sm:h-48 bg-olive-banner rounded-[2.5rem] border border-brown-dark/10 overflow-hidden relative shadow-inner">
+                        {bannerUrl ? (
+                            <img src={bannerUrl} className="w-full h-full object-cover" alt="Banner" />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center opacity-10">
+                                <Globe className="w-12 h-12 text-brown-dark" />
+                            </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => bannerInputRef.current?.click()}
+                                className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all border border-white/20"
+                            >
+                                <Camera className="w-5 h-5" />
+                            </button>
+                            {bannerUrl && (
+                                <button
+                                    type="button"
+                                    onClick={() => setBannerUrl('')}
+                                    className="w-12 h-12 bg-red-500/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all border border-red-500/20"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    <input
+                        type="file"
+                        ref={bannerInputRef}
+                        onChange={(e) => handleFileChange(e, 'banner')}
+                        className="hidden"
+                        accept="image/*"
+                    />
+                </div>
+
+                {/* Avatar Section */}
                 <div>
                     <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-3 flex items-center gap-2">
                         <UserCircle2 className="w-3.5 h-3.5" /> Foto Profil
@@ -120,7 +162,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                             <input
                                 type="file"
                                 ref={fileInputRef}
-                                onChange={handleFileChange}
+                                onChange={(e) => handleFileChange(e, 'avatar')}
                                 className="hidden"
                                 accept="image/jpeg,image/png,image/webp"
                             />

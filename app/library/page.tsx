@@ -65,7 +65,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     });
 
     const renderEmptyState = (message: string, subMessage: string) => (
-        <div className="text-center py-24 px-8 border border-dashed border-tan-light dark:border-brown-mid rounded-3xl bg-bg-cream dark:bg-brown-dark transition-colors duration-300">
+        <div className="text-center py-24 px-8 border border-dashed border-tan-light dark:border-brown-mid/50 rounded-3xl bg-bg-cream dark:bg-brown-dark/30 transition-colors duration-300">
             <div className="w-16 h-16 bg-tan-light/40 dark:bg-brown-mid rounded-full flex items-center justify-center mb-4 mx-auto">
                 <BookMarked className="w-8 h-8 text-tan-primary dark:text-text-accent" />
             </div>
@@ -82,7 +82,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
             <div className="max-w-7xl mx-auto">
                 {/* Search Bar & Home Icon */}
                 <div className="flex items-center gap-3 mb-8">
-                    <Link href="/" className="bg-brown-mid dark:bg-brown-dark p-2.5 rounded-full text-text-accent hover:opacity-80 transition-all shadow-md border border-tan-light/20">
+                    <Link href="/" className="bg-brown-mid dark:bg-brown-dark p-2.5 rounded-full text-text-accent hover:opacity-80 transition-all shadow-md border border-tan-light/20 dark:border-brown-mid/30">
                         <Home className="w-5 h-5" />
                     </Link>
                     <div className="relative flex-1">
@@ -92,7 +92,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                         <input
                             type="text"
                             placeholder="Cari karya..."
-                            className="w-full bg-brown-mid dark:bg-brown-dark text-text-accent placeholder:text-text-accent/60 rounded-full py-3.5 pl-12 pr-6 text-sm focus:outline-none focus:ring-2 focus:ring-tan-light transition-all shadow-md border border-tan-light/20"
+                            className="w-full bg-brown-mid dark:bg-brown-dark text-text-accent placeholder:text-text-accent/60 rounded-full py-3.5 pl-12 pr-6 text-sm focus:outline-none focus:ring-2 focus:ring-tan-light transition-all shadow-md border border-tan-light/20 dark:border-brown-mid/30"
                         />
                     </div>
                 </div>

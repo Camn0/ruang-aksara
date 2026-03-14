@@ -125,15 +125,15 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
             const result = await createKarya(formData);
 
             if (result.error) {
-                alert(result.error);
+                toast.error(result.error);
             } else {
-                alert("Berhasil membuat karya baru!");
-                router.push('/admin/dashboard'); // Bisa disesuaikan mau di-redirect ke mana setelah sukses
+                toast.success("Berhasil membuat karya baru!");
+                router.push('/admin/dashboard'); 
                 router.refresh();
             }
         } catch (err) {
             console.error(err);
-            alert("Terjadi kesalahan sistem saat menghubungi server.");
+            toast.error("Terjadi kesalahan sistem saat menghubungi server.");
         } finally {
             setIsPending(false);
         }

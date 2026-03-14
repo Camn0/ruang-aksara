@@ -76,22 +76,23 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
 
         try {
             const res = await createAuthorPost(formData);
-            if (res.error) alert(res.error);
+            if (res.error) toast.error(res.error);
             else {
+                toast.success('Postingan berhasil diterbitkan!');
                 setContent('');
                 setImageUrl('');
                 setIsFocused(false);
                 setShowImageInput(false);
             }
         } catch (error) {
-            alert("Terjadi kesalahan.");
+            toast.error("Terjadi kesalahan.");
         } finally {
             setIsPending(false);
         }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-bg-cream/50 dark:bg-brown-dark border border-brown-dark/10 rounded-[2rem] p-5 shadow-sm mb-6 transition-all duration-500 group">
+        <form onSubmit={handleSubmit} className="bg-bg-cream/50 dark:bg-brown-dark/30 border border-tan-primary/10 rounded-[2rem] p-5 shadow-sm mb-6 transition-all duration-500 group">
             <div className="flex items-start gap-4 mb-4">
                 <div className="w-10 h-10 rounded-2xl overflow-hidden shrink-0 bg-tan-light/10 border border-brown-dark/10 shadow-sm relative">
                     {userProfile.avatar_url ? (
@@ -135,11 +136,11 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
             />
 
             {(isFocused || content) && (
-                <div className="flex items-center justify-between border-t border-brown-dark/5 pt-4 px-2">
+                <div className="flex items-center justify-between border-t border-tan-primary/10 dark:border-brown-mid/30 pt-4 px-2">
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 ${imageUrl ? 'text-brown-dark' : 'text-tan-primary hover:text-brown-dark'}`}
+                        className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 ${imageUrl ? 'text-text-main' : 'text-tan-primary hover:text-text-main'}`}
                     >
                         <ImageIcon className="w-4 h-4" /> {imageUrl ? 'Ganti Gambar' : 'Tambah Gambar'}
                     </button>

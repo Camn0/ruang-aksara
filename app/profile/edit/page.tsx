@@ -43,6 +43,7 @@ export default async function EditProfilePage() {
                         initialBio={(userProfile as any).bio}
                         initialSocialLinks={(userProfile as any).social_links}
                         initialAvatarUrl={(userProfile as any).avatar_url}
+                        initialBannerUrl={(userProfile as any).banner_url}
                     />
                 </div>
             </div>

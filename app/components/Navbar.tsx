@@ -11,7 +11,7 @@ export default function Navbar() {
     const { data: session, status } = useSession();
 
     return (
-        <nav className="bg-bg-cream/80 backdrop-blur-md border-b border-tan-primary/10 sticky top-0 z-40 transition-all duration-300 md:hidden">
+        <nav className="bg-bg-cream/80 dark:bg-brown-dark/80 backdrop-blur-md border-b border-tan-primary/10 sticky top-0 z-40 transition-all duration-300 md:hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo */}
@@ -19,7 +19,7 @@ export default function Navbar() {
                         <div className="w-10 h-10 bg-white/10 rounded-lg overflow-hidden p-0.5 border border-tan-primary/10">
                             <img src="/logoRuangAksara.webp" alt="Logo" className="w-full h-full object-cover rounded" />
                         </div>
-                        <span className="font-lobster text-xl text-brown-dark group-hover:text-tan-primary transition-colors">
+                        <span className="font-lobster text-xl text-brown-dark dark:text-text-accent group-hover:text-tan-primary transition-colors">
                             Ruang Aksara
                         </span>
                     </Link>

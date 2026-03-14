@@ -17,6 +17,7 @@ model User {
   role          String     // Hanya berisi 'admin' (God Account), 'author' (Moderator/Penulis), atau 'user' (Reader)
   display_name  String
   avatar_url    String?    // URL foto profil pengguna
+  banner_url    String?    // URL foto banner profil pengguna
   bio           String?    @db.Text // Deskripsi diri pengguna
   social_links  Json?      // Tautan sosial (Instagram, Twitter, dll)
   

@@ -383,6 +383,7 @@ export async function updateUserProfile(formData: FormData) {
         const displayName = formData.get('displayName') as string;
         const bio = formData.get('bio') as string;
         const avatarUrl = formData.get('avatarUrl') as string | null;
+        const bannerUrl = formData.get('bannerUrl') as string | null;
         const socialLinksStr = formData.get('socialLinks') as string;
 
         let socialLinks = null;
@@ -400,6 +401,7 @@ export async function updateUserProfile(formData: FormData) {
                 display_name: displayName,
                 bio: bio,
                 avatar_url: avatarUrl || undefined,
+                banner_url: bannerUrl || undefined,
                 social_links: socialLinks
             }
         });

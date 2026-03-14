@@ -18,6 +18,7 @@
 import { useState, useRef } from 'react';
 import { toggleReviewUpvote, submitReviewComment } from '@/app/actions/review';
 import { ThumbsUp, MessageSquare, Send } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpvoted, replyCount, currentPath }: { reviewId: string, initialUpvotes: number, initialUpvoted: boolean, replyCount: number, currentPath: string }) {
     // [STATE MANAGEMENT]
@@ -52,13 +53,12 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
                 // 3. Rollback jika server mengembalikan error (misal: session expired)
                 setIsUpvoted(!newUpvoted);
                 setUpvotes(prev => !newUpvoted ? prev + 1 : prev - 1);
-                alert(res.error);
+                toast.error(res.error);
             }
         } catch (error) {
-            // Rollback jika terjadi kesalahan jaringan
             setIsUpvoted(!newUpvoted);
             setUpvotes(prev => !newUpvoted ? prev + 1 : prev - 1);
-            alert("Kesalahan jaringan.");
+            toast.error("Kesalahan jaringan.");
         } finally {
             setIsPending(false);
         }
@@ -78,7 +78,7 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
         try {
             const res = await submitReviewComment(formData);
             if (res.error) {
-                alert(res.error);
+                toast.error(res.error);
             } else {
                 // Sukses: Update UI lokal
                 setReplySuccess('Balasan dikirim!');
@@ -92,7 +92,7 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
                 }, 1500);
             }
         } catch (error) {
-            alert("Kesalahan jaringan.");
+            toast.error("Kesalahan jaringan.");
         } finally {
             setReplyPending(false);
         }

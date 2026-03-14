@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { submitPostComment, deletePostComment } from '@/app/actions/post';
 import { Send, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 interface Comment {
@@ -32,21 +33,19 @@ export default function PostCommentSection({ postId, initialComments, commentCou
     async function handleSubmit(formData: FormData) {
         if (isPending) return;
         setIsPending(true);
-        setSuccess('');
 
         formData.append('post_id', postId);
 
         try {
             const res = await submitPostComment(formData);
             if (res.error) {
-                alert(res.error);
+                toast.error(res.error);
             } else {
-                setSuccess('Komentar dikirim!');
+                toast.success('Komentar dikirim!');
                 formRef.current?.reset();
-                setTimeout(() => setSuccess(''), 2000);
             }
         } catch (error) {
-            alert("Terjadi kesalahan.");
+            toast.error("Terjadi kesalahan.");
         } finally {
             setIsPending(false);
         }
@@ -58,16 +57,17 @@ export default function PostCommentSection({ postId, initialComments, commentCou
         setDeletingId(commentId);
         try {
             const res = await deletePostComment(commentId);
-            if (res.error) alert(res.error);
+            if (res.error) toast.error(res.error);
+            else toast.success("Komentar dihapus!");
         } catch {
-            alert("Gagal menghapus.");
+            toast.error("Gagal menghapus.");
         } finally {
             setDeletingId(null);
         }
     }
 
     return (
-        <div className="mt-4 pt-4 border-t border-brown-dark/5">
+        <div className="mt-4 pt-4 border-t border-tan-primary/10 dark:border-brown-mid/30">
             {/* Toggle Comment Section */}
             {commentCount > 0 && (
                 <button
@@ -83,8 +83,8 @@ export default function PostCommentSection({ postId, initialComments, commentCou
             {isOpen && initialComments.length > 0 && (
                 <div className="space-y-2 mb-3">
                     {initialComments.map((c) => (
-                        <div key={c.id} className="flex gap-4 items-start group bg-brown-dark/[0.02] p-3 rounded-2xl border border-brown-dark/5">
-                            <div className="w-8 h-8 rounded-xl bg-tan-light/10 dark:bg-brown-mid flex items-center justify-center text-[10px] font-black text-tan-primary shrink-0 border border-brown-dark/5 shadow-sm">
+                        <div key={c.id} className="flex gap-4 items-start group bg-brown-dark/[0.02] dark:bg-brown-dark/20 p-3 rounded-2xl border border-tan-primary/10 dark:border-brown-mid/20">
+                            <div className="w-8 h-8 rounded-xl bg-tan-light/10 dark:bg-brown-mid/30 flex items-center justify-center text-[10px] font-black text-tan-primary shrink-0 border border-tan-primary/10 shadow-sm">
                                 {c.user?.display_name?.substring(0, 2).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -112,7 +112,7 @@ export default function PostCommentSection({ postId, initialComments, commentCou
 
             {/* Comment Form - Themed & Relaxed */}
             {currentUserId && (
-                <form ref={formRef} action={handleSubmit} className="flex gap-3 items-center bg-brown-dark/[0.04] dark:bg-brown-dark border border-brown-dark/5 p-2 rounded-[1.5rem] transition-all focus-within:bg-brown-dark/[0.06] dark:focus-within:bg-slate-800 focus-within:border-brown-dark/10">
+                <form ref={formRef} action={handleSubmit} className="flex gap-3 items-center bg-brown-dark/[0.04] dark:bg-brown-dark/30 border border-tan-primary/10 dark:border-brown-mid/30 p-2 rounded-[1.5rem] transition-all focus-within:bg-brown-dark/[0.06] dark:focus-within:bg-brown-dark/50 focus-within:border-tan-primary/20">
                     <textarea
                         name="content"
                         placeholder="Tulis sebuah surat..."

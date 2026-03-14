@@ -41,6 +41,7 @@ export default async function ProfilePage({ params }: { params: { id: string } }
 
     const userProfile = userProfileRaw as (typeof userProfileRaw & {
         avatar_url: string | null;
+        banner_url: string | null;
         _count: { followers: number; following: number; };
         bio?: string | null;
         twitter_link?: string | null;

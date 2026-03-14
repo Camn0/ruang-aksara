@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { togglePostLike } from '@/app/actions/post';
 import { Heart } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function PostLikeButton({ postId, initialLikes, initialLikedByUser }: { postId: string, initialLikes: number, initialLikedByUser: boolean }) {
     const [likes, setLikes] = useState(initialLikes);
@@ -20,16 +21,14 @@ export default function PostLikeButton({ postId, initialLikes, initialLikedByUse
         try {
             const res = await togglePostLike(postId);
             if (res.error) {
-                // Revert on error
                 setIsLiked(!newLiked);
                 setLikes(prev => !newLiked ? prev + 1 : prev - 1);
-                alert(res.error);
+                toast.error(res.error);
             }
         } catch (error) {
-            // Revert on error
             setIsLiked(!newLiked);
             setLikes(prev => !newLiked ? prev + 1 : prev - 1);
-            alert("Terjadi kesalahan.");
+            toast.error("Terjadi kesalahan.");
         } finally {
             setIsPending(false);
         }

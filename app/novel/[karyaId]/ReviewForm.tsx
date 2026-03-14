@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { submitReview, submitRating } from '@/app/actions/user';
+import { toast } from 'sonner';
 
 export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }: { karyaId: string, existingReview?: any, defaultScore?: number }) {
     const [isPending, setIsPending] = useState(false);
@@ -21,10 +22,9 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                 const formData = new FormData(event.currentTarget);
                 const result = await submitReview(formData);
                 if (result.error) {
-                    alert(result.error);
+                    toast.error(result.error);
                 } else {
-                    setSuccess('Ulasan berhasil dipublikasikan!');
-                    setTimeout(() => setSuccess(''), 3000);
+                    toast.success('Ulasan berhasil dipublikasikan!');
                 }
             } else if (score > 0) {
                 // Rating-only (no review text)
@@ -33,16 +33,15 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                 formData.append('score', String(score));
                 const result = await submitRating(formData);
                 if (result.error) {
-                    alert(result.error);
+                    toast.error(result.error);
                 } else {
-                    setSuccess('Rating berhasil disimpan!');
-                    setTimeout(() => setSuccess(''), 3000);
+                    toast.success('Rating berhasil disimpan!');
                 }
             } else {
-                alert('Pilih rating bintang atau tulis ulasan.');
+                toast.error('Pilih rating bintang atau tulis ulasan.');
             }
         } catch (error) {
-            alert("Kesalahan jaringan.");
+            toast.error("Kesalahan jaringan.");
         } finally {
             setIsPending(false);
         }
@@ -66,7 +65,7 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                                 key={star}
                                 type="button"
                                 onClick={() => setScore(star)}
-                                className={`text-3xl transition-transform hover:scale-110 active:scale-90 ${star <= score ? 'text-amber-500 drop-shadow-sm' : 'text-tan-primary/10 dark:text-gray-600'}`}
+                                className={`text-3xl transition-transform hover:scale-110 active:scale-90 ${star <= score ? 'text-amber-500 drop-shadow-sm' : 'text-tan-primary/20 dark:text-brown-mid/50'}`}
                             >
                                 ★
                             </button>
@@ -87,7 +86,7 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Bagikan goresan pikiranmu tentang karya ini..."
-                    className="w-full border border-tan-primary/10 dark:border-brown-mid bg-white/50 dark:bg-brown-mid text-brown-dark dark:text-text-accent rounded-2xl p-4 text-sm focus:ring-2 focus:ring-tan-primary/20 outline-none min-h-[120px] transition-all placeholder:text-tan-primary/20 font-medium italic"
+                    className="w-full border border-tan-primary/10 dark:border-brown-mid/50 bg-white/50 dark:bg-brown-mid/20 text-text-main dark:text-text-accent rounded-2xl p-4 text-sm focus:ring-2 focus:ring-tan-primary/20 outline-none min-h-[120px] transition-all placeholder:text-tan-primary/20 font-medium italic"
                 ></textarea>
             </div>
 

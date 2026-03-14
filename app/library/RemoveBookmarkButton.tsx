@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import { toast } from 'sonner';
 
 // Mengapa: Tombol ✕ kecil di kartu bookmark library.
 // Menggunakan API route yang sudah ada (toggle bookmark).
@@ -11,8 +12,9 @@ export default function RemoveBookmarkButton({ karyaId, onRemoved }: { karyaId: 
     async function handleRemove(e: React.MouseEvent) {
         e.preventDefault(); // Jangan navigate ke link parent
         e.stopPropagation();
-
-        if (!confirm('Hapus dari perpustakaan?')) return;
+        
+        // Using window.confirm for simplicity, but alert() is gone.
+        if (!window.confirm('Hapus dari perpustakaan?')) return;
 
         setRemoving(true);
         try {
@@ -22,11 +24,12 @@ export default function RemoveBookmarkButton({ karyaId, onRemoved }: { karyaId: 
                 body: JSON.stringify({ karyaId })
             });
             if (res.ok) {
+                toast.success('Dihapus dari perpustakaan');
                 // Force reload to reflect changes
                 window.location.reload();
             }
         } catch {
-            alert('Gagal menghapus bookmark.');
+            toast.error('Gagal menghapus bookmark.');
         } finally {
             setRemoving(false);
         }

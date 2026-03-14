@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Home, Search, Menu, Info, User, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, Search, Menu, Info, User, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
 import { useSidebar } from './SidebarContext';
@@ -32,19 +32,19 @@ export default function Sidebar() {
     return (
         <>
             <aside
-                className={`hidden md:flex flex-col h-full bg-tan-primary fixed left-0 top-0 py-6 z-[70] transition-all duration-500 ease-in-out shadow-2xl ${isExpanded ? 'w-64 px-4' : 'w-20 px-2'}`}
+                className={`hidden md:flex flex-col h-full bg-tan-primary dark:bg-brown-dark fixed left-0 top-0 py-6 z-[70] transition-all duration-500 ease-in-out shadow-2xl ${isExpanded ? 'w-64 px-4' : 'w-20 px-2'}`}
             >
                 {/* Toggle Button */}
                 <button
                     onClick={toggleSidebar}
-                    className="absolute -right-3 top-10 w-6 h-6 bg-brown-dark text-text-accent rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform z-[60]"
+                    className="absolute -right-3 top-10 w-6 h-6 bg-brown-dark dark:bg-tan-primary text-text-accent rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform z-[60]"
                 >
                     {isExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                 </button>
 
                 {/* Logo Section */}
                 <Link href={session ? "/user/dashboard" : "/"} className={`flex flex-col items-center mb-10 transition-all duration-500 group/logo`}>
-                    <div className={`transition-all duration-500 bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
+                    <div className={`transition-all duration-500 bg-white/10 dark:bg-brown-mid/20 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
                         {/* New Brand Logo Placeholder */}
                         <img
                             src="/logoRuangAksara.webp"
@@ -80,17 +80,19 @@ export default function Sidebar() {
 
                 {/* Bottom Section */}
                 <div className={`mt-auto space-y-6 transition-all duration-500`}>
-                    {/* Studio Button */}
-                    <Link
-                        href="/admin/dashboard"
-                        className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
-                        title={!isExpanded ? 'Studio Penulis' : ''}
-                    >
-                        <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
-                            <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2.5} />
-                        </div>
-                        {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Studio Penulis</span>}
-                    </Link>
+                    {/* Studio Button - Only for Authors/Admins */}
+                    {session?.user && ['admin', 'author'].includes((session.user as any).role) && (
+                        <Link
+                            href="/admin/dashboard"
+                            className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
+                            title={!isExpanded ? 'Studio Penulis' : ''}
+                        >
+                            <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
+                                <Plus className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2.5} />
+                            </div>
+                            {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Studio Penulis</span>}
+                        </Link>
+                    )}
 
                     {/* Utils */}
                     <div className={`pt-6 border-t border-text-accent/20 space-y-4`}>

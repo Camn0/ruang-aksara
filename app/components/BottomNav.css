@@ -43,22 +43,22 @@
   --nav-icon-color: #F8F4E1;
   --nav-active-icon-color: #3B2A22;
   --nav-indicator-bg: #F2EAD7; /* Ellipse 33 */
-  --page-bg-color: #F8F4E1;
+  --page-bg-color: #F3E9D7; /* Match bg-cream */
   background: var(--nav-bg);
 }
 
-.dark .nav-reader { --page-bg-color: #020617; }
+.dark .nav-reader { --page-bg-color: #3B2A22; } /* Match brown-dark */
 
 .nav-author {
   --nav-bg: #D7BFA7; /* Rectangle 223 for Author */
   --nav-icon-color: #3B2A22;
   --nav-active-icon-color: #3B2A22;
   --nav-indicator-bg: #F2EAD7; /* Ellipse 32 */
-  --page-bg-color: #F8F4E1;
+  --page-bg-color: #F3E9D7;
   background: var(--nav-bg);
 }
 
-.dark .nav-author { --page-bg-color: #020617; }
+.dark .nav-author { --page-bg-color: #3B2A22; }
 
 .navigation ul li a .icon {
   position: relative;

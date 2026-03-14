@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { editBab } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { Save, Pencil, ArrowLeft, Upload } from 'lucide-react';
+import { toast } from 'sonner';
 import DeleteBabButton from './DeleteBabButton';
 
 export default function EditBabForm({ babId, initialContent, title }: { babId: string, initialContent: string, title?: string }) {
@@ -48,8 +49,9 @@ export default function EditBabForm({ babId, initialContent, title }: { babId: s
 
         try {
             const result = await editBab(formData);
-            if (result.error) alert(result.error);
+            if (result.error) toast.error(result.error);
             else {
+                toast.success("Bab tersimpan!");
                 localStorage.removeItem(draftKey);
                 setLastSaved(null);
                 setIsOpen(false);
@@ -57,7 +59,7 @@ export default function EditBabForm({ babId, initialContent, title }: { babId: s
             }
         } catch (error) {
             console.error(error);
-            alert('Terjadi kesalahan sistem.');
+            toast.error('Terjadi kesalahan sistem.');
         } finally {
             setIsPending(false);
         }

@@ -31,7 +31,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     return (
         <div className="space-y-4">
             {/* Level Card - Full Width */}
-            <div className="bg-white dark:bg-brown-dark rounded-[2.5rem] p-6 border border-tan-light/30 dark:border-brown-mid shadow-xl shadow-tan-light/10 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group">
+            <div className="bg-white dark:bg-brown-dark rounded-[2.5rem] p-6 border border-tan-light/30 dark:border-brown-mid/50 shadow-xl shadow-tan-light/10 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group transition-colors">
                 <div className="flex justify-between items-center relative z-10">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-tan-primary rounded-2xl flex items-center justify-center text-text-accent shadow-lg">
@@ -39,7 +39,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold uppercase tracking-widest text-tan-primary">Peringkat Anda</p>
-                            <h3 className="text-xl font-open-sans font-bold text-text-main dark:text-text-accent">Level {level}</h3>
+                            <h3 className="text-xl font-open-sans font-bold text-text-main">Level {level}</h3>
                         </div>
                     </div>
                     <button
@@ -53,9 +53,9 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                 <div className="space-y-2 relative z-10">
                     <div className="flex justify-between text-[11px] font-bold text-tan-primary uppercase tracking-tighter">
                         <span>Progress Level</span>
-                        <span className="text-brown-dark">{progressToNextLevel}%</span>
+                        <span className="text-text-main">{progressToNextLevel}%</span>
                     </div>
-                    <div className="h-3 bg-tan-light/10 dark:bg-brown-mid rounded-full overflow-hidden border border-tan-light/20">
+                    <div className="h-3 bg-tan-light/10 dark:bg-brown-mid/20 rounded-full overflow-hidden border border-tan-light/20 dark:border-brown-mid/30">
                         <div
                             className="h-full bg-tan-primary transition-all duration-1000"
                             style={{ width: `${progressToNextLevel}%` }}
@@ -92,7 +92,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                     </div>
                 </button>
 
-                <div className="bg-white dark:bg-brown-dark rounded-3xl p-4 text-text-main dark:text-text-accent shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid text-center relative overflow-hidden">
+                <div className="bg-white dark:bg-brown-dark rounded-3xl p-4 text-text-main shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid/50 text-center relative overflow-hidden">
                     <BookOpen className="absolute -right-2 -bottom-2 w-16 h-16 opacity-5 pointer-events-none" />
                     <p className="text-[8px] font-black uppercase tracking-widest text-tan-primary opacity-60 mb-1">Total Baca</p>
                     <div className="flex items-baseline justify-center gap-0.5">

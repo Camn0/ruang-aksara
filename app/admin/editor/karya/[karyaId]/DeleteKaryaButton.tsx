@@ -3,21 +3,23 @@
 import { useState } from 'react';
 import { deleteKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function DeleteKaryaButton({ karyaId }: { karyaId: string }) {
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();
 
     async function handleDelete() {
-        if (!confirm("Peringatan: Menghapus karya akan menghapus SEMUA bab, komentar, dan rating yang terkait secara permanen. Lanjutkan?")) return;
+        if (!window.confirm("Peringatan: Menghapus karya akan menghapus SEMUA bab, komentar, dan rating yang terkait secara permanen. Lanjutkan?")) return;
 
         setIsPending(true);
         const result = await deleteKarya(karyaId);
 
         if (result.error) {
-            alert(result.error);
+            toast.error(result.error);
             setIsPending(false);
         } else {
+            toast.success("Karya berhasil dihapus!");
             router.push('/admin/dashboard');
             router.refresh();
         }

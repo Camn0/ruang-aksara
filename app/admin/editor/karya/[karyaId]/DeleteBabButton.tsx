@@ -3,20 +3,22 @@
 import { useState } from 'react';
 import { deleteBab } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function DeleteBabButton({ babId }: { babId: string }) {
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();
 
     async function handleDelete() {
-        if (!confirm("Yakin ingin menghapus bab ini secara permanen?")) return;
+        if (!window.confirm("Yakin ingin menghapus bab ini secara permanen?")) return;
 
         setIsPending(true);
         const result = await deleteBab(babId);
 
         if (result.error) {
-            alert(result.error);
+            toast.error(result.error);
         } else {
+            toast.success("Bab berhasil dihapus!");
             router.refresh();
         }
         setIsPending(false);

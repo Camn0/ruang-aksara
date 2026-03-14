@@ -10,6 +10,7 @@ import LayoutContent from "./components/LayoutContent";
 import { ThemeProvider } from "./components/ThemeProvider";
 import InstantLoadingBar from "./components/InstantLoadingBar";
 import { Suspense } from "react";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const lobster = Lobster({ weight: '400', subsets: ["latin"], variable: '--font-lobster' });
@@ -45,6 +46,7 @@ export default function RootLayout({
                             {children}
                         </LayoutContent>
                     </SidebarProvider>
+                    <Toaster position="top-center" richColors />
                 </ThemeProvider>
             </body>
         </html >

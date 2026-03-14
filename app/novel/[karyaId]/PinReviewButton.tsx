@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { togglePinReview } from "@/app/actions/admin";
 import { Pin, PinOff } from "lucide-react";
+import { toast } from "sonner";
 
 interface PinReviewButtonProps {
     reviewId: string;
@@ -17,7 +18,9 @@ export default function PinReviewButton({ reviewId, karyaId, initialIsPinned }: 
         startTransition(async () => {
             const res = await togglePinReview(reviewId, karyaId);
             if (res.error) {
-                alert(res.error);
+                toast.error(res.error);
+            } else {
+                toast.success(initialIsPinned ? "Sematan dilepas" : "Ulasan disematkan");
             }
         });
     };

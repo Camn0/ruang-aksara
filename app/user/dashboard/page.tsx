@@ -8,6 +8,8 @@ import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart, Eye, 
 import LogoutButton from "@/app/components/LogoutButton";
 import { unstable_cache } from "next/cache";
 import DashboardStats from "./DashboardStats";
+import { formatDistanceToNow } from 'date-fns';
+import { id as localeID } from 'date-fns/locale';
 
 const getCachedTrending = (userId: string) => unstable_cache(
     async () => {
@@ -216,7 +218,9 @@ export default async function UserDashboardPage() {
                                             <div className="flex-1 flex flex-col py-1 relative z-10">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <span className="text-[7px] font-black bg-tan-primary text-text-accent px-2 py-0.5 rounded-full uppercase tracking-widest">Terakhir Dibaca</span>
-                                                    <span className="text-[7px] font-bold text-brown-mid/60 dark:text-tan-light/40 uppercase tracking-widest italic">Pukul {timeStr}</span>
+                                                    <span className="text-[7px] font-bold text-brown-mid/60 dark:text-tan-light/40 uppercase tracking-widest italic">
+                                                        {formatDistanceToNow(new Date(hero.updated_at), { addSuffix: true, locale: localeID })}
+                                                    </span>
                                                 </div>
                                                 <h3 className="text-lg font-black text-text-main dark:text-text-accent mb-1 group-hover:text-tan-primary transition-colors line-clamp-1">{hero.karya.title}</h3>
                                                 <div className="flex items-center gap-2 mb-3">
@@ -262,6 +266,11 @@ export default async function UserDashboardPage() {
                                                         <p className="text-[8px] text-tan-primary font-black uppercase tracking-widest truncate">{b.karya.penulis_alias}</p>
                                                         <span className="w-0.5 h-0.5 bg-tan-light rounded-full" />
                                                         <p className="text-[8px] text-brown-mid/60 dark:text-tan-light/40 font-bold uppercase truncate max-w-[40px]">{b.karya.genres?.[0]?.name}</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <div className="text-[6px] font-black bg-tan-primary/10 text-tan-primary px-1.5 py-0.5 rounded shadow-sm border border-tan-primary/10 uppercase tracking-widest truncate">
+                                                            {formatDistanceToNow(new Date(b.updated_at), { addSuffix: true, locale: localeID })}
+                                                        </div>
                                                     </div>
                                                     <div className="flex gap-3 items-center">
                                                         <div className="flex items-center gap-0.5 text-tan-primary"><Star className="w-2.5 h-2.5 fill-tan-primary" /><span className="text-[9px] font-black">{b.karya.avg_rating.toFixed(1)}</span></div>

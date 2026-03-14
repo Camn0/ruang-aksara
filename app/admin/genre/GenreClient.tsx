@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { createGenre, deleteGenre } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export function GenreForm() {
     const [isPending, setIsPending] = useState(false);
@@ -15,8 +16,9 @@ export function GenreForm() {
         const formData = new FormData(event.currentTarget);
         const result = await createGenre(formData);
 
-        if (result.error) alert(result.error);
+        if (result.error) toast.error(result.error);
         else {
+            toast.success("Genre baru ditambahkan!");
             (event.target as HTMLFormElement).reset();
             router.refresh();
         }
@@ -48,11 +50,14 @@ export function DeleteGenreButton({ id }: { id: string }) {
     const router = useRouter();
 
     async function handleDelete() {
-        if (!confirm("Yakin hapus genre ini?")) return;
+        if (!window.confirm("Yakin hapus genre ini?")) return;
         setIsPending(true);
         const result = await deleteGenre(id);
-        if (result.error) alert(result.error);
-        else router.refresh();
+        if (result.error) toast.error(result.error);
+        else {
+            toast.success("Genre dihapus!");
+            router.refresh();
+        }
         setIsPending(false);
     }
 

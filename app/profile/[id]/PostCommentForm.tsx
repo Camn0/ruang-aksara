@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { submitPostComment } from '@/app/actions/post';
 import { Send } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function PostCommentForm({ postId }: { postId: string }) {
     const [showForm, setShowForm] = useState(false);
@@ -13,24 +14,20 @@ export default function PostCommentForm({ postId }: { postId: string }) {
     async function handleSubmit(formData: FormData) {
         if (isPending) return;
         setIsPending(true);
-        setSuccess('');
 
         formData.append('post_id', postId);
 
         try {
             const res = await submitPostComment(formData);
             if (res.error) {
-                alert(res.error);
+                toast.error(res.error);
             } else {
-                setSuccess('Komentar dikirim!');
+                toast.success('Komentar berhasil dikirim!');
                 formRef.current?.reset();
-                setTimeout(() => {
-                    setShowForm(false);
-                    setSuccess('');
-                }, 1500);
+                setShowForm(false);
             }
         } catch (error) {
-            alert("Terjadi kesalahan.");
+            toast.error("Terjadi kesalahan.");
         } finally {
             setIsPending(false);
         }

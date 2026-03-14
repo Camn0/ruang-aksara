@@ -10,15 +10,15 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                'bg-cream': '#F3E9D7',      // Creamy Latte (light mode bg)
-                'bg-dark': '#7A553A',       // Mocha Bean (dark mode bg)
+                'bg-cream': 'rgb(var(--bg-main))',
+                'bg-dark': 'rgb(var(--bg-main))',
                 'tan-primary': '#B08968',   // Caramel Roast
                 'tan-light': '#D6BFA6',     // Warm Cappuccino
                 'brown-dark': '#3B2A22',    // Espresso Shot
                 'brown-mid': '#7A553A',     // Mocha Bean
                 'olive-banner': '#3B3722',
                 'text-accent': '#F3E9D7',   // Creamy Latte
-                'text-main': '#3B2A22',     // Espresso Shot
+                'text-main': 'rgb(var(--text-primary))',
             },
             fontFamily: {
                 'inter': ['var(--font-inter)', 'sans-serif'],

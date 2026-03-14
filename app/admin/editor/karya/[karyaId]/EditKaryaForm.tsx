@@ -105,14 +105,14 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
         setIsPending(true);
         try {
             const result = await editKarya(formData);
-            if (result.error) alert(result.error);
+            if (result.error) toast.error(result.error);
             else {
-                alert("Berhasil menyimpan perubahan!");
+                toast.success("Berhasil menyimpan perubahan!");
                 router.refresh();
             }
         } catch (err) {
             console.error(err);
-            alert("Terjadi kesalahan sistem.");
+            toast.error("Terjadi kesalahan sistem.");
         } finally {
             setIsPending(false);
         }
