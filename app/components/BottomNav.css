@@ -47,7 +47,13 @@
   background: var(--nav-bg);
 }
 
-.dark .nav-reader { --page-bg-color: #3B2A22; } /* Match brown-dark */
+.dark .nav-reader { 
+  --nav-bg: #1A120E; 
+  --nav-icon-color: #D6BFA6;
+  --nav-active-icon-color: #F3E9D7;
+  --nav-indicator-bg: #3B2A22;
+  --page-bg-color: #3B2A22; 
+}
 
 .nav-author {
   --nav-bg: #D7BFA7; /* Rectangle 223 for Author */
@@ -58,7 +64,13 @@
   background: var(--nav-bg);
 }
 
-.dark .nav-author { --page-bg-color: #3B2A22; }
+.dark .nav-author { 
+  --nav-bg: #2A1D17; 
+  --nav-icon-color: #D6BFA6;
+  --nav-active-icon-color: #F3E9D7;
+  --nav-indicator-bg: #7A553A;
+  --page-bg-color: #3B2A22; 
+}
 
 .navigation ul li a .icon {
   position: relative;
