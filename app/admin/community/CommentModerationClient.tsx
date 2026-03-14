@@ -39,15 +39,15 @@ export default function CommentModerationClient({ initialComments }: { initialCo
         <div className="space-y-6">
             {/* Sorting Controls */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                <span className="text-[10px] font-black text-text-main/30 dark:text-tan-primary/40 uppercase tracking-[0.2em] whitespace-nowrap mr-2">Urut Berdasarkan:</span>
+                <span className="text-[10px] font-black text-text-main/30 dark:text-bg-cream/30 uppercase tracking-[0.2em] whitespace-nowrap mr-2">Urut Berdasarkan:</span>
                 {sortButtons.map((btn) => (
                     <button
                         key={btn.id}
                         onClick={() => setSortBy(btn.id as SortOption)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 ${
                             sortBy === btn.id
-                                ? 'bg-text-main dark:bg-tan-primary text-bg-cream dark:text-brown-dark border-text-main dark:border-tan-primary shadow-lg shadow-text-main/20 dark:shadow-none'
-                                : 'bg-transparent text-text-main/40 dark:text-tan-primary/40 border-tan-primary/20 hover:border-tan-primary/40'
+                                ? 'bg-text-main dark:bg-brown-mid text-bg-cream border-text-main dark:border-brown-mid shadow-lg'
+                                : 'bg-transparent text-text-main/40 dark:text-bg-cream/40 border-tan-primary/20 hover:border-tan-primary/40'
                         }`}
                     >
                         <btn.icon className="w-3 h-3" />
@@ -58,17 +58,17 @@ export default function CommentModerationClient({ initialComments }: { initialCo
 
             {/* Empty State */}
             {sortedComments.length === 0 ? (
-                <div className="py-20 text-center bg-bg-cream/40 dark:bg-brown-mid/10 rounded-[3rem] border-2 border-dashed border-tan-primary/20">
-                    <p className="text-text-main/30 dark:text-tan-primary/30 font-black uppercase tracking-[0.2em]">Belum Ada Komentar</p>
+                <div className="py-20 text-center bg-bg-cream/50 dark:bg-brown-dark/50 rounded-[3rem] border-2 border-dashed border-text-main/10">
+                    <p className="text-text-main/30 dark:text-bg-cream/30 font-black uppercase tracking-[0.2em]">Belum Ada Komentar</p>
                 </div>
             ) : (
                 <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {sortedComments.map((comment) => (
-                        <div key={comment.id} className="bg-bg-cream/80 dark:bg-brown-mid/10 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-text-main/5 dark:border-tan-primary/10 hover:border-tan-primary/30 dark:hover:border-tan-primary/50 transition-all shadow-sm shadow-text-main/5 group flex flex-col backdrop-blur-sm">
+                        <div key={comment.id} className="bg-bg-cream/80 dark:bg-brown-dark p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-text-main/10 dark:border-brown-mid hover:border-tan-primary/30 dark:hover:border-tan-primary/50 transition-all shadow-sm group flex flex-col backdrop-blur-sm">
                             {/* Header Kartu: Profile Pengirim & Waktu & Delete Button */}
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-text-main dark:bg-tan-primary flex items-center justify-center text-xs font-black text-bg-cream dark:text-brown-dark uppercase shadow-sm">
+                                    <div className="w-8 h-8 rounded-lg bg-text-main/10 dark:bg-brown-mid flex items-center justify-center text-xs font-black text-text-main dark:text-bg-cream uppercase">
                                         {comment.user.display_name[0].toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -81,10 +81,10 @@ export default function CommentModerationClient({ initialComments }: { initialCo
                                             )}
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <p className="text-[8px] text-text-main/40 dark:text-tan-primary/40 font-bold uppercase tracking-widest leading-tight">
+                                            <p className="text-[8px] text-text-main/40 dark:text-bg-cream/40 font-bold uppercase tracking-widest leading-tight">
                                                 {new Date(comment.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                             </p>
-                                            <span className="w-1 h-1 rounded-full bg-text-main/10 dark:bg-bg-cream/10" />
+                                            <span className="w-1 h-1 rounded-full bg-text-main/10 dark:bg-white/10" />
                                             <p className="text-[8px] text-tan-primary font-black uppercase tracking-widest">
                                                 {comment.score} Poin
                                             </p>
@@ -97,7 +97,7 @@ export default function CommentModerationClient({ initialComments }: { initialCo
                             {/* Isi Komentar: Dibalut kontainer bergaya Gelembung (Bubble) & Link Interaktif */}
                             <Link 
                                 href={`/novel/${comment.bab.karya_id}/${comment.bab.chapter_no}#comment-${comment.id}`}
-                                className="bg-text-main/5 dark:bg-bg-cream/5 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-transparent hover:border-tan-primary/20 hover:bg-text-main/[0.08] dark:hover:bg-bg-cream/[0.08] transition-all mb-3 flex-1 block group/link"
+                                className="bg-text-main/5 dark:bg-brown-mid/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-transparent hover:border-tan-primary/20 hover:bg-text-main/[0.08] transition-all mb-3 flex-1 block group/link"
                             >
                                 <p className="text-[12px] text-text-main/70 dark:text-tan-light leading-relaxed italic mb-3">"{comment.content}"</p>
                                 
@@ -108,8 +108,8 @@ export default function CommentModerationClient({ initialComments }: { initialCo
                             </Link>
 
                             {/* Metadata Footer: Menujukkan komentar masuk di bab mana */}
-                            <div className="flex items-center gap-2 mt-auto pt-2 border-t border-tan-primary/5 dark:border-brown-mid/20">
-                                <span className="text-[8px] font-black text-text-main/30 dark:text-tan-primary/40 uppercase tracking-widest">Pada:</span>
+                            <div className="flex items-center gap-2 mt-auto pt-2 border-t border-text-main/5 dark:border-brown-mid/50">
+                                <span className="text-[8px] font-black text-text-main/30 dark:text-bg-cream/30 uppercase tracking-widest">Pada:</span>
                                 <div className="flex items-center gap-1 min-w-0">
                                     <span className="text-[9px] font-black text-tan-primary uppercase tracking-tight italic shrink-0">Bab {comment.bab.chapter_no} -</span>
                                     <span className="text-[9px] font-black text-tan-primary truncate uppercase tracking-tight italic">{comment.bab.karya.title}</span>

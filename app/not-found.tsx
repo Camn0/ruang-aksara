@@ -1,0 +1,22 @@
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+
+export default function NotFound() {
+    return (
+        <div className="min-h-screen bg-bg-cream flex flex-col items-center justify-center p-6 text-center">
+            <h1 className="text-9xl font-black text-text-main/10 mb-[-2rem] select-none">404</h1>
+            <div className="relative z-10">
+                <h2 className="text-4xl font-black text-text-main italic uppercase tracking-tighter mb-4">Halaman Tak Ditemukan</h2>
+                <p className="text-text-main/60 font-medium italic mb-12 max-w-md mx-auto">
+                    Sepertinya lembaran yang Anda cari telah hilang dari arsip Ruang Aksara.
+                </p>
+                <Link 
+                    href="/" 
+                    className="inline-flex items-center gap-2 bg-text-main text-bg-cream px-8 py-4 rounded-full font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
+                >
+                    <ArrowLeft className="w-4 h-4" /> Kembali ke Beranda
+                </Link>
+            </div>
+        </div>
+    );
+}

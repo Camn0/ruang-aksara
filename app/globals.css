@@ -61,3 +61,43 @@ body {
     animation-name: slide-in-from-right;
   }
 }
+
+/* Custom Themed Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #B08968 transparent;
+}
+
+.dark * {
+  scrollbar-color: #7A553A transparent;
+}
+
+/* Webkit Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #B08968;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7A553A;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #7A553A;
+  border: 2px solid #3B2A22;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #AF8F6F;
+}

@@ -32,12 +32,12 @@ export function GenreForm() {
                 type="text"
                 placeholder="Nama Genre Baru (e.g. Romance)"
                 required
-                className="flex-1 bg-brown-dark/5 dark:bg-brown-mid border-2 border-transparent focus:border-tan-primary/20 focus:bg-white dark:focus:bg-slate-800 focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-brown-dark dark:text-text-accent transition-all placeholder:text-brown-dark/30 dark:placeholder:text-gray-500"
+                className="flex-1 bg-text-main/5 dark:bg-white/5 border-2 border-transparent focus:border-tan-primary/20 focus:bg-white dark:focus:bg-brown-mid focus:outline-none p-3 sm:p-4 rounded-2xl text-sm font-bold text-text-main dark:text-bg-cream transition-all placeholder:text-text-main/30 dark:placeholder:text-white/30"
             />
             <button
                 type="submit"
                 disabled={isPending}
-                className="bg-brown-dark text-white px-6 sm:px-10 py-3 sm:py-4 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest hover:bg-black disabled:opacity-50 transition-all shadow-lg active:scale-95 flex items-center justify-center min-w-[100px]"
+                className="bg-text-main dark:bg-brown-mid text-bg-cream px-6 sm:px-10 py-3 sm:py-4 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest hover:bg-brown-dark dark:hover:bg-tan-primary transition-all shadow-lg active:scale-95 flex items-center justify-center min-w-[100px] border border-white/5"
             >
                 {isPending ? '...' : 'Tambah'}
             </button>
@@ -65,9 +65,10 @@ export function DeleteGenreButton({ id }: { id: string }) {
         <button
             onClick={handleDelete}
             disabled={isPending}
-            className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all p-2 hover:bg-red-50/50 dark:hover:bg-red-900/20 rounded-lg"
+            className="text-text-main/40 dark:text-tan-primary/40 hover:text-red-500 dark:hover:text-red-400 text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all p-2 hover:bg-red-500/5 dark:hover:bg-red-500/10 rounded-xl flex items-center gap-1 group/del"
         >
-            {isPending ? '...' : 'Hapus'}
+            <span className="opacity-0 group-hover/del:opacity-100 transition-opacity">{isPending ? '...' : 'Hapus'}</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-current"></div>
         </button>
     );
 }

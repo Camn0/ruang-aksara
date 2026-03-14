@@ -27,7 +27,7 @@ export default function DeleteCommentButton({ commentId }: { commentId: string }
         <button
             onClick={handleDelete}
             disabled={isPending}
-            className="text-red-400 hover:text-red-600 dark:text-red-900/40 dark:hover:text-red-400 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 group/btn"
+            className="text-red-400 hover:text-red-600 dark:text-red-400/40 dark:hover:text-red-400 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 group/btn"
             title="Hapus Komentar"
         >
             <Trash2 className={`w-3.5 h-3.5 ${isPending ? 'animate-pulse' : 'group-hover/btn:scale-110 transition-transform'}`} />

@@ -55,15 +55,15 @@ export default async function CommentManagementPage() {
             {/* Page Header: Title & Context */}
             <div className="mb-10 sm:mb-16">
                 <div className="flex items-center gap-4 mb-3 sm:mb-4">
-                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-text-main dark:bg-tan-primary rounded-2xl sm:rounded-[2rem] flex items-center justify-center shadow-lg shadow-text-main/20 rotate-3 group hover:rotate-0 transition-transform duration-500">
-                        <MessageSquare className="w-5 h-5 sm:w-7 sm:h-7 text-bg-cream dark:text-brown-dark" />
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-brown-dark rounded-2xl sm:rounded-[2rem] flex items-center justify-center shadow-lg shadow-brown-dark/20 rotate-3 group hover:rotate-0 transition-transform duration-500">
+                        <MessageSquare className="w-5 h-5 sm:w-7 sm:h-7 text-tan-primary" />
                     </div>
                     <div>
-                        <h1 className="text-2xl sm:text-4xl font-black text-text-main dark:text-text-accent uppercase tracking-tighter italic leading-none">Diskusi Komunitas</h1>
-                        <p className="text-[9px] sm:text-[11px] font-black text-text-main/40 dark:text-tan-primary/40 uppercase tracking-[0.3em] mt-1 sm:mt-2">Suara dari Pembaca Ruang Aksara</p>
+                        <h1 className="text-2xl sm:text-4xl font-black text-brown-dark dark:text-tan-primary uppercase tracking-tighter italic leading-none">Diskusi Komunitas</h1>
+                        <p className="text-[9px] sm:text-[11px] font-black text-brown-dark/40 dark:text-gray-500 uppercase tracking-[0.3em] mt-1 sm:mt-2">Suara dari Pembaca Ruang Aksara</p>
                     </div>
                 </div>
-                <div className="h-1 sm:h-2 w-24 sm:w-32 bg-tan-primary rounded-full mb-6 sm:mb-10 opacity-20" />
+                <div className="h-1 sm:h-2 w-24 sm:w-32 bg-brown-mid rounded-full mb-6 sm:mb-10 opacity-20" />
             </div>
 
             <main className="w-full">

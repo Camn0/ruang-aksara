@@ -127,7 +127,10 @@ export async function submitRating(formData: FormData) {
             // Tahap 2: MENGHITUNG ulang agregat di keseluruhan table
             // Mengapa: Melakukan rerata di DB (_avg) jauh lebih cepat daripada memuat semua baris ke Node.js.
             const databaseAggregate = await tx.rating.aggregate({
-                where: { karya_id: karya_id },
+                where: { 
+                    karya_id: karya_id,
+                    score: { gt: 0 } // Exclude scores of 0 from average
+                },
                 _avg: { score: true }
             });
 
@@ -206,7 +209,10 @@ export async function submitReview(formData: FormData) {
 
                 // Rekalkulasi denormalisasi rating di tabel Karya
                 const aggr = await tx.rating.aggregate({
-                    where: { karya_id },
+                    where: { 
+                        karya_id,
+                        score: { gt: 0 } // Exclude scores of 0 from average
+                    },
                     _avg: { score: true }
                 });
                 await tx.karya.update({

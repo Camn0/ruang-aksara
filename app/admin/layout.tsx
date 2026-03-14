@@ -16,6 +16,7 @@ import { UserCircle2 } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
 import SidebarNav from "../components/SidebarNav";
 import AdminMobileHeader from "./AdminMobileHeader";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default async function AdminLayout({
     children,
@@ -33,14 +34,14 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-bg-cream/20 dark:bg-brown-dark transition-colors duration-500 w-full">
+        <div className="flex min-h-screen bg-bg-cream dark:bg-brown-dark transition-colors duration-500 w-full">
 
             {/* --- DESKTOP SIDEBAR --- */}
-            <aside className="hidden lg:flex flex-col w-64 bg-brown-dark border-r border-text-main/5 fixed left-0 top-0 h-screen z-30 transition-colors shadow-2xl">
+            <aside className="hidden lg:flex flex-col w-64 bg-tan-primary dark:bg-brown-mid border-r border-text-main/5 dark:border-white/5 fixed left-0 top-0 h-screen z-30 transition-colors shadow-2xl">
                 {/* Brand / Logo Section */}
                 <div className="p-8">
                     <Link href="/admin/dashboard" className="flex flex-col items-center group/logo transition-all duration-500">
-                        <div className="w-24 h-20 bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 transition-all">
+                        <div className="w-24 h-20 bg-text-main/10 dark:bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 transition-all">
                             <img
                                 src="/logoRuangAksara.webp"
                                 alt="Ruang Aksara Logo"
@@ -48,8 +49,8 @@ export default async function AdminLayout({
                             />
                         </div>
                         <div className="mt-4 flex flex-col items-center">
-                            <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
-                            <span className="font-black text-xl tracking-tighter text-bg-cream italic uppercase">STUDIO</span>
+                            <span className="text-[10px] font-black text-white/40 dark:text-tan-primary/40 uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
+                            <span className="font-black text-xl tracking-tighter text-text-main dark:text-bg-cream italic uppercase">STUDIO</span>
                         </div>
                     </Link>
                 </div>
@@ -58,15 +59,15 @@ export default async function AdminLayout({
                 <SidebarNav userRole={session.user.role} />
 
                 {/* Footer Sidebar: User Profile & Logout */}
-                <div className="p-6 mt-auto">
-                    <div className="bg-white/5 dark:bg-brown-mid/20 rounded-[2.5rem] p-5 mb-4 border border-white/5">
+                <div className="p-6 mt-auto space-y-4">
+                    <div className="bg-text-main/5 dark:bg-white/5 rounded-[2.5rem] p-5 border border-text-main/5 dark:border-white/5">
                         <Link href={`/profile/${session.user.id}`} className="flex items-center gap-3 mb-4 group/profile">
-                            <div className="w-10 h-10 rounded-2xl bg-bg-cream/10 dark:bg-bg-cream text-bg-cream dark:text-brown-dark flex items-center justify-center shadow-lg transition-transform group-hover/profile:scale-110">
+                            <div className="w-10 h-10 rounded-2xl bg-text-main dark:bg-brown-dark flex items-center justify-center text-bg-cream shadow-lg transition-transform group-hover/profile:scale-110">
                                 <UserCircle2 className="w-6 h-6" />
                             </div>
                             <div className="flex flex-col min-w-0">
-                                <span className="text-[10px] font-black text-bg-cream truncate uppercase tracking-tight italic group-hover/profile:text-tan-primary transition-colors">{session.user.name}</span>
-                                <span className="text-[8px] text-bg-cream/40 font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
+                                <span className="text-[10px] font-black text-text-main dark:text-bg-cream truncate uppercase tracking-tight italic group-hover/profile:text-brown-dark dark:group-hover/profile:text-tan-primary transition-colors">{session.user.name}</span>
+                                <span className="text-[8px] text-text-main/40 dark:text-bg-cream/40 font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
                             </div>
                         </Link>
                         <LogoutButton />
@@ -83,7 +84,7 @@ export default async function AdminLayout({
                 <AdminMobileHeader session={session} />
 
                 {/* Main Content Injector */}
-                <main className="flex-1 w-full max-w-full overflow-x-hidden bg-bg-cream/30 dark:bg-brown-dark/20">
+                <main className="flex-1 w-full max-w-full overflow-x-hidden">
                     {children}
                 </main>
             </div>

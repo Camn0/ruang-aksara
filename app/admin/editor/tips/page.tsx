@@ -71,7 +71,6 @@ export default async function TipsStudioPage() {
                         </div>
                     ))}
                 </div>
-
             </main>
         </div>
     );

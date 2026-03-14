@@ -162,8 +162,8 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             
                             {/* Area Cover */}
                             <div className="flex flex-col gap-4">
-                                <label className="font-black text-text-main dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sampul</label>
-                                <div className="w-[183px] h-[239px] bg-bg-cream/40 dark:bg-brown-dark/40 border-2 border-dashed border-tan-primary/20 rounded-[24.75px] flex items-center justify-center relative hover:bg-tan-primary/5 transition-colors overflow-hidden group">
+                                <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sampul</label>
+                                <div className="w-[183px] h-[239px] bg-white/40 dark:bg-brown-dark/40 border-2 border-dashed border-tan-primary/20 rounded-[24.75px] flex items-center justify-center relative hover:bg-tan-primary/5 transition-colors overflow-hidden group">
                                     
                                     {/* Input File (TIDAK ADA NAME agar tidak tabrakan dengan hidden input) */}
                                     <input 
@@ -197,36 +197,36 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             {/* Area Input */}
                             <div className="flex-1 flex flex-col gap-10">
                                 <div className="flex flex-col gap-3">
-                                    <label className="font-black text-text-main dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Judul Karya</label>
+                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Judul Karya</label>
                                     <input
                                         name="title"
                                         type="text"
                                         required
                                         placeholder="Tuliskan judul mahakaryamu..."
-                                        className="w-full h-[60px] bg-bg-cream/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-text-main dark:text-text-accent text-xl sm:text-[22px] placeholder-text-main/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all"
+                                        className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all"
                                     />
                                 </div>
 
                                 <div className="flex flex-col gap-3">
-                                    <label className="font-black text-text-main dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Alias Penulis</label>
+                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Alias Penulis</label>
                                     <input
                                         name="penulis_alias"
                                         type="text"
                                         required
                                         placeholder="Nama yang akan terukir di sampul..."
-                                        className="w-full h-[60px] bg-bg-cream/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-text-main dark:text-text-accent text-xl sm:text-[22px] placeholder-text-main/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all"
+                                        className="w-full h-[60px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-[1.5rem] px-8 font-bold italic text-brown-dark dark:text-text-accent text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 focus:ring-4 focus:ring-tan-primary/5 outline-none transition-all"
                                     />
                                 </div>
 
                                 <div className="flex flex-col gap-3">
-                                    <label className="font-black text-text-main dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Aliran Cerita (Genre)</label>
+                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Aliran Cerita (Genre)</label>
                                     {genres.length === 0 ? (
-                                        <p className="text-text-main/40 italic font-bold">Belum ada genre yang tersedia.</p>
+                                        <p className="text-brown-dark/40 italic font-bold">Belum ada genre yang tersedia.</p>
                                     ) : (
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-bg-cream/20 dark:bg-brown-dark/20 p-6 rounded-[1.5rem] border border-tan-primary/5">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-white/20 dark:bg-brown-dark/20 p-6 rounded-[1.5rem] border border-tan-primary/5">
                                             {genres.map(g => (
-                                                <label key={g.id} className="flex items-center space-x-3 text-text-main/60 dark:text-tan-light/60 cursor-pointer text-sm font-bold group transition-all hover:text-text-main dark:hover:text-text-accent italic">
-                                                    <input type="checkbox" name="genres" value={g.id} className="w-5 h-5 rounded-lg border-2 border-tan-primary/20 bg-bg-cream/40 dark:bg-brown-dark/40 text-text-main focus:ring-0 cursor-pointer transition-all checked:bg-text-main dark:checked:bg-tan-primary" />
+                                                <label key={g.id} className="flex items-center space-x-3 text-brown-dark/60 dark:text-tan-light/60 cursor-pointer text-sm font-bold group transition-all hover:text-brown-dark dark:hover:text-text-accent italic">
+                                                    <input type="checkbox" name="genres" value={g.id} className="w-5 h-5 rounded-lg border-2 border-tan-primary/20 bg-white/40 dark:bg-brown-dark/40 text-brown-dark focus:ring-0 cursor-pointer transition-all checked:bg-brown-dark" />
                                                     <span>{g.name}</span>
                                                 </label>
                                             ))}
@@ -238,7 +238,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                     <button
                                         type="button"
                                         onClick={() => setStep(2)}
-                                        className="group w-[193px] h-[65px] bg-text-main dark:bg-tan-primary text-bg-cream dark:text-brown-dark rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-text-main/20 dark:shadow-none"
+                                        className="group w-[193px] h-[65px] bg-brown-dark text-text-accent rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                     >
                                         Lanjut
                                     </button>
@@ -259,7 +259,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             <button
                                 type="submit"
                                 disabled={isPending}
-                                className="h-[65px] px-10 bg-text-main dark:bg-tan-primary hover:opacity-90 text-bg-cream dark:text-brown-dark rounded-full flex items-center justify-center gap-4 cursor-pointer disabled:opacity-50 transition-all shadow-xl shadow-text-main/20 dark:shadow-none group active:scale-95"
+                                className="h-[65px] px-10 bg-brown-dark hover:bg-brown-mid text-text-accent rounded-full flex items-center justify-center gap-4 cursor-pointer disabled:opacity-50 transition-all shadow-xl shadow-brown-dark/20 group active:scale-95"
                             >
                                 <span className="font-black text-xl uppercase tracking-[0.2em] italic">
                                     {isPending ? 'Mengukir...' : 'Unggah Karya'}
@@ -268,22 +268,22 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             </button>
                         </div>
 
-                        <div className="mb-8 w-full h-[80px] bg-bg-cream/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-2xl shadow-sm group focus-within:ring-4 focus-within:ring-tan-primary/5 transition-all">
+                        <div className="mb-8 w-full h-[80px] bg-white/40 dark:bg-brown-dark/40 border-2 border-tan-primary/10 dark:border-brown-mid rounded-2xl shadow-sm group focus-within:ring-4 focus-within:ring-tan-primary/5 transition-all">
                             <input
                                 type="text"
                                 name="bab_title"
                                 required
                                 placeholder="Masukkan Judul Bab Pertama..."
-                                className="w-full h-full bg-transparent px-10 font-bold italic text-text-main dark:text-text-accent text-2xl sm:text-3xl placeholder-text-main/20 dark:placeholder-tan-light/20 outline-none"
+                                className="w-full h-full bg-transparent px-10 font-bold italic text-brown-dark dark:text-text-accent text-2xl sm:text-3xl placeholder-brown-dark/20 dark:placeholder-tan-light/20 outline-none"
                             />
                         </div>
 
-                        <div className="w-full h-[500px] bg-bg-cream/30 dark:bg-brown-dark/30 border-2 border-tan-primary/5 dark:border-brown-mid rounded-3xl shadow-inner group focus-within:ring-4 focus-within:ring-tan-primary/5 transition-all overflow-hidden">
+                        <div className="w-full h-[500px] bg-white/30 dark:bg-brown-dark/30 border-2 border-tan-primary/5 dark:border-brown-mid rounded-3xl shadow-inner group focus-within:ring-4 focus-within:ring-tan-primary/5 transition-all overflow-hidden">
                             <textarea
                                 name="bab_content"
                                 required
                                 placeholder="Mulailah menggoreskan imajinasimu di sini..."
-                                className="w-full h-full bg-transparent px-10 pt-8 font-medium italic text-text-main dark:text-tan-light text-xl sm:text-[22px] placeholder-text-main/20 dark:placeholder-tan-light/20 outline-none resize-none leading-relaxed"
+                                className="w-full h-full bg-transparent px-10 pt-8 font-medium italic text-brown-dark dark:text-tan-light text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 outline-none resize-none leading-relaxed"
                             />
                         </div>
                     </div>
