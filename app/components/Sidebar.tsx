@@ -46,7 +46,7 @@ export default function Sidebar() {
                 </button>
 
                 {/* Logo Section */}
-                <Link href={session ? "/user/dashboard" : "/"} className={`flex flex-col items-center mb-10 transition-all duration-500 group/logo`}>
+                <Link href={session ? "/user/dashboard" : "/"} className={`flex flex-col items-center mb-6 lg:mb-10 transition-all duration-500 group/logo shrink-0`}>
                     <div className={`transition-all duration-500 bg-tan-primary/5 dark:bg-brown-mid/20 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
                         {/* New Brand Logo Placeholder */}
                         <Image
@@ -70,8 +70,8 @@ export default function Sidebar() {
                     )}
                 </Link>
 
-                {/* Navigation links */}
-                <nav className={`flex-grow space-y-4 py-4 px-1`}>
+                {/* Navigation links - Distributed evenly in middle space */}
+                <nav className={`flex-grow flex flex-col justify-evenly py-4 px-1 min-h-0 overflow-y-auto hide-scrollbar`}>
                     {navItems.map((item) => (
                         <Link
                             key={item.name}
@@ -79,27 +79,30 @@ export default function Sidebar() {
                             title={!isExpanded ? item.name : ''}
                             className={`flex items-center gap-4 transition-all duration-300 rounded-xl p-1.5 ${isExpanded ? 'justify-end pr-4' : 'justify-center'} ${isActive(item.href) ? 'text-text-main font-bold' : 'text-text-accent hover:text-white'}`}
                         >
-                            {isExpanded && <span className="font-open-sans text-sm whitespace-nowrap animate-in fade-in slide-in-from-right-2">{item.name}</span>}
+                            {isExpanded && <span className="font-open-sans text-xs whitespace-nowrap animate-in fade-in slide-in-from-right-2">{item.name}</span>}
                             <item.icon className={`shrink-0 transition-all duration-300 ${isExpanded ? 'w-4 h-4' : 'w-6 h-6'} ${isActive(item.href) ? 'text-text-accent scale-110' : 'text-text-accent'}`} />
                         </Link>
                     ))}
+                    
+                    {/* Studio Button - Moved inside centered nav to balance it better with items */}
+                    {session?.user && ['admin', 'author'].includes((session.user as any).role) && (
+                        <div className="">
+                            <Link
+                                href="/admin/dashboard"
+                                className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
+                                title={!isExpanded ? 'Studio Penulis' : ''}
+                            >
+                                <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
+                                    <Plus className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2.5} />
+                                </div>
+                                {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Studio Penulis</span>}
+                            </Link>
+                        </div>
+                    )}
                 </nav>
 
                 {/* Bottom Section */}
-                <div className={`mt-auto space-y-6 transition-all duration-500`}>
-                    {/* Studio Button - Only for Authors/Admins */}
-                    {session?.user && ['admin', 'author'].includes((session.user as any).role) && (
-                        <Link
-                            href="/admin/dashboard"
-                            className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
-                            title={!isExpanded ? 'Studio Penulis' : ''}
-                        >
-                            <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
-                                <Plus className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2.5} />
-                            </div>
-                            {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Studio Penulis</span>}
-                        </Link>
-                    )}
+                <div className={`mt-auto transition-all duration-500 shrink-0`}>
 
                     {/* Utils */}
                     <div className={`pt-6 border-t border-text-accent/20 space-y-4`}>
