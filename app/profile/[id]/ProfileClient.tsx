@@ -254,7 +254,7 @@ export default function ProfileClient({
                             </div>
                         ) : (
                             posts.map(post => (
-                                <div key={post.id} className="group bg-brown-dark rounded-[2.5rem] p-6 sm:p-8 border border-brown-dark shadow-2xl transition-all duration-500">
+                                <div key={post.id} className="group bg-brown-dark/[0.015] dark:bg-brown-dark/40 rounded-[2.5rem] p-6 sm:p-8 border border-brown-dark/5 hover:border-tan-primary/10 transition-all duration-500">
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white/10 border border-white/10 shadow-sm relative">
                                             {userProfile.avatar_url ? (
@@ -266,7 +266,7 @@ export default function ProfileClient({
                                             )}
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-black text-[13px] text-text-accent uppercase tracking-tight">{userProfile.display_name}</p>
+                                            <p className="font-black text-[13px] text-text-main dark:text-text-accent uppercase tracking-tight">{userProfile.display_name}</p>
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="w-3 h-3 text-tan-primary" />
                                                 <p className="text-[9px] text-tan-primary font-black uppercase tracking-widest">{new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
@@ -276,7 +276,7 @@ export default function ProfileClient({
                                         {(isOwnProfile || session?.user?.role === 'admin') && (
                                             <button 
                                                 onClick={() => handleDeletePost(post.id)}
-                                                className="p-2 text-tan-primary/40 hover:text-red-400 hover:bg-white/10 rounded-xl transition-all active:scale-90"
+                                                className="p-2 text-tan-primary/40 hover:text-red-400 hover:bg-brown-dark/5 rounded-xl transition-all active:scale-90"
                                                 title="Hapus Postingan"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -286,8 +286,8 @@ export default function ProfileClient({
 
                                     {/* Post Content with Quote Style */}
                                     <div className="mb-6 relative">
-                                        <div className="absolute -left-2 top-0 text-4xl text-white/5 font-serif inline-block">&quot;</div>
-                                        <p className="text-text-accent/90 whitespace-pre-wrap leading-relaxed font-medium text-[15px] italic">
+                                        <div className="absolute -left-2 top-0 text-4xl text-brown-dark/5 dark:text-white/5 font-serif inline-block">&quot;</div>
+                                        <p className="text-text-main/90 dark:text-text-accent/90 whitespace-pre-wrap leading-relaxed font-medium text-[15px] italic">
                                             {post.content}
                                         </p>
                                     </div>
@@ -307,13 +307,13 @@ export default function ProfileClient({
 
                                     <div className="flex gap-6 pt-5 border-t border-white/10">
                                         <PostLikeButton postId={post.id} initialLikes={post._count.likes} initialLikedByUser={session ? post.likes && post.likes.length > 0 : false} />
-                                        <div className="flex items-center gap-2 text-tan-primary hover:text-text-accent transition-colors cursor-pointer group/msg">
+                                        <div className="flex items-center gap-2 text-tan-primary hover:text-text-main dark:hover:text-text-accent transition-colors cursor-pointer group/msg">
                                             <MessageSquare className="w-4 h-4" />
                                             <span className="text-[10px] font-black uppercase tracking-widest">{post._count.comments}</span>
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 pt-6 border-t border-white/10">
+                                    <div className="mt-6 pt-6 border-t border-brown-dark/5 dark:border-white/10">
                                         <PostCommentSection postId={post.id} initialComments={post.comments || []} commentCount={post._count.comments} currentUserId={session?.user?.id} currentUserRole={session?.user?.role} />
                                     </div>
                                 </div>
