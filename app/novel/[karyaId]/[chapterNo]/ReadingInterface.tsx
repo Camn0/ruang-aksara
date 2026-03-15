@@ -16,7 +16,6 @@ interface ReadingInterfaceProps {
     novelTitle: string;
     chapterTitle: string | null;
     content: string;
-    contentHtml?: string | null;
     nextChapter?: number;
     prevChapter?: number;
     userReaction?: string;
@@ -30,7 +29,6 @@ export default function ReadingInterface({
     novelTitle,
     chapterTitle,
     content,
-    contentHtml,
     nextChapter,
     prevChapter,
     userReaction: initialUserReaction,
@@ -142,8 +140,8 @@ export default function ReadingInterface({
 
     return (
         <>
-            {/* Header Sticky Atas */}
-            <header className="px-4 h-16 bg-bg-cream/95 dark:bg-brown-dark/95 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-40 shadow-sm transition-all duration-300">
+            {/* Header Sticky Atas - Minimalist & Focus Friendly */}
+            <header className="px-4 h-16 bg-bg-cream/40 dark:bg-brown-dark/40 backdrop-blur-md border-b border-tan-primary/5 flex items-center justify-between sticky top-0 z-40 transition-all duration-500">
                 <Link href={`/novel/${karyaId}`} prefetch={false} className="p-2 -ml-2 text-brown-dark dark:text-text-accent hover:bg-tan-primary/10 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
@@ -153,11 +151,8 @@ export default function ReadingInterface({
                         className="w-full group focus:outline-none"
                     >
                         <div className="flex flex-col items-center">
-                            <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-[0.2em] mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <List className="w-2 h-2" /> Daftar Isi
-                            </div>
-                            <h1 className="font-black text-sm text-brown-dark dark:text-text-accent leading-none group-hover:text-tan-primary transition-colors">Bab {chapterNo}</h1>
-                            <p className="text-[10px] text-tan-primary/60 dark:text-tan-light truncate max-w-[180px] mx-auto font-black uppercase tracking-tighter mt-1">{chapterTitle || novelTitle}</p>
+                            <h1 className="font-black text-[13px] text-brown-dark/90 dark:text-text-accent leading-none group-hover:text-tan-primary transition-colors uppercase tracking-tight">Bab {chapterNo}</h1>
+                            <p className="text-[9px] text-tan-primary/40 dark:text-tan-light/40 truncate max-w-[150px] mx-auto font-black uppercase tracking-widest mt-1.5">{chapterTitle || novelTitle}</p>
                         </div>
                     </button>
                 </div>
@@ -231,14 +226,7 @@ export default function ReadingInterface({
                     className="prose dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-brown-dark dark:text-tan-light/90 font-serif max-w-none transition-all duration-200"
                     style={{ fontSize: `${fontSize}px` }}
                 >
-                    {contentHtml ? (
-                        <div 
-                            dangerouslySetInnerHTML={{ __html: contentHtml }} 
-                            className="[&_p]:mb-6 [&_p:last-child]:mb-0"
-                        />
-                    ) : (
-                        content
-                    )}
+                    {content}
                 </article>
 
                 {/* Reaction System */}
@@ -284,21 +272,21 @@ export default function ReadingInterface({
                 onClose={() => setIsOpenPicker(false)}
             />
 
-            {/* Bottom Floating Navigation - Adjusted Position (bottom-6) */}
+            {/* Bottom Floating Navigation - Zen & Harmonious */}
             <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 z-40 transition-all duration-300">
-                <div className="bg-stone-900/90 dark:bg-stone-900/95 backdrop-blur-2xl px-2 py-2 rounded-full flex items-center gap-2 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] border border-white/5">
+                <div className="bg-bg-cream/60 dark:bg-brown-dark/80 backdrop-blur-3xl px-2 py-2 rounded-full flex items-center gap-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] border border-tan-primary/10 dark:border-white/5">
                     {/* Previous Chapter Button */}
                     {prevChapter ? (
                         <Link 
                             href={`/novel/${karyaId}/${prevChapter}`} 
                             prefetch={false}
-                            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+                            className="w-12 h-12 flex items-center justify-center rounded-full bg-tan-primary/5 text-tan-primary hover:text-brown-dark hover:bg-tan-primary transition-all active:scale-90"
                             title="Bab Sebelumnya"
                         >
                             <ChevronLeft className="w-6 h-6" />
                         </Link>
                     ) : (
-                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/10 cursor-not-allowed">
+                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-tan-primary/[0.02] text-tan-primary/20 cursor-not-allowed">
                             <ChevronLeft className="w-6 h-6" />
                         </div>
                     )}
@@ -306,12 +294,12 @@ export default function ReadingInterface({
                     {/* Chapter Picker Trigger */}
                     <button
                         onClick={() => setIsOpenPicker(true)}
-                        className="flex items-center gap-3 px-6 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all active:scale-95 group"
+                        className="flex items-center gap-3 px-6 py-2 rounded-full border border-tan-primary/5 bg-tan-primary/5 hover:bg-tan-primary/10 transition-all active:scale-95 group"
                     >
-                        <span className="text-[12px] font-black text-white/90 uppercase tracking-[0.2em] italic">
+                        <span className="text-[11px] font-black text-brown-dark dark:text-text-accent uppercase tracking-[0.25em] italic">
                             Bab {chapterNo}
                         </span>
-                        <ChevronDown className="w-4 h-4 text-tan-primary group-hover:rotate-180 transition-transform duration-500" />
+                        <ChevronDown className="w-3 h-3 text-tan-primary group-hover:rotate-180 transition-transform duration-500" />
                     </button>
 
                     {/* Next Chapter Button */}
@@ -319,13 +307,13 @@ export default function ReadingInterface({
                         <Link 
                             href={`/novel/${karyaId}/${nextChapter}`} 
                             prefetch={false}
-                            className="w-12 h-12 flex items-center justify-center rounded-full bg-tan-primary text-brown-dark shadow-lg shadow-tan-primary/20 hover:scale-105 transition-all active:scale-90"
+                            className="w-12 h-12 flex items-center justify-center rounded-full bg-brown-dark text-text-accent shadow-lg shadow-brown-dark/10 hover:scale-105 transition-all active:scale-90"
                             title="Bab Selanjutnya"
                         >
                             <ChevronRight className="w-6 h-6" />
                         </Link>
                     ) : (
-                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/20 cursor-not-allowed" title="Bab Terakhir">
+                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-tan-primary/[0.02] text-tan-primary/20 cursor-not-allowed" title="Bab Terakhir">
                             <RotateCcw className="w-5 h-5 opacity-50" />
                         </div>
                     )}

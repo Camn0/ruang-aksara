@@ -158,7 +158,6 @@ export async function createBab(formData: FormData) {
                 chapter_no,
                 title,
                 content,
-                content_html: marked.parse(content) as string,
             }
         });
 
@@ -437,7 +436,6 @@ export async function editBab(formData: FormData) {
             where: { id },
             data: { 
                 content: content.trim(),
-                content_html: marked.parse(content.trim()) as string
             }
         });
 

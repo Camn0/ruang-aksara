@@ -26,7 +26,6 @@ const getCachedChapter = (karyaId: string, chapterNo: number) =>
                     chapter_no: true,
                     title: true,
                     content: true,
-                    content_html: true,
                     karya: {
                         select: {
                             id: true,
@@ -101,7 +100,6 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
                 novelTitle={(chapter as any).karya.title}
                 chapterTitle={(chapter as any).title}
                 content={chapter.content}
-                contentHtml={(chapter as any).content_html}
                 nextChapter={nextBab?.chapter_no}
                 prevChapter={prevBab?.chapter_no}
                 userReaction={userChapterReaction?.reaction_type}

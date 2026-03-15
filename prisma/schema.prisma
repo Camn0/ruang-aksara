@@ -100,7 +100,6 @@ model Bab {
   chapter_no Int       
   title      String?   // Judul bab opsional, fallback ke "Bab N" jika null
   content         String    @db.Text
-  content_html    String?   @db.Text
   created_at      DateTime  @default(now())
   comments   Comment[] 
   reactions  ChapterReaction[]
