@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { User } from 'lucide-react';
+import Image from 'next/image';
 import ThemeToggle from './ThemeToggle';
 
 // Mengapa: Navbar ini adalah Client Component agar bisa mendeteksi state user 
@@ -17,7 +18,7 @@ export default function Navbar() {
                     {/* Logo */}
                     <Link href={session ? "/user/dashboard" : "/"} className="flex items-center gap-3 group">
                         <div className="w-10 h-10 bg-white/10 rounded-lg overflow-hidden p-0.5 border border-tan-primary/10">
-                            <img src="/logoRuangAksara.webp" alt="Logo" className="w-full h-full object-cover rounded" />
+                            <Image src="/logoRuangAksara.webp" width={40} height={40} alt="Logo" className="w-full h-full object-cover rounded" />
                         </div>
                         <span className="font-lobster text-xl text-brown-dark dark:text-text-accent group-hover:text-tan-primary transition-colors">
                             Ruang Aksara

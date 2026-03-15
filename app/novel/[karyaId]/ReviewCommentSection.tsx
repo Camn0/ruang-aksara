@@ -5,6 +5,7 @@ import { UserCircle2, MessageSquare, Trash2, ChevronDown, ChevronUp } from 'luci
 import { deleteReviewComment } from '@/app/actions/review';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface ReviewCommentSectionProps {
     comments: any[];
@@ -65,7 +66,7 @@ export default function ReviewCommentSection({
                                 <div className="absolute left-[-4.5px] top-4 w-2 h-2 rounded-full bg-tan-primary/20 group-hover/comment:bg-tan-primary transition-colors" />
                                 <div className="w-9 h-9 rounded-xl overflow-hidden bg-tan-primary/5 shrink-0 border border-tan-primary/5 shadow-inner">
                                     {c.user?.avatar_url ? (
-                                        <img src={c.user.avatar_url} alt="" className="w-full h-full object-cover" />
+                                        <Image src={c.user.avatar_url} width={36} height={36} alt="" className="w-full h-full object-cover" />
                                     ) : (
                                         <UserCircle2 className="w-full h-full text-tan-primary/10" />
                                     )}

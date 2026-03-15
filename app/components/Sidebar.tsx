@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Home, Search, Menu, Info, User, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import Image from 'next/image';
 import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
 import { useSidebar } from './SidebarContext';
@@ -46,16 +47,20 @@ export default function Sidebar() {
                 <Link href={session ? "/user/dashboard" : "/"} className={`flex flex-col items-center mb-10 transition-all duration-500 group/logo`}>
                     <div className={`transition-all duration-500 bg-white/10 dark:bg-brown-mid/20 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
                         {/* New Brand Logo Placeholder */}
-                        <img
+                        <Image
                             src="/logoRuangAksara.webp"
+                            width={112}
+                            height={80}
                             alt="Ruang Aksara Logo"
                             className="w-full h-full object-cover rounded-2xl"
                         />
                     </div>
                     {isExpanded && (
                         <div className="w-full px-2 mt-1 flex justify-center animate-in fade-in slide-in-from-top-2 duration-700">
-                            <img
+                            <Image
                                 src="/ruangAksaraText.webp"
+                                width={120}
+                                height={40}
                                 alt="Ruang Aksara"
                                 className="h-10 w-auto object-contain brightness-110"
                             />

@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { updateUserProfile } from '@/app/actions/user';
 import { Save, Instagram, Twitter, Globe, Link2, UserCircle2, Camera, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import NextImage from 'next/image';
 
 interface SocialLinks {
     instagram?: string;
@@ -35,7 +36,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (event) => {
-                const img = new Image();
+                const img = document.createElement('img');
                 img.src = event.target?.result as string;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
@@ -108,7 +109,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-4 block ml-1">Sampul Profil</label>
                     <div className="w-full h-40 sm:h-48 bg-olive-banner rounded-[2.5rem] border border-brown-dark/10 overflow-hidden relative shadow-inner">
                         {bannerUrl ? (
-                            <img src={bannerUrl} className="w-full h-full object-cover" alt="Banner" />
+                            <NextImage src={bannerUrl} fill unoptimized className="w-full h-full object-cover" alt="Banner" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center opacity-10">
                                 <Globe className="w-12 h-12 text-brown-dark" />
@@ -150,7 +151,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     <div className="flex gap-6 items-center">
                         <div className="w-20 h-20 rounded-[1.5rem] overflow-hidden bg-brown-dark/5 border border-brown-dark/10 shrink-0 shadow-sm relative group">
                             {avatarUrl ? (
-                                <img src={avatarUrl} alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" />
+                                <NextImage src={avatarUrl} width={80} height={80} unoptimized alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center">
                                     <UserCircle2 className="w-8 h-8 text-brown-dark/10" strokeWidth={1.5} />

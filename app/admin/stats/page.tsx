@@ -64,7 +64,9 @@ export default async function AnalyticsOverviewPage() {
     const [works, totalFollowers, recentFollowers] = await Promise.all([
         prisma.karya.findMany({
             where: session.user.role === 'admin' ? undefined : { uploader_id: session.user.id },
-            include: {
+            select: {
+                id: true,
+                total_views: true,
                 bab: { select: { created_at: true } },
                 bookmarks: { select: { updated_at: true } },
                 ratings: {

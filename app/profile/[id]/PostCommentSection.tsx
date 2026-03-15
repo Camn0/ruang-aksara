@@ -89,7 +89,7 @@ export default function PostCommentSection({ postId, initialComments, commentCou
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-[13px] leading-relaxed">
-                                    <Link href={`/profile/${c.user?.username}`} className="font-black text-text-main dark:text-text-accent uppercase tracking-tight text-[11px] block mb-1 hover:text-tan-primary transition-colors">{c.user?.display_name}</Link>{' '}
+                                    <Link href={`/profile/${c.user?.username}`} prefetch={false} className="font-black text-text-main dark:text-text-accent uppercase tracking-tight text-[11px] block mb-1 hover:text-tan-primary transition-colors">{c.user?.display_name}</Link>{' '}
                                     <span className="text-text-main/70 dark:text-tan-light font-medium italic">&quot;{c.content}&quot;</span>
                                 </p>
                                 <p className="text-[8px] text-tan-primary/40 font-black uppercase tracking-widest mt-2">{new Date(c.created_at).toLocaleDateString('id-ID')}</p>

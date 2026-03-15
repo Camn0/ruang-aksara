@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { BarChart, Star, Bookmark, BookOpen, ArrowLeft, TrendingUp, Eye, ChevronRight, MessageSquare, Sparkles, Heart, Flame, Zap, ThumbsUp, Info, Clock, Users } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
@@ -91,11 +92,17 @@ export default async function StatsPage({ params }: { params: { type: string } }
     // Fetch data with specific includes to satisfy complex analytics
     const rawWorks = await prisma.karya.findMany({
         where: session.user.role === 'admin' ? undefined : { uploader_id: session.user.id },
-        include: {
+        select: {
+            id: true,
+            title: true,
+            total_views: true,
+            avg_rating: true,
+            cover_url: true,
+            uploader_id: true,
             _count: {
                 select: { bookmarks: true, ratings: true, reviews: true }
             },
-            genres: true,
+            genres: { select: { id: true, name: true } },
             bab: {
                 select: { 
                     id: true, 
@@ -117,7 +124,10 @@ export default async function StatsPage({ params }: { params: { type: string } }
             },
             reviews: {
                 orderBy: { upvotes: { _count: 'desc' } },
-                include: {
+                select: {
+                    id: true,
+                    content: true,
+                    created_at: true,
                     user: { select: { display_name: true, avatar_url: true } },
                     _count: { select: { upvotes: true } }
                 }
@@ -481,8 +491,8 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                     <div key={work.id} className="bg-white/40 dark:bg-brown-mid/20 rounded-[3rem] p-10 border border-text-main/5 dark:border-white/5 group transition-all hover:shadow-2xl hover:bg-white dark:hover:bg-brown-mid/30">
                                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
                                             <div className="flex gap-10 items-start">
-                                                <div className="w-24 h-36 rounded-2xl overflow-hidden bg-tan-primary/10 shrink-0 shadow-2xl border-4 border-white/50 dark:border-white/5 group-hover:scale-105 transition-transform">
-                                                    {work.cover_url ? <img src={work.cover_url} alt={work.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center p-4 text-center text-[10px] font-black uppercase opacity-20">{work.title}</div>}
+                                                <div className="w-24 h-36 rounded-2xl overflow-hidden bg-tan-primary/10 shrink-0 shadow-2xl border-4 border-white/50 dark:border-white/5 group-hover:scale-105 transition-transform relative">
+                                                    {work.cover_url ? <Image src={work.cover_url} width={96} height={144} alt={work.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center p-4 text-center text-[10px] font-black uppercase opacity-20">{work.title}</div>}
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center gap-3 mb-2">

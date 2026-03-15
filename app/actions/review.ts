@@ -4,6 +4,22 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const UpvoteSchema = z.object({
+    reviewId: z.string().uuid(),
+    path: z.string().min(1).startsWith("/"),
+});
+
+const ReviewCommentSchema = z.object({
+    review_id: z.string().uuid(),
+    content: z.string().min(1, "Komentar tidak boleh kosong").max(1000),
+});
+
+const DeleteSchema = z.object({
+    id: z.string().uuid(),
+    path: z.string().min(1).startsWith("/"),
+});
 
 // ==============================================================================
 // 1. MUTASI USER: TOGGLE UPVOTE PADA REVIEW
@@ -27,6 +43,10 @@ import { revalidatePath } from "next/cache";
  */
 export async function toggleReviewUpvote(reviewId: string, path: string) {
     try {
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = UpvoteSchema.safeParse({ reviewId, path });
+        if (!validation.success) return { error: "Invalid input data." };
+
         // [A] Validasi Sesi — harus login untuk bisa upvote
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
@@ -95,9 +115,10 @@ export async function submitReviewComment(formData: FormData) {
         const review_id = formData.get('review_id') as string;
         const content = formData.get('content') as string;
 
-        // [C] Validasi Input — review_id dan content wajib ada
-        if (!review_id || !content || content.trim().length === 0) {
-            return { error: "Komentar tidak boleh kosong." };
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = ReviewCommentSchema.safeParse({ review_id, content: content?.trim() });
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
         // [D] Mutasi Database — simpan komentar review baru
@@ -110,7 +131,16 @@ export async function submitReviewComment(formData: FormData) {
         });
 
         // [E] Revalidate cache halaman novel detail
-        // Mengapa '/novel/[karyaId]': komentar review ditampilkan di halaman detail novel.
+        // Kita juga invalidate tag karya karena fetchKaryaDetail mungkin menampilkan count komentar
+        const review = await prisma.review.findUnique({
+            where: { id: review_id },
+            select: { karya_id: true }
+        });
+        if (review) {
+            const { revalidateTag } = await import('next/cache');
+            revalidateTag(`karya-${review.karya_id}`);
+        }
+
         revalidatePath('/novel/[karyaId]');
         return { success: true };
     } catch (e) {
@@ -124,12 +154,20 @@ export async function submitReviewComment(formData: FormData) {
  */
 export async function deleteReview(reviewId: string, path: string) {
     try {
+        const validation = DeleteSchema.safeParse({ id: reviewId, path });
+        if (!validation.success) return { error: "Invalid input data." };
+
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
 
         const review = await prisma.review.findUnique({
             where: { id: reviewId },
-            include: { karya: { select: { uploader_id: true } } }
+            select: {
+                id: true,
+                user_id: true,
+                karya_id: true,
+                karya: { select: { uploader_id: true } }
+            }
         });
 
         if (!review) return { error: "Ulasan tidak ditemukan." };
@@ -143,8 +181,31 @@ export async function deleteReview(reviewId: string, path: string) {
             return { error: "Tidak memiliki izin untuk menghapus ulasan ini." };
         }
 
-        await prisma.review.delete({ where: { id: reviewId } });
+        const karyaId = review.karya_id as any; // We need this for invalidation
+        
+        await prisma.$transaction(async (tx) => {
+            // [D.1] Hapus ulasan
+            await tx.review.delete({ where: { id: reviewId } });
 
+            // [D.2] Update Stats Karya (Average Rating & Total Reviews)
+            const allRatings = await tx.rating.findMany({
+                where: { karya_id: karyaId },
+                select: { score: true }
+            });
+
+            const newTotalReviews = await tx.review.count({ where: { karya_id: karyaId } });
+            const avgRating = allRatings.length > 0 
+                ? allRatings.reduce((acc, r) => acc + r.score, 0) / allRatings.length 
+                : 0;
+
+            await tx.karya.update({
+                where: { id: karyaId },
+                data: { avg_rating: avgRating }
+            });
+        });
+
+        // [E] Revalidate cache
+        import('next/cache').then(m => m.revalidateTag(`karya-${karyaId}`));
         revalidatePath(path);
         return { success: true };
     } catch (e) {
@@ -158,12 +219,24 @@ export async function deleteReview(reviewId: string, path: string) {
  */
 export async function deleteReviewComment(commentId: string, path: string) {
     try {
+        const validation = DeleteSchema.safeParse({ id: commentId, path });
+        if (!validation.success) return { error: "Invalid input data." };
+
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
 
         const comment = await (prisma as any).reviewComment.findUnique({
             where: { id: commentId },
-            include: { review: { include: { karya: { select: { uploader_id: true } } } } }
+            select: {
+                id: true,
+                user_id: true,
+                review: {
+                    select: {
+                        karya_id: true,
+                        karya: { select: { uploader_id: true, id: true } }
+                    }
+                }
+            }
         });
 
         if (!comment) return { error: "Komentaran tidak ditemukan." };
@@ -179,6 +252,10 @@ export async function deleteReviewComment(commentId: string, path: string) {
 
         await (prisma as any).reviewComment.delete({ where: { id: commentId } });
 
+        // [E] Revalidate cache
+        const karyaId = comment.review.karya_id;
+        const { revalidateTag } = await import('next/cache');
+        revalidateTag(`karya-${karyaId}`);
         revalidatePath(path);
         return { success: true };
     } catch (e) {

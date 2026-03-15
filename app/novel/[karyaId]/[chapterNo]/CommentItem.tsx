@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { UserCircle2, CornerDownRight, Trash2, Pin, PinOff, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import DeleteCommentButton from './DeleteCommentButton';
 import CommentForm from './CommentForm';
@@ -130,11 +131,11 @@ export default function CommentItem({
 
                 <div className="flex-1 min-w-0 flex gap-3 items-start">
                     {/* Avatar */}
-                    <Link href={`/profile/${comment.user.username}`} className="shrink-0 relative z-10 pt-1">
+                    <Link href={`/profile/${comment.user.username}`} prefetch={false} className="shrink-0 relative z-10 pt-1">
                         <div className={`rounded-xl overflow-hidden bg-bg-cream dark:bg-brown-mid border-2 border-tan-primary/5 dark:border-brown-mid group-hover:border-tan-primary transition-all shadow-sm ${depth === 0 ? 'w-10 h-10' : 'w-8 h-8'}`}>
-                            {comment.user.avatar_url ? (
-                                <img src={comment.user.avatar_url} alt={comment.user.display_name} className="w-full h-full object-cover" />
-                            ) : (
+                                {comment.user.avatar_url ? (
+                                    <Image src={comment.user.avatar_url} width={40} height={40} alt={comment.user.display_name} className="w-full h-full object-cover" />
+                                ) : (
                                 <UserCircle2 className="w-full h-full text-gray-300" />
                             )}
                         </div>
@@ -143,7 +144,7 @@ export default function CommentItem({
                     <div className="flex-1 min-w-0">
                         {/* Header */}
                         <div className="flex items-center gap-2 mb-1 flex-wrap pt-1">
-                            <Link href={`/profile/${comment.user.username}`} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight italic">
+                            <Link href={`/profile/${comment.user.username}`} prefetch={false} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight italic">
                                 {comment.user.display_name}
                             </Link>
                             {isAuthor && (

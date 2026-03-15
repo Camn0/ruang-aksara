@@ -7,7 +7,7 @@ import { List, X, ChevronRight, BookOpen, Clock, ArrowRight } from 'lucide-react
 interface ChapterPickerProps {
     karyaId: string;
     currentChapterNo: number;
-    chapters: { chapter_no: number; title: string | null }[];
+    chapters?: { chapter_no: number; title: string | null }[];
     isOpen?: boolean;
     onClose?: () => void;
 }
@@ -20,10 +20,35 @@ export default function ChapterPicker({
     onClose: controlledOnClose
 }: ChapterPickerProps) {
     const [internalIsOpen, setInternalIsOpen] = useState(false);
+    // Chapters State for internal management if not passed as prop
+    const [chaptersData, setChaptersData] = useState<{ chapter_no: number; title: string | null }[]>(chapters || []);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Support both controlled and uncontrolled
     const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
-    const setIsOpen = controlledOnClose !== undefined ? controlledOnClose : setInternalIsOpen;
+    const setIsOpen = (val: boolean) => {
+        if (controlledOnClose) controlledOnClose();
+        else setInternalIsOpen(val);
+    };
+
+    // Auto-fetch if opened and no chapters
+    useEffect(() => {
+        const fetchChapters = async () => {
+            if (isOpen && chaptersData.length === 0 && !isLoading) {
+                setIsLoading(true);
+                try {
+                    const { getKaryaChapters } = await import('@/app/actions/chapter');
+                    const data = await getKaryaChapters(karyaId);
+                    setChaptersData(data);
+                } catch (err) {
+                    console.error("Failed to fetch chapters:", err);
+                } finally {
+                    setIsLoading(false);
+                }
+            }
+        };
+        fetchChapters();
+    }, [isOpen, chaptersData.length, karyaId, isLoading]);
 
     // Close on escape key
     useEffect(() => {
@@ -66,7 +91,9 @@ export default function ChapterPicker({
                             Goresan Bab
                         </h3>
                         <div className="flex items-center gap-3 mt-2.5">
-                            <span className="text-[10px] font-black bg-brown-dark text-text-accent px-3 py-1 rounded-full uppercase tracking-widest italic shadow-lg shadow-brown-dark/10">{chapters.length} Bab Terukir</span>
+                            <span className="text-[10px] font-black bg-brown-dark text-text-accent px-3 py-1 rounded-full uppercase tracking-widest italic shadow-lg shadow-brown-dark/10">
+                                {isLoading ? '...' : chaptersData.length} Bab Terukir
+                            </span>
                             <span className="w-1 h-1 bg-tan-primary/20 rounded-full"></span>
                             <span className="text-[10px] font-black text-tan-primary/40 uppercase tracking-[0.2em] italic">Serial Karya</span>
                         </div>
@@ -81,47 +108,54 @@ export default function ChapterPicker({
 
                 {/* Chapters List */}
                 <div className="flex-1 overflow-y-auto px-4 py-4 hide-scrollbar">
-                    <div className="space-y-2">
-                        {chapters.map((ch) => {
-                            const isActive = ch.chapter_no === currentChapterNo;
-                            return (
-                                <Link
-                                    key={ch.chapter_no}
-                                    href={`/novel/${karyaId}/${ch.chapter_no}`}
-                                    onClick={() => setIsOpen(false)}
-                                    className={`flex items-center gap-4 px-8 py-6 rounded-[2.5rem] transition-all group relative overflow-hidden border ${isActive
-                                        ? 'bg-brown-dark text-text-accent border-brown-dark shadow-2xl shadow-brown-dark/20 translate-x-2'
-                                        : 'bg-bg-cream/50 dark:bg-brown-dark/40 border-tan-primary/5 dark:border-brown-mid hover:border-tan-primary/20 hover:bg-tan-primary/5'
-                                        }`}
-                                >
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 shadow-inner ${isActive ? 'bg-white/10' : 'bg-tan-primary/5 dark:bg-brown-mid text-tan-primary/40'}`}>
-                                        {ch.chapter_no}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h4 className={`text-sm font-black truncate leading-tight uppercase tracking-tight italic ${isActive ? 'text-text-accent' : 'text-brown-dark dark:text-text-accent'}`}>
-                                            {ch.title || `Bab ${ch.chapter_no}`}
-                                        </h4>
-                                        <div className="flex items-center gap-2 mt-1.5">
-                                            {isActive ? (
-                                                <span className="text-[8px] font-black uppercase tracking-[0.2em] text-text-accent/40 italic">Sedang Dijelajahi</span>
-                                            ) : (
-                                                <div className="flex items-center gap-2">
-                                                    <Clock className="w-3 h-3 text-tan-primary/20" />
-                                                    <span className="text-[9px] font-black text-tan-primary/40 uppercase tracking-widest italic">Tersedia</span>
-                                                </div>
-                                            )}
+                    {isLoading ? (
+                        <div className="flex flex-col items-center justify-center h-64 gap-4">
+                            <div className="w-8 h-8 border-4 border-tan-primary/20 border-t-tan-primary rounded-full animate-spin" />
+                            <p className="text-[10px] font-black text-tan-primary/40 uppercase tracking-[0.2em]">Menenun Daftar...</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-2">
+                            {chaptersData.map((ch) => {
+                                const isActive = ch.chapter_no === currentChapterNo;
+                                return (
+                                    <Link
+                                        key={ch.chapter_no}
+                                        href={`/novel/${karyaId}/${ch.chapter_no}`}
+                                        onClick={() => setIsOpen(false)}
+                                        className={`flex items-center gap-4 px-8 py-6 rounded-[2.5rem] transition-all group relative overflow-hidden border ${isActive
+                                            ? 'bg-brown-dark text-text-accent border-brown-dark shadow-2xl shadow-brown-dark/20 translate-x-2'
+                                            : 'bg-bg-cream/50 dark:bg-brown-dark/40 border-tan-primary/5 dark:border-brown-mid hover:border-tan-primary/20 hover:bg-tan-primary/5'
+                                            }`}
+                                    >
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 shadow-inner ${isActive ? 'bg-white/10' : 'bg-tan-primary/5 dark:bg-brown-mid text-tan-primary/40'}`}>
+                                            {ch.chapter_no}
                                         </div>
-                                    </div>
-                                    <ChevronRight className={`w-5 h-5 transition-transform group-hover:translate-x-1.5 ${isActive ? 'text-text-accent' : 'text-tan-primary/20'}`} />
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className={`text-sm font-black truncate leading-tight uppercase tracking-tight italic ${isActive ? 'text-text-accent' : 'text-brown-dark dark:text-text-accent'}`}>
+                                                {ch.title || `Bab ${ch.chapter_no}`}
+                                            </h4>
+                                            <div className="flex items-center gap-2 mt-1.5">
+                                                {isActive ? (
+                                                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-text-accent/40 italic">Sedang Dijelajahi</span>
+                                                ) : (
+                                                    <div className="flex items-center gap-2">
+                                                        <Clock className="w-3 h-3 text-tan-primary/20" />
+                                                        <span className="text-[9px] font-black text-tan-primary/40 uppercase tracking-widest italic">Tersedia</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <ChevronRight className={`w-5 h-5 transition-transform group-hover:translate-x-1.5 ${isActive ? 'text-text-accent' : 'text-tan-primary/20'}`} />
 
-                                    {/* Reflection Effect for Active */}
-                                    {isActive && (
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-                                    )}
-                                </Link>
-                            );
-                        })}
-                    </div>
+                                        {/* Reflection Effect for Active */}
+                                        {isActive && (
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                                        )}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
 
                 {/* Footer / Quick Navigation Action */}

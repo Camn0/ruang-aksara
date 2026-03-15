@@ -19,7 +19,7 @@ export default async function EditProfilePage() {
     return (
         <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-24 transition-colors duration-500">
             <header className="px-6 h-16 bg-bg-cream dark:bg-brown-dark border-b border-brown-dark/5 flex items-center justify-between sticky top-0 z-50 transition-colors">
-                <Link href={`/profile/${userProfile.username}`} className="p-2 -ml-2 text-text-main dark:text-text-accent hover:bg-brown-dark/5 rounded-full transition-all active:scale-95">
+                <Link href={`/profile/${userProfile.username}`} prefetch={false} className="p-2 -ml-2 text-text-main dark:text-text-accent hover:bg-brown-dark/5 rounded-full transition-all active:scale-95">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <h1 className="font-open-sans font-black text-lg text-text-main dark:text-text-accent italic absolute left-1/2 -translate-x-1/2">Edit Profil</h1>

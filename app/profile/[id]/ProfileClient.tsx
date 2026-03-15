@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useTransition } from 'react';
 import { toast } from "sonner";
+import Image from "next/image";
 import Link from 'next/link';
 import {
     ArrowLeft, UserCircle2, Settings, TrendingUp, BookMarked,
@@ -148,9 +149,9 @@ export default function ProfileClient({
                                         {/* Cover Section */}
                                         <div className="w-32 h-48 sm:w-36 sm:h-52 shrink-0 relative">
                                             <div className="absolute inset-0 bg-brown-dark/10 rounded-[1.2rem] blur-xl group-hover/card:blur-2xl transition-all opacity-40 -z-10 translate-y-2"></div>
-                                            <Link href={`/novel/${karya.id}`} className="block w-full h-full rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/5 shadow-md relative z-10 transition-transform group-hover/card:-translate-y-1 duration-500">
+                                            <Link href={`/novel/${karya.id}`} prefetch={false} className="block w-full h-full rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/5 shadow-md relative z-10 transition-transform group-hover/card:-translate-y-1 duration-500">
                                                 {karya.cover_url ? (
-                                                    <img src={karya.cover_url} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700" alt={karya.title} />
+                                                    <Image src={karya.cover_url} width={144} height={208} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700" alt={karya.title} />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center p-4 text-center bg-tan-light/5">
                                                         <span className="text-[9px] font-black text-brown-mid/30 uppercase tracking-tighter">{karya.title}</span>
@@ -164,7 +165,7 @@ export default function ProfileClient({
                                             <div>
                                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                                                     <div className="flex-1">
-                                                        <Link href={`/novel/${karya.id}`}>
+                                                        <Link href={`/novel/${karya.id}`} prefetch={false}>
                                                             <h3 className="text-xl sm:text-2xl font-open-sans font-black text-text-main dark:text-text-accent italic leading-tight hover:text-tan-primary transition-colors">
                                                                 {karya.title}
                                                             </h3>
@@ -220,10 +221,10 @@ export default function ProfileClient({
                                             {/* Author Actions */}
                                             {isOwnProfile && (
                                                 <div className="flex items-center justify-center sm:justify-start gap-3 mt-2">
-                                                    <Link href={`/admin/editor/karya/${karya.id}`} className="flex items-center gap-2 px-4 py-2 bg-brown-dark text-text-accent text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-brown-mid shadow-lg shadow-brown-dark/10 transition-all active:scale-95 group/btn">
+                                                    <Link href={`/admin/editor/karya/${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-brown-dark text-text-accent text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-brown-mid shadow-lg shadow-brown-dark/10 transition-all active:scale-95 group/btn">
                                                         <PenTool className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" /> Kelola
                                                     </Link>
-                                                    <Link href={`/admin/editor/upload?karyaId=${karya.id}`} className="flex items-center gap-2 px-4 py-2 bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95">
+                                                    <Link href={`/admin/editor/upload?karyaId=${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95">
                                                         <Plus className="w-3 h-3" /> Tambah Bab
                                                     </Link>
                                                 </div>
@@ -257,7 +258,7 @@ export default function ProfileClient({
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white/10 border border-white/10 shadow-sm relative">
                                             {userProfile.avatar_url ? (
-                                                <img src={userProfile.avatar_url} className="w-full h-full object-cover" alt="" />
+                                                <Image src={userProfile.avatar_url} width={48} height={48} className="w-full h-full object-cover" alt="" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-white/5">
                                                     <UserCircle2 className="w-6 h-6 text-white/20" />
@@ -286,16 +287,25 @@ export default function ProfileClient({
                                     {/* Post Content with Quote Style */}
                                     <div className="mb-6 relative">
                                         <div className="absolute -left-2 top-0 text-4xl text-white/5 font-serif inline-block">&quot;</div>
-                                        <p className="text-text-accent/90 whitespace-pre-wrap leading-relaxed font-medium text-[15px] italic">
-                                            {post.content}
-                                        </p>
+                                        {post.content_html ? (
+                                            <div 
+                                                className="text-text-accent/90 leading-relaxed font-medium text-[15px] italic prose prose-invert max-w-none"
+                                                dangerouslySetInnerHTML={{ __html: post.content_html }}
+                                            />
+                                        ) : (
+                                            <p className="text-text-accent/90 whitespace-pre-wrap leading-relaxed font-medium text-[15px] italic">
+                                                {post.content}
+                                            </p>
+                                        )}
                                     </div>
 
                                     {/* Post Image Display */}
                                     {post.image_url && (
                                         <div className="mb-8 rounded-[2rem] overflow-hidden border border-white/5 shadow-lg group-hover:shadow-xl transition-all duration-500">
-                                            <img 
+                                            <Image 
                                                 src={post.image_url} 
+                                                width={800}
+                                                height={500}
                                                 alt="Post attachment" 
                                                 className="w-full h-auto max-h-[500px] object-cover hover:scale-[1.02] transition-transform duration-700"
                                             />
@@ -365,12 +375,19 @@ export default function ProfileClient({
                                                 </div>
                                             </div>
                                             <div>
-                                                <Link href={`/novel/${review.karya.id}`} className="text-[11px] font-black text-tan-primary hover:text-brown-dark transition-colors mb-2 block uppercase tracking-tight">
+                                                <Link href={`/novel/${review.karya.id}`} prefetch={false} className="text-[11px] font-black text-tan-primary hover:text-brown-dark transition-colors mb-2 block uppercase tracking-tight">
                                                     {review.karya.title}
                                                 </Link>
                                                 <div className="relative">
                                                     <div className="absolute -left-2 top-0 opacity-10 text-2xl font-serif">&quot;</div>
-                                                    <p className="text-sm text-text-main/80 dark:text-gray-300 italic font-medium leading-relaxed">&quot;{review.content}&quot;</p>
+                                                    {review.content_html ? (
+                                                        <div 
+                                                            className="text-sm text-text-main/80 dark:text-gray-300 italic font-medium leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+                                                            dangerouslySetInnerHTML={{ __html: review.content_html }}
+                                                        />
+                                                    ) : (
+                                                        <p className="text-sm text-text-main/80 dark:text-gray-300 italic font-medium leading-relaxed">&quot;{review.content}&quot;</p>
+                                                    )}
                                                 </div>
                                                 <p className="text-[8px] text-tan-primary/40 font-black uppercase mt-4 tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID')}</p>
                                             </div>
@@ -392,7 +409,7 @@ export default function ProfileClient({
                                 <div className="space-y-6">
                                     {comments.map(comment => (
                                         <div key={comment.id} className="group flex flex-col gap-3">
-                                            <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} className="text-[9px] font-black text-tan-primary/60 uppercase tracking-widest hover:text-brown-dark transition-all flex items-center gap-2 px-4 italic">
+                                            <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} prefetch={false} className="text-[9px] font-black text-tan-primary/60 uppercase tracking-widest hover:text-brown-dark transition-all flex items-center gap-2 px-4 italic">
                                                 <BookOpen className="w-3 h-3 opacity-30" />
                                                 {comment.bab.karya.title} <span className="text-tan-primary/20">—</span> <span className="text-text-main dark:text-white group-hover:underline">Bab {comment.bab.chapter_no}</span>
                                             </Link>
@@ -414,9 +431,9 @@ export default function ProfileClient({
                     <div className="divide-y divide-brown-dark/5 animate-in fade-in duration-500">
                         {followers.length === 0 ? <div className="py-20 text-center text-[10px] text-tan-primary font-black uppercase tracking-widest italic">Belum ada pengikut</div> :
                             followers.map(f => (
-                                <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-5 p-6 hover:bg-brown-dark/[0.04] transition-all group rounded-[2.5rem]">
+                                <Link key={f.id} href={`/profile/${f.username}`} prefetch={false} className="flex items-center gap-5 p-6 hover:bg-brown-dark/[0.04] transition-all group rounded-[2.5rem]">
                                     <div className="w-16 h-16 rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/10 group-hover:border-tan-primary transition-all relative">
-                                        {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
+                                        {f.avatar_url ? <Image src={f.avatar_url} width={64} height={64} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
                                     </div>
                                     <div>
                                         <p className="font-open-sans font-black text-sm text-text-main dark:text-text-accent group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
@@ -435,9 +452,9 @@ export default function ProfileClient({
                     <div className="divide-y divide-brown-dark/5 animate-in fade-in duration-500">
                         {following.length === 0 ? <div className="py-20 text-center text-[10px] text-tan-primary font-black uppercase tracking-widest italic">Belum mengikuti siapapun</div> :
                             following.map(f => (
-                                <Link key={f.id} href={`/profile/${f.username}`} className="flex items-center gap-5 p-6 hover:bg-brown-dark/[0.04] transition-all group rounded-[2.5rem]">
+                                <Link key={f.id} href={`/profile/${f.username}`} prefetch={false} className="flex items-center gap-5 p-6 hover:bg-brown-dark/[0.04] transition-all group rounded-[2.5rem]">
                                     <div className="w-16 h-16 rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/10 group-hover:border-tan-primary transition-all relative">
-                                        {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
+                                        {f.avatar_url ? <Image src={f.avatar_url} width={64} height={64} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
                                     </div>
                                     <div>
                                         <p className="font-open-sans font-black text-sm text-text-main dark:text-text-accent group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
@@ -485,13 +502,13 @@ export default function ProfileClient({
         <div className="min-h-screen bg-bg-cream dark:bg-brown-dark transition-colors duration-500 pb-20">
             {/* Header / Nav - Simplified for Premium Feel */}
             <header className="px-4 h-16 flex items-center justify-between absolute top-0 w-full z-50 text-white">
-                <Link href="/" className="p-2 -ml-2 hover:bg-white/10 rounded-full transition-all active:scale-95">
+                <Link href="/" prefetch={false} className="p-2 -ml-2 hover:bg-white/10 rounded-full transition-all active:scale-95">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <div className="flex items-center gap-2">
                     <ThemeToggle />
                     {isOwnProfile && (
-                        <Link href="/profile/settings" className="p-2 -mr-2 text-white/70 hover:text-white transition-colors">
+                        <Link href="/profile/settings" prefetch={false} className="p-2 -mr-2 text-white/70 hover:text-white transition-colors">
                             <Settings className="w-6 h-6" />
                         </Link>
                     )}
@@ -501,7 +518,7 @@ export default function ProfileClient({
             {/* Profile Banner Segment */}
             <div className="h-48 sm:h-56 bg-olive-banner relative overflow-hidden">
                 {userProfile.banner_url && (
-                    <img src={userProfile.banner_url} className="w-full h-full object-cover" alt="" />
+                    <Image src={userProfile.banner_url} width={1200} height={300} className="w-full h-full object-cover" alt="" />
                 )}
                 {/* Subtle Decorative Elements for "Journal" feel */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -515,7 +532,7 @@ export default function ProfileClient({
                 <div className="relative -mt-16 sm:-mt-20 mb-6">
                     <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-[2.5rem] overflow-hidden bg-brown-dark border-[5px] border-bg-cream dark:border-brown-dark shadow-xl shadow-brown-dark/10 transition-all duration-500 relative z-10">
                         {userProfile.avatar_url ? (
-                            <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                            <Image src={userProfile.avatar_url} width={144} height={144} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-brown-mid">
                                 <UserCircle2 className="w-16 h-16 text-text-accent/20" strokeWidth={1} />
@@ -542,13 +559,13 @@ export default function ProfileClient({
 
                         <div className="shrink-0 mb-1">
                             {isOwnProfile ? (
-                                <Link href="/profile/edit" className="bg-brown-dark text-text-accent w-[135px] h-[39px] flex items-center justify-center rounded-[65px] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-lg active:scale-95">
+                                <Link href="/profile/edit" prefetch={false} className="bg-brown-dark text-text-accent w-[135px] h-[39px] flex items-center justify-center rounded-[65px] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-lg active:scale-95">
                                     Edit
                                 </Link>
                             ) : session ? (
                                 <FollowButton targetUserId={userProfile.id} initialIsFollowing={isFollowing} />
                             ) : (
-                                <Link href="/onboarding" className="bg-brown-dark text-text-accent w-[135px] h-[39px] flex items-center justify-center rounded-[65px] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-lg active:scale-95">
+                                <Link href="/onboarding" prefetch={false} className="bg-brown-dark text-text-accent w-[135px] h-[39px] flex items-center justify-center rounded-[65px] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-lg active:scale-95">
                                     + Ikuti
                                 </Link>
                             )}

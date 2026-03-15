@@ -4,7 +4,30 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
+import { marked } from 'marked';
+import { z } from 'zod';
+
+const BabSchema = z.object({
+    karya_id: z.string().uuid(),
+    chapter_no: z.number().int().min(1),
+    title: z.string().min(1, "Judul bab tidak boleh kosong").max(200),
+    content: z.string().min(10, "Konten bab terlalu pendek"),
+});
+
+const KaryaSchema = z.object({
+    title: z.string().min(1, "Judul karya wajib diisi").max(200),
+    penulis_alias: z.string().max(100).nullable().optional(),
+    deskripsi: z.string().max(2000).nullable().optional(),
+    cover_url: z.string().url().nullable().optional().or(z.literal("")),
+    genreIds: z.array(z.string().uuid()),
+});
+
+const GenreSchema = z.object({
+    name: z.string().min(1, "Nama genre wajib diisi").max(50),
+});
+
+const IdSchema = z.string().uuid();
 
 // ==============================================================================
 // 1. MUTASI ADMIN/AUTHOR: MEMBUAT KARYA BARU
@@ -38,16 +61,23 @@ export async function createKarya(formData: FormData) {
             return { error: "Unauthorized: Hanya God Account atau Author yang diizinkan membuat Karya." };
         }
 
-        // [B] Ekstraksi Data Input
         const title = formData.get('title') as string;
         const input_penulis_alias = formData.get('penulis_alias') as string;
         const deskripsi = formData.get('deskripsi') as string || null;
         const cover_url = formData.get('cover_url') as string || null;
         const genreIds = formData.getAll('genres') as string[];
 
-        // [C] Validasi Kelengkapan Input
-        if (!title) {
-            return { error: "Bad Request: Judul karya wajib diisi." };
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = KaryaSchema.safeParse({
+            title,
+            penulis_alias: input_penulis_alias,
+            deskripsi,
+            cover_url,
+            genreIds
+        });
+
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
         // [D] Sinkronisasi Sesi & Database
@@ -125,8 +155,9 @@ export async function createBab(formData: FormData) {
         let content = formData.get('content') as string;
         const title = (formData.get('title') as string)?.trim() || null;
 
-        if (!karya_id || !content) {
-            return { error: "Bad Request: Karya ID dan Konten wajib diisi." };
+        const validation = BabSchema.safeParse({ karya_id, chapter_no: 1, title, content });
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
         // [C] Sanitasi & Formatting
@@ -143,12 +174,13 @@ export async function createBab(formData: FormData) {
         const chapter_no = (aggr._max.chapter_no || 0) + 1;
 
         // [E] Mutasi Database
-        const babBaru = await prisma.bab.create({
+        const babBaru = await (prisma.bab as any).create({
             data: {
                 karya_id,
                 chapter_no,
                 title,
                 content,
+                content_html: marked.parse(content) as string,
             }
         });
 
@@ -195,8 +227,14 @@ export async function registerAuthor(formData: FormData) {
         const display_name = formData.get('display_name') as string;
         const password = formData.get('password') as string;
 
-        if (!username || !display_name || !password) {
-            return { error: "Semua kolom wajib diisi." };
+        const validation = z.object({
+            username: z.string().min(3).max(50),
+            display_name: z.string().min(1).max(100),
+            password: z.string().min(6)
+        }).safeParse({ username, display_name, password });
+
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
         // [C] Cek Duplikasi
@@ -241,7 +279,8 @@ export async function createGenre(formData: FormData) {
         }
 
         const name = formData.get('name') as string;
-        if (!name) return { error: "Nama genre wajib diisi." };
+        const validation = GenreSchema.safeParse({ name });
+        if (!validation.success) return { error: validation.error.issues[0].message };
 
         await prisma.genre.create({ data: { name } });
         return { success: true };
@@ -262,7 +301,8 @@ export async function deleteGenre(id: string) {
             return { error: "Unauthorized." };
         }
 
-        if (!id) return { error: "ID genre tidak valid." };
+        const validation = IdSchema.safeParse(id);
+        if (!validation.success) return { error: "ID genre tidak valid." };
 
         await prisma.genre.delete({ where: { id } });
         return { success: true };
@@ -301,8 +341,17 @@ export async function editKarya(formData: FormData) {
         const is_completed = formData.get('is_completed') === 'true';
         const genreIds = formData.getAll('genres') as string[];
 
-        if (!id || !title) {
-            return { error: "Data tidak lengkap." };
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = KaryaSchema.safeParse({
+            title,
+            penulis_alias: input_penulis_alias,
+            deskripsi,
+            cover_url,
+            genreIds
+        });
+
+        if (!validation.success || !id) {
+            return { error: validation.success ? "ID tidak valid." : `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
         // [C] Validasi Owner vs Admin
@@ -339,6 +388,7 @@ export async function editKarya(formData: FormData) {
         });
 
         revalidateTag(`karya-${id}`);
+        revalidateTag('karya-global');
 
         return { success: true };
     } catch (error) {
@@ -366,9 +416,13 @@ export async function deleteKarya(id: string) {
             return { error: "Forbidden: Anda bukan pemilik karya ini." };
         }
 
+        const validation = IdSchema.safeParse(id);
+        if (!validation.success) return { error: "ID karya tidak valid." };
+
         await prisma.karya.delete({ where: { id } });
 
         revalidateTag(`karya-${id}`);
+        revalidateTag('karya-global');
 
         return { success: true };
     } catch (error) {
@@ -399,7 +453,10 @@ export async function editBab(formData: FormData) {
 
         const existingBab = await prisma.bab.findUnique({
             where: { id },
-            include: { karya: true }
+            select: { 
+                id: true, 
+                karya: { select: { uploader_id: true } } 
+            }
         });
         if (!existingBab) return { error: "Bab tidak ditemukan." };
 
@@ -408,10 +465,35 @@ export async function editBab(formData: FormData) {
             return { error: "Forbidden: Anda bukan pemilik bab ini." };
         }
 
-        await prisma.bab.update({
-            where: { id },
-            data: { content: content.trim() }
+        const title = formData.get('title') as string || undefined;
+
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = BabSchema.partial().safeParse({
+            title,
+            content
         });
+
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
+        }
+
+        await (prisma.bab as any).update({
+            where: { id },
+            data: { 
+                content: content.trim(),
+                content_html: marked.parse(content.trim()) as string
+            }
+        });
+
+        const bab = await prisma.bab.findUnique({
+            where: { id },
+            select: { chapter_no: true, karya_id: true }
+        });
+
+        if (bab) {
+            revalidateTag(`chapter-${bab.karya_id}-${bab.chapter_no}`);
+            revalidateTag(`karya-${bab.karya_id}`);
+        }
 
         return { success: true };
     } catch (error) {
@@ -432,7 +514,12 @@ export async function deleteBab(id: string) {
 
         const existingBab = await prisma.bab.findUnique({
             where: { id },
-            include: { karya: true }
+            select: { 
+                id: true, 
+                chapter_no: true,
+                karya_id: true,
+                karya: { select: { uploader_id: true } } 
+            }
         });
         if (!existingBab) return { error: "Bab tidak ditemukan." };
 
@@ -440,7 +527,17 @@ export async function deleteBab(id: string) {
             return { error: "Forbidden: Anda bukan pemilik bab ini." };
         }
 
+        const karyaId = existingBab.karya_id;
+        const chapterNo = existingBab.chapter_no;
+
+        const validation = IdSchema.safeParse(id);
+        if (!validation.success) return { error: "ID bab tidak valid." };
+
         await prisma.bab.delete({ where: { id } });
+
+        // Correct Invalidation Tags
+        revalidateTag(`chapter-${karyaId}-${chapterNo}`);
+        revalidateTag(`karya-${karyaId}`);
         return { success: true };
     } catch (error) {
         console.error("[deleteBab] Error:", error);
@@ -461,9 +558,12 @@ export async function togglePinReview(reviewId: string, karyaId: string) {
             return { error: "Unauthorized." };
         }
 
+        const validation = IdSchema.safeParse(reviewId);
+        if (!validation.success) return { error: "ID Review tidak valid." };
+
         const review = await prisma.review.findUnique({
             where: { id: reviewId },
-            include: { karya: true }
+            select: { id: true, is_pinned: true, karya: { select: { uploader_id: true } } }
         });
 
         if (!review) return { error: "Review tidak ditemukan." };
@@ -504,12 +604,16 @@ export async function deleteComment(id: string) {
             return { error: "Unauthorized." };
         }
 
+        const validation = IdSchema.safeParse(id);
+        if (!validation.success) return { error: "ID Komentar tidak valid." };
+
         const comment = await prisma.comment.findUnique({
             where: { id },
-            include: {
+            select: {
+                id: true,
                 bab: {
-                    include: {
-                        karya: true
+                    select: {
+                        karya: { select: { uploader_id: true, id: true } }
                     }
                 }
             }
@@ -522,8 +626,11 @@ export async function deleteComment(id: string) {
             return { error: "Forbidden: Anda tidak memiliki hak untuk menghapus komentar ini." };
         }
 
+        const karyaId = comment.bab.karya.id;
+
         await prisma.comment.delete({ where: { id } });
 
+        revalidatePath(`/novel/${karyaId}/[chapterNo]`, 'page');
         return { success: true };
     } catch (error) {
         console.error("[deleteComment] Error:", error);

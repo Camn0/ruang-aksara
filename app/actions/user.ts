@@ -4,6 +4,40 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { revalidateTag } from 'next/cache';
+import { z } from 'zod';
+import { marked } from 'marked';
+
+const CommentSchema = z.object({
+    bab_id: z.string().uuid(),
+    content: z.string().min(1, "Komentar tidak boleh kosong").max(2000),
+    parent_id: z.string().uuid().nullable().optional(),
+});
+
+const RatingSchema = z.object({
+    karya_id: z.string().uuid(),
+    score: z.number().int().min(1).max(5),
+});
+
+const ReviewSchema = z.object({
+    karya_id: z.string().uuid(),
+    content: z.string().min(10, "Ulasan terlalu pendek (min. 10 karakter)").max(5000),
+    rating: z.number().int().min(1).max(5).nullable().optional(),
+});
+
+const ReadingProgressSchema = z.object({
+    karyaId: z.string().uuid(),
+    chapterNo: z.number().int().min(1),
+});
+
+const ProfileUpdateSchema = z.object({
+    displayName: z.string().min(1, "Nama tampilan tidak boleh kosong").max(100),
+    bio: z.string().max(1000).nullable().optional(),
+    avatarUrl: z.string().url().nullable().optional().or(z.literal("")),
+    bannerUrl: z.string().url().nullable().optional().or(z.literal("")),
+});
+
+const IdSchema = z.string().uuid();
+const PathSchema = z.string().min(1).startsWith("/");
 
 // ==============================================================================
 // 1. MUTASI USER (READER): MENGUNGGAH KOMENTAR PADA BAB
@@ -34,23 +68,28 @@ export async function submitComment(formData: FormData) {
 
         // [B] Ekstraksi & Validasi Input
         const bab_id = formData.get('bab_id') as string;
-        let content = formData.get('content') as string;
+        const content = formData.get('content') as string;
         const parent_id = formData.get('parent_id') as string | null;
-        const rating = formData.get('rating') ? parseInt(formData.get('rating') as string, 10) : null;
 
-        if (!bab_id || !content || content.trim() === '') {
-            return { error: "Bad Request: Komentar kosong tidak diizinkan." };
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = CommentSchema.safeParse({
+            bab_id,
+            content,
+            parent_id: parent_id || null
+        });
+
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
-        // [C] Sanitasi Konten
-        content = content.trim();
+        const sanitizedContent = content.trim();
 
         // [D] Mutasi Database
         const newComment = await (prisma.comment as any).create({
             data: {
                 user_id: session.user.id,
                 bab_id,
-                content,
+                content: sanitizedContent,
                 parent_id: parent_id || null
             }
         });
@@ -98,9 +137,10 @@ export async function submitRating(formData: FormData) {
         const score = Number(formData.get('score'));
         const userId = session.user.id;
 
-        // [C] Security Boundary: Skoring Berintegritas
-        if (!karya_id || isNaN(score) || score < 1 || score > 5) {
-            return { error: "Bad Request: Karya ID tidak valid atau skor berbohong (harus 1 sampai 5)." };
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = RatingSchema.safeParse({ karya_id, score });
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
         // [D] DB Transaction Logics 
@@ -179,13 +219,15 @@ export async function submitReview(formData: FormData) {
         const ratingStr = formData.get('rating') as string;
         const rating = ratingStr && ratingStr !== '0' ? parseInt(ratingStr, 10) : null;
 
-        if (!karya_id || !content) {
-            return { error: "Isian review tidak valid." };
-        }
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = ReviewSchema.safeParse({ 
+            karya_id, 
+            content, 
+            rating 
+        });
 
-        // Validasi boundary rating jika ada
-        if (rating !== null && (rating < 1 || rating > 5)) {
-            return { error: "Isian rating tidak valid." };
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
         }
 
         const sanitizedContent = content.trim();
@@ -194,8 +236,18 @@ export async function submitReview(formData: FormData) {
             // 1. Simpan/Update Ulasan Teks
             await tx.review.upsert({
                 where: { user_id_karya_id: { user_id: session.user.id, karya_id } },
-                update: { content: sanitizedContent, rating: (rating as any) ?? undefined },
-                create: { user_id: session.user.id, karya_id, content: sanitizedContent, rating: (rating as any) ?? undefined }
+                update: { 
+                    content: sanitizedContent, 
+                    content_html: marked.parse(sanitizedContent) as string,
+                    rating: (rating as any) ?? undefined 
+                },
+                create: { 
+                    user_id: session.user.id, 
+                    karya_id, 
+                    content: sanitizedContent, 
+                    content_html: marked.parse(sanitizedContent) as string,
+                    rating: (rating as any) ?? undefined 
+                }
             });
 
             // 2. Sinkronisasi dengan Sistem Rating Global (jika user memberikan rating di form review)
@@ -242,6 +294,9 @@ export async function submitReview(formData: FormData) {
  */
 export async function deleteComment(id: string) {
     try {
+        const validation = IdSchema.safeParse(id);
+        if (!validation.success) return { error: "ID Komentar tidak valid." };
+
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
 
@@ -275,6 +330,10 @@ export async function deleteComment(id: string) {
  */
 export async function updateReadingProgress(karyaId: string, chapterNo: number) {
     try {
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = ReadingProgressSchema.safeParse({ karyaId, chapterNo });
+        if (!validation.success) return { success: false, error: "Invalid data" };
+
         const session = await getServerSession(authOptions);
         if (!session?.user?.id) return { success: false, error: "Unauthorized" };
 
@@ -392,6 +451,11 @@ export async function updateUserProfile(formData: FormData) {
         const bannerUrl = formData.get('bannerUrl') as string | null;
         const socialLinksStr = formData.get('socialLinks') as string;
 
+        const validation = ProfileUpdateSchema.safeParse({ displayName, bio, avatarUrl, bannerUrl });
+        if (!validation.success) {
+            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
+        }
+
         let socialLinks = null;
         try {
             if (socialLinksStr) {
@@ -412,6 +476,7 @@ export async function updateUserProfile(formData: FormData) {
             }
         });
 
+        revalidateTag(`user-${session.user.id}`);
         revalidateTag(`user-profile-${session.user.id}`);
         return { success: true };
     } catch (error) {
@@ -422,6 +487,9 @@ export async function updateUserProfile(formData: FormData) {
 // = [7] MUTASI USER: FOLLOW / UNFOLLOW
 // ==============================================================================
 export async function toggleFollow(targetUserId: string, revalidatePathStr?: string) {
+    const idValidation = IdSchema.safeParse(targetUserId);
+    if (!idValidation.success) throw new Error("Invalid User ID");
+
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) throw new Error("Unauthorized");
 
@@ -451,4 +519,5 @@ export async function toggleFollow(targetUserId: string, revalidatePathStr?: str
     }
     // Revalidate target user profile anyway
     revalidateTag(`user-${targetUserId}`);
+    revalidateTag(`user-profile-${targetUserId}`);
 }

@@ -2,28 +2,49 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
-import ProfileClient from "./ProfileClient";
+import { unstable_cache } from "next/cache";
+import { Suspense } from "react";
+import ProfileContentWrapper from "./ProfileContentWrapper";
 
 /**
  * Halaman Profil Pengguna (Server Component).
  */
+
+async function getCachedUserProfile(id: string) {
+    return unstable_cache(
+        async () => {
+            return await prisma.user.findFirst({
+                where: {
+                    OR: [
+                        { id: id },
+                        { username: id }
+                    ]
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    display_name: true,
+                    avatar_url: true,
+                    banner_url: true,
+                    bio: true,
+                    role: true,
+                    social_links: true,
+                    _count: {
+                        select: { followers: true, following: true }
+                    }
+                }
+            });
+        },
+        [`user-profile-${id}`],
+        { revalidate: 3600, tags: [`user-${id}`, `user-profile-${id}`] }
+    )();
+}
+
 export default async function ProfilePage({ params }: { params: { id: string } }) {
     const session = await getServerSession(authOptions);
 
-    // [A] Resolving Identity
-    const userProfileRaw = await prisma.user.findFirst({
-        where: {
-            OR: [
-                { id: params.id },
-                { username: params.id }
-            ]
-        },
-        include: {
-            _count: {
-                select: { followers: true, following: true }
-            }
-        }
-    });
+    // [A] Resolving Identity (Cached #4)
+    const userProfileRaw = await getCachedUserProfile(params.id);
 
     if (!userProfileRaw) {
         if (session?.user?.id === params.id || session?.user?.role === 'admin') {
@@ -65,85 +86,17 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         isFollowing = !!followRecord;
     }
 
-    // [E] COMPREHENSIVE DATA FETCHING for ProfileClient
-    // We fetch everything upfront to enable smooth Client-side tab switching without reloads
-    const [
-        followersList,
-        followingList,
-        userWorks,
-        authorPosts,
-        recentComments,
-        userReviews,
-        bookmarkCount
-    ] = await Promise.all([
-        // 1. Followers
-        prisma.follow.findMany({
-            where: { following_id: userProfile.id },
-            include: { follower: { select: { id: true, username: true, display_name: true, avatar_url: true, role: true } } },
-            orderBy: { created_at: 'desc' }
-        }),
-        // 2. Following
-        prisma.follow.findMany({
-            where: { follower_id: userProfile.id },
-            include: { following: { select: { id: true, username: true, display_name: true, avatar_url: true, role: true } } },
-            orderBy: { created_at: 'desc' }
-        }),
-        // 3. Karya (If Author)
-        prisma.karya.findMany({
-            where: { uploader_id: userProfile.id },
-            orderBy: { total_views: 'desc' },
-            include: { 
-                _count: { select: { bookmarks: true, ratings: true, bab: true } },
-                genres: { take: 3 }
-            }
-        }),
-        // 4. Postingan (If Author)
-        (prisma as any).authorPost.findMany({
-            where: { author_id: userProfile.id },
-            orderBy: { created_at: 'desc' },
-            include: {
-                _count: { select: { likes: true, comments: true } },
-                ...(session?.user ? { likes: { where: { user_id: session.user.id } } } : {}),
-                comments: { include: { user: true }, orderBy: { created_at: 'asc' }, take: 5 }
-            }
-        }),
-        // 5. Recent Comments
-        prisma.comment.findMany({
-            where: { user_id: userProfile.id },
-            include: { bab: { include: { karya: true } } },
-            orderBy: { created_at: 'desc' },
-            take: 15
-        }),
-        // 6. User Reviews
-        prisma.review.findMany({
-            where: { user_id: userProfile.id },
-            include: { karya: { select: { id: true, title: true } } },
-            orderBy: { created_at: 'desc' },
-            take: 10
-        }),
-        // 7. Bookmark Count for Stats
-        prisma.bookmark.count({ where: { user_id: userProfile.id } })
-    ]);
-
-    const stats = {
-        bookmarks: bookmarkCount,
-        reviews: userReviews.length,
-        comments: recentComments.length
-    };
-
     return (
-        <ProfileClient
-            userProfile={userProfile}
-            isOwnProfile={isOwnProfile}
-            isFollowing={isFollowing}
-            followers={followersList.map(f => f.follower)}
-            following={followingList.map(f => f.following)}
-            works={userWorks}
-            posts={authorPosts}
-            comments={recentComments}
-            reviews={userReviews}
-            stats={stats}
-            session={session}
-        />
+        <Suspense fallback={
+            <div className="min-h-screen bg-bg-cream dark:bg-brown-dark animate-pulse flex items-center justify-center">
+                <p className="text-xs font-black text-tan-primary uppercase tracking-[0.3em] italic">Membuka Lembaran Profil...</p>
+            </div>
+        }>
+            <ProfileContentWrapper 
+                userProfile={userProfile} 
+                isOwnProfile={isOwnProfile} 
+                isFollowing={isFollowing} 
+            />
+        </Suspense>
     );
 }

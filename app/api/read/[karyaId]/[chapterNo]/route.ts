@@ -11,25 +11,29 @@ export async function GET(
     try {
         const { karyaId, chapterNo } = params;
 
-        // Di sini kita pakai include untuk eager loading agar terhindar dari N+1 query problem,
-        // khususnya ketika kita butuh meload relasi 'comments' sekaligus dengan bab-nya.
-        // Tujuannya agar kita bisa merender konten bab beserta daftar komputernya dalam satu request.
         const bab = await prisma.bab.findFirst({
             where: {
                 karya_id: karyaId,
                 chapter_no: Number(chapterNo),
             },
-            include: {
+            select: {
+                id: true,
+                chapter_no: true,
+                title: true,
+                content: true,
                 comments: {
-                    include: {
+                    select: {
+                        id: true,
+                        content: true,
+                        created_at: true,
                         user: {
-                            select: { display_name: true } // Hanya ambil display_name untuk privasi
+                            select: { display_name: true }
                         }
                     },
-                    orderBy: { created_at: 'desc' }, // Mengurutkan dari komentar terbaru
+                    orderBy: { created_at: 'desc' },
                 },
                 karya: {
-                    select: { title: true, penulis_alias: true } // Mengambil metadata karya
+                    select: { title: true, penulis_alias: true }
                 }
             },
         });

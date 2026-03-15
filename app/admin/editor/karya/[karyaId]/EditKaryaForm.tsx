@@ -5,6 +5,7 @@ import { editKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react'; 
 import { toast } from 'sonner';
+import NextImage from 'next/image';
 import DeleteKaryaButton from './DeleteKaryaButton';
 
 interface Genre { id: string; name: string; }
@@ -152,7 +153,7 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                         
                         {coverPreview ? (
                             <>
-                                <img src={coverPreview} alt="Cover" className="w-full h-full object-cover" />
+                                <NextImage src={coverPreview} width={183} height={239} unoptimized={true} alt="Cover" className="w-full h-full object-cover" />
                                 <div className="absolute inset-0 bg-brown-dark/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 z-20 backdrop-blur-sm">
                                     <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-white/10 border border-white/30 text-white font-black px-4 py-1.5 rounded-xl hover:bg-white/20 transition-colors text-[10px] uppercase tracking-widest italic w-24">
                                         Ganti

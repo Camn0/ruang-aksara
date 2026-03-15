@@ -32,20 +32,27 @@ export default async function CommentManagementPage() {
         orderBy: {
             created_at: 'desc'
         },
-        include: {
-            user: true, // Ambil info pengirim komentar
+        select: {
+            id: true,
+            content: true,
+            created_at: true,
+            user: { select: { display_name: true, id: true, avatar_url: true } },
             bab: {
-                include: {
-                    karya: true // Ambil info judul karya asal komentar
+                select: {
+                    id: true,
+                    chapter_no: true,
+                    karya: { select: { title: true, id: true } }
                 }
             },
             parent: {
-                include: {
-                    user: true // Ambil info user yang dibalas
+                select: {
+                    id: true,
+                    content: true,
+                    user: { select: { display_name: true, id: true } }
                 }
             },
             _count: {
-                select: { votes: true } // Untuk sorting "Kontroversial" (total voting)
+                select: { votes: true }
             }
         }
     });

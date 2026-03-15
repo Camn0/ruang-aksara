@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { unstable_cache } from "next/cache";
+import { Suspense } from "react";
 import ReadingInterface from "./ReadingInterface";
-import CommentSection from "./CommentSection";
+import CommentSectionWrapper from "./CommentSectionWrapper";
 
 /**
  * Halaman Baca Bab (Reading Page).
@@ -20,7 +21,12 @@ const getCachedChapter = (karyaId: string, chapterNo: number) =>
                         chapter_no: chapterNo
                     }
                 },
-                include: {
+                select: {
+                    id: true,
+                    chapter_no: true,
+                    title: true,
+                    content: true,
+                    content_html: true,
                     karya: {
                         select: {
                             id: true,
@@ -59,16 +65,11 @@ const getCachedNavigation = (karyaId: string, chapterNo: number) =>
 export default async function ChapterPage({ params }: { params: { karyaId: string, chapterNo: string } }) {
     const chapterNoNum = Number(params.chapterNo);
 
-    // [A] Data Fetching via Cache & All Chapters for Picker
-    const [chapter, navigation, session, allChapters] = await Promise.all([
+    // [A] Data Fetching via Cache
+    const [chapter, navigation, session] = await Promise.all([
         getCachedChapter(params.karyaId, chapterNoNum),
         getCachedNavigation(params.karyaId, chapterNoNum),
         getServerSession(authOptions),
-        prisma.bab.findMany({
-            where: { karya_id: params.karyaId },
-            orderBy: { chapter_no: 'asc' },
-            select: { chapter_no: true, title: true }
-        })
     ]);
 
     if (!chapter) notFound();
@@ -90,34 +91,6 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
         })
     ]);
 
-    // Fetch ALL comments for the chapter to build a recursive tree
-    const allRawComments = await prisma.comment.findMany({
-        where: { bab_id: chapter.id },
-        include: {
-            user: true,
-            _count: { select: { votes: true } },
-            votes: session?.user?.id ? { where: { user_id: session.user.id } } : false,
-        },
-        orderBy: { created_at: 'asc' }
-    });
-
-    // Helper: Build recursive tree structure
-    function buildCommentTree(flatComments: any[], parentId: string | null = null): any[] {
-        return flatComments
-            .filter(c => c.parent_id === parentId)
-            .map(c => ({
-                ...c,
-                userVote: c.votes?.[0]?.type || 0,
-                replies: buildCommentTree(flatComments, c.id)
-            }))
-            // Sort top-level comments by newest/score if needed, root comments sorted by newest here
-            .sort((a, b) => {
-                if (parentId === null) return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-                return new Date(a.created_at).getTime() - new Date(b.created_at).getTime(); // Replies chronological
-            });
-    }
-
-    const comments = buildCommentTree(allRawComments);
 
     return (
         <div className="min-h-screen bg-bg-cream dark:bg-brown-dark text-brown-dark dark:text-text-accent pb-28 transition-colors duration-300">
@@ -128,9 +101,9 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
                 novelTitle={(chapter as any).karya.title}
                 chapterTitle={(chapter as any).title}
                 content={chapter.content}
+                contentHtml={(chapter as any).content_html}
                 nextChapter={nextBab?.chapter_no}
                 prevChapter={prevBab?.chapter_no}
-                allChapters={allChapters as any}
                 userReaction={userChapterReaction?.reaction_type}
                 reactionStats={chapterReactionStats as any}
             />
@@ -138,18 +111,19 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
             <div className="max-w-2xl mx-auto px-6 mt-12 pt-12 border-t border-gray-100 dark:border-brown-mid">
                 <div className="flex items-center justify-between mb-8">
                     <h2 className="text-xl font-black italic text-brown-dark dark:text-text-accent uppercase tracking-tight">Komentar</h2>
-                    <span className="bg-tan-primary/10 dark:bg-brown-mid px-3 py-1 rounded-full text-[10px] font-black text-tan-primary uppercase tracking-widest">
-                        {allRawComments.length} Goresan
-                    </span>
+                    <span className="bg-tan-primary/10 dark:bg-brown-mid px-3 py-1 rounded-full text-[10px] font-black text-tan-primary uppercase tracking-widest">Goresan Diskusi</span>
                 </div>
 
-                <CommentSection
-                    babId={chapter.id}
-                    initialComments={comments as any}
-                    currentUserId={session?.user?.id}
-                    currentUserRole={session?.user?.role}
-                    authorId={(chapter as any).karya.uploader_id}
-                />
+                <Suspense fallback={
+                    <div className="py-24 text-center bg-bg-cream/40 dark:bg-brown-dark rounded-[3rem] border border-dashed border-tan-primary/20 animate-pulse">
+                        <p className="text-tan-primary/30 dark:text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] italic">Membuka Gulungan Diskusi...</p>
+                    </div>
+                }>
+                    <CommentSectionWrapper
+                        babId={chapter.id}
+                        authorId={(chapter as any).karya.uploader_id}
+                    />
+                </Suspense>
             </div>
         </div>
     );

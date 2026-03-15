@@ -15,10 +15,18 @@ export default async function AdminManageKaryaPage({ params }: { params: { karya
 
     const karya = await prisma.karya.findUnique({
         where: { id: params.karyaId },
-        include: {
-            genres: true,
+        select: {
+            id: true,
+            uploader_id: true,
+            title: true,
+            penulis_alias: true,
+            deskripsi: true,
+            cover_url: true,
+            is_completed: true,
+            genres: { select: { id: true, name: true } },
             bab: {
-                orderBy: { chapter_no: 'asc' }
+                orderBy: { chapter_no: 'asc' },
+                select: { id: true, title: true, content: true, chapter_no: true }
             }
         }
     });

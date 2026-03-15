@@ -17,6 +17,7 @@ import LogoutButton from "@/app/components/LogoutButton";
 import SidebarNav from "../components/SidebarNav";
 import AdminMobileHeader from "./AdminMobileHeader";
 import ThemeToggle from "../components/ThemeToggle";
+import Image from "next/image";
 
 export default async function AdminLayout({
     children,
@@ -42,8 +43,10 @@ export default async function AdminLayout({
                 <div className="p-8">
                     <Link href="/admin/dashboard" className="flex flex-col items-center group/logo transition-all duration-500">
                         <div className="w-24 h-20 bg-text-main/10 dark:bg-white/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 transition-all">
-                            <img
+                            <Image
                                 src="/logoRuangAksara.webp"
+                                width={96}
+                                height={80}
                                 alt="Ruang Aksara Logo"
                                 className="w-full h-full object-cover rounded-2xl"
                             />

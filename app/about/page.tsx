@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Sparkles, BookOpen, Target, Heart } from 'lucide-react';
+import NextImage from 'next/image';
 
 export default function AboutPage() {
     const [activeTab, setActiveTab] = useState<'visi' | 'misi'>('visi');
@@ -45,10 +46,12 @@ export default function AboutPage() {
                 <div className="flex flex-col md:flex-row bg-tan-primary/10 dark:bg-brown-dark/30 rounded-[3.5rem] overflow-hidden border border-text-main/5 dark:border-tan-primary/10 mb-40 sm:mb-48 shadow-lg">
                     {/* Left: Image Container */}
                     <div className="w-full md:w-1/2 aspect-square md:aspect-auto relative overflow-hidden">
-                        <img
+                        <NextImage
                             src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1000&auto=format&fit=crop"
+                            fill
                             alt="Books Library"
                             className="w-full h-full object-cover transition-transform duration-1000"
+                            priority
                         />
                         <div className="absolute inset-0 bg-text-main/20"></div>
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">

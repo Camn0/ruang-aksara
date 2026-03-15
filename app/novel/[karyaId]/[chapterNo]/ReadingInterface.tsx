@@ -16,9 +16,9 @@ interface ReadingInterfaceProps {
     novelTitle: string;
     chapterTitle: string | null;
     content: string;
+    contentHtml?: string | null;
     nextChapter?: number;
     prevChapter?: number;
-    allChapters: { chapter_no: number; title: string | null }[];
     userReaction?: string;
     reactionStats?: { reaction_type: string; _count: { _all: number } }[];
 }
@@ -30,9 +30,9 @@ export default function ReadingInterface({
     novelTitle,
     chapterTitle,
     content,
+    contentHtml,
     nextChapter,
     prevChapter,
-    allChapters,
     userReaction: initialUserReaction,
     reactionStats
 }: ReadingInterfaceProps) {
@@ -144,7 +144,7 @@ export default function ReadingInterface({
         <>
             {/* Header Sticky Atas */}
             <header className="px-4 h-16 bg-bg-cream/95 dark:bg-brown-dark/95 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-40 shadow-sm transition-all duration-300">
-                <Link href={`/novel/${karyaId}`} className="p-2 -ml-2 text-brown-dark dark:text-text-accent hover:bg-tan-primary/10 rounded-full transition-colors">
+                <Link href={`/novel/${karyaId}`} prefetch={false} className="p-2 -ml-2 text-brown-dark dark:text-text-accent hover:bg-tan-primary/10 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <div className="flex-1 px-4">
@@ -231,7 +231,14 @@ export default function ReadingInterface({
                     className="prose dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-brown-dark dark:text-tan-light/90 font-serif max-w-none transition-all duration-200"
                     style={{ fontSize: `${fontSize}px` }}
                 >
-                    {content}
+                    {contentHtml ? (
+                        <div 
+                            dangerouslySetInnerHTML={{ __html: contentHtml }} 
+                            className="[&_p]:mb-6 [&_p:last-child]:mb-0"
+                        />
+                    ) : (
+                        content
+                    )}
                 </article>
 
                 {/* Reaction System */}
@@ -270,11 +277,9 @@ export default function ReadingInterface({
                 </div>
             </main>
 
-            {/* Chapter Picker Overlay (Now more prominent) */}
             <ChapterPicker
                 karyaId={karyaId}
                 currentChapterNo={chapterNo}
-                chapters={allChapters}
                 isOpen={isOpenPicker}
                 onClose={() => setIsOpenPicker(false)}
             />
@@ -286,6 +291,7 @@ export default function ReadingInterface({
                     {prevChapter ? (
                         <Link 
                             href={`/novel/${karyaId}/${prevChapter}`} 
+                            prefetch={false}
                             className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90"
                             title="Bab Sebelumnya"
                         >
@@ -312,6 +318,7 @@ export default function ReadingInterface({
                     {nextChapter ? (
                         <Link 
                             href={`/novel/${karyaId}/${nextChapter}`} 
+                            prefetch={false}
                             className="w-12 h-12 flex items-center justify-center rounded-full bg-tan-primary text-brown-dark shadow-lg shadow-tan-primary/20 hover:scale-105 transition-all active:scale-90"
                             title="Bab Selanjutnya"
                         >

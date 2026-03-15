@@ -4,9 +4,20 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const VoteSchema = z.object({
+    commentId: z.string().uuid(),
+    type: z.union([z.literal(1), z.literal(-1)]),
+    path: z.string().min(1).startsWith("/"),
+});
 
 export async function voteComment(commentId: string, type: 1 | -1, path: string) {
     try {
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = VoteSchema.safeParse({ commentId, type, path });
+        if (!validation.success) return { error: "Invalid voting data." };
+
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
 

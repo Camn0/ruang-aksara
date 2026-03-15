@@ -20,7 +20,7 @@ export default async function SettingsPage() {
     return (
         <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-24 transition-colors duration-500">
             <header className="px-6 h-16 bg-bg-cream dark:bg-brown-dark border-b border-tan-light/30 dark:border-tan-light/10 flex items-center justify-between sticky top-0 z-50 transition-colors">
-                <Link href={`/profile/${userProfile.username}`} className="p-2 -ml-2 text-text-main dark:text-text-accent hover:bg-tan-light/30 dark:hover:bg-brown-mid/20 rounded-full transition-all active:scale-95">
+                <Link href={`/profile/${userProfile.username}`} prefetch={false} className="p-2 -ml-2 text-text-main dark:text-text-accent hover:bg-tan-light/30 dark:hover:bg-brown-mid/20 rounded-full transition-all active:scale-95">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <h1 className="font-open-sans font-black text-lg text-text-main dark:text-text-accent italic absolute left-1/2 -translate-x-1/2">Pengaturan</h1>
@@ -38,7 +38,7 @@ export default async function SettingsPage() {
                             <h2 className="text-lg font-open-sans font-black text-text-main dark:text-text-accent italic leading-tight">Identitas Publik</h2>
                             <p className="text-[9px] font-black text-tan-primary dark:text-tan-light/60 uppercase tracking-[0.2em] mt-1">Edit profil dan bio kamu</p>
                         </div>
-                        <Link href="/profile/edit" className="px-6 py-3 bg-brown-dark dark:bg-text-accent hover:bg-brown-mid dark:hover:bg-tan-light text-text-accent dark:text-brown-dark text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95">
+                        <Link href="/profile/edit" prefetch={false} className="px-6 py-3 bg-brown-dark dark:bg-text-accent hover:bg-brown-mid dark:hover:bg-tan-light text-text-accent dark:text-brown-dark text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95">
                             Edit Profil
                         </Link>
                     </div>

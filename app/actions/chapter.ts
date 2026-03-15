@@ -4,9 +4,20 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const ReactionSchema = z.object({
+    babId: z.string().uuid(),
+    reactionType: z.string().min(1).max(50),
+    karyaId: z.string().uuid(),
+});
 
 export async function submitChapterReaction(babId: string, reactionType: string, karyaId: string) {
     try {
+        // [New] Early Zod Validation (#80 Golden Optimization)
+        const validation = ReactionSchema.safeParse({ babId, reactionType, karyaId });
+        if (!validation.success) return { error: "Invalid reaction data." };
+
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
 
@@ -31,4 +42,24 @@ export async function submitChapterReaction(babId: string, reactionType: string,
         console.error("[submitChapterReaction] Error:", e);
         return { error: "Gagal memproses reaksi bab." };
     }
+}
+import { unstable_cache } from "next/cache";
+
+export async function getKaryaChapters(karyaId: string) {
+    return unstable_cache(
+        async () => {
+            try {
+                return await prisma.bab.findMany({
+                    where: { karya_id: karyaId },
+                    orderBy: { chapter_no: 'asc' },
+                    select: { chapter_no: true, title: true }
+                });
+            } catch (error) {
+                console.error("[getKaryaChapters] Error:", error);
+                return [];
+            }
+        },
+        [`chapters-all-${karyaId}`],
+        { revalidate: 3600, tags: [`karya-${karyaId}`] }
+    )();
 }

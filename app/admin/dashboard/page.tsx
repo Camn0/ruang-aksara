@@ -11,6 +11,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { unstable_cache, revalidateTag } from "next/cache";
 import Link from "next/link";
 import { 
     TrendingUp, Star, PenTool, Users, MessageSquare, BookOpen, 
@@ -18,31 +19,77 @@ import {
     BarChart, Moon, Sun
 } from "lucide-react";
 import ThemeToggle from "@/app/components/ThemeToggle";
+import Image from "next/image";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
     // [1] AUTHENTICATION & SESSION
     // Mengambil session aktif. Non-null assertion (!) aman karena sudah divalidasi di parent layout.
     const session = (await getServerSession(authOptions))!;
 
-    // [2] DATA FETCHING: Daftar Karya
-    // Admin melihat semua, Author hanya melihat miliknya sendiri (Security barrier).
-    const daftarKarya = await prisma.karya.findMany({
-        where: session.user.role === 'admin' ? undefined : { uploader_id: session.user.id },
-        orderBy: { title: 'asc' },
-        include: {
-            _count: {
-                select: { bookmarks: true, bab: true }
-            },
-            genres: { take: 2 },
-            bab: {
-                orderBy: { created_at: 'desc' },
-                take: 1,
-                select: { created_at: true }
+    // [2] DATA FETCHING: Daftar Karya (Cached)
+    const getCachedDaftarKarya = (role: string, uploaderId: string) => unstable_cache(
+        async () => prisma.karya.findMany({
+            where: role === 'admin' ? undefined : { uploader_id: uploaderId },
+            orderBy: { title: 'asc' },
+            select: {
+                id: true,
+                title: true,
+                total_views: true,
+                avg_rating: true,
+                cover_url: true,
+                is_completed: true,
+                uploader_id: true,
+                _count: {
+                    select: { bookmarks: true, bab: true }
+                },
+                genres: { 
+                    take: 2,
+                    select: { id: true, name: true }
+                },
+                bab: {
+                    orderBy: { created_at: 'desc' },
+                    take: 1,
+                    select: { created_at: true }
+                }
             }
-        }
-    });
+        }),
+        [`admin-works-${uploaderId}-${role}`],
+        { revalidate: 600, tags: role === 'admin' ? ['karya-global'] : [`karya-author-${uploaderId}`] }
+    )();
+
+    const getCachedLatestComments = (uploaderId: string) => unstable_cache(
+        async () => prisma.comment.findMany({
+            where: {
+                bab: {
+                    karya: {
+                        uploader_id: uploaderId
+                    }
+                }
+            },
+            orderBy: { created_at: 'desc' },
+            take: 3, 
+            select: {
+                id: true,
+                content: true,
+                created_at: true,
+                user: { select: { display_name: true, id: true } },
+                bab: {
+                    select: { 
+                        karya: { select: { title: true, id: true } } 
+                    }
+                }
+            }
+        }),
+        [`admin-comments-${uploaderId}`],
+        { revalidate: 300, tags: [`comments-author-${uploaderId}`] }
+    )();
+
+    const [daftarKarya, latestComments] = await Promise.all([
+        getCachedDaftarKarya(session.user.role, session.user.id),
+        getCachedLatestComments(session.user.id)
+    ]);
 
     // [3] STATISTICAL AGGREGATION (Optimization: Done in memory after single query)
     // Menjumlahkan views, bookmarks, dan menghitung rata-rata rating secara efisien.
@@ -52,26 +99,6 @@ export default async function AdminDashboardPage() {
     const avgRating = karyaWithRating.length > 0
         ? karyaWithRating.reduce((acc, k) => acc + k.avg_rating, 0) / karyaWithRating.length
         : 0;
-
-    // [4] DATA FETCHING: Community Interaction
-    // Mengambil komentar terbaru khusus untuk karya milik user yang sedang login.
-    const latestComments = await prisma.comment.findMany({
-        where: {
-            bab: {
-                karya: {
-                    uploader_id: session.user.id
-                }
-            }
-        },
-        orderBy: { created_at: 'desc' },
-        take: 3, // Performa: Hanya ambil 3 item terbaru.
-        include: {
-            user: true,
-            bab: {
-                include: { karya: { select: { title: true, id: true } } }
-            }
-        }
-    });
 
     return (
         <div className="min-h-screen bg-bg-cream/60 dark:bg-brown-dark transition-colors duration-500 pb-24">
@@ -99,7 +126,7 @@ export default async function AdminDashboardPage() {
                 {/* --- TOP STATISTICS GRID (2x2 Mobile, uneven Desktop) --- */}
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-16">
                     {/* Engagement - Top Left on Mobile, Vertical on Desktop */}
-                    <Link href="/admin/stats/engagement" className="lg:row-span-2 bg-[#3B2A22] text-white p-4 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-2xl dark:shadow-none flex flex-col justify-between group overflow-hidden relative min-h-[150px] md:min-h-[400px] hover:scale-[1.02] transition-all cursor-pointer border border-white/5">
+                    <Link href="/admin/stats/engagement" prefetch={false} className="lg:row-span-2 bg-[#3B2A22] text-white p-4 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-2xl dark:shadow-none flex flex-col justify-between group overflow-hidden relative min-h-[150px] md:min-h-[400px] hover:scale-[1.02] transition-all cursor-pointer border border-white/5">
                         <div className="relative z-10">
                             <div className="w-8 h-8 md:w-12 md:h-12 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6 border border-white/10 shadow-inner group-hover:rotate-6 transition-transform">
                                 <BarChart className="w-4 h-4 md:w-6 md:h-6 text-white" />
@@ -121,7 +148,7 @@ export default async function AdminDashboardPage() {
                     </Link>
 
                     {/* Kepuasan - Top Right on Mobile */}
-                    <Link href="/admin/stats/kepuasan" className="bg-[#7A553A] text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3.5rem] shadow-xl dark:shadow-none group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0 hover:scale-[1.02] cursor-pointer border border-white/5">
+                    <Link href="/admin/stats/kepuasan" prefetch={false} className="bg-[#7A553A] text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3.5rem] shadow-xl dark:shadow-none group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0 hover:scale-[1.02] cursor-pointer border border-white/5">
                         <div className="relative z-10 flex justify-between items-start">
                             <p className="text-[9px] md:text-[12px] font-black uppercase tracking-[0.3em] text-white/70 dark:text-tan-light">Kepuasan</p>
                             <div className="w-7 h-7 md:w-12 md:h-12 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-[#7A553A] transition-all relative">
@@ -137,7 +164,7 @@ export default async function AdminDashboardPage() {
                     </Link>
 
                     {/* Disimpan - Bottom Left on Mobile */}
-                    <Link href="/admin/stats/disimpan" className="bg-[#433229] text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3.5rem] shadow-xl dark:shadow-none group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0 hover:scale-[1.02] cursor-pointer border border-white/5">
+                    <Link href="/admin/stats/disimpan" prefetch={false} className="bg-[#433229] text-white p-4 md:p-8 rounded-[2rem] md:rounded-[3.5rem] shadow-xl dark:shadow-none group transition-all relative overflow-hidden flex flex-col justify-between min-h-[150px] md:min-h-0 hover:scale-[1.02] cursor-pointer border border-white/5">
                         <div className="relative z-10 flex justify-between items-start">
                             <p className="text-[9px] md:text-[12px] font-black uppercase tracking-[0.3em] text-white/70 dark:text-tan-light">Disimpan</p>
                             <div className="w-7 h-7 md:w-12 md:h-12 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-[#433229] transition-all relative">
@@ -152,7 +179,7 @@ export default async function AdminDashboardPage() {
                     </Link>
 
                     {/* Koleksi - Bottom Right on Mobile, Horizontal on Desktop */}
-                    <Link href="/admin/stats/karya" className="lg:col-span-2 bg-[#D6BFA6] dark:bg-brown-mid text-[#3B2A22] dark:text-text-accent p-4 md:p-8 rounded-[2rem] md:rounded-[4.5rem] shadow-xl dark:shadow-none group flex flex-col justify-between relative overflow-hidden min-h-[150px] md:min-h-[220px] hover:scale-[1.01] cursor-pointer transition-all border border-black/5 dark:border-white/5">
+                    <Link href="/admin/stats/karya" prefetch={false} className="lg:col-span-2 bg-[#D6BFA6] dark:bg-brown-mid text-[#3B2A22] dark:text-text-accent p-4 md:p-8 rounded-[2rem] md:rounded-[4.5rem] shadow-xl dark:shadow-none group flex flex-col justify-between relative overflow-hidden min-h-[150px] md:min-h-[220px] hover:scale-[1.01] cursor-pointer transition-all border border-black/5 dark:border-white/5">
                         <div className="relative z-10 flex justify-between items-start">
                             <p className="text-[9px] md:text-[14px] font-black uppercase tracking-[0.4em] opacity-70">Koleksi</p>
                             <div className="w-7 h-7 md:w-14 md:h-14 bg-[#3B2A22]/10 dark:bg-white/10 rounded-xl md:rounded-[2rem] flex items-center justify-center border border-[#3B2A22]/10 dark:border-white/10 group-hover:bg-[#3B2A22] dark:group-hover:bg-tan-primary group-hover:text-text-accent dark:group-hover:text-brown-dark transition-all relative">
@@ -175,7 +202,7 @@ export default async function AdminDashboardPage() {
                         <section>
                             <div className="flex justify-between items-center mb-10">
                                 <h2 className="text-3xl font-black text-text-main dark:text-text-accent italic tracking-tight uppercase">Cerita Anda</h2>
-                                <Link href="/admin/editor/karya" className="bg-text-main dark:bg-brown-mid text-bg-cream px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group border border-white/5">
+                                <Link href="/admin/editor/karya" prefetch={false} className="bg-text-main dark:bg-brown-mid text-bg-cream px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group border border-white/5">
                                     <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Karya Baru
                                 </Link>
                             </div>
@@ -194,7 +221,7 @@ export default async function AdminDashboardPage() {
                                                 {/* Cover Thumbnail */}
                                                 <div className="w-20 h-28 rounded-[1.2rem] overflow-hidden shrink-0 shadow-lg border-2 border-white/50 dark:border-white/10 relative">
                                                     {item.cover_url ? (
-                                                        <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-1000" />
+                                                        <Image src={item.cover_url} width={80} height={112} alt={item.title} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-1000" />
                                                     ) : (
                                                         <div className="w-full h-full bg-tan-primary/20 flex items-center justify-center p-3 text-center text-[8px] text-text-main/30 dark:text-white/30 font-black uppercase leading-tight">{item.title}</div>
                                                     )}
@@ -237,10 +264,10 @@ export default async function AdminDashboardPage() {
 
                                                         <div className="flex items-center justify-between gap-4 mt-2">
                                                             <div className="flex items-center gap-2 flex-1">
-                                                                    <Link href={`/admin/editor/karya/${item.id}`} className="bg-text-main dark:bg-tan-primary/80 dark:text-brown-dark text-bg-cream px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-brown-mid dark:hover:bg-tan-primary transition-all active:scale-95 group/btn flex-1 text-center">
+                                                                    <Link href={`/admin/editor/karya/${item.id}`} prefetch={false} className="bg-text-main dark:bg-tan-primary/80 dark:text-brown-dark text-bg-cream px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-brown-mid dark:hover:bg-tan-primary transition-all active:scale-95 group/btn flex-1 text-center">
                                                                         Edit Karya
                                                                     </Link>
-                                                                <Link href={`/admin/stats/engagement`} className="bg-text-main/5 dark:bg-white/10 text-text-main dark:text-text-accent p-2.5 rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95 group/stats border border-text-main/5 dark:border-white/10" title="View Analysis">
+                                                                <Link href={`/admin/stats/engagement`} prefetch={false} className="bg-text-main/5 dark:bg-white/10 text-text-main dark:text-text-accent p-2.5 rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95 group/stats border border-text-main/5 dark:border-white/10" title="View Analysis">
                                                                     <BarChart3 className="w-3.5 h-3.5 text-current" />
                                                                 </Link>
                                                             </div>
@@ -311,7 +338,7 @@ export default async function AdminDashboardPage() {
                                 </div>
                                 <h3 className="text-3xl font-black italic mb-3 leading-tight uppercase">Inspirasi</h3>
                                 <p className="text-[11px] text-bg-cream/60 font-black uppercase tracking-[0.2em] mb-10 leading-relaxed">Setiap kata adalah permata bagi pembaca.</p>
-                                <Link href="/admin/editor/tips" className="inline-flex items-center gap-3 bg-text-accent text-brown-dark px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-110 active:scale-95 shadow-xl">
+                                <Link href="/admin/editor/tips" prefetch={false} className="inline-flex items-center gap-3 bg-text-accent text-brown-dark px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-110 active:scale-95 shadow-xl">
                                     Tips Studio
                                 </Link>
                             </div>

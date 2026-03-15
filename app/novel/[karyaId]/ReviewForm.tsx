@@ -18,6 +18,11 @@ export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }
 
         try {
             if (content.trim()) {
+                if (content.trim().length < 10) {
+                    toast.error('Ulasan terlalu pendek (min. 10 karakter).');
+                    setIsPending(false);
+                    return;
+                }
                 // Submit full review (with optional rating)
                 const formData = new FormData(event.currentTarget);
                 const result = await submitReview(formData);

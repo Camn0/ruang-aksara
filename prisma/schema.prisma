@@ -99,8 +99,9 @@ model Bab {
   karya      Karya     @relation(fields: [karya_id], references: [id], onDelete: Cascade)
   chapter_no Int       
   title      String?   // Judul bab opsional, fallback ke "Bab N" jika null
-  content    String    @db.Text
-  created_at DateTime  @default(now())
+  content         String    @db.Text
+  content_html    String?   @db.Text
+  created_at      DateTime  @default(now())
   comments   Comment[] 
   reactions  ChapterReaction[]
   
@@ -132,6 +133,7 @@ model Rating {
   score    Int    
   
   @@unique([user_id, karya_id]) // Unique Constraint
+  @@index([karya_id])
 }
 
 // Epic 8: Review Berformat Teks Panjang (Ditampilkan di halaman depan Karya)
@@ -142,6 +144,7 @@ model Review {
   karya_id   String 
   karya      Karya    @relation(fields: [karya_id], references: [id], onDelete: Cascade)
   content    String   @db.Text
+  content_html String?  @db.Text
   rating     Int?     // Opsi tanpa rating (null) = hanya komentar diskusi
   is_pinned  Boolean? @default(false) // Review yang disematkan oleh author/admin
   created_at DateTime @default(now())
@@ -150,6 +153,7 @@ model Review {
   comments   ReviewComment[]
 
   @@unique([user_id, karya_id]) // 1 user = 1 review per karya
+  @@index([karya_id, created_at(sort: Desc)])
 }
 
 model ReviewUpvote {
@@ -161,6 +165,7 @@ model ReviewUpvote {
   created_at DateTime @default(now())
 
   @@unique([user_id, review_id])
+  @@index([review_id])
 }
 
 model ReviewComment {
@@ -205,6 +210,7 @@ model CommentVote {
   created_at DateTime @default(now())
 
   @@unique([user_id, comment_id])
+  @@index([comment_id])
 }
 
 // Epic 12: Independent Chapter Reaction (Emoji-style)
@@ -218,6 +224,7 @@ model ChapterReaction {
   created_at    DateTime @default(now())
 
   @@unique([user_id, bab_id])
+  @@index([bab_id])
 }
 
 // Epic 12: Reader Gamification & Stats
@@ -237,6 +244,7 @@ model AuthorPost {
   author_id  String
   author     User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
   content    String   @db.Text
+  content_html String?  @db.Text
   image_url  String?
   created_at DateTime @default(now())
 

@@ -91,11 +91,18 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
 
     const work = await prisma.karya.findUnique({
         where: { id: karyaId },
-        include: {
+        select: {
+            id: true,
+            title: true,
+            total_views: true,
+            avg_rating: true,
+            cover_url: true,
+            is_completed: true,
+            uploader_id: true,
             _count: {
                 select: { bookmarks: true, ratings: true, reviews: true }
             },
-            genres: true,
+            genres: { select: { id: true, name: true } },
             bab: {
                 select: { 
                     id: true, 
@@ -117,7 +124,10 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
             },
             reviews: {
                 orderBy: { upvotes: { _count: 'desc' } },
-                include: {
+                select: {
+                    id: true,
+                    content: true,
+                    created_at: true,
                     user: { select: { display_name: true, avatar_url: true } },
                     _count: { select: { upvotes: true } }
                 }
