@@ -144,7 +144,6 @@ model Review {
   karya_id   String 
   karya      Karya    @relation(fields: [karya_id], references: [id], onDelete: Cascade)
   content    String   @db.Text
-  content_html String?  @db.Text
   rating     Int?     // Opsi tanpa rating (null) = hanya komentar diskusi
   is_pinned  Boolean? @default(false) // Review yang disematkan oleh author/admin
   created_at DateTime @default(now())
@@ -244,7 +243,6 @@ model AuthorPost {
   author_id  String
   author     User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
   content    String   @db.Text
-  content_html String?  @db.Text
   image_url  String?
   created_at DateTime @default(now())
 

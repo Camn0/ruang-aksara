@@ -287,16 +287,9 @@ export default function ProfileClient({
                                     {/* Post Content with Quote Style */}
                                     <div className="mb-6 relative">
                                         <div className="absolute -left-2 top-0 text-4xl text-white/5 font-serif inline-block">&quot;</div>
-                                        {post.content_html ? (
-                                            <div 
-                                                className="text-text-accent/90 leading-relaxed font-medium text-[15px] italic prose prose-invert max-w-none"
-                                                dangerouslySetInnerHTML={{ __html: post.content_html }}
-                                            />
-                                        ) : (
-                                            <p className="text-text-accent/90 whitespace-pre-wrap leading-relaxed font-medium text-[15px] italic">
-                                                {post.content}
-                                            </p>
-                                        )}
+                                        <p className="text-text-accent/90 whitespace-pre-wrap leading-relaxed font-medium text-[15px] italic">
+                                            {post.content}
+                                        </p>
                                     </div>
 
                                     {/* Post Image Display */}
@@ -380,14 +373,7 @@ export default function ProfileClient({
                                                 </Link>
                                                 <div className="relative">
                                                     <div className="absolute -left-2 top-0 opacity-10 text-2xl font-serif">&quot;</div>
-                                                    {review.content_html ? (
-                                                        <div 
-                                                            className="text-sm text-text-main/80 dark:text-gray-300 italic font-medium leading-relaxed prose prose-sm dark:prose-invert max-w-none"
-                                                            dangerouslySetInnerHTML={{ __html: review.content_html }}
-                                                        />
-                                                    ) : (
-                                                        <p className="text-sm text-text-main/80 dark:text-gray-300 italic font-medium leading-relaxed">&quot;{review.content}&quot;</p>
-                                                    )}
+                                                    <p className="text-sm text-text-main/80 dark:text-gray-300 italic font-medium leading-relaxed">&quot;{review.content}&quot;</p>
                                                 </div>
                                                 <p className="text-[8px] text-tan-primary/40 font-black uppercase mt-4 tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID')}</p>
                                             </div>

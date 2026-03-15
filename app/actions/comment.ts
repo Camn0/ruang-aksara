@@ -4,9 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
-
-const CommentIdSchema = z.string().uuid();
 
 /**
  * Server Action: Toggle Pin Status on a Chapter Comment.
@@ -16,9 +13,6 @@ export async function toggleCommentPin(commentId: string) {
     try {
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
-
-        const validation = CommentIdSchema.safeParse(commentId);
-        if (!validation.success) return { error: "ID Komentar tidak valid." };
 
         // [A] Get comment and associated novel author
         const comment = await (prisma as any).comment.findUnique({
@@ -66,9 +60,6 @@ export async function deleteComment(commentId: string) {
     try {
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
-
-        const validation = CommentIdSchema.safeParse(commentId);
-        if (!validation.success) return { error: "ID Komentar tidak valid." };
 
         const comment = await (prisma as any).comment.findUnique({
             where: { id: commentId },

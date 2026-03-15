@@ -4,20 +4,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
-
-const ReactionSchema = z.object({
-    babId: z.string().uuid(),
-    reactionType: z.string().min(1).max(50),
-    karyaId: z.string().uuid(),
-});
 
 export async function submitChapterReaction(babId: string, reactionType: string, karyaId: string) {
     try {
-        // [New] Early Zod Validation (#80 Golden Optimization)
-        const validation = ReactionSchema.safeParse({ babId, reactionType, karyaId });
-        if (!validation.success) return { error: "Invalid reaction data." };
-
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
 

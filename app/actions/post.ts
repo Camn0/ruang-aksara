@@ -4,20 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import { marked } from "marked";
-
-const PostSchema = z.object({
-    content: z.string().min(1, "Konten tidak boleh kosong").max(5000),
-    image_url: z.string().url("URL Gambar tidak valid").nullable().or(z.literal("")).optional(),
-});
-
-const PostIdSchema = z.string().uuid();
-
-const PostCommentSchema = z.object({
-    post_id: z.string().uuid(),
-    content: z.string().min(1, "Komentar tidak boleh kosong").max(1000),
-});
 
 // ==============================================================================
 // 1. MUTASI AUTHOR: MEMBUAT POSTINGAN / PENGUMUMAN BARU
@@ -48,9 +34,9 @@ export async function createAuthorPost(formData: FormData) {
         const content = formData.get('content') as string;
         const image_url = formData.get('image_url') as string | null;
 
-        const validation = PostSchema.safeParse({ content, image_url });
-        if (!validation.success) {
-            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
+        // [C] Validasi: konten tidak boleh kosong atau hanya whitespace
+        if (!content || content.trim().length === 0) {
+            return { error: "Konten tidak boleh kosong." };
         }
 
         // [D] Ambil ID penulis dari sesi yang sudah tervalidasi
@@ -62,7 +48,6 @@ export async function createAuthorPost(formData: FormData) {
         await (prisma as any).authorPost.create({
             data: {
                 content: content.trim(),
-                content_html: marked.parse(content.trim()) as string,
                 author_id,
                 // Spread conditional: hanya sertakan image_url jika ada dan tidak kosong
                 ...(image_url && image_url.trim() ? { image_url: image_url.trim() } : {})
@@ -169,9 +154,9 @@ export async function submitPostComment(formData: FormData) {
         const post_id = formData.get('post_id') as string;
         const content = formData.get('content') as string;
 
-        const validation = PostCommentSchema.safeParse({ post_id, content });
-        if (!validation.success) {
-            return { error: `Validasi gagal: ${validation.error.issues[0].message}` };
+        // [C] Validasi: post_id wajib ada, konten tidak boleh kosong
+        if (!post_id || !content || content.trim().length === 0) {
+            return { error: "Komentar tidak boleh kosong." };
         }
 
         // [D] Mutasi Database — simpan komentar baru
@@ -218,9 +203,6 @@ export async function submitPostComment(formData: FormData) {
  */
 export async function deletePostComment(commentId: string) {
     try {
-        const validation = PostIdSchema.safeParse(commentId);
-        if (!validation.success) return { error: "ID Komentar tidak valid." };
-
         // [A] Validasi Sesi
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
@@ -265,9 +247,6 @@ export async function deleteAuthorPost(postId: string) {
     try {
         const session = await getServerSession(authOptions);
         if (!session) return { error: "Unauthorized." };
-
-        const validation = PostIdSchema.safeParse(postId);
-        if (!validation.success) return { error: "ID Post tidak valid." };
 
         const existing = await (prisma as any).authorPost.findUnique({ 
             where: { id: postId },
