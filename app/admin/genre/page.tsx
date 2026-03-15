@@ -41,7 +41,7 @@ export default async function AdminGenrePage() {
             </div>
 
             <div className="px-6">
-                <div className="max-w-4xl bg-white/80 dark:bg-brown-dark backdrop-blur-sm rounded-3xl shadow-xl shadow-brown-dark/5 dark:shadow-none p-6 sm:p-10 border border-tan-primary/10 dark:border-brown-mid transition-colors duration-300">
+                <div className="max-w-4xl bg-bg-cream dark:bg-brown-dark backdrop-blur-sm rounded-3xl shadow-xl shadow-brown-dark/5 dark:shadow-none p-6 sm:p-10 border border-tan-primary/10 dark:border-brown-mid transition-colors duration-300">
 
                     {/* SECTION 1: MANAJEMEN PENULIS (AUTHOR) */}
                     <div className="mb-12">

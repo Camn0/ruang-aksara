@@ -87,6 +87,60 @@ async function fetchKaryaDetail(karyaId: string, sort: string = 'new') {
     )();
 }
 
+const getCachedUserRating = (karyaId: string, userId: string) =>
+    unstable_cache(
+        async () => prisma.rating.findUnique({
+            where: { user_id_karya_id: { user_id: userId, karya_id: karyaId } }
+        }),
+        [`user-rating-${userId}-${karyaId}`],
+        { revalidate: 3600, tags: [`user-ratings-${userId}`, `karya-${karyaId}`] }
+    )();
+
+const getCachedUserReview = (karyaId: string, userId: string) =>
+    unstable_cache(
+        async () => prisma.review.findUnique({
+            where: { user_id_karya_id: { user_id: userId, karya_id: karyaId } }
+        }),
+        [`user-review-${userId}-${karyaId}`],
+        { revalidate: 3600, tags: [`user-reviews-${userId}`, `karya-${karyaId}`] }
+    )();
+
+const getCachedUserBookmark = (karyaId: string, userId: string) =>
+    unstable_cache(
+        async () => prisma.bookmark.findUnique({
+            where: { user_id_karya_id: { user_id: userId, karya_id: karyaId } }
+        }),
+        [`user-bookmark-${userId}-${karyaId}`],
+        { revalidate: 3600, tags: [`library-${userId}`] }
+    )();
+
+const getCachedUserUpvotes = (userId: string, reviewIds: string[]) =>
+    unstable_cache(
+        async () => (prisma as any).reviewUpvote.findMany({
+            where: {
+                user_id: userId,
+                review_id: { in: reviewIds }
+            },
+            select: { review_id: true }
+        }),
+        [`user-upvotes-${userId}-${reviewIds.sort().join(',')}`],
+        { revalidate: 3600, tags: [`user-upvotes-${userId}`] }
+    )();
+
+const getCachedFollowStatus = (followerId: string, followingId: string) =>
+    unstable_cache(
+        async () => (prisma as any).follow.findUnique({
+            where: {
+                follower_id_following_id: {
+                    follower_id: followerId,
+                    following_id: followingId
+                }
+            }
+        }),
+        [`follow-status-${followerId}-${followingId}`],
+        { revalidate: 3600, tags: [`following-${followerId}`] }
+    )();
+
 export async function generateMetadata({ params }: { params: { karyaId: string } }): Promise<Metadata> {
     const karya = await fetchKaryaDetail(params.karyaId);
     if (!karya) return { title: 'Karya Tidak Ditemukan — Ruang Aksara' };
@@ -130,42 +184,23 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
     let userUpvotedReviews: string[] = [];
 
     if (userId) {
-        const [ratingContext, prevReview, bContext, upvotes] = await Promise.all([
-            prisma.rating.findUnique({
-                where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
-            }),
-            prisma.review.findUnique({
-                where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
-            }),
-            prisma.bookmark.findUnique({
-                where: { user_id_karya_id: { user_id: userId, karya_id: karya.id } }
-            }),
-            (prisma as any).reviewUpvote.findMany({
-                where: {
-                    user_id: userId,
-                    review_id: { in: karya.reviews?.map((r: any) => r.id) || [] }
-                },
-                select: { review_id: true }
-            }) as { review_id: string }[]
+        const reviewIds = karya.reviews?.map((r: any) => r.id) || [];
+        const [ratingContext, prevReview, bContext, upvotes, followRecord] = await Promise.all([
+            getCachedUserRating(karya.id, userId),
+            getCachedUserReview(karya.id, userId),
+            getCachedUserBookmark(karya.id, userId),
+            getCachedUserUpvotes(userId, reviewIds),
+            karya.uploader_id && userId !== karya.uploader_id 
+                ? getCachedFollowStatus(userId, karya.uploader_id)
+                : null
         ]);
 
         if (ratingContext) userPreviousRating = ratingContext.score;
         userPreviousReview = prevReview;
         bookmarkContext = bContext;
         if (bookmarkContext) isBookmarked = true;
-        userUpvotedReviews = upvotes.map((u: any) => u.review_id);
-
-        if (karya.uploader_id && userId !== karya.uploader_id) {
-            const followRecord = await (prisma as any).follow.findUnique({
-                where: {
-                    follower_id_following_id: {
-                        follower_id: userId,
-                        following_id: karya.uploader_id
-                    }
-                }
-            });
-            isFollowing = !!followRecord;
-        }
+        userUpvotedReviews = (upvotes as any[]).map((u: any) => u.review_id);
+        isFollowing = !!followRecord;
     }
 
     const typedKarya = karya as any; // Temporary cast for relation access
@@ -180,7 +215,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
     return (
         <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-24 transition-colors duration-300 selection:bg-tan-primary/30">
-            <header className="px-6 h-16 bg-white/80 dark:bg-brown-dark/80 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300 shadow-sm shadow-brown-dark/5">
+            <header className="px-6 h-16 bg-bg-cream/80 dark:bg-brown-dark/80 backdrop-blur-md border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-20 transition-colors duration-300 shadow-sm shadow-brown-dark/5">
                 <Link href="/" prefetch={false} className="p-2 -ml-2 text-tan-primary hover:bg-tan-primary/10 rounded-full transition-all active:scale-95">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
@@ -188,7 +223,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                     Detail Karya
                 </h1>
                 <div className="w-10"></div>
-            </header>            <div className="bg-white/40 dark:bg-brown-dark/40 border-b border-tan-primary/5 pt-8 pb-10 px-6 transition-colors duration-300 relative overflow-hidden">
+            </header>            <div className="bg-bg-cream/40 dark:bg-brown-dark/40 border-b border-tan-primary/5 pt-8 pb-10 px-6 transition-colors duration-300 relative overflow-hidden">
                 {/* Background artistic pattern snippet */}
                 <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none">
                     <TrendingUp className="w-full h-full text-tan-primary rotate-12" />
@@ -297,7 +332,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
                 <div className="mt-8 flex gap-2">
                     {firstChapter ? (
-                        <Link href={`/novel/${karya.id}/${firstChapter}`} prefetch={false} className="flex-1 text-center py-4 bg-brown-dark text-text-accent rounded-[2rem] font-black text-[13px] uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 active:scale-[0.98] transition-all flex items-center justify-center hover:bg-brown-mid">
+                        <Link href={`/novel/${karya.id}/${firstChapter}`} prefetch={false} className="flex-1 text-center py-4 bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark rounded-[2rem] font-black text-[13px] uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 dark:shadow-tan-primary/10 active:scale-[0.98] transition-all flex items-center justify-center hover:bg-brown-mid dark:hover:bg-tan-light">
                             Mulai Perjalanan
                         </Link>
                     ) : (
@@ -315,7 +350,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 <ContinueReadingButton karyaId={karya.id} />
             </div>
 
-            <div className="bg-white/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 shadow-sm transition-colors duration-300 overflow-hidden">
+            <div className="bg-bg-cream/60 dark:bg-brown-dark/60 mt-3 border-y border-tan-primary/5 shadow-sm transition-colors duration-300 overflow-hidden">
                 <div className="p-6 border-b border-tan-primary/10 bg-tan-primary/[0.02]">
                     <h2 className="text-base font-black text-brown-dark dark:text-text-accent uppercase tracking-[0.2em] italic">Daftar Isi</h2>
                     <p className="text-[10px] font-bold text-tan-primary/40 uppercase tracking-widest mt-1.5">{karya.bab.length} Pena Terukir</p>
@@ -351,7 +386,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                 </div>
             </div>
 
-            <div className="bg-white/40 dark:bg-brown-dark/40 mt-6 border-y border-tan-primary/5 p-8 shadow-sm transition-colors duration-300">
+            <div className="bg-bg-cream/40 dark:bg-brown-dark/40 mt-6 border-y border-tan-primary/5 p-8 shadow-sm transition-colors duration-300">
                 <div className="flex items-center justify-between mb-8">
                     <h2 className="text-xl font-black text-brown-dark dark:text-text-accent flex items-center gap-3 italic uppercase tracking-tighter">
                         <MessageSquareQuote className="w-6 h-6 text-tan-primary non-italic" />
@@ -368,7 +403,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
                     <div className="bg-tan-primary/5 dark:bg-brown-mid/50 p-10 rounded-[2.5rem] text-center border border-tan-primary/10 transition-colors shadow-inner mb-8">
                         <p className="text-[11px] font-black text-tan-primary mb-3 uppercase tracking-[0.25em]">Ingin Menulis Kesan?</p>
                         <p className="text-xs text-brown-dark/50 dark:text-tan-light mb-8 px-6 leading-loose font-bold italic">Masuk ke Ruang Aksara untuk memberikan apresiasi pada sang penulis.</p>
-                        <Link href="/auth/login" prefetch={false} className="inline-block px-12 py-4 bg-brown-dark text-text-accent rounded-full text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 transition-all hover:scale-105 active:scale-95 hover:bg-brown-mid">
+                        <Link href="/auth/login" prefetch={false} className="inline-block px-12 py-4 bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark rounded-full text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brown-dark/20 dark:shadow-tan-primary/10 transition-all hover:scale-105 active:scale-95 hover:bg-brown-mid dark:hover:bg-tan-light">
                             Mulai Perjalanan
                         </Link>
                     </div>
@@ -381,7 +416,7 @@ export default async function KaryaDetailsPage({ params, searchParams }: { param
 
                     <div className="space-y-4">
                         {karya.reviews.map((review: any) => (
-                            <div key={review.id} className="p-8 bg-white/80 dark:bg-brown-dark/80 rounded-[2.5rem] border border-tan-primary/10 shadow-xl shadow-brown-dark/5 transition-all group backdrop-blur-sm">
+                            <div key={review.id} className="p-8 bg-bg-cream/80 dark:bg-brown-dark/80 rounded-[2.5rem] border border-tan-primary/10 shadow-xl shadow-brown-dark/5 transition-all group backdrop-blur-sm">
                                 <div className="flex items-start justify-between gap-4 mb-6">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-2xl overflow-hidden bg-tan-primary/5 border border-tan-primary/10 shadow-inner p-0.5 relative">

@@ -187,12 +187,12 @@ export default function ProfileClient({
                                                 {/* Stats Pills & Genres */}
                                                 <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-4">
                                                     <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 dark:bg-brown-mid/20 rounded-full border border-brown-dark/5 dark:border-brown-mid">
-                                                        <TrendingUp className="w-2.5 h-2.5 text-brown-dark/40 dark:text-tan-light/40" />
+                                                        <TrendingUp className="w-2.5 h-2.5 text-brown-dark/40 dark:text-text-accent/80" />
                                                         <span className="text-[8px] font-black text-brown-dark/60 dark:text-tan-light uppercase tracking-widest">{karya.total_views.toLocaleString()}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1 bg-brown-dark/5 dark:bg-brown-mid/20 px-2.5 py-1 rounded-full border border-brown-dark/5 dark:border-brown-mid">
                                                         {[1, 2, 3, 4, 5].map((s) => (
-                                                            <Star key={s} className={`w-2 h-2 ${s <= Math.round(karya.avg_rating || 0) ? 'fill-yellow-500 text-yellow-500' : 'text-brown-dark/10 dark:text-tan-light/10'}`} />
+                                                            <Star key={s} className={`w-2 h-2 ${s <= Math.round(karya.avg_rating || 0) ? 'fill-yellow-500 text-yellow-500' : 'text-brown-dark/10 dark:text-text-accent/10'}`} />
                                                         ))}
                                                     </div>
                                                     <div className="flex items-center gap-1.5 px-3 py-1 bg-brown-dark/5 dark:bg-brown-mid/20 rounded-full border border-brown-dark/5 dark:border-brown-mid">
@@ -221,7 +221,7 @@ export default function ProfileClient({
                                             {/* Author Actions */}
                                             {isOwnProfile && (
                                                 <div className="flex items-center justify-center sm:justify-start gap-3 mt-2">
-                                                    <Link href={`/admin/editor/karya/${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-brown-dark text-text-accent text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-brown-mid shadow-lg shadow-brown-dark/10 transition-all active:scale-95 group/btn">
+                                                    <Link href={`/admin/editor/karya/${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-brown-mid dark:hover:bg-tan-light shadow-lg shadow-brown-dark/10 dark:shadow-tan-primary/10 transition-all active:scale-95 group/btn">
                                                         <PenTool className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" /> Kelola
                                                     </Link>
                                                     <Link href={`/admin/editor/upload?karyaId=${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95">
@@ -364,13 +364,23 @@ export default function ProfileClient({
                                             <div className="shrink-0">
                                                 <div className="flex bg-tan-primary text-text-accent px-3 py-1 rounded-full items-center gap-1.5 shadow-sm shadow-tan-primary/20">
                                                     <Star className="w-2.5 h-2.5 fill-current" />
-                                                    <span className="text-[9px] font-black">{review.rating}</span>
+                                                    <span className="text-[9px] font-black">{review.rating || 'N/A'}</span>
                                                 </div>
                                             </div>
-                                            <div>
+                                            <div className="flex-1">
                                                 <Link href={`/novel/${review.karya.id}`} prefetch={false} className="text-[11px] font-black text-tan-primary hover:text-brown-dark transition-colors mb-2 block uppercase tracking-tight">
                                                     {review.karya.title}
                                                 </Link>
+                                                {review.rating && (
+                                                    <div className="flex gap-0.5 mb-2">
+                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                            <Star 
+                                                                key={star} 
+                                                                className={`w-3 h-3 ${star <= review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-brown-dark/10 dark:text-text-accent/10'}`} 
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )}
                                                 <div className="relative">
                                                     <div className="absolute -left-2 top-0 opacity-10 text-2xl font-serif">&quot;</div>
                                                     <p className="text-sm text-text-main/80 dark:text-gray-300 italic font-medium leading-relaxed">&quot;{review.content}&quot;</p>
@@ -545,7 +555,7 @@ export default function ProfileClient({
 
                         <div className="shrink-0 mb-1">
                             {isOwnProfile ? (
-                                <Link href="/profile/edit" prefetch={false} className="bg-brown-dark text-text-accent w-[135px] h-[39px] flex items-center justify-center rounded-[65px] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-lg active:scale-95">
+                                <Link href="/profile/edit" prefetch={false} className="bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark w-[135px] h-[39px] flex items-center justify-center rounded-[65px] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-brown-dark/10 dark:shadow-tan-primary/10 active:scale-95">
                                     Edit
                                 </Link>
                             ) : session ? (
@@ -559,7 +569,7 @@ export default function ProfileClient({
                     </div>
                     
                     {userProfile.bio && (
-                        <p className="text-sm text-text-main/70 dark:text-tan-light leading-relaxed max-w-2xl font-medium mb-6 italic">
+                        <p className="text-sm text-text-main/70 dark:text-text-accent/90 leading-relaxed max-w-2xl font-medium mb-6 italic">
                             &quot;{userProfile.bio}&quot;
                         </p>
                     )}

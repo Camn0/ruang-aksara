@@ -127,7 +127,7 @@ export default function ChapterPicker({
                                             : 'bg-bg-cream/50 dark:bg-brown-dark/40 border-tan-primary/5 dark:border-brown-mid hover:border-tan-primary/20 hover:bg-tan-primary/5'
                                             }`}
                                     >
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 shadow-inner ${isActive ? 'bg-white/10' : 'bg-tan-primary/5 dark:bg-brown-mid text-tan-primary/40'}`}>
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 shadow-inner ${isActive ? 'bg-tan-primary/20' : 'bg-tan-primary/5 dark:bg-brown-mid text-tan-primary/40'}`}>
                                             {ch.chapter_no}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -149,7 +149,7 @@ export default function ChapterPicker({
 
                                         {/* Reflection Effect for Active */}
                                         {isActive && (
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-tan-primary opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
                                         )}
                                     </Link>
                                 );

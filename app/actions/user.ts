@@ -147,6 +147,7 @@ export async function submitRating(formData: FormData) {
         });
 
         // Invalidate cache hlm detail agar rating terbaru muncul
+        revalidateTag(`user-ratings-${userId}`);
         revalidateTag(`karya-${karya_id}`);
 
         return { success: true, data: resultTransaction };
@@ -222,6 +223,7 @@ export async function submitReview(formData: FormData) {
             }
         });
 
+        revalidateTag(`user-reviews-${session.user.id}`);
         revalidateTag(`karya-${karya_id}`);
         return { success: true };
     } catch (error) {
@@ -369,6 +371,7 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
 
         // [3] Revalidate library & dashboard agar history ter-update
         revalidateTag(`library-${userId}`);
+        revalidateTag(`stats-${userId}`);
 
         return { success: true };
     } catch (error) {
@@ -412,7 +415,7 @@ export async function updateUserProfile(formData: FormData) {
             }
         });
 
-        revalidateTag(`user-profile-${session.user.id}`);
+        revalidateTag(`profile-${session.user.id}`);
         return { success: true };
     } catch (error) {
         console.error("[updateUserProfile] Error:", error);
@@ -450,5 +453,6 @@ export async function toggleFollow(targetUserId: string, revalidatePathStr?: str
         revalidateTag(revalidatePathStr);
     }
     // Revalidate target user profile anyway
-    revalidateTag(`user-${targetUserId}`);
+    revalidateTag(`profile-${targetUserId}`);
+    revalidateTag(`following-${followerId}`);
 }

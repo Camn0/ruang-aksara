@@ -61,6 +61,30 @@ const getCachedNavigation = (karyaId: string, chapterNo: number) =>
         { revalidate: 3600, tags: [`karya-${karyaId}`] }
     )();
 
+const getCachedReactionStats = (babId: string) =>
+    unstable_cache(
+        async () => {
+            return (prisma as any).chapterReaction.groupBy({
+                by: ['reaction_type'],
+                where: { bab_id: babId },
+                _count: { _all: true }
+            });
+        },
+        [`reaction-stats-${babId}`],
+        { revalidate: 3600, tags: [`chapter-reactions-${babId}`] }
+    )();
+
+const getCachedUserReaction = (babId: string, userId: string) =>
+    unstable_cache(
+        async () => {
+            return (prisma as any).chapterReaction.findUnique({
+                where: { user_id_bab_id: { user_id: userId, bab_id: babId } }
+            });
+        },
+        [`user-reaction-${userId}-${babId}`],
+        { revalidate: 3600, tags: [`user-reactions-${userId}`] }
+    )();
+
 export default async function ChapterPage({ params }: { params: { karyaId: string, chapterNo: string } }) {
     const chapterNoNum = Number(params.chapterNo);
 
@@ -78,16 +102,9 @@ export default async function ChapterPage({ params }: { params: { karyaId: strin
 
     const { next: nextBab, prev: prevBab } = navigation;
 
-    // [C] Social Data: Reactions
     const [userChapterReaction, chapterReactionStats] = await Promise.all([
-        session?.user?.id ? (prisma as any).chapterReaction.findUnique({
-            where: { user_id_bab_id: { user_id: session.user.id, bab_id: chapter.id } }
-        }) : null,
-        (prisma as any).chapterReaction.groupBy({
-            by: ['reaction_type'],
-            where: { bab_id: chapter.id },
-            _count: { _all: true }
-        })
+        session?.user?.id ? getCachedUserReaction(chapter.id, session.user.id) : null,
+        getCachedReactionStats(chapter.id)
     ]);
 
 

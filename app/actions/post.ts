@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 // ==============================================================================
 // 1. MUTASI AUTHOR: MEMBUAT POSTINGAN / PENGUMUMAN BARU
@@ -56,6 +56,7 @@ export async function createAuthorPost(formData: FormData) {
 
         // [F] Invalidasi Cache Next.js — memastikan halaman profil di-render ulang dengan data terbaru
         // Pattern '[id]' berarti semua halaman profil dinamis akan di-revalidate.
+        revalidateTag(`posts-author-${author_id}`);
         revalidatePath('/profile/[id]', 'page');
         return { success: true };
     } catch (e) {
@@ -99,6 +100,9 @@ export async function togglePostLike(postId: string) {
                     user_id: session.user.id,
                     post_id: postId
                 }
+            },
+            include: {
+                post: { select: { author_id: true } }
             }
         });
 
@@ -115,6 +119,7 @@ export async function togglePostLike(postId: string) {
         }
 
         // [D] Revalidate cache agar jumlah like ter-update di UI
+        revalidateTag(`posts-author-${existingLike.post.author_id}`);
         revalidatePath('/profile/[id]', 'page');
         return { success: true };
     } catch (e) {
@@ -171,11 +176,13 @@ export async function submitPostComment(formData: FormData) {
                 id: true,
                 content: true,
                 created_at: true,
-                user: { select: { id: true, username: true, display_name: true, avatar_url: true } }
+                user: { select: { id: true, username: true, display_name: true, avatar_url: true } },
+                post: { select: { author_id: true } }
             }
         });
 
         // [E] Revalidate cache
+        revalidateTag(`posts-author-${newComment.post.author_id}`);
         revalidatePath('/profile/[id]', 'page');
         return { success: true, data: newComment };
     } catch (e) {
@@ -210,7 +217,11 @@ export async function deletePostComment(commentId: string) {
         // [B] Cari komentar berdasarkan ID — pastikan masih ada di database
         const existing = await (prisma as any).postComment.findUnique({ 
             where: { id: commentId },
-            select: { id: true, user_id: true }
+            select: { 
+                id: true, 
+                user_id: true,
+                post: { select: { author_id: true } }
+            }
         });
         if (!existing) return { error: "Komentar tidak ditemukan." };
 
@@ -223,6 +234,7 @@ export async function deletePostComment(commentId: string) {
         await (prisma as any).postComment.delete({ where: { id: commentId } });
 
         // [E] Revalidate cache profil
+        revalidateTag(`posts-author-${existing.post.author_id}`);
         revalidatePath('/profile/[id]', 'page');
         return { success: true };
     } catch (e) {
@@ -260,6 +272,7 @@ export async function deleteAuthorPost(postId: string) {
 
         await (prisma as any).authorPost.delete({ where: { id: postId } });
 
+        revalidateTag(`posts-author-${existing.author_id}`);
         revalidatePath('/profile/[id]', 'page');
         return { success: true };
     } catch (e) {

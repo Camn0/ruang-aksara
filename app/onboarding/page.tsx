@@ -140,21 +140,21 @@ function DesktopIntroAnimation({
                     </div>
 
                     <div className="text-center space-y-2 mb-10">
-                        <h2 className="text-2xl lg:text-4xl font-medium text-[#3b2a22]">
+                        <h2 className="text-2xl lg:text-4xl font-medium text-text-main">
                             Selamat Datang <br />
                             di
                         </h2>
-                        <h1 className="text-4xl lg:text-6xl font-black text-[#3b2a22]">
+                        <h1 className="text-4xl lg:text-6xl font-black text-text-main">
                             Ruang Aksara
                         </h1>
                     </div>
 
                     <div className="flex gap-2 mb-10">
-                        <div className="w-10 h-10 rounded-full bg-[#3b2a22]"></div>
-                        <div className="w-10 h-10 rounded-full border-4 border-[#3b2a22]"></div>
+                        <div className="w-10 h-10 rounded-full bg-tan-primary"></div>
+                        <div className="w-10 h-10 rounded-full border-4 border-tan-primary"></div>
                     </div>
 
-                    <button className="bg-[#7D5A44] text-[#f2ead7] px-12 py-3 rounded-full text-xl font-bold shadow-lg">
+                    <button onClick={onFinish} className="bg-brown-dark text-text-accent px-12 py-3 rounded-full text-xl font-black shadow-xl shadow-brown-dark/20 hover:bg-tan-primary transition-all active:scale-95">
                         selanjutnya
                     </button>
                 </div>
@@ -220,24 +220,24 @@ export default function OnboardingPage() {
 
                                     {/* Text */}
                                     <div className="mb-6 space-y-1">
-                                        <h2 className="text-3xl font-medium text-black">
+                                        <h2 className="text-3xl font-medium text-text-main">
                                             Selamat Datang <br />
                                             di
                                         </h2>
-                                        <h1 className="text-5xl font-black text-black">
+                                        <h1 className="text-5xl font-black text-text-main">
                                             Ruang Aksara
                                         </h1>
                                     </div>
 
                                     {/* Pagination Dots */}
                                     <div className="flex gap-2 mb-8">
-                                        <div className="w-4 h-4 rounded-full bg-black"></div>
-                                        <div className="w-4 h-4 rounded-full border-2 border-black"></div>
+                                        <div className="w-4 h-4 rounded-full bg-tan-primary"></div>
+                                        <div className="w-4 h-4 rounded-full border-2 border-tan-primary"></div>
                                     </div>
 
                                     <button
                                         onClick={handleNext}
-                                        className="bg-[#7D5A44] text-[#f2ead7] px-10 py-3 rounded-full text-2xl font-medium hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+                                        className="bg-brown-dark text-text-accent px-10 py-3 rounded-full text-2xl font-black hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                     >
                                         Selanjutnya
                                     </button>
@@ -268,24 +268,24 @@ export default function OnboardingPage() {
 
                                     {/* Text */}
                                     <div className="text-center space-y-2 mb-10">
-                                        <h2 className="text-2xl lg:text-4xl font-medium text-[#3b2a22]">
+                                        <h2 className="text-2xl lg:text-4xl font-medium text-text-main">
                                             Selamat Datang <br />
                                             di
                                         </h2>
-                                        <h1 className="text-4xl lg:text-6xl font-black text-[#3b2a22]">
+                                        <h1 className="text-4xl lg:text-6xl font-black text-text-main">
                                             Ruang Aksara
                                         </h1>
                                     </div>
 
                                     {/* Pagination dots */}
                                     <div className="flex gap-2 mb-10">
-                                        <div className="w-10 h-10 rounded-full bg-[#3b2a22]"></div>
-                                        <div className="w-10 h-10 rounded-full border-4 border-[#3b2a22]"></div>
+                                        <div className="w-10 h-10 rounded-full bg-tan-primary"></div>
+                                        <div className="w-10 h-10 rounded-full border-4 border-tan-primary"></div>
                                     </div>
 
                                     <button
                                         onClick={handleNext}
-                                        className="bg-[#7D5A44] text-[#f2ead7] px-12 py-3 rounded-full text-xl font-bold hover:scale-105 active:scale-95 transition-all shadow-lg"
+                                        className="bg-brown-dark text-text-accent px-12 py-3 rounded-full text-xl font-black hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                     >
                                         selanjutnya
                                     </button>
@@ -307,7 +307,7 @@ export default function OnboardingPage() {
                     {step === 2 && (
                         <div className="w-full max-w-2xl mt-16 px-6">
                             {/* white box */}
-                            <div className="relative lg:scale-150 bg-white rounded-xl pt-16 pb-12 px-4 md:px-8 shadow-xl flex flex-col items-center">
+                            <div className="relative lg:scale-150 bg-bg-cream dark:bg-brown-dark rounded-xl pt-16 pb-12 px-4 md:px-8 shadow-xl flex flex-col items-center border border-tan-light/10">
                                 
                                 {/* logo container */}
                                 <div className="absolute -top-12 left-1/2 -translate-x-1/2">
@@ -323,19 +323,19 @@ export default function OnboardingPage() {
                                 </div>
 
                                 {/* Text */}
-                                <h2 className="text-black text-lg md:text-3xl [font-family:'Open_Sans-Regular',Helvetica] font-bold mb-4">
+                                <h2 className="text-text-main text-lg md:text-3xl [font-family:'Open_Sans-Regular',Helvetica] font-bold mb-4">
                                     Temukan Ribuan
                                     <br />
                                     Dunia Baru
                                 </h2>
-                                <p className="text-black text-sm md:text-xl [font-family:'Open_Sans-Regular',Helvetica] leading-relaxed mb-16">
+                                <p className="text-text-main/80 text-sm md:text-xl [font-family:'Open_Sans-Regular',Helvetica] leading-relaxed mb-16">
                                     Nikmati karya sastra digital terbaik dari tangan-tangan
                                     berbakat di mana pun Anda berada.
                                 </p>
 
                                 <button
                                     onClick={handleNext}
-                                    className="bg-[#7D5A44] text-white px-10 py-3 rounded-full text-md md:text-2xl font-medium hover:bg-[#5D4232] hover:scale-[1.02] active:scale-95 transition-colors"
+                                    className="bg-brown-dark text-text-accent px-10 py-3 rounded-full text-md md:text-2xl font-black hover:bg-tan-primary hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                 >
                                     selanjutnya
                                 </button>

@@ -39,7 +39,7 @@ const getCachedLibrary = (userId: string) => unstable_cache(
     { revalidate: 60, tags: [`library-${userId}`] }
 )();
 
-export default async function LibraryPage({ searchParams }: { searchParams: { tab?: string } }) {
+export default async function LibraryPage({ searchParams }: { searchParams: { tab?: string; q?: string } }) {
     const session = await getServerSession(authOptions);
 
     if (!session) {
@@ -63,10 +63,15 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     })[];
 
     const activeTab = searchParams.tab || 'riwayat';
+    const searchQuery = searchParams.q || '';
 
     const filteredBookmarks = bookmarks.filter(b => {
-        if (activeTab === 'tamat') return b.karya.is_completed;
-        return true;
+        const matchesTab = activeTab === 'tamat' ? b.karya.is_completed : true;
+        const matchesSearch = searchQuery
+            ? b.karya.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              b.karya.penulis_alias?.toLowerCase().includes(searchQuery.toLowerCase())
+            : true;
+        return matchesTab && matchesSearch;
     });
 
     const renderEmptyState = (message: string, subMessage: string) => (
@@ -90,16 +95,19 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                     <Link href="/" prefetch={false} className="bg-brown-mid dark:bg-brown-dark p-2.5 rounded-full text-text-accent hover:opacity-80 transition-all shadow-md border border-tan-light/20 dark:border-brown-mid/30">
                         <Home className="w-5 h-5" />
                     </Link>
-                    <div className="relative flex-1">
+                    <form action="/library" className="relative flex-1">
+                        <input type="hidden" name="tab" value={activeTab} />
                         <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
                             <Search className="w-4 h-4 text-text-accent" />
                         </div>
                         <input
                             type="text"
+                            name="q"
+                            defaultValue={searchQuery}
                             placeholder="Cari karya..."
                             className="w-full bg-brown-mid dark:bg-brown-dark text-text-accent placeholder:text-text-accent/60 rounded-full py-3.5 pl-12 pr-6 text-sm focus:outline-none focus:ring-2 focus:ring-tan-light transition-all shadow-md border border-tan-light/20 dark:border-brown-mid/30"
                         />
-                    </div>
+                    </form>
                 </div>
 
                 <div className="flex items-center justify-between mb-6">

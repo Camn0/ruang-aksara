@@ -318,7 +318,7 @@ export default async function AdminDashboardPage() {
                                                 </div>
                                             </div>
                                             <div className="bg-text-main/5 dark:bg-white/5 p-5 rounded-[2rem] border border-transparent transition-all mb-3">
-                                                <p className="text-[13px] text-text-main/80 dark:text-tan-light leading-relaxed italic font-medium">"{c.content}"</p>
+                                                <p className="text-[13px] text-text-main/80 dark:text-text-accent leading-relaxed italic font-medium">"{c.content}"</p>
                                             </div>
                                             <Link href={`/admin/editor/karya/${c.bab.karya.id}`} className="text-[9px] text-text-main/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-text-main dark:hover:text-bg-cream flex items-center gap-2 ml-2 transition-all">
                                                 <BookOpen className="w-3 h-3" strokeWidth={3} /> {c.bab.karya.title}
@@ -337,7 +337,7 @@ export default async function AdminDashboardPage() {
                                     <Sparkles className="w-7 h-7 text-bg-cream" />
                                 </div>
                                 <h3 className="text-3xl font-black italic mb-3 leading-tight uppercase">Inspirasi</h3>
-                                <p className="text-[11px] text-bg-cream/60 font-black uppercase tracking-[0.2em] mb-10 leading-relaxed">Setiap kata adalah permata bagi pembaca.</p>
+                                <p className="text-[11px] text-bg-cream/60 dark:text-text-accent font-black uppercase tracking-[0.2em] mb-10 leading-relaxed">Setiap kata adalah permata bagi pembaca.</p>
                                 <Link href="/admin/editor/tips" prefetch={false} className="inline-flex items-center gap-3 bg-text-accent text-brown-dark px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-110 active:scale-95 shadow-xl">
                                     Tips Studio
                                 </Link>

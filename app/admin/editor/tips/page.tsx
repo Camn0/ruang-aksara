@@ -62,7 +62,7 @@ export default async function TipsStudioPage() {
                 {/* Tips Grid: Menyajikan kartu tips dengan hover effect yang dinamis */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
                     {tips.map((tip, idx) => (
-                        <div key={idx} className="bg-white/80 dark:bg-brown-dark p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-tan-primary/10 dark:border-brown-mid shadow-xl shadow-brown-dark/5 hover:scale-[1.02] transition-all group backdrop-blur-sm">
+                        <div key={idx} className="bg-bg-cream/80 dark:bg-brown-dark p-4 sm:p-8 rounded-3xl sm:rounded-[3rem] border border-tan-primary/10 dark:border-brown-mid shadow-xl shadow-brown-dark/5 hover:scale-[1.02] transition-all group backdrop-blur-sm">
                             <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${tip.bg} transition-transform group-hover:rotate-6`}>
                                 <tip.icon className={`w-5 h-5 sm:w-7 sm:h-7 ${tip.color}`} strokeWidth={2.5} />
                             </div>

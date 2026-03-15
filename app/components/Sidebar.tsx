@@ -14,9 +14,11 @@ export default function Sidebar() {
     const { data: session } = useSession();
     const { isExpanded, setIsExpanded, toggleSidebar } = useSidebar();
 
-    // Sembunyikan sidebar di halaman auth, onboarding, admin, atau error
+    // Sembunyikan sidebar di halaman auth, onboarding, admin, reading page, atau error
     const hiddenRoutes = ["/onboarding", "/auth/login", "/auth/register", "/admin"];
-    if (hiddenRoutes.some(route => pathname.startsWith(route))) {
+    const isReadingPage = pathname.match(/^\/novel\/[^\/]+\/\d+$/);
+
+    if (hiddenRoutes.some(route => pathname.startsWith(route)) || isReadingPage) {
         return null; // Tidak render
     }
 
@@ -45,7 +47,7 @@ export default function Sidebar() {
 
                 {/* Logo Section */}
                 <Link href={session ? "/user/dashboard" : "/"} className={`flex flex-col items-center mb-10 transition-all duration-500 group/logo`}>
-                    <div className={`transition-all duration-500 bg-white/10 dark:bg-brown-mid/20 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
+                    <div className={`transition-all duration-500 bg-tan-primary/5 dark:bg-brown-mid/20 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
                         {/* New Brand Logo Placeholder */}
                         <Image
                             src="/logoRuangAksara.webp"

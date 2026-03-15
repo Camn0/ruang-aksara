@@ -39,12 +39,12 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold uppercase tracking-widest text-tan-primary">Peringkat Anda</p>
-                            <h3 className="text-xl font-open-sans font-bold text-text-main">Level {level}</h3>
+                            <h3 className="text-xl font-open-sans font-bold text-text-main dark:text-text-accent">Level {level}</h3>
                         </div>
                     </div>
                     <button
                         onClick={() => setShowLevelInfo(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-tan-light/20 text-tan-primary rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-tan-light hover:text-brown-dark transition-all active:scale-95"
+                        className="flex items-center gap-2 px-4 py-2 bg-tan-light/20 text-tan-primary rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-tan-light hover:text-brown-dark dark:hover:text-text-accent transition-all active:scale-95"
                     >
                         Benefit <ChevronRight className="w-3 h-3" />
                     </button>
@@ -53,7 +53,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                 <div className="space-y-2 relative z-10">
                     <div className="flex justify-between text-[11px] font-bold text-tan-primary uppercase tracking-tighter">
                         <span>Progress Level</span>
-                        <span className="text-text-main">{progressToNextLevel}%</span>
+                        <span className="text-text-main dark:text-text-accent">{progressToNextLevel}%</span>
                     </div>
                     <div className="h-3 bg-tan-light/10 dark:bg-brown-mid/20 rounded-full overflow-hidden border border-tan-light/20 dark:border-brown-mid/30">
                         <div
@@ -64,7 +64,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                     <p className="text-[9px] text-tan-primary/70 font-bold italic">Butuh {nextLevelPoints - stats.points} poin lagi untuk naik level.</p>
                 </div>
 
-                <Star className="absolute -right-6 -bottom-6 w-32 h-32 text-tan-light/10 dark:text-slate-800 pointer-events-none" />
+                <Star className="absolute -right-6 -bottom-6 w-32 h-32 text-tan-light/10 dark:text-brown-mid/20 pointer-events-none" />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
@@ -92,7 +92,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                     </div>
                 </button>
 
-                <div className="bg-white dark:bg-brown-dark rounded-3xl p-4 text-text-main shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid/50 text-center relative overflow-hidden">
+                <div className="bg-white dark:bg-brown-dark rounded-3xl p-4 text-text-main dark:text-text-accent shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid/50 text-center relative overflow-hidden">
                     <BookOpen className="absolute -right-2 -bottom-2 w-16 h-16 opacity-5 pointer-events-none" />
                     <p className="text-[8px] font-black uppercase tracking-widest text-tan-primary opacity-60 mb-1">Total Baca</p>
                     <div className="flex items-baseline justify-center gap-0.5">
@@ -110,20 +110,20 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Level Guide</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent dark:text-text-accent italic">Level Guide</h2>
                                     <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Sistem Reputasi Pembaca</p>
                                 </div>
-                                <button onClick={() => setShowLevelInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
+                                <button onClick={() => setShowLevelInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark dark:hover:text-text-accent transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
 
                             <div className="space-y-4">
                                 {levelTiers.map((tier, i) => (
-                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-white dark:bg-indigo-900/20 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-brown-mid/50 border-transparent'}`}>
+                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-white dark:bg-tan-primary/10 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-brown-mid/50 border-transparent'}`}>
                                         <div className="flex justify-between mb-1">
                                             <span className="text-[9px] font-black bg-tan-primary text-text-accent px-2 py-0.5 rounded shadow-sm">LV {tier.lv}</span>
-                                            <span className="text-[11px] font-bold text-text-main dark:text-text-accent">{tier.title}</span>
+                                            <span className="text-[11px] font-bold text-text-main dark:text-text-accent dark:text-text-accent">{tier.title}</span>
                                         </div>
                                         <p className="text-[10px] text-tan-primary font-bold mt-1 line-clamp-2">{tier.benefit}</p>
                                     </div>
@@ -148,17 +148,17 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Streak Baca</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent dark:text-text-accent italic">Streak Baca</h2>
                                     <p className="text-[10px] text-brown-mid font-black uppercase tracking-widest mt-1">Konsistensi adalah Kunci</p>
                                 </div>
-                                <button onClick={() => setShowStreakInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
+                                <button onClick={() => setShowStreakInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark dark:hover:text-text-accent transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="space-y-4 text-text-main/70 dark:text-tan-light text-xs font-bold leading-relaxed">
+                            <div className="space-y-4 text-text-main dark:text-text-accent/70 dark:text-tan-light text-xs font-bold leading-relaxed">
                                 <p>Streak menunjukkan berapa hari berturut-turut kamu membaca di Ruang Aksara.</p>
                                 <div className="p-4 bg-white dark:bg-orange-900/20 rounded-2xl border border-tan-light shadow-sm">
-                                    <p className="text-brown-dark font-bold leading-relaxed">
+                                    <p className="text-brown-dark dark:text-orange-200 font-bold leading-relaxed">
                                         Baca minimal 1 Bab setiap hari untuk mempertahankan apimu. Jangan sampai terputus!
                                     </p>
                                 </div>
@@ -177,14 +177,14 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Poin Aksara</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent dark:text-text-accent italic">Poin Aksara</h2>
                                     <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Kumpulkan poin untuk naik level</p>
                                 </div>
-                                <button onClick={() => setShowPointsInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark transition-colors">
+                                <button onClick={() => setShowPointsInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark dark:hover:text-text-accent transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="space-y-4 text-text-main/70 dark:text-tan-light text-xs font-bold leading-relaxed">
+                            <div className="space-y-4 text-text-main dark:text-text-accent/70 dark:text-tan-light text-xs font-bold leading-relaxed">
                                 <p>Setiap aktivitasmu diapresiasi dengan poin yang akan mengakumulasi peringkatmu.</p>
                                 <ul className="space-y-3">
                                     <li className="flex items-center gap-3">

@@ -7,8 +7,9 @@
   --bg-main: 243, 233, 215; /* bg-cream */
   --bg-surface: 255, 255, 255;
   --text-primary: 59, 42, 34;
-  --text-muted: 59, 42, 34;
+  --text-muted: 122, 102, 92; /* muted brown */
   --border-subtle: 176, 137, 104; /* tan-primary */
+  --border-divider: 176, 137, 104, 0.1; /* tan-primary with 0.1 alpha */
 }
 
 .dark {
@@ -18,6 +19,7 @@
   --text-primary: 243, 233, 215;
   --text-muted: 214, 191, 166; /* tan-light */
   --border-subtle: 122, 85, 58; /* brown-mid */
+  --border-divider: 243, 233, 215, 0.1; /* text-accent with 0.1 alpha */
 }
 
 body {

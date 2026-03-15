@@ -19,6 +19,8 @@ const config: Config = {
                 'olive-banner': '#3B3722',
                 'text-accent': '#F3E9D7',   // Creamy Latte
                 'text-main': 'rgb(var(--text-primary))',
+                'text-muted': 'rgb(var(--text-muted))',
+                'border-sep': 'rgba(var(--border-divider))',
             },
             fontFamily: {
                 'inter': ['var(--font-inter)', 'sans-serif'],

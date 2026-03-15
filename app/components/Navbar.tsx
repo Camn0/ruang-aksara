@@ -17,7 +17,7 @@ export default function Navbar() {
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo */}
                     <Link href={session ? "/user/dashboard" : "/"} className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 bg-white/10 rounded-lg overflow-hidden p-0.5 border border-tan-primary/10">
+                        <div className="w-10 h-10 bg-tan-primary/10 rounded-lg overflow-hidden p-0.5 border border-tan-primary/10">
                             <Image src="/logoRuangAksara.webp" width={40} height={40} alt="Logo" className="w-full h-full object-cover rounded" />
                         </div>
                         <span className="font-lobster text-xl text-brown-dark dark:text-text-accent group-hover:text-tan-primary transition-colors">

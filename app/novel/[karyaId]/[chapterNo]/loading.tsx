@@ -25,7 +25,7 @@ export default function Loading() {
             </main>
 
             {/* Fake Footer - Standardized Bottom Nav */}
-            <nav className="fixed bottom-0 inset-x-0 h-20 bg-white/95 dark:bg-brown-dark/95 border-t border-tan-primary/10 flex items-center justify-between px-8 z-30 md:max-w-md md:left-1/2 md:-translate-x-1/2 md:rounded-t-3xl md:border-x shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+            <nav className="fixed bottom-0 inset-x-0 h-20 bg-bg-cream/95 dark:bg-brown-dark/95 border-t border-tan-primary/10 flex items-center justify-between px-8 z-30 md:max-w-md md:left-1/2 md:-translate-x-1/2 md:rounded-t-3xl md:border-x shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
                 <div className="w-8 h-8 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
                 <div className="w-[4.5rem] h-[4.5rem] bg-tan-primary/20 dark:bg-brown-mid rounded-full -mt-10 border-4 border-bg-cream dark:border-slate-950 shadow-lg"></div>
                 <div className="w-8 h-8 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>

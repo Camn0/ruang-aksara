@@ -286,12 +286,12 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                         <div className="flex items-center gap-6 mb-8">
                             <Link 
                                 href={`/admin/stats/${type}`}
-                                className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/60 dark:text-tan-light uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream transition-colors group"
+                                className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/60 dark:text-text-accent uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream transition-colors group"
                             >
                                 <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> Kembali
                             </Link>
                             <span className="w-4 h-[1px] bg-text-main/10 dark:bg-white/10"></span>
-                            <span className="text-[10px] font-black text-text-main/70 dark:text-tan-light uppercase tracking-[0.4em] italic">{work.title}</span>
+                            <span className="text-[10px] font-black text-text-main/70 dark:text-text-accent uppercase tracking-[0.4em] italic">{work.title}</span>
                         </div>
 
                         <div className="flex items-center gap-6 mb-4">
@@ -300,7 +300,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                             </div>
                             <div>
                                 <h1 className="text-5xl font-black italic tracking-tighter uppercase leading-none">{config.title}</h1>
-                                <p className="text-[10px] font-bold text-text-main/50 dark:text-tan-light uppercase tracking-[0.4em] mt-2 italic">{config.description}</p>
+                                <p className="text-[10px] font-bold text-text-main/50 dark:text-text-accent uppercase tracking-[0.4em] mt-2 italic">{config.description}</p>
                             </div>
                         </div>
                     </div>
@@ -315,14 +315,14 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
 
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-16">
                     {stats.map((s, i: number) => (
-                        <MetricCard key={i} label={s.label} value={s.value} sub={s.sub} tip={s.tip} />
+                        <MetricCard key={i} label={s.label} value={s.value} sub={s.sub} tip={s.tip} icon={s.label.toLowerCase().includes('view') ? Eye : s.label.toLowerCase().includes('rate') ? TrendingUp : s.label.toLowerCase().includes('interaction') ? MessageSquare : s.label.toLowerCase().includes('hotspot') ? Flame : s.label.toLowerCase().includes('viral') ? Zap : null} />
                     ))}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
                     {type === 'engagement' && (
                         <div className="lg:col-span-3 bg-white/40 dark:bg-brown-mid/20 rounded-[3rem] p-10 border border-text-main/5 dark:border-white/5">
-                             <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-text-main/50 dark:text-tan-light mb-8">Chapter Performance (Reached Readers)</h4>
+                             <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-text-main/50 dark:text-text-accent mb-8">Chapter Performance (Reached Readers)</h4>
                             <ChapterPerformance data={chapterReachData} />
                              <p className="text-[10px] font-black uppercase tracking-widest text-tan-primary mt-6 text-center italic opacity-60">Numbers reflect unique readers who progressed to each chapter</p>
                         </div>
@@ -338,7 +338,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                             </div>
                             <div className="lg:col-span-2 bg-[#3B2A22] dark:bg-brown-mid text-text-accent rounded-[3rem] p-10 relative overflow-hidden group border border-white/5">
                                 <h4 className="text-xl font-black italic mb-4 uppercase tracking-tighter">Engagement Highlight</h4>
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-accent/70 dark:text-tan-light mb-8 leading-relaxed">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-accent/70 dark:text-text-accent mb-8 leading-relaxed">
                                     Karya ini memiliki sentiment rating yang kuat. <span className="text-text-accent/50 italic">Tingkat konversi review ke rating adalah {((work._count.reviews / (work.ratings.length || 1)) * 100).toFixed(0)}%.</span>
                                 </p>
                                 <div className="absolute bottom-0 right-0 p-8">
@@ -358,7 +358,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                                 ]} />
                             </div>
                             <div className="bg-white/40 dark:bg-brown-mid/20 rounded-[3rem] p-10 border border-text-main/5 dark:border-white/5">
-                                 <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-text-main/50 dark:text-tan-light mb-8">Save Velocity (Last 7 Days)</h4>
+                                 <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-text-main/50 dark:text-text-accent mb-8">Save Velocity (Last 7 Days)</h4>
                                 <SaveVelocityBarChart data={saveVelocityData} />
                                 <div className="mt-8 pt-8 border-t border-white/5">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-tan-primary">
@@ -370,13 +370,13 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                     )}
                      {type === 'karya' && (
                         <div className="lg:col-span-3 bg-white/40 dark:bg-brown-mid/20 rounded-[3rem] p-10 border border-text-main/5 dark:border-white/5">
-                             <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-text-main/50 dark:text-tan-light mb-8">Publishing Density (Last 30 Days)</h4>
+                             <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-text-main/50 dark:text-text-accent mb-8">Publishing Density (Last 30 Days)</h4>
                             <ActivityBarChart data={activityMapData} />
                             <div className="flex justify-between items-center mt-8 pt-8 border-t border-white/5">
                                 <p className="text-[10px] font-bold text-tan-primary uppercase tracking-widest">
                                     {activityMapData.filter(v => v > 0).length} active days
                                 </p>
-                                 <p className="text-[10px] font-black uppercase tracking-widest text-text-main/50 dark:text-tan-light italic">
+                                 <p className="text-[10px] font-black uppercase tracking-widest text-text-main/50 dark:text-text-accent italic">
                                      {work.bab.length} Total Chapters Published
                                  </p>
                             </div>
@@ -388,7 +388,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                     <div className="bg-[#3B2A22] text-text-accent rounded-[3rem] p-10 relative overflow-hidden group border border-white/5 shadow-2xl">
                         <div className="relative z-10">
                             <h4 className="text-2xl font-black italic mb-2 tracking-tighter uppercase">Status Performa</h4>
-                             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-accent/70 dark:text-tan-light mb-10">Prediksi Pertumbuhan Algoritma</p>
+                             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-accent/70 dark:text-text-accent mb-10">Prediksi Pertumbuhan Algoritma</p>
                             
                             <div className="flex items-end gap-16">
                                 <div>
@@ -402,7 +402,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                                     <div className="h-1 bg-white/10 rounded-full overflow-hidden">
                                         <div className="h-full bg-text-accent" style={{ width: `${Math.round(impactScore * 10)}%` }}></div>
                                     </div>
-                                     <p className="text-[9px] font-black uppercase tracking-[0.1em] text-text-accent/70 dark:text-tan-light leading-relaxed">
+                                     <p className="text-[9px] font-black uppercase tracking-[0.1em] text-text-accent/70 dark:text-text-accent leading-relaxed">
                                        {impactScore >= 8 ? 
                                             "Karya ini memiliki indeks retensi di atas rata-rata platform. Rekomendasi: Pertahankan jadwal rilis konsisten." :
                                             "Karya ini sedang dalam masa pertumbuhan. Rekomendasi: Tingkatkan interaksi dengan pembaca untuk mendongkrak algoritma."
@@ -418,11 +418,11 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                         <h4 className="text-2xl font-black italic mb-8 tracking-tighter text-text-main dark:text-text-accent uppercase">MetaData Identitas</h4>
                         <div className="space-y-6">
                             <div className="flex justify-between items-center py-4 border-b border-text-main/5 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-tan-light">Judul Karya</span>
-                                <span className="text-xs font-black italic uppercase tracking-tight">{work.title}</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent">Judul Karya</span>
+                                <span className="text-xs font-black italic uppercase tracking-tight text-text-main dark:text-text-accent">{work.title}</span>
                             </div>
                             <div className="flex justify-between items-center py-4 border-b border-text-main/5 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-tan-light">Genre Utama</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent">Genre Utama</span>
                                 <div className="flex gap-2">
                                     {work.genres.map(g => (
                                         <span key={g.id} className="text-[8px] font-black uppercase bg-text-main/5 dark:bg-white/5 px-3 py-1 rounded-full">{g.name}</span>
@@ -430,8 +430,8 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                                 </div>
                             </div>
                             <div className="flex justify-between items-center py-4 border-b border-text-main/5 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-tan-light">Terakhir Update</span>
-                                <span className="text-xs font-black italic uppercase tracking-tight">
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent">Terakhir Update</span>
+                                <span className="text-xs font-black italic uppercase tracking-tight text-text-main dark:text-text-accent">
                                     {lastUpdateDate ? 
                                         lastUpdateDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : 
                                         'Belum Update'
@@ -439,8 +439,8 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                                 </span>
                             </div>
                             <div className="flex justify-between items-center py-4">
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-tan-light">UID Karya</span>
-                                 <span className="text-[10px] font-mono text-text-main dark:text-text-accent opacity-60">{work.id}</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent">UID Karya</span>
+                                 <span className="text-[10px] font-mono text-text-main dark:text-text-accent opacity-80">{work.id}</span>
                             </div>
                         </div>
                     </div>
@@ -458,11 +458,11 @@ function SentimentBreakdown({ percentage, total, distribution }: { percentage: n
             <div className="flex justify-between items-end mb-8">
                 <div>
                     <span className="text-5xl font-black italic tracking-tighter leading-none text-text-main dark:text-text-accent">{percentage}%</span>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-tan-light mt-2">Positive Sentiment Index</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-text-accent mt-2">Positive Sentiment Index</p>
                 </div>
                 <div className="text-right">
                     <p className="text-xl font-black italic text-tan-primary">{total}</p>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-text-main/50 dark:text-tan-light">Total Ratings</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-text-main/50 dark:text-text-accent">Total Ratings</p>
                 </div>
             </div>
             
@@ -476,7 +476,7 @@ function SentimentBreakdown({ percentage, total, distribution }: { percentage: n
                                     <span className="text-[10px] font-black tracking-tighter">{d.score} Bintang</span>
                                     <Star className={`w-2 h-2 ${d.score >= 4 ? 'text-tan-primary fill-tan-primary' : 'text-text-main/20 dark:text-white/20'}`} />
                                 </div>
-                                <span className="text-[7px] font-black text-text-main/50 dark:text-tan-light uppercase tracking-tighter">{d.count} ulasan</span>
+                                <span className="text-[7px] font-black text-text-main/50 dark:text-text-accent uppercase tracking-tighter">{d.count} ulasan</span>
                             </div>
                             <div className="h-2 bg-text-main/5 dark:bg-white/5 rounded-full overflow-hidden border border-white/5">
                                 <div 
@@ -488,7 +488,7 @@ function SentimentBreakdown({ percentage, total, distribution }: { percentage: n
                     );
                 })}
             </div>
-            <p className="text-[9px] font-black text-text-main/50 dark:text-tan-light uppercase tracking-[0.2em] text-center mt-8 italic border-t border-white/5 pt-4">
+            <p className="text-[9px] font-black text-text-main/50 dark:text-text-accent uppercase tracking-[0.2em] text-center mt-8 italic border-t border-white/5 pt-4">
                 *Indeks sentimen dihitung dari persentase rating bintang 4 & 5.
             </p>
         </div>
@@ -552,21 +552,26 @@ function MetricCard({
     value, 
     sub, 
     tip, 
-    icon: Icon 
+    icon: Icon,
+    color: iconColor 
 }: { 
     label: string, 
     value: string | number, 
     sub?: string, 
     tip?: string,
-    icon?: any
+    icon?: any,
+    color?: string
 }) {
     return (
         <div className="bg-white/40 dark:bg-brown-mid/20 rounded-3xl p-6 border border-text-main/5 dark:border-white/5 group hover:bg-white/60 dark:hover:bg-brown-mid/30 transition-all relative">
             <div className="flex justify-between items-start mb-4">
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-tan-light group-hover:opacity-100 transition-opacity">{label}</p>
+                <div className="flex items-center gap-2">
+                    {Icon && <Icon className={`w-3.5 h-3.5 ${iconColor || 'text-tan-primary dark:text-text-accent'} opacity-80`} />}
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent group-hover:opacity-100 transition-opacity">{label}</p>
+                </div>
                 {tip && (
                     <div className="group/tip relative flex items-center justify-center">
-                        <Info className="w-3.5 h-3.5 opacity-20 hover:opacity-100 cursor-help transition-opacity" />
+                        <Info className="w-3.5 h-3.5 opacity-40 hover:opacity-100 dark:opacity-80 dark:text-text-accent cursor-help transition-opacity" />
                         <div className="absolute bottom-full right-0 mb-4 w-56 p-5 bg-[#2A1E17] dark:bg-brown-dark text-text-accent rounded-[1.5rem] text-[10px] font-bold leading-relaxed opacity-0 group-hover/tip:opacity-100 pointer-events-none transition-all z-50 shadow-2xl border border-white/5 border-t-white/10">
                             <p className="uppercase tracking-widest opacity-40 mb-2 border-b border-white/5 pb-2">Analisis Detail</p>
                             {tip}
@@ -575,8 +580,8 @@ function MetricCard({
                     </div>
                 )}
             </div>
-            <p className="text-2xl font-black italic tracking-tighter mb-1 text-text-main dark:text-text-accent leading-none">{value}</p>
-            {sub && <p className="text-[9px] font-black text-text-main/50 dark:text-tan-light uppercase tracking-widest italic">{sub}</p>}
+            <p className="text-2xl font-black italic tracking-tighter mb-1 text-text-accent dark:text-white leading-none">{value}</p>
+            {sub && <p className="text-[9px] font-black text-text-main/50 dark:text-text-accent/60 uppercase tracking-widest italic">{sub}</p>}
         </div>
     );
 }
@@ -587,7 +592,7 @@ function RetentionFunnel({ stats }: { stats: { label: string, value: number, cou
             {stats.map((s, i) => (
                 <div key={i} className="relative group/segment">
                     <div className="flex justify-between items-center mb-2 px-2">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-tan-light">{s.label}</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-text-accent">{s.label}</span>
                         <span className="text-xs font-black italic">{s.value}%</span>
                     </div>
                     <div className="h-8 bg-text-main/5 dark:bg-white/5 rounded-xl overflow-hidden relative border border-transparent hover:border-tan-primary/20 transition-all cursor-crosshair">
@@ -635,7 +640,7 @@ function ChapterPerformance({ data }: { data: { label: string, value: number }[]
                                 style={{ height: `${height}%` }}
                             />
                         </div>
-                        <span className="text-[9px] font-black uppercase text-text-main/50 dark:text-tan-light rotate-45 mt-2 transition-opacity group-hover:opacity-100">{d.label}</span>
+                        <span className="text-[9px] font-black uppercase text-text-main/50 dark:text-text-accent rotate-45 mt-2 transition-opacity group-hover:opacity-100">{d.label}</span>
                     </div>
                 );
             })}

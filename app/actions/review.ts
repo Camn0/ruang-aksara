@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 // ==============================================================================
 // 1. MUTASI USER: TOGGLE UPVOTE PADA REVIEW
@@ -56,6 +56,7 @@ export async function toggleReviewUpvote(reviewId: string, path: string) {
 
         // [D] Revalidate cache di path spesifik (halaman novel detail)
         // Mengapa parameter `path`: agar fungsi ini fleksibel, bisa dipanggil dari berbagai halaman.
+        revalidateTag(`user-upvotes-${session.user.id}`);
         revalidatePath(path);
         return { success: true };
     } catch (e) {
@@ -111,6 +112,7 @@ export async function submitReviewComment(formData: FormData) {
 
         // [E] Revalidate cache halaman novel detail
         // Mengapa '/novel/[karyaId]': komentar review ditampilkan di halaman detail novel.
+        revalidateTag(`user-reviews-${session.user.id}`);
         revalidatePath('/novel/[karyaId]');
         return { success: true };
     } catch (e) {

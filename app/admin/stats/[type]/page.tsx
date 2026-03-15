@@ -243,7 +243,7 @@ export default async function StatsPage({ params }: { params: { type: string } }
                 <div className="flex items-center gap-6 mb-8">
                     <Link 
                         href="/admin/dashboard" 
-                        className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/60 dark:text-tan-light uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream transition-colors group"
+                        className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/60 dark:text-text-accent uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream transition-colors group"
                     >
                         <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> Dashboard
                     </Link>
@@ -265,14 +265,14 @@ export default async function StatsPage({ params }: { params: { type: string } }
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                             <div>
                                 <h1 className="text-4xl md:text-7xl font-black italic mb-4 uppercase tracking-tighter leading-none">{config.title}</h1>
-                                <p className="max-w-xl text-white/70 dark:text-tan-light font-medium leading-relaxed italic">{config.description}</p>
+                                <p className="max-w-xl text-white/70 dark:text-text-accent font-medium leading-relaxed italic">{config.description}</p>
                             </div>
                             <div className="bg-white/10 backdrop-blur-md rounded-[2rem] p-8 border border-white/10 min-w-[200px] text-center md:text-right">
-                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-accent/70 dark:text-tan-light mb-2">Total Akumulasi</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-accent/70 dark:text-text-accent mb-2">Total Akumulasi</p>
                                 <p className="text-5xl font-black italic">
                                     {type === 'kepuasan' ? mainStat.toFixed(1) : mainStat.toLocaleString()}
                                 </p>
-                                <p className="text-[12px] font-black uppercase tracking-widest text-text-accent/70 dark:text-tan-light mt-1">{config.unit}</p>
+                                <p className="text-[12px] font-black uppercase tracking-widest text-text-accent/70 dark:text-text-accent mt-1">{config.unit}</p>
                             </div>
                         </div>
                     </div>
@@ -327,7 +327,7 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                 />
                                 <div className="lg:col-span-2 bg-white/40 dark:bg-brown-mid/20 rounded-[2.5rem] p-10 border border-text-main/5 dark:border-white/5 grid lg:grid-cols-2 gap-12">
                                     <div>
-                                        <h3 className="text-xl font-black italic uppercase mb-8 flex items-center gap-3"><TrendingUp className="w-5 h-5 text-tan-primary" /> Visual Funnel</h3>
+                                        <h3 className="text-xl font-black italic uppercase mb-8 flex items-center gap-3 text-text-main dark:text-text-accent"><TrendingUp className="w-5 h-5 text-tan-primary" /> Visual Funnel</h3>
                                         <RetentionFunnel stats={[
                                             { label: "Bab 1", value: Math.round(works.reduce((acc, w) => acc + w.bookmarks.filter(b => b.last_chapter >= 1).length, 0) / (works.reduce((acc, w) => acc + w.bookmarks.length, 0) || 1) * 100), count: works.reduce((acc, w) => acc + w.bookmarks.filter(b => b.last_chapter >= 1).length, 0), color: "bg-tan-primary" },
                                             { label: "Bab 10", value: Math.round(works.reduce((acc, w) => acc + w.bookmarks.filter(b => b.last_chapter >= 10).length, 0) / (works.reduce((acc, w) => acc + w.bookmarks.length, 0) || 1) * 100), count: works.reduce((acc, w) => acc + w.bookmarks.filter(b => b.last_chapter >= 10).length, 0), color: "bg-tan-primary/80" },
@@ -336,7 +336,7 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                         ]} />
                                     </div>
                                     <div className="flex flex-col justify-center bg-text-accent/5 dark:bg-white/5 rounded-3xl p-8 border border-text-main/5 dark:border-white/5">
-                                        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-tan-light mb-6 italic text-center">Engagement Diagnosis</p>
+                                        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-text-accent mb-6 italic text-center">Engagement Diagnosis</p>
                                         <p className="text-xs font-medium italic leading-relaxed text-center text-text-main dark:text-text-accent">
                                             Penurunan terbesar terjadi pada <span className="text-tan-primary font-black">Bab {dropoffChapter}</span>.
                                             Pertimbangkan untuk meninjau kembali pacing cerita di bagian tersebut untuk meningkatkan retensi pembaca.
@@ -406,7 +406,7 @@ export default async function StatsPage({ params }: { params: { type: string } }
                         {type === 'disimpan' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div className="lg:col-span-1 bg-white/40 dark:bg-brown-mid/20 rounded-[2.5rem] p-10 border border-text-main/5 dark:border-white/5">
-                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-tan-light mb-8">Save Velocity (Last 7d)</h3>
+                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent mb-8">Save Velocity (Last 7d)</h3>
                                     <SaveVelocityBarChart data={saveVelocityData} />
                                     <p className="text-[10px] font-bold text-tan-primary uppercase tracking-widest mt-6">
                                         {saveGrowthPct >= 0 ? '+' : ''}{saveGrowthPct.toFixed(0)}% Trend
@@ -446,7 +446,7 @@ export default async function StatsPage({ params }: { params: { type: string } }
                         {type === 'karya' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div className="lg:col-span-1 bg-white/40 dark:bg-brown-mid/20 rounded-[2.5rem] p-10 border border-text-main/5 dark:border-white/5">
-                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] opacity-60 mb-8">Activity Map (Last 30d)</h3>
+                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent mb-8">Activity Map (Last 30d)</h3>
                                     <ActivityBarChart data={activityMapData} />
                                     <p className="text-[10px] font-bold text-tan-primary uppercase tracking-widest mt-6">
                                         Consistency: {activeDaysCount >= 15 ? 'Excellent' : activeDaysCount >= 5 ? 'Good' : 'Needs Work'}
@@ -497,30 +497,30 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                                 <div>
                                                     <div className="flex items-center gap-3 mb-2">
                                                         <h3 className="text-3xl font-black text-text-main dark:text-text-accent italic uppercase tracking-tighter">{work.title}</h3>
-                                                        <span className="text-[7px] font-black uppercase tracking-widest text-text-main/50 dark:text-tan-light opacity-0 group-hover:opacity-100 transition-opacity">Klik Detail Analisis</span>
+                                                        <span className="text-[7px] font-black uppercase tracking-widest text-text-main/50 dark:text-text-accent opacity-0 group-hover:opacity-100 transition-opacity">Klik Detail Analisis</span>
                                                     </div>
                                                     <div className="flex flex-wrap gap-2 mb-6">
                                                         {work.genres.map(g => (
-                                                            <span key={g.id} className="text-[9px] font-black text-text-main/60 dark:text-tan-light uppercase tracking-widest border border-text-main/10 dark:border-white/10 px-3 py-1 rounded-full">{g.name}</span>
+                                                            <span key={g.id} className="text-[9px] font-black text-text-main/60 dark:text-text-accent uppercase tracking-widest border border-text-main/10 dark:border-white/10 px-3 py-1 rounded-full">{g.name}</span>
                                                         ))}
                                                     </div>
                                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                                                         {type === 'engagement' && (
                                                             <>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Total Views</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Total Views</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.total_views.toLocaleString()}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Active (7d)</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Active (7d)</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.bookmarks.filter(b => b.updated_at >= sevenDaysAgo).length}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Interactions</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Interactions</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.bab.reduce((acc, b) => acc + b._count.comments + b._count.reactions, 0)}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Retention</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Retention</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">
                                                                         {work.bookmarks.length > 0 ? ((work.bookmarks.filter(b => b.last_chapter >= (work.bab.length > 10 ? 10 : work.bab.length)).length / work.bookmarks.length) * 100).toFixed(0) : 0}%
                                                                     </p>
@@ -529,24 +529,24 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                                         )}
                                                         {type === 'kepuasan' && (
                                                             <>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Avg Rating</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Avg Rating</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">
                                                                         {work.ratings.filter(r => r.score > 0).length > 0 
                                                                             ? (work.ratings.filter(r => r.score > 0).reduce((acc, r) => acc + r.score, 0) / work.ratings.filter(r => r.score > 0).length).toFixed(2)
                                                                             : "0.00"}
                                                                     </p>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Sentiment</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Sentiment</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">
                                                                         {work.ratings.length > 0 ? ((work.ratings.filter(r => r.score >= 4).length / work.ratings.length) * 100).toFixed(0) : 0}%
                                                                     </p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Reviews</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Reviews</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work._count.reviews}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Upvotes</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Upvotes</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.reviews.reduce((acc, r) => acc + r._count.upvotes, 0)}</p>
                                                                 </div>
                                                             </>
@@ -554,19 +554,19 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                                         {type === 'disimpan' && (
                                                             <>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Total Saves</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Total Saves</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work._count.bookmarks}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Save Vel.</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Save Vel.</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.bookmarks.filter(b => b.updated_at >= sevenDaysAgo).length}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Conversion</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Conversion</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.total_views > 0 ? ((work._count.bookmarks / work.total_views) * 100).toFixed(1) : 0}%</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Loyalty</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Loyalty</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">
                                                                         {work.bookmarks.length > 0 ? ((work.bookmarks.filter(b => b.last_chapter >= work.bab.length).length / work.bookmarks.length) * 100).toFixed(0) : 0}%
                                                                     </p>
@@ -576,21 +576,21 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                                         {type === 'karya' && (
                                                             <>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Chapters</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Chapters</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.bab.length}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Wordcount</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Wordcount</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">{work.bab.reduce((acc, b) => acc + (b.content?.split(/\s+/).length || 0), 0).toLocaleString()}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Avg Len</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Avg Len</p>
                                                                     <p className="text-xl font-black italic text-text-main dark:text-text-accent">
                                                                         {work.bab.length > 0 ? (work.bab.reduce((acc, b) => acc + (b.content?.split(/\s+/).length || 0), 0) / work.bab.length).toFixed(0) : 0}
                                                                     </p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-tan-light mb-1">Status</p>
+                                                                    <p className="text-[10px] font-black uppercase text-text-main/50 dark:text-text-accent mb-1">Status</p>
                                                                     <p className="text-xl font-black italic uppercase tracking-tighter text-[14px] text-text-main dark:text-text-accent">{work.is_completed ? 'Tamat' : 'Ongoing'}</p>
                                                                 </div>
                                                             </>
@@ -690,11 +690,11 @@ function SentimentBreakdown({ percentage, total, distribution }: { percentage: n
             <div className="flex justify-between items-end mb-8">
                 <div>
                     <span className="text-5xl font-black italic tracking-tighter leading-none text-text-main dark:text-text-accent">{percentage}%</span>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-tan-light mt-2">Positive Sentiment Index</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-text-accent mt-2">Positive Sentiment Index</p>
                 </div>
                 <div className="text-right">
                     <p className="text-xl font-black italic text-tan-primary">{total}</p>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-text-main/50 dark:text-tan-light">Total Ratings</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-text-main/50 dark:text-text-accent">Total Ratings</p>
                 </div>
             </div>
             
@@ -708,7 +708,7 @@ function SentimentBreakdown({ percentage, total, distribution }: { percentage: n
                                     <span className="text-[10px] font-black tracking-tighter">{d.score} Bintang</span>
                                     <Star className={`w-2 h-2 ${d.score >= 4 ? 'text-tan-primary fill-tan-primary' : 'text-text-main/20 dark:text-white/20'}`} />
                                 </div>
-                                <span className="text-[9px] font-black text-text-main/60 dark:text-tan-light uppercase tracking-tighter">{d.count} ulasan</span>
+                                <span className="text-[9px] font-black text-text-main/60 dark:text-text-accent uppercase tracking-tighter">{d.count} ulasan</span>
                             </div>
                             <div className="h-2 bg-text-main/5 dark:bg-white/5 rounded-full overflow-hidden border border-white/5">
                                 <div 
@@ -720,7 +720,7 @@ function SentimentBreakdown({ percentage, total, distribution }: { percentage: n
                     );
                 })}
             </div>
-            <p className="text-[9px] font-black text-text-main/50 dark:text-tan-light uppercase tracking-[0.2em] text-center mt-8 italic border-t border-white/5 pt-4">
+            <p className="text-[9px] font-black text-text-main/50 dark:text-text-accent uppercase tracking-[0.2em] text-center mt-8 italic border-t border-white/5 pt-4">
                 *Indeks sentimen dihitung dari persentase rating bintang 4 & 5.
             </p>
         </div>
@@ -733,8 +733,8 @@ function RetentionFunnel({ stats }: { stats: { label: string, value: number, cou
             {stats.map((s, i) => (
                 <div key={i} className="relative group/segment">
                     <div className="flex justify-between items-center mb-2 px-2">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-tan-light">{s.label}</span>
-                        <span className="text-xs font-black italic">{s.value}%</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-text-accent">{s.label}</span>
+                        <span className="text-xs font-black italic text-text-main dark:text-text-accent">{s.value}%</span>
                     </div>
                     <div className="h-8 bg-text-main/5 dark:bg-white/5 rounded-xl overflow-hidden relative border border-transparent hover:border-tan-primary/20 transition-all cursor-crosshair">
                         <div
@@ -767,19 +767,19 @@ function MetricCard({ title, value, subtitle, icon: Icon, trend, tip }: { title:
         <div className="bg-white/40 dark:bg-brown-mid/20 rounded-[2.5rem] p-8 border border-text-main/5 dark:border-white/5 group hover:bg-white/60 dark:hover:bg-brown-mid/30 transition-all relative">
             <div className="flex justify-between items-start mb-6">
                 <div className="p-3 bg-text-main/5 dark:bg-white/5 rounded-2xl group-hover:scale-110 transition-transform">
-                    {Icon ? <Icon className="w-5 h-5 opacity-40 text-tan-primary" /> : <TrendingUp className="w-5 h-5 opacity-40" />}
+                    {Icon ? <Icon className="w-5 h-5 opacity-80 text-tan-primary dark:text-text-accent" /> : <TrendingUp className="w-5 h-5 opacity-80 dark:text-text-accent" />}
                 </div>
                 <div className="flex items-center gap-3">
                     {trend && (
-                        <span className={`text-[10px] font-black italic px-3 py-1 rounded-full ${trend.startsWith('+') ? 'bg-green-500/10 text-green-600' : 'bg-text-main/10 text-text-main/40'}`}>
+                        <span className={`text-[10px] font-black italic px-3 py-1 rounded-full ${trend.startsWith('+') ? 'bg-green-500/10 text-green-600' : 'bg-text-main/10 dark:bg-white/10 text-text-main/40 dark:text-text-accent/60'}`}>
                             {trend}
                         </span>
                     )}
                     {tip && (
                         <div className="group/tip relative flex items-center justify-center p-1 bg-text-main/5 dark:bg-white/5 rounded-full hover:bg-text-main/10 transition-colors">
-                            <Info className="w-3.5 h-3.5 opacity-20 hover:opacity-100 cursor-help transition-opacity" />
-                            <div className="absolute bottom-full right-0 mb-4 w-56 p-5 bg-[#2A1E17] dark:bg-brown-dark text-[#D6BFA6] rounded-[1.5rem] text-[10px] font-bold leading-relaxed opacity-0 group-hover/tip:opacity-100 pointer-events-none transition-all z-50 shadow-2xl border border-white/5 border-t-white/10">
-                                <p className="uppercase tracking-widest opacity-40 mb-2 border-b border-white/5 pb-2">Metrik Detail</p>
+                            <Info className="w-3.5 h-3.5 opacity-20 dark:opacity-60 dark:text-text-accent hover:opacity-100 cursor-help transition-opacity" />
+                            <div className="absolute bottom-full right-0 mb-4 w-56 p-5 bg-[#2A1E17] dark:bg-brown-dark text-text-accent rounded-[1.5rem] text-[10px] font-bold leading-relaxed opacity-0 group-hover/tip:opacity-100 pointer-events-none transition-all z-50 shadow-2xl border border-white/5 border-t-white/10">
+                                <p className="uppercase tracking-widest opacity-40 mb-2 border-b border-white/5 pb-2 text-tan-primary">Metrik Detail</p>
                                 {tip}
                                 <div className="absolute top-full right-4 w-2 h-2 bg-[#2A1E17] dark:bg-brown-dark transform rotate-45 -mt-1"></div>
                             </div>
@@ -788,8 +788,8 @@ function MetricCard({ title, value, subtitle, icon: Icon, trend, tip }: { title:
                 </div>
             </div>
             <p className="text-4xl font-black italic tracking-tighter mb-2 text-text-main dark:text-text-accent">{value}</p>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-tan-light group-hover:opacity-100 transition-opacity mb-1">{title}</h4>
-            <p className="text-[9px] font-black text-text-main/40 dark:text-tan-light/40 uppercase tracking-widest">{subtitle}</p>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/60 dark:text-text-accent group-hover:opacity-100 transition-opacity mb-1">{title}</h4>
+            <p className="text-[9px] font-black text-text-main/40 dark:text-text-accent/40 uppercase tracking-widest">{subtitle}</p>
         </div>
     );
 }

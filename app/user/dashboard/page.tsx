@@ -71,46 +71,50 @@ const getCachedUserBookmarks = (userId: string) => unstable_cache(
     { revalidate: 60, tags: [`library-${userId}`] }
 )();
 
-async function getUserStats(userId: string) {
-    let stats = await (prisma as any).userStats.findUnique({
-        where: { user_id: userId }
-    });
-
-    if (!stats) {
-        stats = await (prisma as any).userStats.create({
-            data: { 
-                user_id: userId, 
-                points: 0, 
-                reading_streak: 0, 
-                total_chapters_read: 0 
-            }
-        });
-    }
-
-    if (stats.total_chapters_read === 0) {
-        const bookmarks = await prisma.bookmark.findMany({
-            where: { user_id: userId },
-            select: { last_chapter: true }
+const getCachedUserStats = (userId: string) => unstable_cache(
+    async () => {
+        let stats = await (prisma as any).userStats.findUnique({
+            where: { user_id: userId }
         });
 
-        if (bookmarks.length > 0) {
-            const totalRead = bookmarks.reduce((acc, b) => acc + b.last_chapter, 0);
-            const initialPoints = totalRead * 10;
-
-            stats = await (prisma as any).userStats.update({
-                where: { user_id: userId },
-                data: {
-                    total_chapters_read: totalRead,
-                    points: initialPoints,
-                    last_read_at: new Date(),
-                    reading_streak: 1
+        if (!stats) {
+            stats = await (prisma as any).userStats.create({
+                data: { 
+                    user_id: userId, 
+                    points: 0, 
+                    reading_streak: 0, 
+                    total_chapters_read: 0 
                 }
             });
         }
-    }
-    
-    return stats;
-}
+
+        if (stats.total_chapters_read === 0) {
+            const bookmarks = await prisma.bookmark.findMany({
+                where: { user_id: userId },
+                select: { last_chapter: true }
+            });
+
+            if (bookmarks.length > 0) {
+                const totalRead = bookmarks.reduce((acc, b) => acc + b.last_chapter, 0);
+                const initialPoints = totalRead * 10;
+
+                stats = await (prisma as any).userStats.update({
+                    where: { user_id: userId },
+                    data: {
+                        total_chapters_read: totalRead,
+                        points: initialPoints,
+                        last_read_at: new Date(),
+                        reading_streak: 1
+                    }
+                });
+            }
+        }
+        
+        return stats;
+    },
+    [`user-stats-${userId}`],
+    { revalidate: 3600, tags: [`stats-${userId}`] }
+)();
 
 const getCachedNewWorksFromFollowed = (userId: string) => unstable_cache(
     async () => {
@@ -150,23 +154,43 @@ const getCachedNewWorksFromFollowed = (userId: string) => unstable_cache(
     { revalidate: 3600, tags: [`following-${userId}`] }
 )();
 
-async function getFollowedAuthors(userId: string) {
-    return prisma.follow.findMany({
-        where: { follower_id: userId },
-        select: {
-            following: {
-                select: {
-                    id: true,
-                    username: true,
-                    display_name: true,
-                    avatar_url: true,
-                    _count: { select: { followers: true } }
+const getCachedFollowedAuthors = (userId: string) => unstable_cache(
+    async () => {
+        return prisma.follow.findMany({
+            where: { follower_id: userId },
+            select: {
+                following: {
+                    select: {
+                        id: true,
+                        username: true,
+                        display_name: true,
+                        avatar_url: true,
+                        _count: { select: { followers: true } }
+                    }
                 }
-            }
-        },
-        take: 10
-    });
-}
+            },
+            take: 10
+        });
+    },
+    [`dashboard-followed-authors-${userId}`],
+    { revalidate: 3600, tags: [`following-${userId}`] }
+)();
+
+const getCachedChapterTitles = (userId: string, lookupKeys: string[]) => unstable_cache(
+    async () => {
+        if (lookupKeys.length === 0) return [];
+        const conditions = lookupKeys.map(key => {
+            const [karya_id, chapter_no] = key.split(':');
+            return { karya_id, chapter_no: Number(chapter_no) };
+        });
+        return prisma.bab.findMany({
+            where: { OR: conditions },
+            select: { karya_id: true, chapter_no: true, title: true }
+        });
+    },
+    [`dashboard-chapter-titles-list-${userId}-${lookupKeys.sort().join(',')}`],
+    { revalidate: 3600, tags: [`library-${userId}`] }
+)();
 
 export default async function UserDashboardPage() {
     const session = await getServerSession(authOptions);
@@ -175,8 +199,8 @@ export default async function UserDashboardPage() {
     const [bookmarksRaw, trendingRaw, stats, followedAuthorsRaw, newWorksFollowedRaw] = await Promise.all([
         getCachedUserBookmarks(session.user.id),
         getCachedTrending(session.user.id),
-        getUserStats(session.user.id),
-        getFollowedAuthors(session.user.id),
+        getCachedUserStats(session.user.id),
+        getCachedFollowedAuthors(session.user.id),
         getCachedNewWorksFromFollowed(session.user.id)
     ]);
 
@@ -185,15 +209,8 @@ export default async function UserDashboardPage() {
     const newWorksFollowed = newWorksFollowedRaw as any[];
 
     // Fetch chapter titles for ALL bookmarks
-    const chapterLookup = bookmarks.length > 0 ? await prisma.bab.findMany({
-        where: {
-            OR: bookmarks.map(b => ({
-                karya_id: b.karya.id,
-                chapter_no: b.last_chapter
-            }))
-        },
-        select: { karya_id: true, chapter_no: true, title: true }
-    }) : [];
+    const lookupKeys = bookmarks.map(b => `${b.karya.id}:${b.last_chapter}`);
+    const chapterLookup = await getCachedChapterTitles(session.user.id, lookupKeys);
 
     const titleMap: Record<string, string> = {};
     chapterLookup.forEach(bab => {
@@ -217,7 +234,7 @@ export default async function UserDashboardPage() {
                 </div>
                 <div className="flex items-center gap-3">
                     <Link href={`/profile/${session.user.id}`} prefetch={false} className="relative group">
-                        <UserCircle2 className="w-8 h-8 text-tan-primary group-hover:text-brown-dark transition-all group-active:scale-90" />
+                        <UserCircle2 className="w-8 h-8 text-tan-primary group-hover:text-brown-dark dark:group-hover:text-text-accent transition-all group-active:scale-90" />
                     </Link>
                     <LogoutButton />
                 </div>
@@ -242,7 +259,7 @@ export default async function UserDashboardPage() {
                                 
                                 return (
                                     <Link href={`/novel/${hero.karya.id}/${hero.last_chapter}`} prefetch={false} className="block group md:col-span-2">
-                                        <div className="bg-white dark:bg-brown-dark/40 rounded-[2.5rem] p-5 border border-tan-light dark:border-brown-mid shadow-2xl flex flex-col sm:flex-row gap-6 group-active:scale-[0.98] transition-all relative overflow-hidden">
+                                        <div className="bg-bg-cream/40 dark:bg-brown-dark/40 rounded-[2.5rem] p-5 border border-tan-light/20 dark:border-brown-mid shadow-2xl flex flex-col sm:flex-row gap-6 group-active:scale-[0.98] transition-all relative overflow-hidden backdrop-blur-sm">
                                             <div className="absolute -right-12 -top-12 w-48 h-48 bg-tan-primary/5 rounded-full blur-3xl" />
                                             <div className="w-28 sm:w-32 aspect-[3/4.2] rounded-2xl overflow-hidden shadow-2xl shrink-0 border border-tan-light/50 dark:border-brown-mid relative z-10">
                                                 {hero.karya.cover_url ? <Image src={hero.karya.cover_url} width={128} height={180} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" /> : <div className="w-full h-full bg-tan-light/20 flex items-center justify-center font-bold uppercase">{hero.karya.title}</div>}
@@ -251,7 +268,7 @@ export default async function UserDashboardPage() {
                                             <div className="flex-1 flex flex-col py-1 relative z-10">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <span className="text-[7px] font-black bg-tan-primary text-text-accent px-2 py-0.5 rounded-full uppercase tracking-widest">Terakhir Dibaca</span>
-                                                    <span className="text-[7px] font-bold text-brown-mid/60 dark:text-tan-light/40 uppercase tracking-widest italic">
+                                                    <span className="text-[7px] font-bold text-brown-mid/60 dark:text-text-accent/80 uppercase tracking-widest italic">
                                                         {formatDistanceToNow(new Date(hero.updated_at), { addSuffix: true, locale: localeID })}
                                                     </span>
                                                 </div>
@@ -259,17 +276,17 @@ export default async function UserDashboardPage() {
                                                 <div className="flex items-center gap-2 mb-3">
                                                     <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest">{hero.karya.penulis_alias}</p>
                                                     <span className="w-1 h-1 bg-tan-light rounded-full" />
-                                                    <div className="flex gap-1">{(hero.karya.genres || []).map((g: any) => <span key={g.id} className="text-[8px] text-brown-mid/60 dark:text-tan-light/60 font-bold uppercase border border-tan-light dark:border-brown-mid px-1.5 rounded-md">{g.name}</span>)}</div>
+                                                    <div className="flex gap-1">{(hero.karya.genres || []).map((g: any) => <span key={g.id} className="text-[8px] text-brown-mid/60 dark:text-text-accent/60 font-bold uppercase border border-tan-light dark:border-brown-mid px-1.5 rounded-md">{g.name}</span>)}</div>
                                                 </div>
                                                 <div className="grid grid-cols-3 gap-2 mb-4">
-                                                    <div className="flex items-center gap-1"><Star className="w-2.5 h-2.5 text-tan-primary fill-tan-primary" /><span className="text-[10px] font-black">{hero.karya.avg_rating.toFixed(1)}</span></div>
-                                                    <div className="flex items-center gap-1"><Eye className="w-2.5 h-2.5 text-brown-mid/40" /><span className="text-[10px] font-bold opacity-60">{hero.karya.total_views > 1000 ? `${(hero.karya.total_views/1000).toFixed(1)}k` : hero.karya.total_views}</span></div>
-                                                    <div className="flex items-center gap-1"><BookOpen className="w-2.5 h-2.5 text-brown-mid/40" /><span className="text-[10px] font-bold opacity-60">{hero.karya._count.bab} Bab</span></div>
+                                                    <div className="flex items-center gap-1"><Star className="w-2.5 h-2.5 text-tan-primary fill-tan-primary" /><span className="text-[10px] font-black dark:text-text-accent">{hero.karya.avg_rating.toFixed(1)}</span></div>
+                                                    <div className="flex items-center gap-1"><Eye className="w-2.5 h-2.5 text-brown-mid/40 dark:text-text-accent/40" /><span className="text-[10px] font-bold opacity-60 dark:text-text-accent">{hero.karya.total_views > 1000 ? `${(hero.karya.total_views/1000).toFixed(1)}k` : hero.karya.total_views}</span></div>
+                                                    <div className="flex items-center gap-1"><BookOpen className="w-2.5 h-2.5 text-brown-mid/40 dark:text-text-accent/40" /><span className="text-[10px] font-bold opacity-60 dark:text-text-accent">{hero.karya._count.bab} Bab</span></div>
                                                 </div>
                                                 <div className="mt-auto space-y-2">
                                                     <div className="flex justify-between items-end">
-                                                        <div><p className="text-[8px] font-black uppercase tracking-widest text-brown-mid/40 mb-1">Status Membaca</p><p className="text-xs font-black text-tan-primary">{getChapterTitle(hero.karya.id, hero.last_chapter)}</p></div>
-                                                        <div className="text-right"><p className="text-[8px] font-black uppercase tracking-widest text-brown-mid/40 mb-1">Progres</p><p className="text-xs font-black italic">{hero.last_chapter} / {hero.karya._count.bab}</p></div>
+                                                        <div><p className="text-[8px] font-black uppercase tracking-widest text-brown-mid/40 dark:text-text-accent/40 mb-1">Status Membaca</p><p className="text-xs font-black text-tan-primary">{getChapterTitle(hero.karya.id, hero.last_chapter)}</p></div>
+                                                        <div className="text-right"><p className="text-[8px] font-black uppercase tracking-widest text-brown-mid/40 dark:text-text-accent/40 mb-1">Progres</p><p className="text-xs font-black italic dark:text-text-accent">{hero.last_chapter} / {hero.karya._count.bab}</p></div>
                                                     </div>
                                                     <div className="h-2 bg-tan-light/30 dark:bg-brown-mid/30 rounded-full overflow-hidden">
                                                         <div className="h-full bg-tan-primary transition-all duration-1000" style={{ width: `${(hero.last_chapter / hero.karya._count.bab) * 100}%` }} />
@@ -287,7 +304,7 @@ export default async function UserDashboardPage() {
                                 const hasNext = b.last_chapter < b.karya._count.bab;
                                 return (
                                     <Link key={b.id} href={`/novel/${b.karya.id}/${b.last_chapter}`} prefetch={false} className="block group">
-                                        <div className="bg-white dark:bg-brown-dark/30 rounded-3xl p-4 border border-tan-light dark:border-brown-mid shadow-lg flex flex-col gap-4 group-active:scale-[0.98] transition-all relative border-l-4 border-l-tan-primary">
+                                        <div className="bg-bg-cream/30 dark:bg-brown-dark/30 rounded-3xl p-4 border border-tan-light/20 dark:border-brown-mid shadow-lg flex flex-col gap-4 group-active:scale-[0.98] transition-all relative border-l-4 border-l-tan-primary backdrop-blur-sm">
                                             <div className="flex gap-4 items-start">
                                                 <div className="w-16 h-24 rounded-xl overflow-hidden shadow-md shrink-0 border border-tan-light/50 dark:border-brown-mid relative">
                                                     {b.karya.cover_url ? <Image src={b.karya.cover_url} width={64} height={96} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="" /> : <div className="w-full h-full bg-tan-light/10" />}
@@ -298,7 +315,7 @@ export default async function UserDashboardPage() {
                                                     <div className="flex items-center gap-1.5 mb-2">
                                                         <p className="text-[8px] text-tan-primary font-black uppercase tracking-widest truncate">{b.karya.penulis_alias}</p>
                                                         <span className="w-0.5 h-0.5 bg-tan-light rounded-full" />
-                                                        <p className="text-[8px] text-brown-mid/60 dark:text-tan-light/40 font-bold uppercase truncate max-w-[40px]">{b.karya.genres?.[0]?.name}</p>
+                                                        <p className="text-[8px] text-brown-mid/60 dark:text-text-accent/80 font-bold uppercase truncate max-w-[40px]">{b.karya.genres?.[0]?.name}</p>
                                                     </div>
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <div className="text-[6px] font-black bg-tan-primary/10 text-tan-primary px-1.5 py-0.5 rounded shadow-sm border border-tan-primary/10 uppercase tracking-widest truncate">
@@ -306,8 +323,8 @@ export default async function UserDashboardPage() {
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-3 items-center">
-                                                        <div className="flex items-center gap-0.5 text-tan-primary"><Star className="w-2.5 h-2.5 fill-tan-primary" /><span className="text-[9px] font-black">{b.karya.avg_rating.toFixed(1)}</span></div>
-                                                        <div className="flex items-center gap-0.5 text-brown-mid/40"><Eye className="w-2.5 h-2.5" /><span className="text-[9px] font-bold">{b.karya.total_views > 1000 ? `${(b.karya.total_views/1000).toFixed(1)}k` : b.karya.total_views}</span></div>
+                                                        <div className="flex items-center gap-0.5 text-tan-primary"><Star className="w-2.5 h-2.5 fill-tan-primary" /><span className="text-[9px] font-black dark:text-text-accent">{b.karya.avg_rating.toFixed(1)}</span></div>
+                                                        <div className="flex items-center gap-0.5 text-brown-mid/40 dark:text-text-accent/40"><Eye className="w-2.5 h-2.5" /><span className="text-[9px] font-bold dark:text-text-accent">{b.karya.total_views > 1000 ? `${(b.karya.total_views/1000).toFixed(1)}k` : b.karya.total_views}</span></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -442,13 +459,13 @@ export default async function UserDashboardPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         {bookmarks.slice(0, 8).map(b => (
-                            <Link key={b.id} href={`/novel/${b.karya.id}`} prefetch={false} className="flex items-center gap-3 p-3 bg-white/50 dark:bg-brown-dark/20 rounded-2xl hover:bg-white dark:hover:bg-brown-mid/40 border border-tan-light/30 dark:border-brown-mid transition-all group overflow-hidden relative shadow-sm hover:shadow-md border-l-4 border-l-tan-primary">
+                            <Link key={b.id} href={`/novel/${b.karya.id}`} prefetch={false} className="flex items-center gap-3 p-3 bg-bg-cream/50 dark:bg-brown-dark/20 rounded-2xl hover:bg-bg-cream dark:hover:bg-brown-mid/40 border border-tan-light/30 dark:border-brown-mid transition-all group overflow-hidden relative shadow-sm hover:shadow-md border-l-4 border-l-tan-primary">
                                 <div className="w-12 h-16 rounded-xl overflow-hidden shrink-0 shadow-sm border border-tan-light/50 dark:border-brown-mid">{b.karya.cover_url ? <Image src={b.karya.cover_url} width={48} height={64} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="" /> : <div className="w-full h-full bg-tan-light/10" />}</div>
                                 <div className="min-w-0 flex-1">
                                     <div className="flex justify-between items-start mb-0.5"><h4 className="text-[11px] font-black text-text-main dark:text-text-accent line-clamp-1 group-hover:text-tan-primary transition-colors">{b.karya.title}</h4><div className="flex items-center gap-0.5 text-tan-primary shrink-0 ml-2"><Star className="w-2 h-2 fill-tan-primary" /><span className="text-[7px] font-black">{b.karya.avg_rating.toFixed(1)}</span></div></div>
-                                    <p className="text-[7px] font-bold text-brown-mid/40 dark:text-tan-light/40 uppercase tracking-widest mb-1 truncate">{b.karya.penulis_alias}</p>
+                                    <p className="text-[7px] font-bold text-brown-mid/40 dark:text-text-accent/80 uppercase tracking-widest mb-1 truncate">{b.karya.penulis_alias}</p>
                                     <p className="text-[9px] font-black text-tan-primary truncate mb-1">{getChapterTitle(b.karya.id, b.last_chapter)}</p>
-                                    <div className="flex items-center justify-between"><div className="flex items-center gap-1.5"><p className="text-[8px] font-black text-brown-mid dark:text-tan-light/60 italic opacity-60">{b.last_chapter} / {b.karya._count.bab}</p>{b.karya._count.bab === b.last_chapter && <div className="bg-green-500/10 text-green-600 rounded-full p-0.5"><Check className="w-2 h-2" /></div>}</div><div className="flex items-center gap-1 text-[7px] font-black uppercase tracking-tighter text-brown-mid/40"><Eye className="w-2 h-2" /><span>{b.karya.total_views > 1000 ? `${(b.karya.total_views/1000).toFixed(1)}k` : b.karya.total_views}</span></div></div>
+                                    <div className="flex items-center justify-between"><div className="flex items-center gap-1.5"><p className="text-[8px] font-black text-brown-mid dark:text-text-accent/60 italic opacity-60">{b.last_chapter} / {b.karya._count.bab}</p>{b.karya._count.bab === b.last_chapter && <div className="bg-green-500/10 text-green-600 rounded-full p-0.5"><Check className="w-2 h-2" /></div>}</div><div className="flex items-center gap-1 text-[7px] font-black uppercase tracking-tighter text-brown-mid/40"><Eye className="w-2 h-2" /><span>{b.karya.total_views > 1000 ? `${(b.karya.total_views/1000).toFixed(1)}k` : b.karya.total_views}</span></div></div>
                                 </div>
                             </Link>
                         ))}

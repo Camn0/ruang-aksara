@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 export async function submitChapterReaction(babId: string, reactionType: string, karyaId: string) {
     try {
@@ -25,6 +25,8 @@ export async function submitChapterReaction(babId: string, reactionType: string,
             }
         });
 
+        revalidateTag(`chapter-reactions-${babId}`);
+        revalidateTag(`user-reactions-${session.user.id}`);
         revalidatePath(`/novel/${karyaId}/[chapterNo]`);
         return { success: true };
     } catch (e) {
@@ -32,7 +34,6 @@ export async function submitChapterReaction(babId: string, reactionType: string,
         return { error: "Gagal memproses reaksi bab." };
     }
 }
-import { unstable_cache } from "next/cache";
 
 export async function getKaryaChapters(karyaId: string) {
     return unstable_cache(
