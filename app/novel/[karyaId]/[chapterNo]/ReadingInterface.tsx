@@ -35,6 +35,8 @@ export default function ReadingInterface({
     reactionStats
 }: ReadingInterfaceProps) {
     const [fontSize, setFontSize] = useState(18); // default 18px
+    const [fontFamily, setFontFamily] = useState('serif'); 
+    const [lineHeight, setLineHeight] = useState(1.8);
     const [showSettings, setShowSettings] = useState(false);
     const [isOpenPicker, setIsOpenPicker] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -78,9 +80,13 @@ export default function ReadingInterface({
     // Load from local storage and handle mounting function for theme
     useEffect(() => {
         const savedSize = localStorage.getItem('ruangaksara_fontsize');
-        if (savedSize) {
-            setFontSize(Number(savedSize));
-        }
+        const savedFont = localStorage.getItem('ruangaksara_fontfamily');
+        const savedLeading = localStorage.getItem('ruangaksara_lineheight');
+        
+        if (savedSize) setFontSize(Number(savedSize));
+        if (savedFont) setFontFamily(savedFont);
+        if (savedLeading) setLineHeight(Number(savedLeading));
+        
         setMounted(true);
     }, []);
 
@@ -134,6 +140,17 @@ export default function ReadingInterface({
         localStorage.setItem('ruangaksara_fontsize', newSize.toString());
     };
 
+    const handleSetFontFamily = (font: string) => {
+        setFontFamily(font);
+        localStorage.setItem('ruangaksara_fontfamily', font);
+    };
+
+    const handleSetLineHeight = (leading: number) => {
+        const newLeading = Math.max(1.2, Math.min(2.5, leading));
+        setLineHeight(newLeading);
+        localStorage.setItem('ruangaksara_lineheight', newLeading.toString());
+    };
+
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
     };
@@ -166,7 +183,7 @@ export default function ReadingInterface({
 
                     {/* Dropdown Settings */}
                     {showSettings && (
-                        <div className="absolute top-full right-0 mt-3 w-64 bg-bg-cream dark:bg-brown-dark border border-tan-primary/10 rounded-[2rem] shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2">
+                        <div className="absolute top-full right-0 mt-3 w-72 bg-bg-cream/95 dark:bg-brown-dark/95 backdrop-blur-xl border border-tan-primary/10 rounded-[2rem] shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2 overflow-y-auto max-h-[80vh]">
                             <div className="flex items-center justify-between mb-6">
                                 <span className="text-[10px] font-black text-tan-primary/40 uppercase tracking-[0.2em]">Pengaturan</span>
                                 <button onClick={() => setShowSettings(false)} className="text-tan-primary/40 hover:text-tan-primary rounded-full p-1.5 bg-tan-primary/5 transition-colors">
@@ -190,6 +207,48 @@ export default function ReadingInterface({
                                             onClick={() => handleSetFontSize(fontSize + 2)}
                                             className="p-2.5 hover:bg-bg-cream dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                                             disabled={fontSize >= 32}
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Gaya Aksara</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {[
+                                            { id: 'serif', label: 'Klasik', class: 'font-serif' },
+                                            { id: 'sans', label: 'Modern', class: 'font-sans' },
+                                            { id: 'mono', label: 'Teknis', class: 'font-mono' }
+                                        ].map((f) => (
+                                            <button
+                                                key={f.id}
+                                                onClick={() => handleSetFontFamily(f.id)}
+                                                className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                                    fontFamily === f.id 
+                                                    ? 'bg-tan-primary text-text-accent shadow-md' 
+                                                    : 'bg-tan-primary/5 text-brown-dark dark:text-tan-light hover:bg-tan-primary/10'
+                                                } ${f.class}`}
+                                            >
+                                                {f.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Jarak Nafas (Baris)</label>
+                                    <div className="flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-1.5 shadow-inner">
+                                        <button
+                                            onClick={() => handleSetLineHeight(lineHeight - 0.2)}
+                                            className="p-2.5 hover:bg-bg-cream dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 shadow-sm"
+                                        >
+                                            <Minus className="w-4 h-4" />
+                                        </button>
+                                        <span className="text-[10px] font-black text-brown-dark dark:text-text-accent italic">{lineHeight.toFixed(1)}</span>
+                                        <button
+                                            onClick={() => handleSetLineHeight(lineHeight + 0.2)}
+                                            className="p-2.5 hover:bg-bg-cream dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 shadow-sm"
                                         >
                                             <Plus className="w-4 h-4" />
                                         </button>
@@ -223,8 +282,11 @@ export default function ReadingInterface({
 
             <main className="px-6 py-8 sm:px-12 md:max-w-2xl md:mx-auto min-h-[70vh]">
                 <article
-                    className="prose dark:prose-invert mx-auto text-justify leading-loose whitespace-pre-wrap text-brown-dark dark:text-tan-light/90 font-serif max-w-none transition-all duration-200"
-                    style={{ fontSize: `${fontSize}px` }}
+                    className={`prose dark:prose-invert mx-auto text-justify whitespace-pre-wrap text-brown-dark dark:text-tan-light/90 max-w-none transition-all duration-200 ${
+                        fontFamily === 'serif' ? 'font-serif' : 
+                        fontFamily === 'mono' ? 'font-mono' : 'font-sans'
+                    }`}
+                    style={{ fontSize: `${fontSize}px`, lineHeight: lineHeight }}
                 >
                     {content}
                 </article>

@@ -45,3 +45,8 @@ scripts/
 check-admin.js
 tmp/
 *.tmp
+.pnpm-store/
+.env.production
+.env.development
+*.log
+.eslintcache
