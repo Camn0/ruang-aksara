@@ -31,7 +31,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     return (
         <div className="space-y-4">
             {/* Level Card - Full Width */}
-            <div className="bg-white dark:bg-brown-dark rounded-[2.5rem] p-6 border border-tan-light/30 dark:border-brown-mid/50 shadow-xl shadow-tan-light/10 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group transition-colors">
+            <div className="bg-bg-cream/40 dark:bg-brown-dark rounded-[2.5rem] p-6 border border-tan-light/30 dark:border-brown-mid/50 shadow-xl shadow-tan-light/10 dark:shadow-none flex flex-col gap-4 relative overflow-hidden group transition-colors">
                 <div className="flex justify-between items-center relative z-10">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-tan-primary rounded-2xl flex items-center justify-center text-text-accent shadow-lg">
@@ -92,7 +92,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                     </div>
                 </button>
 
-                <div className="bg-white dark:bg-brown-dark rounded-3xl p-4 text-text-main dark:text-text-accent shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid/50 text-center relative overflow-hidden">
+                <div className="bg-bg-cream/40 dark:bg-brown-dark rounded-3xl p-4 text-text-main dark:text-text-accent shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid/50 text-center relative overflow-hidden">
                     <BookOpen className="absolute -right-2 -bottom-2 w-16 h-16 opacity-5 pointer-events-none" />
                     <p className="text-[8px] font-black uppercase tracking-widest text-tan-primary opacity-60 mb-1">Total Baca</p>
                     <div className="flex items-baseline justify-center gap-0.5">
@@ -120,7 +120,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
 
                             <div className="space-y-4">
                                 {levelTiers.map((tier, i) => (
-                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-white dark:bg-tan-primary/10 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-brown-mid/50 border-transparent'}`}>
+                                    <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-bg-cream dark:bg-tan-primary/10 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-brown-mid/50 border-transparent'}`}>
                                         <div className="flex justify-between mb-1">
                                             <span className="text-[9px] font-black bg-tan-primary text-text-accent px-2 py-0.5 rounded shadow-sm">LV {tier.lv}</span>
                                             <span className="text-[11px] font-bold text-text-main dark:text-text-accent dark:text-text-accent">{tier.title}</span>
@@ -157,7 +157,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                             </div>
                             <div className="space-y-4 text-text-main dark:text-text-accent/70 dark:text-tan-light text-xs font-bold leading-relaxed">
                                 <p>Streak menunjukkan berapa hari berturut-turut kamu membaca di Ruang Aksara.</p>
-                                <div className="p-4 bg-white dark:bg-orange-900/20 rounded-2xl border border-tan-light shadow-sm">
+                                <div className="p-4 bg-bg-cream dark:bg-orange-900/20 rounded-2xl border border-tan-light shadow-sm">
                                     <p className="text-brown-dark dark:text-orange-200 font-bold leading-relaxed">
                                         Baca minimal 1 Bab setiap hari untuk mempertahankan apimu. Jangan sampai terputus!
                                     </p>

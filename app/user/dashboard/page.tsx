@@ -397,7 +397,7 @@ export default async function UserDashboardPage() {
                                                 )}
                                             </div>
                                             {f.bookmarks?.[0] && (
-                                                <div className="h-1 bg-white/20 rounded-full overflow-hidden w-full">
+                                                <div className="h-1 bg-tan-primary/20 rounded-full overflow-hidden w-full">
                                                     <div className="h-full bg-tan-primary transition-all duration-1000" style={{ width: `${(f.bookmarks[0].last_chapter / f._count.bab) * 100}%` }} />
                                                 </div>
                                             )}
@@ -435,7 +435,7 @@ export default async function UserDashboardPage() {
                                                     <span>Progres</span>
                                                     <span>{f.bookmarks[0].last_chapter} / {f._count.bab}</span>
                                                 </div>
-                                                <div className="h-1 bg-white/20 rounded-full overflow-hidden w-full">
+                                                <div className="h-1 bg-tan-primary/20 rounded-full overflow-hidden w-full">
                                                     <div className="h-full bg-tan-primary transition-all duration-700" style={{ width: `${(f.bookmarks[0].last_chapter / f._count.bab) * 100}%` }} />
                                                 </div>
                                             </div>
