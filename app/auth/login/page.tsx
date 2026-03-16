@@ -81,10 +81,13 @@ function LoginForm() {
                     <div className="space-y-4">
                         <div className="relative">
                             <input
+                                id="username"
+                                name="username"
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 placeholder="Username"
+                                autoComplete="username"
                                 className="w-full py-5 px-7 rounded-2xl border-[3px] border-[#4a3228] bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#5a4a43] focus:outline-none transition-all text-xl"
                                 required
                             />
@@ -92,10 +95,13 @@ function LoginForm() {
 
                         <div className="relative">
                             <input
-                                type={showPassword ? "password" : "text"}
+                                id="password"
+                                name="password"
+                                type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Password"
+                                autoComplete="current-password"
                                 className="w-full py-5 px-7 pr-16 rounded-2xl bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#5a4a43] focus:outline-none transition-all text-xl border-0"
                                 required
                             />
@@ -103,6 +109,7 @@ function LoginForm() {
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-6 top-1/2 -translate-y-1/2 text-[#5a4a43] hover:text-[#3b2a22] transition-colors"
+                                aria-label={showPassword ? "Hide password" : "Show password"}
                             >
                                 {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
                             </button>

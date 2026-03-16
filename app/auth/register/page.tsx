@@ -27,7 +27,7 @@ export default function RegisterPage() {
             } else {
                 setMessage({ type: 'success', text: 'Pendaftaran sukses! Silakan login.' });
                 setTimeout(() => {
-                    router.push('/api/auth/signin');
+                    router.push('/auth/login');
                 }, 1500);
             }
         } catch (error) {
@@ -74,7 +74,8 @@ export default function RegisterPage() {
                                 id="display_name"
                                 name="display_name"
                                 type="text"
-                                placeholder="Email"
+                                placeholder="Display Name (e.g. Magical Pen)"
+                                autoComplete="name"
                                 required
                                 className={borderedInputClass}
                             />
@@ -86,6 +87,7 @@ export default function RegisterPage() {
                                 name="username"
                                 type="text"
                                 placeholder="Create Username"
+                                autoComplete="username"
                                 required
                                 className={borderedInputClass}
                             />
@@ -97,6 +99,7 @@ export default function RegisterPage() {
                                 name="password"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Password"
+                                autoComplete="new-password"
                                 required
                                 className={`${plainInputClass} pr-16`}
                             />
@@ -104,6 +107,7 @@ export default function RegisterPage() {
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-6 top-1/2 -translate-y-1/2 text-[#4a3228] hover:text-[#3b2a22] transition-colors"
+                                aria-label={showPassword ? "Hide password" : "Show password"}
                             >
                                 {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
                             </button>
@@ -122,7 +126,7 @@ export default function RegisterPage() {
                         <p className="text-[#3b2a22] text-xl md:text-2xl">
                             Already have an account?{" "}
                             <Link
-                                href="/api/auth/signin"
+                                href="/auth/login"
                                 prefetch={false}
                                 className="font-bold hover:underline"
                             >

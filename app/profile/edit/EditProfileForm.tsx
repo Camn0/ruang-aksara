@@ -40,12 +40,12 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                 img.src = event.target?.result as string;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    
+
                     // Cap resolution to 1920px for banners/avatars to save bandwidth
                     const MAX_WIDTH = 1920;
                     let width = img.width;
                     let height = img.height;
-                    
+
                     if (width > MAX_WIDTH) {
                         height = Math.round((height * MAX_WIDTH) / width);
                         width = MAX_WIDTH;
@@ -54,9 +54,9 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
-                    
+
                     ctx?.drawImage(img, 0, 0, width, height);
-                    
+
                     // Dropping to 0.7 quality for a sharper size-to-visual ratio
                     const compressedBase64 = canvas.toDataURL('image/webp', 0.7);
                     resolve(compressedBase64);
@@ -120,12 +120,12 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-4 block ml-1">Sampul Profil</label>
                     <div className="w-full h-40 sm:h-48 bg-olive-banner rounded-[2.5rem] border border-brown-dark/10 overflow-hidden relative shadow-inner">
                         {bannerUrl ? (
-                            <NextImage 
-                                src={bannerUrl} 
-                                fill 
-                                sizes="(max-width: 768px) 100vw, 850px" 
-                                className="w-full h-full object-cover" 
-                                alt="Banner" 
+                            <NextImage
+                                src={bannerUrl}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 850px"
+                                className="w-full h-full object-cover"
+                                alt="Banner"
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center opacity-10">
@@ -175,7 +175,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="flex flex-col gap-2">
                             <input
                                 type="file"
