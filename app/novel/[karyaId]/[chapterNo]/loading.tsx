@@ -1,35 +1,38 @@
 export default function Loading() {
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-28 animate-pulse transition-colors duration-300">
-            {/* Fake Header - Matches Reader Header aesthetic */}
-            <header className="px-4 h-14 bg-bg-cream/95 dark:bg-brown-dark/95 border-b border-tan-primary/10 flex items-center justify-between sticky top-0 z-40">
-                <div className="w-8 h-8 bg-tan-primary/5 dark:bg-brown-mid rounded-full border border-tan-primary/10"></div>
-                <div className="flex flex-col items-center gap-1.5">
-                    <div className="h-4 w-24 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
-                    <div className="h-2 w-36 bg-tan-primary/5 dark:bg-brown-mid/50 rounded-full"></div>
-                </div>
-                <div className="w-8 h-8 bg-tan-primary/5 dark:bg-brown-mid rounded-full border border-tan-primary/10"></div>
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark animate-pulse transition-colors duration-500">
+            {/* Minimal Header Shell */}
+            <header className="h-16 px-6 flex items-center justify-between border-b border-tan-primary/5">
+                <div className="w-8 h-8 rounded-full bg-tan-primary/10 dark:bg-brown-mid"></div>
+                <div className="h-4 w-40 bg-tan-primary/5 dark:bg-brown-mid rounded-full"></div>
+                <div className="w-8 h-8 rounded-full bg-tan-primary/10 dark:bg-brown-mid"></div>
             </header>
 
-            {/* Fake Content - High-end Paragraph Skeletons */}
-            <main className="px-6 py-12 sm:px-12 md:max-w-2xl md:mx-auto space-y-5">
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-full"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-11/12"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-full"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-4/5 pt-4"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-full mt-4"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-full"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-10/12"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-full"></div>
-                <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-3/4"></div>
-            </main>
+            <main className="max-w-2xl mx-auto px-6 py-12 space-y-12">
+                {/* Title Skeleton */}
+                <div className="text-center space-y-4">
+                    <div className="h-10 bg-tan-primary/15 dark:bg-brown-mid rounded-2xl w-3/4 mx-auto"></div>
+                    <div className="h-4 bg-tan-primary/10 dark:bg-brown-mid rounded-full w-1/4 mx-auto"></div>
+                </div>
 
-            {/* Fake Footer - Standardized Bottom Nav */}
-            <nav className="fixed bottom-0 inset-x-0 h-20 bg-bg-cream/95 dark:bg-brown-dark/95 border-t border-tan-primary/10 flex items-center justify-between px-8 z-30 md:max-w-md md:left-1/2 md:-translate-x-1/2 md:rounded-t-3xl md:border-x shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-                <div className="w-8 h-8 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
-                <div className="w-[4.5rem] h-[4.5rem] bg-tan-primary/20 dark:bg-brown-mid rounded-full -mt-10 border-4 border-bg-cream dark:border-slate-950 shadow-lg"></div>
-                <div className="w-8 h-8 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
-            </nav>
+                {/* Content Paragraphs Skeleton */}
+                <div className="space-y-8">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="space-y-3">
+                            <div className="h-4 bg-tan-primary/5 dark:bg-brown-mid/40 rounded-full w-full"></div>
+                            <div className="h-4 bg-tan-primary/5 dark:bg-brown-mid/40 rounded-full w-[95%]"></div>
+                            <div className="h-4 bg-tan-primary/5 dark:bg-brown-mid/40 rounded-full w-[98%]"></div>
+                            {i % 3 === 0 && <div className="h-4 bg-tan-primary/5 dark:bg-brown-mid/40 rounded-full w-2/3"></div>}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Navigation Footer Skeleton */}
+                <div className="pt-20 flex justify-between items-center border-t border-tan-primary/10">
+                    <div className="h-12 w-32 bg-brown-dark/5 dark:bg-brown-mid/30 rounded-2xl"></div>
+                    <div className="h-12 w-32 bg-brown-dark/5 dark:bg-brown-mid/30 rounded-2xl"></div>
+                </div>
+            </main>
         </div>
     );
 }

@@ -1,59 +1,68 @@
-export default function ProfileLoading() {
+export default function Loading() {
     return (
-        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark pb-24 lg:pb-8 flex justify-center animate-pulse transition-colors duration-300">
-            <div className="w-full max-w-2xl bg-white dark:bg-brown-dark min-h-screen shadow-sm relative">
-                {/* Header/Banner Section */}
-                <div className="relative">
-                    {/* Banner Image - Warm Palette */}
-                    <div className="w-full h-44 md:h-56 bg-tan-primary/10 dark:bg-brown-mid shrink-0 border-b border-tan-primary/5"></div>
+        <div className="min-h-screen bg-bg-cream dark:bg-brown-dark animate-pulse transition-colors duration-500 pb-20">
+            {/* Header Shell - Transparent on Banner */}
+            <header className="px-4 h-16 flex items-center justify-between absolute top-0 w-full z-50">
+                <div className="w-10 h-10 rounded-full bg-white/20"></div>
+                <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white/20"></div>
+                    <div className="w-10 h-10 rounded-full bg-white/20"></div>
+                </div>
+            </header>
+
+            {/* Profile Banner Skeleton */}
+            <div className="h-48 sm:h-56 bg-olive-banner/40 dark:bg-brown-mid/20"></div>
+
+            <main className="max-w-4xl mx-auto px-6 relative">
+                {/* Avatar Overlap Skeleton */}
+                <div className="relative -mt-16 sm:-mt-20 mb-6">
+                    <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-[2.5rem] bg-brown-dark/20 dark:bg-brown-mid border-[5px] border-bg-cream dark:border-brown-dark shadow-xl"></div>
                 </div>
 
-                <div className="px-6 pb-6 relative">
-                    {/* Avatar Profil - overlap ke banner */}
-                    <div className="flex justify-between items-end -mt-20 mb-6 relative z-10 w-full px-2">
-                        <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] border-4 border-white dark:border-slate-900 bg-tan-primary/20 dark:bg-brown-mid shadow-xl transition-all"></div>
-
-                        {/* Edit Profil Button Skeleton */}
-                        <div className="h-10 w-28 bg-tan-primary/10 dark:bg-brown-mid rounded-full border border-tan-primary/10"></div>
+                {/* Identity & Bio Skeleton */}
+                <div className="space-y-6 mb-10">
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+                        <div className="space-y-3">
+                            <div className="h-9 w-64 bg-tan-primary/15 dark:bg-brown-mid rounded-2xl"></div>
+                            <div className="h-4 w-32 bg-tan-primary/10 dark:bg-brown-mid rounded-full"></div>
+                        </div>
+                        <div className="h-10 w-32 bg-brown-dark/10 dark:bg-tan-primary/20 rounded-[65px]"></div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                        <div className="h-4 w-full bg-tan-primary/5 dark:bg-brown-mid/40 rounded-full"></div>
+                        <div className="h-4 w-3/4 bg-tan-primary/5 dark:bg-brown-mid/40 rounded-full"></div>
                     </div>
 
-                    {/* Info Profil Dasar */}
-                    <div className="mt-4 space-y-4">
-                        <div className="h-8 bg-tan-primary/15 dark:bg-brown-mid rounded-lg w-1/2"></div>
-                        <div className="h-4 bg-tan-primary/5 dark:bg-brown-mid/50 rounded-lg w-1/4"></div>
-                        <div className="h-24 bg-tan-primary/5 dark:bg-brown-mid/30 rounded-3xl w-full mt-6 border border-tan-primary/10 shadow-inner"></div>
+                    {/* Stats Row Skeleton */}
+                    <div className="flex gap-6 pt-2">
+                        <div className="h-6 w-20 bg-tan-primary/10 dark:bg-brown-mid rounded-lg"></div>
+                        <div className="h-6 w-20 bg-tan-primary/10 dark:bg-brown-mid rounded-lg"></div>
+                    </div>
+                </div>
+
+                {/* Tab Navigation Skeleton */}
+                <div className="sticky top-0 -mx-6 px-6 border-b border-tan-primary/10 flex gap-8 mb-8 overflow-x-auto hide-scrollbar bg-bg-cream/50 dark:bg-brown-dark/50 backdrop-blur-sm">
+                    {[1, 2, 3].map(i => (
+                        <div key={i} className="py-4 h-10 w-20 bg-tan-primary/5 dark:bg-brown-mid rounded-lg my-2"></div>
+                    ))}
+                </div>
+
+                {/* Content Area Skeleton: Activity Cards */}
+                <div className="space-y-8">
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="h-24 bg-tan-primary/5 dark:bg-brown-mid/30 rounded-[2rem]"></div>
+                        <div className="h-24 bg-tan-primary/5 dark:bg-brown-mid/30 rounded-[2rem]"></div>
+                        <div className="h-24 bg-tan-primary/5 dark:bg-brown-mid/30 rounded-[2rem]"></div>
                     </div>
 
-                    {/* Statistik Interaksi Dasar */}
-                    <div className="flex gap-6 mt-8 pb-8 border-b border-tan-primary/10">
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="flex gap-3 items-center">
-                                <div className="h-6 bg-tan-primary/15 dark:bg-brown-mid rounded-lg w-10"></div>
-                                <div className="h-4 bg-tan-primary/5 dark:bg-brown-mid/50 rounded-lg w-14"></div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* List Karya Skeleton */}
-                    <div className="mt-10 space-y-8">
-                        <div className="h-6 bg-brown-mid/15 dark:bg-brown-mid rounded-lg w-40 mb-6"></div>
-
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="flex gap-5 p-5 border border-tan-primary/10 rounded-[2rem] bg-white dark:bg-brown-dark shadow-sm">
-                                <div className="w-24 h-32 md:w-28 md:h-40 bg-tan-primary/20 dark:bg-brown-mid rounded-2xl shrink-0 shadow-sm"></div>
-                                <div className="flex-1 space-y-4 pt-2">
-                                    <div className="h-6 bg-tan-primary/15 dark:bg-brown-mid rounded-lg w-3/4"></div>
-                                    <div className="flex gap-2">
-                                        <div className="h-5 w-16 bg-tan-primary/5 dark:bg-brown-mid/50 rounded-lg border border-tan-primary/10"></div>
-                                        <div className="h-5 w-16 bg-tan-primary/5 dark:bg-brown-mid/50 rounded-lg border border-tan-primary/10"></div>
-                                    </div>
-                                    <div className="h-16 bg-tan-primary/5 dark:bg-brown-mid/30 rounded-2xl w-full border border-tan-primary/5"></div>
-                                </div>
-                            </div>
+                    <div className="space-y-4">
+                        {[1, 2].map(i => (
+                            <div key={i} className="h-40 bg-brown-dark/[0.02] dark:bg-brown-dark/40 rounded-[2.5rem] border border-tan-primary/5 p-6"></div>
                         ))}
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
