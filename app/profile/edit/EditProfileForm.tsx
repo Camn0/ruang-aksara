@@ -40,14 +40,25 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                 img.src = event.target?.result as string;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    // Preservation of original dimensions as requested.
-                    canvas.width = img.width;
-                    canvas.height = img.height;
+                    
+                    // Cap resolution to 1920px for banners/avatars to save bandwidth
+                    const MAX_WIDTH = 1920;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > MAX_WIDTH) {
+                        height = Math.round((height * MAX_WIDTH) / width);
+                        width = MAX_WIDTH;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     
-                    ctx?.drawImage(img, 0, 0, img.width, img.height);
+                    ctx?.drawImage(img, 0, 0, width, height);
                     
-                    const compressedBase64 = canvas.toDataURL('image/webp', 0.8);
+                    // Dropping to 0.7 quality for a sharper size-to-visual ratio
+                    const compressedBase64 = canvas.toDataURL('image/webp', 0.7);
                     resolve(compressedBase64);
                 };
             };
@@ -109,7 +120,13 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     <label className="text-[10px] text-tan-primary uppercase font-black tracking-[0.2em] mb-4 block ml-1">Sampul Profil</label>
                     <div className="w-full h-40 sm:h-48 bg-olive-banner rounded-[2.5rem] border border-brown-dark/10 overflow-hidden relative shadow-inner">
                         {bannerUrl ? (
-                            <NextImage src={bannerUrl} fill unoptimized className="w-full h-full object-cover" alt="Banner" />
+                            <NextImage 
+                                src={bannerUrl} 
+                                fill 
+                                sizes="(max-width: 768px) 100vw, 850px" 
+                                className="w-full h-full object-cover" 
+                                alt="Banner" 
+                            />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center opacity-10">
                                 <Globe className="w-12 h-12 text-brown-dark" />
@@ -151,7 +168,7 @@ export default function EditProfileForm({ initialDisplayName, initialBio, initia
                     <div className="flex gap-6 items-center">
                         <div className="w-20 h-20 rounded-[1.5rem] overflow-hidden bg-brown-dark/5 border border-brown-dark/10 shrink-0 shadow-sm relative group">
                             {avatarUrl ? (
-                                <NextImage src={avatarUrl} width={80} height={80} unoptimized alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" />
+                                <NextImage src={avatarUrl} width={80} height={80} alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center">
                                     <UserCircle2 className="w-8 h-8 text-brown-dark/10" strokeWidth={1.5} />

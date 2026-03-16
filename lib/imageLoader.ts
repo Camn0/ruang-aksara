@@ -15,6 +15,7 @@ export default function imageLoader({ src, width, quality }: { src: string; widt
     // [2] IMAGEKIT.IO TRANSFORMATION
     // Documentation: https://docs.imagekit.io/features/image-transformations/resize-crop-and-other-transformations
     const IMAGEKIT_ENDPOINT = 'https://ik.imagekit.io/fo5trikbm';
+    const IK_DOMAIN = 'ik.imagekit.io';
 
     // Construct transformation string
     // f-auto: Automatically delivers the best format for the browser (AVIF/WebP)
@@ -30,9 +31,25 @@ export default function imageLoader({ src, width, quality }: { src: string; widt
     
     const paramsString = `tr:${params.join(',')}`;
 
+    // [3] OPTIMIZED IMAGEKIT HANDLING
+    // If it's already an ImageKit URL, we inject the transformation into the path
+    if (src.includes(IK_DOMAIN)) {
+        const parts = src.split('/');
+        // If it already has tr:, we skip to avoid double transformation
+        if (src.includes('/tr:')) return src;
+
+        // Find the index of the host part
+        const hostIndex = parts.findIndex(p => p === IK_DOMAIN);
+        // The pattern is usually https://host/ID/path. We want https://host/ID/tr:trans/path
+        if (hostIndex !== -1 && parts.length > hostIndex + 1) {
+            parts.splice(hostIndex + 2, 0, paramsString);
+            return parts.join('/');
+        }
+    }
+
+    // [4] PROXY EXTERNAL IMAGES
     // If it's a full URL (e.g., Imgur, Unsplash), we proxy it through ImageKit
     if (src.startsWith('http')) {
-        // ImageKit URL pattern: ik.imagekit.io/your_id/tr:optimization/ORIGINAL_URL
         return `${IMAGEKIT_ENDPOINT}/${paramsString}/${src}`;
     }
 

@@ -416,7 +416,7 @@ export async function updateUserProfile(formData: FormData) {
                 );
             } catch (err) {
                 console.error("Avatar upload failed:", err);
-                // Fallback to undefined/old if it was a failed new upload attempt
+                return { error: "Gagal mengunggah foto profil ke CDN. Silakan coba lagi." };
             }
         }
 
@@ -431,10 +431,11 @@ export async function updateUserProfile(formData: FormData) {
                 );
             } catch (err) {
                 console.error("Banner upload failed:", err);
+                return { error: "Gagal mengunggah banner ke CDN. Silakan coba lagi." };
             }
         }
 
-        await (prisma as any).user.update({
+        const updatedUser = await (prisma as any).user.update({
             where: { id: session.user.id },
             data: {
                 display_name: displayName,
@@ -442,10 +443,15 @@ export async function updateUserProfile(formData: FormData) {
                 avatar_url: finalAvatarUrl || undefined,
                 banner_url: finalBannerUrl || undefined,
                 social_links: socialLinks
-            }
+            },
+            select: { username: true }
         });
 
         revalidateTag(`profile-${session.user.id}`);
+        // Canonical revalidation by username
+        if (updatedUser.username) {
+            revalidateTag(`profile-${updatedUser.username}`);
+        }
         return { success: true };
     } catch (error) {
         console.error("[updateUserProfile] Error:", error);

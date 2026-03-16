@@ -269,7 +269,15 @@ export default function ProfileClient({
                                             <p className="font-black text-[13px] text-text-main dark:text-text-accent uppercase tracking-tight">{userProfile.display_name}</p>
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="w-3 h-3 text-tan-primary" />
-                                                <p className="text-[9px] text-tan-primary font-black uppercase tracking-widest">{new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                                                <p className="text-[9px] text-tan-primary font-black uppercase tracking-widest">
+                                                    {(() => {
+                                                        try {
+                                                            return new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                                                        } catch (e) {
+                                                            return 'Baru saja';
+                                                        }
+                                                    })()}
+                                                </p>
                                             </div>
                                         </div>
 
@@ -515,7 +523,15 @@ export default function ProfileClient({
             {/* Profile Banner Segment */}
             <div className="h-48 sm:h-56 bg-olive-banner relative overflow-hidden">
                 {userProfile.banner_url && (
-                    <Image src={userProfile.banner_url} width={1200} height={300} sizes="100vw" priority className="w-full h-full object-cover" alt="" />
+                    <Image 
+                        src={userProfile.banner_url} 
+                        width={1200} 
+                        height={300} 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1200px" 
+                        priority 
+                        className="w-full h-full object-cover" 
+                        alt="" 
+                    />
                 )}
                 {/* Subtle Decorative Elements for "Journal" feel */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none">

@@ -88,8 +88,8 @@ export async function createKarya(formData: FormData) {
                     "/novel-covers"
                 );
             } catch (uploadError) {
-                console.error("Cover upload failed, falling back to null:", uploadError);
-                finalCoverUrl = null; // Don't block creation if upload fails, but don't store Base64
+                console.error("Cover upload failed:", uploadError);
+                return { error: "Gagal mengunggah sampul novel ke CDN. Silakan coba lagi." };
             }
         }
 
@@ -360,7 +360,7 @@ export async function editKarya(formData: FormData) {
                 );
             } catch (err) {
                 console.error("Edit cover upload failed:", err);
-                finalCoverUrl = existingKarya.cover_url; // Keep old URL on failure
+                return { error: "Gagal mengunggah sampul novel ke CDN. Silakan coba lagi." };
             }
         }
 
