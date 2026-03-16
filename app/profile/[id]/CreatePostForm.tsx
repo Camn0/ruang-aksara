@@ -36,9 +36,9 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx?.drawImage(img, 0, 0, width, height);
-                    
-                    const compressedBase64 = canvas.toDataURL('image/webp', 0.8);
-                resolve(compressedBase64);
+
+                    const compressedBase64 = canvas.toDataURL('image/webp', 0.7);
+                    resolve(compressedBase64);
                 };
             };
         });

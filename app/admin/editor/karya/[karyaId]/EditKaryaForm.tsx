@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { editKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react'; 
+import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import NextImage from 'next/image';
 import DeleteKaryaButton from './DeleteKaryaButton';
@@ -98,13 +98,17 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
         setCoverPreview(null);
         setCoverBase64(""); // Kosongkan string jika dihapus
         if (fileInputRef.current) {
-            fileInputRef.current.value = ""; 
+            fileInputRef.current.value = "";
         }
     };
 
-    async function handleSubmit(formData: FormData) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         setIsPending(true);
         try {
+            const formData = new FormData(e.currentTarget);
+            formData.set("cover_url", coverBase64 || "");
+
             const result = await editKarya(formData);
             if (result.error) toast.error(result.error);
             else {
@@ -121,7 +125,7 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
 
     return (
         <div className="w-full max-w-[1200px] mx-auto pt-14 px-6 sm:px-12 animate-in fade-in duration-300 pb-24">
-            
+
             <div className="flex justify-between items-center mb-16">
                 <button type="button" onClick={() => router.back()} className="hover:scale-105 transition-transform text-brown-dark dark:text-tan-primary">
                     <ArrowLeft className="w-12 h-12" strokeWidth={2.5} />
@@ -131,26 +135,23 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                 </button>
             </div>
 
-            <form id="edit-karya-form" action={handleSubmit} className="flex flex-col lg:flex-row gap-12 sm:gap-20 mb-8">
-                
+            <form id="edit-karya-form" onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-12 sm:gap-20 mb-8">
+
                 <input type="hidden" name="id" value={karya.id} />
-                
-                {/* Input tersembunyi ini yang akan dibaca oleh Backend Anda */}
-                <input type="hidden" name="cover_url" value={coverBase64 || ""} />
 
                 <div className="flex flex-col gap-4 shrink-0">
                     <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sampul</label>
                     <div className="w-[183px] h-[239px] bg-white/40 dark:bg-brown-dark/40 border-2 border-dashed border-tan-primary/20 rounded-[24.75px] flex items-center justify-center relative hover:bg-tan-primary/5 transition-colors overflow-hidden group">
-                        
+
                         {/* Input File (TIDAK DIBERI NAME agar tidak membingungkan backend) */}
-                        <input 
-                            type="file" 
-                            ref={fileInputRef} 
-                            onChange={handleImageChange} 
-                            className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${coverPreview ? 'hidden' : 'block'}`} 
-                            accept="image/*" 
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleImageChange}
+                            className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${coverPreview ? 'hidden' : 'block'}`}
+                            accept="image/*"
                         />
-                        
+
                         {coverPreview ? (
                             <>
                                 <NextImage src={coverPreview} width={183} height={239} alt="Cover" className="w-full h-full object-cover" />
@@ -206,9 +207,9 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
             <div className="flex flex-col lg:flex-row gap-12 sm:gap-20">
                 <div className="hidden lg:block w-[183px] shrink-0"></div>
                 <div className="flex-1 flex flex-col gap-4">
-                    
+
                     {children}
-                    
+
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mt-12 border-t border-tan-primary/10 pt-12">
                         <div className="flex flex-col gap-4">
                             <label className="flex items-center gap-4 cursor-pointer group">
