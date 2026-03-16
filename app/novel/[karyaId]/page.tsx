@@ -42,7 +42,8 @@ async function fetchKaryaDetail(karyaId: string, sort: string = 'new') {
                     uploader: { select: { id: true, username: true, display_name: true, avatar_url: true } },
                     bab: {
                         orderBy: { chapter_no: "asc" },
-                        select: { id: true, chapter_no: true, title: true }
+                        select: { id: true, chapter_no: true, title: true },
+                        take: 50 // Optimization: Only fetch first 50 chapters for initial render
                     },
                     genres: {
                         select: { id: true, name: true }

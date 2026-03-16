@@ -151,6 +151,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
                             <Link
                                 key={f.id}
                                 href={`/search?q=${q}&filter=${newFilters.join(',')}${genreIds.length > 0 ? `&genreId=${genreIds.join(',')}` : ''}`}
+                                prefetch={false}
                                 className={`group relative overflow-hidden rounded-[2rem] border-2 transition-all duration-500 hover:-translate-y-1 ${isActive
                                     ? 'border-brown-mid bg-brown-mid shadow-2xl'
                                     : 'border-tan-light/40 dark:border-tan-light/10 bg-tan-light/20 dark:bg-brown-dark/60 hover:border-tan-primary/30 hover:bg-tan-light/30 dark:hover:bg-brown-mid/20'
@@ -187,6 +188,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
                 <div className="flex gap-2 overflow-x-auto pb-6 snap-x hide-scrollbar mb-8">
                     <Link
                         href={`/search?q=${q}&filter=${filter}`}
+                        prefetch={false}
                         className={`snap-start shrink-0 px-5 py-2 rounded-full text-[10px] uppercase font-black tracking-widest transition-all shadow-sm ${genreIds.length === 0
                             ? 'bg-brown-mid text-text-accent'
                             : 'bg-tan-light/40 dark:bg-brown-mid/30 text-brown-mid dark:text-tan-light hover:bg-tan-light/60 dark:hover:bg-brown-mid/50'
@@ -202,6 +204,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
                             <Link
                                 key={g.id}
                                 href={`/search?q=${q}&filter=${filter}${newGenreIds.length > 0 ? `&genreId=${newGenreIds.join(',')}` : ''}`}
+                                prefetch={false}
                                 className={`snap-start shrink-0 px-5 py-2 rounded-full text-[10px] uppercase font-black tracking-widest transition-all border shadow-sm ${isSelected
                                     ? 'bg-brown-mid text-text-accent border-brown-mid shadow-lg'
                                     : 'bg-tan-light/30 dark:bg-brown-dark/50 text-brown-mid dark:text-tan-light border-tan-light/40 dark:border-tan-light/10 hover:border-tan-primary/40'

@@ -24,11 +24,9 @@ const getCachedLibrary = (userId: string) => unstable_cache(
                         title: true, penulis_alias: true, id: true, cover_url: true,
                         is_completed: true, deskripsi: true, avg_rating: true,
                         total_views: true,
-                        _count: { select: { bab: true } },
-                        bab: {
-                            orderBy: { chapter_no: 'asc' },
-                            select: { title: true, chapter_no: true }
-                        }
+                        _count: { select: { bab: true } }
+                        // Optimized: We no longer fetch the entire bab list here.
+                        // We will fetch the specific chapter title in a separate, surgical lookup.
                     }
                 }
             },
@@ -47,6 +45,29 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     }
 
     const bookmarksRaw = await getCachedLibrary(session.user.id);
+
+    // Surgical lookup for chapter titles to avoid RSC payload bloat
+    const chapterKeys = bookmarksRaw.map(b => ({
+        karya_id: b.karya.id,
+        chapter_no: b.last_chapter
+    }));
+
+    const chapterTitles = await unstable_cache(
+        async () => {
+            if (chapterKeys.length === 0) return [];
+            return prisma.bab.findMany({
+                where: { OR: chapterKeys },
+                select: { karya_id: true, chapter_no: true, title: true }
+            });
+        },
+        [`library-chapter-titles-${session.user.id}-${chapterKeys.map(k => `${k.karya_id}:${k.chapter_no}`).sort().join(',')}`],
+        { revalidate: 3600, tags: [`library-${session.user.id}`] }
+    )();
+
+    const titleMap: Record<string, string> = {};
+    chapterTitles.forEach(ct => {
+        titleMap[`${ct.karya_id}:${ct.chapter_no}`] = ct.title || `Bab ${ct.chapter_no}`;
+    });
 
     const bookmarks = bookmarksRaw as (typeof bookmarksRaw[0] & {
         last_chapter: number;
@@ -146,7 +167,11 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
 
                             return (
                                 <div key={b.id} className="group relative flex flex-col gap-2">
-                                    <Link href={activeTab === 'riwayat' ? `/novel/${b.karya.id}/${b.last_chapter}` : `/novel/${b.karya.id}`} prefetch={false} className="group/card flex flex-col gap-2">
+                                    <Link 
+                                        href={activeTab === 'riwayat' ? `/novel/${b.karya.id}/${b.last_chapter}` : `/novel/${b.karya.id}`} 
+                                        prefetch={false} 
+                                        className="group/card flex flex-col gap-2"
+                                    >
                                         <div className={`aspect-[3/4.2] relative rounded-[2rem] overflow-hidden shadow-lg transition-all duration-500 group-hover/card:shadow-2xl group-hover/card:-translate-y-1 ${isOdd ? 'bg-brown-dark' : 'bg-brown-mid'}`}>
                                             {b.karya.cover_url ? (
                                                 <Image src={b.karya.cover_url} width={200} height={280} alt={b.karya.title} className={`w-full h-full object-cover transition-all duration-700 ${b.karya.is_completed ? 'grayscale-[0.4] brightness-50' : 'group-hover/card:scale-110'}`} />
@@ -204,7 +229,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
                                                     <span>{formatDistanceToNow(new Date(b.updated_at), { addSuffix: false, locale: localeId })}</span>
                                                 </div>
                                                 <p className="text-[9px] font-black text-text-main dark:text-text-accent truncate bg-tan-light/30 dark:bg-brown-mid/50 px-2 py-1 rounded-md border border-tan-light/20 dark:border-brown-mid">
-                                                    {b.karya.bab.find(bc => bc.chapter_no === b.last_chapter)?.title || `Bab ${b.last_chapter}`}
+                                                    {titleMap[`${b.karya.id}:${b.last_chapter}`] || `Bab ${b.last_chapter}`}
                                                 </p>
                                             </div>
                                         </div>

@@ -46,7 +46,7 @@ export default function Sidebar() {
                 </button>
 
                 {/* Logo Section */}
-                <Link href={session ? "/user/dashboard" : "/"} className={`flex flex-col items-center mb-6 lg:mb-10 transition-all duration-500 group/logo shrink-0`}>
+                <Link href={session ? "/user/dashboard" : "/"} prefetch={false} className={`flex flex-col items-center mb-6 lg:mb-10 transition-all duration-500 group/logo shrink-0`}>
                     <div className={`transition-all duration-500 bg-tan-primary/5 dark:bg-brown-mid/20 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 ${isExpanded ? 'w-28 h-20 mb-2' : 'w-16 h-16 mb-0'}`}>
                         {/* New Brand Logo Placeholder */}
                         <Image
@@ -76,6 +76,7 @@ export default function Sidebar() {
                         <Link
                             key={item.name}
                             href={item.href}
+                            prefetch={false}
                             title={!isExpanded ? item.name : ''}
                             className={`flex items-center gap-4 transition-all duration-300 rounded-xl p-1.5 ${isExpanded ? 'justify-end pr-4' : 'justify-center'} ${isActive(item.href) ? 'text-text-main font-bold' : 'text-text-accent hover:text-white'}`}
                         >
@@ -89,6 +90,7 @@ export default function Sidebar() {
                         <div className="">
                             <Link
                                 href="/admin/dashboard"
+                                prefetch={false}
                                 className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
                                 title={!isExpanded ? 'Studio Penulis' : ''}
                             >

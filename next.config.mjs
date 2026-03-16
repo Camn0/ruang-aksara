@@ -12,8 +12,15 @@ const nextConfig = {
     // Mengapa: Optimasi transmisi data dengan mengaktifkan Gzip/Brotli compression bawaan server Next.js.
     // Membawa penghematan bandwidth yang signifikan bagi user dengan koneksi lambat.
     compress: true,
+    // [New Polish] Origin Transfer Efficiency
+    // Mengapa: Memaksa Next.js untuk melakukan tree-shaking agresif pada library besar.
+    // Ini mengurangi ukuran 'Transfer' origin ke browser secara signifikan.
+    experimental: {
+        optimizePackageImports: ['lucide-react', 'date-fns', 'sonner'],
+    },
     images: {
         formats: ['image/avif', 'image/webp'],
+        minimumCacheTTL: 31536000,
         remotePatterns: [
             {
                 protocol: 'https',
