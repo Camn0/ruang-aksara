@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { UserCircle2, CornerDownRight, Trash2, Pin, PinOff, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -55,6 +55,7 @@ export default function CommentItem({
     const [isCollapsed, setIsCollapsed] = useState(isInitiallyCollapsed);
     const [isReplying, setIsReplying] = useState(false);
     const [isVoting, setIsVoting] = useState(false);
+    const [isTargeted, setIsTargeted] = useState(false);
 
     const isAuthor = comment.user.id === authorId;
     const canPin = (currentUserId === authorId || currentUserRole === 'admin') && depth === 0;
@@ -72,8 +73,50 @@ export default function CommentItem({
     const visualDepth = Math.min(depth, 2);
     const hasReplies = comment.replies && comment.replies.length > 0;
 
+    // Logic to handle auto-expansion and highlighting when targeted via hash
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const checkDeepTarget = (replies?: Comment[]): boolean => {
+                if (!replies) return false;
+                return replies.some(r => `#comment-${r.id}` === window.location.hash || checkDeepTarget(r.replies));
+            };
+            if (checkDeepTarget(comment.replies)) {
+                setIsCollapsed(false);
+            }
+        }
+    }, [comment.replies]);
+
+    useEffect(() => {
+        const handleHashChange = () => {
+            const targetId = `comment-${comment.id}`;
+            if (window.location.hash === `#${targetId}`) {
+                setIsTargeted(true);
+                // Scroll with extra delay for hydration/rendering
+                setTimeout(() => {
+                    document.getElementById(targetId)?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }, 300);
+            } else {
+                setIsTargeted(false);
+            }
+        };
+
+        handleHashChange(); // Check on mount
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, [comment.id]);
+
     return (
-        <div id={`comment-${comment.id}`} className={`relative ${visualDepth > 0 ? 'ml-4 sm:ml-6 mt-4' : 'mb-8'}`}>
+        <div 
+            id={`comment-${comment.id}`} 
+            className={`
+                relative transition-all duration-700
+                ${visualDepth > 0 ? 'ml-4 sm:ml-6 mt-4' : 'mb-8'}
+                ${isTargeted ? 'ring-2 ring-tan-primary/40 bg-tan-primary/[0.03] rounded-3xl p-2 -m-2 z-30' : ''}
+            `}
+        >
             {/* Thread Navigation & Rail Logic */}
             {visualDepth > 0 && (
                 <div className="absolute -left-4 sm:-left-6 top-0 bottom-0 w-4 sm:w-6 pointer-events-none">

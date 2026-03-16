@@ -4,8 +4,8 @@ import { ArrowLeft } from 'lucide-react';
 export default function NotFound() {
     return (
         <div className="min-h-screen bg-bg-cream flex flex-col items-center justify-center p-6 text-center">
-            <h1 className="text-9xl font-black text-text-main/10 mb-[-2rem] select-none">404</h1>
-            <div className="relative z-10">
+            <h1 className="text-9xl font-black text-text-main/10 mb-8 select-none leading-none">404</h1>
+            <div className="relative z-10 flex flex-col items-center">
                 <h2 className="text-4xl font-black text-text-main italic uppercase tracking-tighter mb-4">Halaman Tak Ditemukan</h2>
                 <p className="text-text-main/60 font-medium italic mb-12 max-w-md mx-auto">
                     Sepertinya lembaran yang Anda cari telah hilang dari arsip Ruang Aksara.
