@@ -4,14 +4,18 @@
     "description": "Platform Baca Digital",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#4f46e5",
+    "background_color": "#f2ead7",
+    "theme_color": "#AF8F6F",
     "icons": [
         {
-            "src": "/icon.svg",
-            "sizes": "192x192 512x512",
-            "type": "image/svg+xml",
-            "purpose": "any maskable"
+            "src": "/icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon.webp",
+            "sizes": "512x512",
+            "type": "image/webp"
         }
     ]
 }
