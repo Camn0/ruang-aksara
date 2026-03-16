@@ -13,9 +13,11 @@
         "seed": "ts-node prisma/seed.ts"
     },
     "dependencies": {
+        "@imagekit/nodejs": "^7.3.0",
         "@prisma/client": "^5.10.2",
         "bcryptjs": "^3.0.3",
         "date-fns": "^4.1.0",
+        "imagekit": "^6.0.0",
         "lucide-react": "^0.577.0",
         "marked": "^17.0.4",
         "next": "14.1.0",

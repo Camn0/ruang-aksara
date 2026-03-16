@@ -97,6 +97,7 @@ export default function CommentModerationClient({ initialComments }: { initialCo
                             {/* Isi Komentar: Dibalut kontainer bergaya Gelembung (Bubble) & Link Interaktif */}
                             <Link 
                                 href={`/novel/${comment.bab.karya_id}/${comment.bab.chapter_no}#comment-${comment.id}`}
+                                prefetch={false}
                                 className="bg-text-main/5 dark:bg-brown-mid/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-transparent hover:border-tan-primary/20 hover:bg-text-main/[0.08] transition-all mb-3 flex-1 block group/link"
                             >
                                 <p className="text-[12px] text-text-main/70 dark:text-tan-light leading-relaxed italic mb-3">"{comment.content}"</p>

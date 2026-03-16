@@ -23,7 +23,7 @@ export default function AdminMobileHeader({ session }: AdminMobileHeaderProps) {
                     >
                         <Menu className="w-6 h-6" />
                     </button>
-                    <Link href="/admin/dashboard" className="flex items-center gap-3">
+                    <Link href="/admin/dashboard" prefetch={false} className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center p-0.5 shadow-inner">
                             <Image src="/logoRuangAksara.webp" width={40} height={40} alt="Logo" className="w-full h-full object-cover rounded-lg" />
                         </div>
@@ -31,7 +31,7 @@ export default function AdminMobileHeader({ session }: AdminMobileHeaderProps) {
                     </Link>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Link href={`/profile/${session.user.id}`} className="w-10 h-10 rounded-xl bg-text-main dark:bg-brown-dark flex items-center justify-center text-bg-cream shadow-lg transition-transform active:scale-90">
+                    <Link href={`/profile/${session.user.id}`} prefetch={false} className="w-10 h-10 rounded-xl bg-text-main dark:bg-brown-dark flex items-center justify-center text-bg-cream shadow-lg transition-transform active:scale-90">
                         <UserCircle2 className="w-6 h-6" />
                     </Link>
                 </div>

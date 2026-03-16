@@ -320,12 +320,12 @@ export default async function AdminDashboardPage() {
                                             <div className="bg-text-main/5 dark:bg-white/5 p-5 rounded-[2rem] border border-transparent transition-all mb-3">
                                                 <p className="text-[13px] text-text-main/80 dark:text-text-accent leading-relaxed italic font-medium">"{c.content}"</p>
                                             </div>
-                                            <Link href={`/admin/editor/karya/${c.bab.karya.id}`} className="text-[9px] text-text-main/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-text-main dark:hover:text-bg-cream flex items-center gap-2 ml-2 transition-all">
+                                            <Link href={`/admin/editor/karya/${c.bab.karya.id}`} prefetch={false} className="text-[9px] text-text-main/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-text-main dark:hover:text-bg-cream flex items-center gap-2 ml-2 transition-all">
                                                 <BookOpen className="w-3 h-3" strokeWidth={3} /> {c.bab.karya.title}
                                             </Link>
                                         </div>
                                     ))}
-                                    <Link href="/admin/community" className="w-full text-center py-4 bg-text-main/5 dark:bg-white/10 rounded-[1.5rem] text-[9px] font-black text-text-main dark:text-text-accent uppercase tracking-[0.2em] hover:bg-text-main/10 dark:hover:bg-white/20 transition-all block mt-8">Manajemen Komentar</Link>
+                                    <Link href="/admin/community" prefetch={false} className="w-full text-center py-4 bg-text-main/5 dark:bg-white/10 rounded-[1.5rem] text-[9px] font-black text-text-main dark:text-text-accent uppercase tracking-[0.2em] hover:bg-text-main/10 dark:hover:bg-white/20 transition-all block mt-8">Manajemen Komentar</Link>
                                 </div>
                             )}
                         </section>

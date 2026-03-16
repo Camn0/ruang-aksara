@@ -41,6 +41,7 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
             {/* Home Link - Standardized with Library */}
             <Link 
                 href="/" 
+                prefetch={false}
                 className="bg-tan-primary p-2.5 rounded-full text-text-accent hover:opacity-80 transition-all shadow-md shrink-0"
             >
                 <Home className="w-5 h-5" />

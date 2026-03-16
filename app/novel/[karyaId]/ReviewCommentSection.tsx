@@ -74,7 +74,7 @@ export default function ReviewCommentSection({
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between gap-2 mb-2">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            <Link href={`/profile/${c.user?.username}`} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight">{c.user?.display_name}</Link>
+                                            <Link href={`/profile/${c.user?.username}`} prefetch={false} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight">{c.user?.display_name}</Link>
                                             {c.user?.id === karyaUploaderId && (
                                                 <span className="text-[7px] font-black bg-brown-dark text-text-accent px-2 py-0.5 rounded-sm uppercase tracking-widest italic">Penulis</span>
                                             )}

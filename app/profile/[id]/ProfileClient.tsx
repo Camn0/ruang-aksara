@@ -151,7 +151,7 @@ export default function ProfileClient({
                                             <div className="absolute inset-0 bg-brown-dark/10 rounded-[1.2rem] blur-xl group-hover/card:blur-2xl transition-all opacity-40 -z-10 translate-y-2"></div>
                                             <Link href={`/novel/${karya.id}`} prefetch={false} className="block w-full h-full rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/5 shadow-md relative z-10 transition-transform group-hover/card:-translate-y-1 duration-500">
                                                 {karya.cover_url ? (
-                                                    <Image src={karya.cover_url} width={144} height={208} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700" alt={karya.title} />
+                                                    <Image src={karya.cover_url} width={144} height={208} sizes="(max-width: 640px) 128px, 144px" className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700" alt={karya.title} />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center p-4 text-center bg-tan-light/5">
                                                         <span className="text-[9px] font-black text-brown-mid/30 uppercase tracking-tighter">{karya.title}</span>
@@ -258,7 +258,7 @@ export default function ProfileClient({
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white/10 border border-white/10 shadow-sm relative">
                                             {userProfile.avatar_url ? (
-                                                <Image src={userProfile.avatar_url} width={48} height={48} className="w-full h-full object-cover" alt="" />
+                                                <Image src={userProfile.avatar_url} width={48} height={48} sizes="48px" className="w-full h-full object-cover" alt="" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-white/5">
                                                     <UserCircle2 className="w-6 h-6 text-white/20" />
@@ -299,6 +299,7 @@ export default function ProfileClient({
                                                 src={post.image_url} 
                                                 width={800}
                                                 height={500}
+                                                sizes="(max-width: 768px) 100vw, 800px"
                                                 alt="Post attachment" 
                                                 className="w-full h-auto max-h-[500px] object-cover hover:scale-[1.02] transition-transform duration-700"
                                             />
@@ -429,7 +430,7 @@ export default function ProfileClient({
                             followers.map(f => (
                                 <Link key={f.id} href={`/profile/${f.username}`} prefetch={false} className="flex items-center gap-5 p-6 hover:bg-brown-dark/[0.04] transition-all group rounded-[2.5rem]">
                                     <div className="w-16 h-16 rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/10 group-hover:border-tan-primary transition-all relative">
-                                        {f.avatar_url ? <Image src={f.avatar_url} width={64} height={64} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
+                                        {f.avatar_url ? <Image src={f.avatar_url} width={64} height={64} sizes="64px" className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
                                     </div>
                                     <div>
                                         <p className="font-open-sans font-black text-sm text-text-main dark:text-text-accent group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
@@ -450,7 +451,7 @@ export default function ProfileClient({
                             following.map(f => (
                                 <Link key={f.id} href={`/profile/${f.username}`} prefetch={false} className="flex items-center gap-5 p-6 hover:bg-brown-dark/[0.04] transition-all group rounded-[2.5rem]">
                                     <div className="w-16 h-16 rounded-[1.2rem] overflow-hidden bg-tan-light/10 border border-brown-dark/10 group-hover:border-tan-primary transition-all relative">
-                                        {f.avatar_url ? <Image src={f.avatar_url} width={64} height={64} className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
+                                        {f.avatar_url ? <Image src={f.avatar_url} width={64} height={64} sizes="64px" className="w-full h-full object-cover" alt="" /> : <UserCircle2 className="w-full h-full text-brown-dark/10 p-2" />}
                                     </div>
                                     <div>
                                         <p className="font-open-sans font-black text-sm text-text-main dark:text-text-accent group-hover:text-tan-primary transition-colors uppercase tracking-tight italic">{f.display_name}</p>
@@ -514,7 +515,7 @@ export default function ProfileClient({
             {/* Profile Banner Segment */}
             <div className="h-48 sm:h-56 bg-olive-banner relative overflow-hidden">
                 {userProfile.banner_url && (
-                    <Image src={userProfile.banner_url} width={1200} height={300} className="w-full h-full object-cover" alt="" />
+                    <Image src={userProfile.banner_url} width={1200} height={300} sizes="100vw" priority className="w-full h-full object-cover" alt="" />
                 )}
                 {/* Subtle Decorative Elements for "Journal" feel */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -528,7 +529,7 @@ export default function ProfileClient({
                 <div className="relative -mt-16 sm:-mt-20 mb-6">
                     <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-[2.5rem] overflow-hidden bg-brown-dark border-[5px] border-bg-cream dark:border-brown-dark shadow-xl shadow-brown-dark/10 transition-all duration-500 relative z-10">
                         {userProfile.avatar_url ? (
-                            <Image src={userProfile.avatar_url} width={144} height={144} alt="Profile" className="w-full h-full object-cover" />
+                            <Image src={userProfile.avatar_url} width={144} height={144} sizes="(max-width: 640px) 112px, 144px" priority alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-brown-mid">
                                 <UserCircle2 className="w-16 h-16 text-text-accent/20" strokeWidth={1} />

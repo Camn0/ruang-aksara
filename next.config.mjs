@@ -19,6 +19,8 @@ const nextConfig = {
         optimizePackageImports: ['lucide-react', 'date-fns', 'sonner'],
     },
     images: {
+        loader: 'custom',
+        loaderFile: './lib/imageLoader.ts',
         formats: ['image/avif', 'image/webp'],
         minimumCacheTTL: 31536000,
         remotePatterns: [

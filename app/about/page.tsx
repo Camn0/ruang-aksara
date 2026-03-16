@@ -12,7 +12,7 @@ export default function AboutPage() {
         <div className="min-h-screen bg-bg-cream/60 dark:bg-brown-dark transition-colors duration-500 pb-20">
             {/* Header / Nav */}
             <header className="px-6 h-20 flex items-center justify-between sticky top-0 bg-bg-cream/80 dark:bg-brown-dark/80 backdrop-blur-md z-50 border-b border-text-main/5 dark:border-tan-primary/10">
-                <Link href="/" className="flex items-center gap-2 group">
+                <Link href="/" prefetch={false} className="flex items-center gap-2 group">
                     <div className="p-2 bg-text-main text-bg-cream rounded-xl group-hover:scale-110 transition-all">
                         <ArrowLeft className="w-5 h-5" />
                     </div>

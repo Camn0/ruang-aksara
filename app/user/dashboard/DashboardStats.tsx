@@ -110,7 +110,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent dark:text-text-accent italic">Level Guide</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Level Guide</h2>
                                     <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Sistem Reputasi Pembaca</p>
                                 </div>
                                 <button onClick={() => setShowLevelInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark dark:hover:text-text-accent transition-colors">
@@ -123,7 +123,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                                     <div key={i} className={`p-4 rounded-2xl border transition-all ${level >= parseInt(tier.lv) ? 'bg-bg-cream dark:bg-tan-primary/10 border-tan-light shadow-sm' : 'bg-tan-light/5 dark:bg-brown-mid/50 border-transparent'}`}>
                                         <div className="flex justify-between mb-1">
                                             <span className="text-[9px] font-black bg-tan-primary text-text-accent px-2 py-0.5 rounded shadow-sm">LV {tier.lv}</span>
-                                            <span className="text-[11px] font-bold text-text-main dark:text-text-accent dark:text-text-accent">{tier.title}</span>
+                                            <span className="text-[11px] font-bold text-text-main dark:text-text-accent">{tier.title}</span>
                                         </div>
                                         <p className="text-[10px] text-tan-primary font-bold mt-1 line-clamp-2">{tier.benefit}</p>
                                     </div>
@@ -148,7 +148,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent dark:text-text-accent italic">Streak Baca</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Streak Baca</h2>
                                     <p className="text-[10px] text-brown-mid font-black uppercase tracking-widest mt-1">Konsistensi adalah Kunci</p>
                                 </div>
                                 <button onClick={() => setShowStreakInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark dark:hover:text-text-accent transition-colors">
@@ -177,7 +177,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent dark:text-text-accent italic">Poin Aksara</h2>
+                                    <h2 className="text-2xl font-open-sans font-bold text-text-main dark:text-text-accent italic">Poin Aksara</h2>
                                     <p className="text-[10px] text-tan-primary font-black uppercase tracking-widest mt-1">Kumpulkan poin untuk naik level</p>
                                 </div>
                                 <button onClick={() => setShowPointsInfo(false)} className="p-2 bg-tan-light/20 rounded-full text-tan-primary hover:text-brown-dark dark:hover:text-text-accent transition-colors">

@@ -121,6 +121,7 @@ export default function ChapterPicker({
                                     <Link
                                         key={ch.chapter_no}
                                         href={`/novel/${karyaId}/${ch.chapter_no}`}
+                                        prefetch={false}
                                         onClick={() => setIsOpen(false)}
                                         className={`flex items-center gap-4 px-8 py-6 rounded-[2.5rem] transition-all group relative overflow-hidden border ${isActive
                                             ? 'bg-brown-dark text-text-accent border-brown-dark shadow-2xl shadow-brown-dark/20 translate-x-2'
@@ -162,6 +163,7 @@ export default function ChapterPicker({
                 <div className="p-10 border-t border-tan-primary/5 bg-bg-cream/80 dark:bg-brown-dark/80 backdrop-blur-md">
                     <Link
                         href={`/novel/${karyaId}`}
+                        prefetch={false}
                         className="w-full h-16 bg-brown-dark text-text-accent rounded-full flex items-center justify-center font-black text-[10px] uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95 gap-4 group"
                     >
                         Tutup & Kembali <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

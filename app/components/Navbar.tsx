@@ -16,7 +16,7 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo */}
-                    <Link href={session ? "/user/dashboard" : "/"} className="flex items-center gap-3 group">
+                    <Link href={session ? "/user/dashboard" : "/"} prefetch={false} className="flex items-center gap-3 group">
                         <div className="w-10 h-10 bg-tan-primary/10 rounded-lg overflow-hidden p-0.5 border border-tan-primary/10">
                             <Image src="/logoRuangAksara.webp" width={40} height={40} alt="Logo" className="w-full h-full object-cover rounded" />
                         </div>
@@ -31,12 +31,13 @@ export default function Navbar() {
                         {status === 'authenticated' && session ? (
                             <Link 
                                 href={`/profile/${session.user.id}`}
+                                prefetch={false}
                                 className="w-9 h-9 rounded-full bg-tan-primary/20 flex items-center justify-center text-brown-dark border border-tan-primary/20"
                             >
                                 <User className="w-5 h-5" />
                             </Link>
                         ) : status === 'unauthenticated' ? (
-                            <Link href="/auth/login" className="text-[10px] font-black uppercase tracking-widest text-brown-dark bg-tan-primary/20 px-4 py-2 rounded-xl">
+                            <Link href="/auth/login" prefetch={false} className="text-[10px] font-black uppercase tracking-widest text-brown-dark bg-tan-primary/20 px-4 py-2 rounded-xl">
                                 Masuk
                             </Link>
                         ) : null}

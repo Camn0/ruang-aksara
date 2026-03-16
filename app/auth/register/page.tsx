@@ -123,6 +123,7 @@ export default function RegisterPage() {
                             Already have an account?{" "}
                             <Link
                                 href="/api/auth/signin"
+                                prefetch={false}
                                 className="font-bold hover:underline"
                             >
                                 Login

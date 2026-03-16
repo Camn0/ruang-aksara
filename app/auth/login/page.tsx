@@ -50,6 +50,7 @@ function LoginForm() {
             <div className="p-6 relative z-10">
                 <Link
                     href="/onboarding"
+                    prefetch={false}
                     className="inline-flex items-center text-[#574239] hover:text-[#3b2a22] hover:scale-[1.02] active:scale-95 transition-colors"
                 >
                     <ArrowLeft className="w-6 h-6 mr-2" />
@@ -122,6 +123,7 @@ function LoginForm() {
                                 New member?{" "}
                                 <Link
                                     href="/auth/register"
+                                    prefetch={false}
                                     className="font-bold hover:underline"
                                 >
                                     Register

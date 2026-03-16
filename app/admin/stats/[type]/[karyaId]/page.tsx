@@ -286,6 +286,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                         <div className="flex items-center gap-6 mb-8">
                             <Link 
                                 href={`/admin/stats/${type}`}
+                                prefetch={false}
                                 className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/60 dark:text-text-accent uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream transition-colors group"
                             >
                                 <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> Kembali
@@ -307,6 +308,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
 
                     <Link 
                         href={`/admin/editor/karya/${work.id}`}
+                        prefetch={false}
                         className="bg-bg-cream dark:bg-brown-mid text-brown-dark dark:text-text-accent px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group border border-white/5"
                     >
                         <PenTool className="w-4 h-4" /> Edit Karya
@@ -563,7 +565,7 @@ function MetricCard({
     color?: string
 }) {
     return (
-        <div className="bg-white/40 dark:bg-brown-mid/20 rounded-3xl p-6 border border-text-main/5 dark:border-white/5 group hover:bg-white/60 dark:hover:bg-brown-mid/30 transition-all relative">
+        <div className="bg-bg-cream/80 dark:bg-brown-mid/20 rounded-3xl p-6 border border-tan-light/50 dark:border-white/5 group hover:bg-bg-cream dark:hover:bg-brown-mid/30 transition-all relative">
             <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
                     {Icon && <Icon className={`w-3.5 h-3.5 ${iconColor || 'text-tan-primary dark:text-text-accent'} opacity-80`} />}
@@ -572,16 +574,16 @@ function MetricCard({
                 {tip && (
                     <div className="group/tip relative flex items-center justify-center">
                         <Info className="w-3.5 h-3.5 opacity-40 hover:opacity-100 dark:opacity-80 dark:text-text-accent cursor-help transition-opacity" />
-                        <div className="absolute bottom-full right-0 mb-4 w-56 p-5 bg-[#2A1E17] dark:bg-brown-dark text-text-accent rounded-[1.5rem] text-[10px] font-bold leading-relaxed opacity-0 group-hover/tip:opacity-100 pointer-events-none transition-all z-50 shadow-2xl border border-white/5 border-t-white/10">
-                            <p className="uppercase tracking-widest opacity-40 mb-2 border-b border-white/5 pb-2">Analisis Detail</p>
+                        <div className="absolute bottom-full right-0 mb-4 w-56 p-5 bg-brown-dark text-text-accent rounded-[1.5rem] text-[10px] font-bold leading-relaxed opacity-0 group-hover/tip:opacity-100 pointer-events-none transition-all z-50 shadow-2xl border border-white/10 shadow-brown-dark/20">
+                            <p className="uppercase tracking-widest opacity-60 mb-2 border-b border-white/10 pb-2">Analisis Detail</p>
                             {tip}
-                            <div className="absolute top-full right-4 w-2 h-2 bg-[#2A1E17] dark:bg-brown-dark transform rotate-45 -mt-1"></div>
+                            <div className="absolute top-full right-4 w-2 h-2 bg-brown-dark transform rotate-45 -mt-1"></div>
                         </div>
                     </div>
                 )}
             </div>
-            <p className="text-2xl font-black italic tracking-tighter mb-1 text-text-accent dark:text-white leading-none">{value}</p>
-            {sub && <p className="text-[9px] font-black text-text-main/50 dark:text-text-accent/60 uppercase tracking-widest italic">{sub}</p>}
+            <p className="text-2xl font-black italic tracking-tighter mb-1 text-text-main dark:text-text-accent leading-none">{value}</p>
+            {sub && <p className="text-[9px] font-black text-text-main/70 dark:text-text-accent/60 uppercase tracking-widest italic">{sub}</p>}
         </div>
     );
 }

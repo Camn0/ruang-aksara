@@ -225,7 +225,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
                                 <Link key={author.id} href={`/profile/${author.username}`} prefetch={false} className="snap-start shrink-0 flex flex-col items-center gap-3 group">
                                     <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-tan-light/40 dark:bg-brown-mid border-2 border-tan-primary/20 group-hover:border-brown-mid transition-all shadow-md">
                                         {author.avatar_url ? (
-                                            <Image src={author.avatar_url} width={80} height={80} alt={author.display_name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            <Image src={author.avatar_url} width={80} height={80} sizes="80px" alt={author.display_name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-tan-primary font-black text-2xl bg-tan-light/20 dark:bg-brown-dark/20">
                                                 {author.display_name.charAt(0).toUpperCase()}
@@ -257,7 +257,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
                             <p className="text-xs sm:text-sm text-brown-mid dark:text-tan-light mb-8 leading-relaxed max-w-sm mx-auto font-medium">
                                 Coba gunakan kata kunci lain, atau hapus filter tipe / genre yang sedang aktif untuk memperluas hasil pencarian.
                             </p>
-                            <Link href="/search" className="bg-brown-mid px-8 py-3 rounded-full text-text-accent font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 shadow-lg shadow-black/10 transition-all inline-block">
+                            <Link href="/search" prefetch={false} className="bg-brown-mid px-8 py-3 rounded-full text-text-accent font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 shadow-lg shadow-black/10 transition-all inline-block">
                                 Reset Semua Filter
                             </Link>
                         </div>
@@ -267,7 +267,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
                                 <div key={item.id} className="group bg-tan-light/20 dark:bg-brown-dark/60 backdrop-blur-sm overflow-hidden rounded-[2.5rem] border-2 border-tan-light/30 dark:border-tan-light/5 shadow-sm flex gap-0 hover:border-tan-primary/30 dark:hover:border-tan-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
                                     <Link href={`/novel/${item.id}`} prefetch={false} className="w-32 sm:w-40 relative shrink-0 bg-tan-light/20 dark:bg-brown-mid/20 overflow-hidden">
                                         {item.cover_url ? (
-                                            <Image src={item.cover_url} width={160} height={220} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            <Image src={item.cover_url} width={160} height={220} sizes="(max-width: 640px) 128px, 160px" alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center p-4 text-center text-[10px] font-black text-tan-primary/50 uppercase italic tracking-tighter">
                                                 {item.title}

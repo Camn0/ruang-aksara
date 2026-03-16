@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { revalidateTag } from 'next/cache';
+import { uploadToImageKit } from '@/lib/imageKit';
 
 // ==============================================================================
 // 1. MUTASI USER (READER): MENGUNGGAH KOMENTAR PADA BAB
@@ -404,13 +405,42 @@ export async function updateUserProfile(formData: FormData) {
             console.error("Invalid socialLinks JSON:", e);
         }
 
+        // [CDN Migration] Handle Avatar Upload
+        let finalAvatarUrl = avatarUrl;
+        if (avatarUrl && avatarUrl.startsWith('data:image')) {
+            try {
+                finalAvatarUrl = await uploadToImageKit(
+                    avatarUrl,
+                    `avatar-${session.user.id}-${Date.now()}`,
+                    "/profile-avatars"
+                );
+            } catch (err) {
+                console.error("Avatar upload failed:", err);
+                // Fallback to undefined/old if it was a failed new upload attempt
+            }
+        }
+
+        // [CDN Migration] Handle Banner Upload
+        let finalBannerUrl = bannerUrl;
+        if (bannerUrl && bannerUrl.startsWith('data:image')) {
+            try {
+                finalBannerUrl = await uploadToImageKit(
+                    bannerUrl,
+                    `banner-${session.user.id}-${Date.now()}`,
+                    "/profile-banners"
+                );
+            } catch (err) {
+                console.error("Banner upload failed:", err);
+            }
+        }
+
         await (prisma as any).user.update({
             where: { id: session.user.id },
             data: {
                 display_name: displayName,
                 bio: bio,
-                avatar_url: avatarUrl || undefined,
-                banner_url: bannerUrl || undefined,
+                avatar_url: finalAvatarUrl || undefined,
+                banner_url: finalBannerUrl || undefined,
                 social_links: socialLinks
             }
         });

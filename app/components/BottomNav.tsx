@@ -61,7 +61,7 @@ export default function BottomNav() {
                         
                         return (
                              <li key={index} className={`flex-1 ${isActive ? 'active' : ''}`}>
-                                <Link href={item.path} className="flex justify-center items-center h-full w-full relative">
+                                <Link href={item.path} prefetch={false} className="flex justify-center items-center h-full w-full relative">
                                     {isStudio ? (
                                         <div className="relative flex items-center justify-center translate-y-[-24px]">
                                             {/* Ellipse 10 */}

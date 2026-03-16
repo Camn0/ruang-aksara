@@ -97,7 +97,7 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
             <div className="flex items-start gap-4 mb-4">
                 <div className="w-10 h-10 rounded-2xl overflow-hidden shrink-0 bg-tan-light/10 border border-brown-dark/10 shadow-sm relative">
                     {userProfile.avatar_url ? (
-                        <Image src={userProfile.avatar_url} width={40} height={40} alt="" className="w-full h-full object-cover" />
+                        <Image src={userProfile.avatar_url} width={40} height={40} sizes="40px" alt="" className="w-full h-full object-cover" />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center bg-brown-dark/5">
                             <UserCircle2 className="w-6 h-6 text-brown-dark/20" />
@@ -120,7 +120,7 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
             {/* Image Preview / Input */}
             {imageUrl && (
                 <div className="mb-4 relative px-2">
-                    <Image src={imageUrl} width={800} height={500} unoptimized alt="Preview" className="w-full max-h-72 object-cover rounded-2xl border border-brown-dark/10 shadow-md transition-transform duration-500" />
+                    <Image src={imageUrl} width={800} height={500} unoptimized sizes="(max-width: 768px) 100vw, 800px" alt="Preview" className="w-full max-h-72 object-cover rounded-2xl border border-brown-dark/10 shadow-md transition-transform duration-500" />
                     <button type="button" onClick={() => { setImageUrl(''); setShowImageInput(false); }} className="absolute top-4 right-6 bg-brown-dark/80 text-text-accent p-1.5 rounded-full hover:bg-brown-dark shadow-lg transition-all active:scale-90">
                         <X className="w-4 h-4" />
                     </button>

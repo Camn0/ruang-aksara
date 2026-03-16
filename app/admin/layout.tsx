@@ -41,7 +41,7 @@ export default async function AdminLayout({
             <aside className="hidden lg:flex flex-col w-64 bg-tan-primary dark:bg-brown-mid border-r border-text-main/5 dark:border-white/5 fixed left-0 top-0 h-screen z-30 transition-colors shadow-2xl">
                 {/* Brand / Logo Section */}
                 <div className="p-8">
-                    <Link href="/admin/dashboard" className="flex flex-col items-center group/logo transition-all duration-500">
+                    <Link href="/admin/dashboard" prefetch={false} className="flex flex-col items-center group/logo transition-all duration-500">
                         <div className="w-24 h-20 bg-text-main/10 dark:bg-tan-primary/10 rounded-3xl flex items-center justify-center overflow-hidden p-1 shadow-inner group-hover/logo:scale-105 transition-all">
                             <Image
                                 src="/logoRuangAksara.webp"
@@ -64,7 +64,7 @@ export default async function AdminLayout({
                 {/* Footer Sidebar: User Profile & Logout */}
                 <div className="p-6 mt-auto space-y-4">
                     <div className="bg-text-main/5 dark:bg-tan-primary/5 rounded-[2.5rem] p-5 border border-text-main/5 dark:border-white/5">
-                        <Link href={`/profile/${session.user.id}`} className="flex items-center gap-3 mb-4 group/profile">
+                        <Link href={`/profile/${session.user.id}`} prefetch={false} className="flex items-center gap-3 mb-4 group/profile">
                             <div className="w-10 h-10 rounded-2xl bg-text-main dark:bg-brown-dark flex items-center justify-center text-bg-cream shadow-lg transition-transform group-hover/profile:scale-110">
                                 <UserCircle2 className="w-6 h-6" />
                             </div>

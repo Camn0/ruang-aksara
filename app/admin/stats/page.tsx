@@ -132,6 +132,7 @@ export default async function AnalyticsOverviewPage() {
             <div className="max-w-6xl mx-auto px-6 pt-12">
                 <Link 
                     href="/admin/dashboard" 
+                    prefetch={false}
                     className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/50 dark:text-text-accent uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream mb-8 transition-colors group"
                 >
                     <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> Kembali ke Dashboard
@@ -168,7 +169,7 @@ export default async function AnalyticsOverviewPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
                     <div className="lg:col-span-2 bg-bg-cream/40 dark:bg-brown-dark/40 rounded-[3rem] p-10 border border-tan-primary/5 dark:border-white/5 shadow-inner">
                         <div className="grid md:grid-cols-2 gap-12">
-                            <Link href="/admin/stats/karya" className="group/chart relative">
+                            <Link href="/admin/stats/karya" prefetch={false} className="group/chart relative">
                                 <div className="absolute top-0 right-0 opacity-0 group-hover/chart:opacity-40 transition-opacity whitespace-nowrap">
                                     <span className="text-[7px] font-black uppercase tracking-[0.2em] italic">Klik untuk Detail</span>
                                 </div>
@@ -182,7 +183,7 @@ export default async function AnalyticsOverviewPage() {
                                     <span>H-1</span>
                                 </div>
                             </Link>
-                            <Link href="/admin/stats/disimpan" className="group/chart relative">
+                            <Link href="/admin/stats/disimpan" prefetch={false} className="group/chart relative">
                                 <div className="absolute top-0 right-0 opacity-0 group-hover/chart:opacity-40 transition-opacity whitespace-nowrap">
                                     <span className="text-[7px] font-black uppercase tracking-[0.2em] italic">Klik untuk Detail</span>
                                 </div>
@@ -198,7 +199,7 @@ export default async function AnalyticsOverviewPage() {
                             </Link>
                         </div>
                     </div>
-                    <Link href="/admin/stats/kepuasan" className="lg:col-span-1 block group/card">
+                    <Link href="/admin/stats/kepuasan" prefetch={false} className="lg:col-span-1 block group/card">
                         <SentimentBreakdown
                             percentage={Math.round(allRatings.length > 0 ? (allRatings.filter(r => r >= 4).length / allRatings.length) * 100 : 0)}
                             total={allRatings.length}
@@ -218,6 +219,7 @@ export default async function AnalyticsOverviewPage() {
                         <Link 
                             key={conf.id}
                             href={`/admin/stats/${conf.id}`}
+                            prefetch={false}
                             className={`${conf.color} ${conf.hoverColor} ${conf.textColor || 'text-white'} p-10 rounded-[3rem] shadow-2xl dark:shadow-none flex flex-col justify-between group overflow-hidden relative min-h-[300px] transition-all hover:scale-[1.02] cursor-pointer`}
                         >
                             <div className="relative z-10">
@@ -225,7 +227,7 @@ export default async function AnalyticsOverviewPage() {
                                     <conf.icon className="w-8 h-8" />
                                 </div>
                                 <h2 className="text-3xl md:text-4xl font-black italic mb-2 uppercase tracking-tighter">{conf.title}</h2>
-                                <p className="text-white/80 dark:text-text-accent/90">{conf.description}</p>
+                                <p className="opacity-80 dark:text-text-accent/90">{conf.description}</p>
                             </div>
 
                             <div className="relative z-10 flex items-end justify-between">
@@ -233,7 +235,7 @@ export default async function AnalyticsOverviewPage() {
                                     <p className="text-5xl md:text-6xl font-black italic tracking-tighter leading-none mb-1">
                                         {conf.id === 'kepuasan' ? stats[conf.id].toFixed(1) : stats[conf.id].toLocaleString()}
                                     </p>
-                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 dark:text-text-accent group-hover:opacity-100 transition-opacity">{conf.label}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60 dark:text-text-accent group-hover:opacity-100 transition-opacity">{conf.label}</p>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
                                     <div className="w-12 h-12 rounded-full bg-tan-primary/10 flex items-center justify-center border border-white/10 group-hover:translate-x-2 transition-transform">

@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs';
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { marked } from 'marked';
 import { z } from 'zod';
+import { uploadToImageKit } from '@/lib/imageKit';
 
 const BabSchema = z.object({
     karya_id: z.string().uuid(),
@@ -76,14 +77,30 @@ export async function createKarya(formData: FormData) {
             ? `${cleanAlias} (${existingUser.username})`
             : existingUser.username;
 
-        // [F] Mutasi Database
+        // [F] Penanganan Gambar (CDN Migration)
+        let finalCoverUrl = cover_url;
+        if (cover_url && cover_url.startsWith('data:image')) {
+            try {
+                // Upload Base64 to ImageKit
+                finalCoverUrl = await uploadToImageKit(
+                    cover_url, 
+                    `cover-${Date.now()}`, 
+                    "/novel-covers"
+                );
+            } catch (uploadError) {
+                console.error("Cover upload failed, falling back to null:", uploadError);
+                finalCoverUrl = null; // Don't block creation if upload fails, but don't store Base64
+            }
+        }
+
+        // [G] Mutasi Database
         // Mengapa: Menggunakan `connect` agar Prisma otomatis membuat mapping di table join (implicit m-n).
         const karyaBaru = await prisma.karya.create({
             data: {
                 title,
                 penulis_alias: final_penulis_alias,
                 deskripsi,
-                cover_url,
+                cover_url: finalCoverUrl,
                 uploader_id: session.user.id,
                 genres: {
                     connect: genreIds.map((id) => ({ id }))
@@ -332,6 +349,21 @@ export async function editKarya(formData: FormData) {
             : existingUser.username;
 
         // [E] Mutasi Update
+        // Handle CDN Upload if Base64
+        let finalCoverUrl = cover_url;
+        if (cover_url && cover_url.startsWith('data:image')) {
+            try {
+                finalCoverUrl = await uploadToImageKit(
+                    cover_url, 
+                    `cover-edit-${id}-${Date.now()}`, 
+                    "/novel-covers"
+                );
+            } catch (err) {
+                console.error("Edit cover upload failed:", err);
+                finalCoverUrl = existingKarya.cover_url; // Keep old URL on failure
+            }
+        }
+
         // Mengapa `set`: Menghapus relasi genre lama dan menggantinya dengan list baru secara atomik.
         await prisma.karya.update({
             where: { id },
@@ -339,7 +371,7 @@ export async function editKarya(formData: FormData) {
                 title,
                 penulis_alias: final_penulis_alias,
                 deskripsi,
-                cover_url,
+                cover_url: finalCoverUrl,
                 is_completed,
                 genres: {
                     set: genreIds.map((gId) => ({ id: gId }))

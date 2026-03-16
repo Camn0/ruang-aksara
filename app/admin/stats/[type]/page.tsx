@@ -243,6 +243,7 @@ export default async function StatsPage({ params }: { params: { type: string } }
                 <div className="flex items-center gap-6 mb-8">
                     <Link 
                         href="/admin/dashboard" 
+                        prefetch={false}
                         className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/60 dark:text-text-accent uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream transition-colors group"
                     >
                         <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> Dashboard
@@ -250,6 +251,7 @@ export default async function StatsPage({ params }: { params: { type: string } }
                     <span className="w-4 h-[1px] bg-text-main/10 dark:bg-white/10"></span>
                     <Link 
                         href="/admin/stats" 
+                        prefetch={false}
                         className="inline-flex items-center gap-2 text-[10px] font-black text-text-main/60 dark:text-bg-cream/60 uppercase tracking-[0.3em] hover:text-text-main dark:hover:text-bg-cream transition-colors group"
                     >
                         Pusat Analisis
@@ -601,12 +603,14 @@ export default async function StatsPage({ params }: { params: { type: string } }
                                             <div className="flex flex-col sm:flex-row items-center justify-end gap-3 lg:shrink-0">
                                                 <Link
                                                     href={`/admin/stats/${type}/${work.id}`}
+                                                    prefetch={false}
                                                     className="w-full sm:w-auto bg-text-main dark:bg-tan-primary/80 dark:text-brown-dark text-white px-8 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:scale-105 transition-transform text-center"
                                                 >
                                                     Detail Analisis
                                                 </Link>
                                                 <Link
                                                     href={`/admin/editor/karya/${work.id}`}
+                                                    prefetch={false}
                                                     className="w-full sm:w-auto bg-text-main/5 dark:bg-white/10 text-text-main dark:text-text-accent border border-text-main/10 dark:border-white/10 px-8 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-text-main/10 transition-all text-center"
                                                 >
                                                     Edit Karya

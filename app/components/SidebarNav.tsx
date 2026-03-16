@@ -29,6 +29,7 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
                 <p className="text-[9px] font-black text-text-main/30 dark:text-bg-cream/30 uppercase tracking-[0.3em] mb-4 pl-4">Navigasi Utama</p>
                 <Link
                     href="/user/dashboard"
+                    prefetch={false}
                     className="flex items-center gap-3 px-6 py-4 rounded-[2rem] text-text-main dark:text-bg-cream bg-tan-primary/10 hover:bg-tan-primary/20 transition-all group border border-text-main/5 dark:border-white/5"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -44,6 +45,7 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
                     <Link
                         key={item.name}
                         href={item.href}
+                        prefetch={false}
                         className={`flex items-center justify-between px-6 py-4 rounded-[2rem] transition-all duration-300 group ${
                             active 
                                 ? 'bg-text-main dark:bg-brown-dark text-[#F2EAD7] shadow-xl translate-x-1' 

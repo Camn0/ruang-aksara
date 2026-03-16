@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { uploadToImageKit } from "@/lib/imageKit";
 
 // ==============================================================================
 // 1. MUTASI AUTHOR: MEMBUAT POSTINGAN / PENGUMUMAN BARU
@@ -42,6 +43,22 @@ export async function createAuthorPost(formData: FormData) {
         // [D] Ambil ID penulis dari sesi yang sudah tervalidasi
         const author_id = session.user.id;
 
+        // [CDN Migration] Handle Post Image Upload
+        let finalImageUrl = image_url;
+        if (image_url && image_url.startsWith('data:image')) {
+            try {
+                finalImageUrl = await uploadToImageKit(
+                    image_url,
+                    `post-${author_id}-${Date.now()}`,
+                    "/author-posts"
+                );
+            } catch (err) {
+                console.error("Post image upload failed:", err);
+                // In case of failure, we skip the image rather than storing Base64
+                finalImageUrl = null;
+            }
+        }
+
         // [E] Mutasi Database — simpan postingan ke tabel AuthorPost
         // Mengapa `prisma as any`: model AuthorPost mungkin belum ter-generate di Prisma Client type stale.
         // Jika terjadi error runtime, jalankan `npx prisma generate` untuk menyinkronkan schema.
@@ -50,7 +67,7 @@ export async function createAuthorPost(formData: FormData) {
                 content: content.trim(),
                 author_id,
                 // Spread conditional: hanya sertakan image_url jika ada dan tidak kosong
-                ...(image_url && image_url.trim() ? { image_url: image_url.trim() } : {})
+                ...(finalImageUrl && finalImageUrl.trim() ? { image_url: finalImageUrl.trim() } : {})
             }
         });
 
