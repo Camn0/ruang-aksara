@@ -60,20 +60,28 @@ export default async function AnalyticsOverviewPage() {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    // Fetch aggregates and follower counts
-    const [works, totalFollowers, recentFollowers] = await Promise.all([
-        prisma.karya.findMany({
-            where: session.user.role === 'admin' ? undefined : { uploader_id: session.user.id },
-            select: {
-                id: true,
-                total_views: true,
-                bab: { select: { created_at: true } },
-                bookmarks: { select: { updated_at: true } },
-                ratings: {
-                    select: { score: true },
-                    where: { score: { gt: 0 } }
-                }
-            }
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const whereKarya = session.user.role === 'admin' ? {} : { uploader_id: session.user.id };
+
+    // Fetch aggregates and trend data in parallel
+    const [
+        karyaAggregates,
+        totalBookmarks,
+        totalFollowers,
+        recentFollowers,
+        recentBabActivity,
+        recentBookmarkActivity
+    ] = await Promise.all([
+        prisma.karya.aggregate({
+            where: whereKarya,
+            _sum: { total_views: true },
+            _avg: { avg_rating: true },
+            _count: true
+        }),
+        prisma.bookmark.count({
+            where: { karya: whereKarya }
         }),
         prisma.follow.count({
             where: { following_id: session.user.id }
@@ -83,18 +91,22 @@ export default async function AnalyticsOverviewPage() {
                 following_id: session.user.id,
                 created_at: { gte: sevenDaysAgo }
             }
+        }),
+        prisma.bab.findMany({
+            where: { 
+                karya: whereKarya,
+                created_at: { gte: thirtyDaysAgo }
+            },
+            select: { created_at: true }
+        }),
+        prisma.bookmark.findMany({
+            where: { 
+                karya: whereKarya,
+                updated_at: { gte: sevenDaysAgo }
+            },
+            select: { updated_at: true }
         })
     ]);
-
-    const allRatings = works.flatMap(w => w.ratings.map(r => r.score));
-    const stats: Record<string, number> = {
-        engagement: works.reduce((acc, w) => acc + w.total_views, 0),
-        kepuasan: allRatings.length > 0 ? allRatings.reduce((acc, s) => acc + s, 0) / allRatings.length : 0,
-        disimpan: works.reduce((acc, w) => acc + w.bookmarks.length, 0),
-        karya: works.length,
-        followers: totalFollowers,
-        recentFollowers
-    };
 
     // --- GLOBAL TREND CALCULATIONS ---
     
@@ -105,7 +117,8 @@ export default async function AnalyticsOverviewPage() {
         d.setHours(0, 0, 0, 0);
         const nextD = new Date(d);
         nextD.setDate(d.getDate() + 1);
-        return works.flatMap(w => w.bab).filter(b => 
+        
+        return recentBabActivity.filter(b => 
             new Date(b.created_at) >= d && new Date(b.created_at) < nextD
         ).length;
     });
@@ -117,15 +130,41 @@ export default async function AnalyticsOverviewPage() {
         d.setHours(0, 0, 0, 0);
         const nextD = new Date(d);
         nextD.setDate(d.getDate() + 1);
-        return works.flatMap(w => w.bookmarks).filter(b => 
+        
+        return recentBookmarkActivity.filter(b => 
             new Date(b.updated_at) >= d && new Date(b.updated_at) < nextD
         ).length;
     });
 
+    // Average rating is already calculated by _avg on Karya
+    // For distribution, we still need an aggregate or separate counts if we want full precision
+    // But we can approximate or use a separate efficient query for distribution if needed.
+    const ratingDistributionAgg = await prisma.rating.groupBy({
+        by: ['score'],
+        where: { karya: whereKarya, score: { gt: 0 } },
+        _count: true
+    });
+
     const ratingDistribution = [1, 2, 3, 4, 5].map(s => ({
         score: s,
-        count: allRatings.filter(r => r === s).length
+        count: ratingDistributionAgg.find(r => r.score === s)?._count || 0
     }));
+
+    const totalScore = ratingDistributionAgg.reduce((acc, r) => acc + (r.score * r._count), 0);
+    const totalRated = ratingDistributionAgg.reduce((acc, r) => acc + r._count, 0);
+    const trueAvg = totalRated > 0 ? totalScore / totalRated : 0;
+
+    const stats: Record<string, number> = {
+        engagement: karyaAggregates._sum.total_views || 0,
+        kepuasan: trueAvg,
+        disimpan: totalBookmarks,
+        karya: karyaAggregates._count,
+        followers: totalFollowers,
+        recentFollowers
+    };
+
+    const totalRatings = totalRated;
+    const sentimentPercentage = totalRated > 0 ? Math.round((ratingDistribution.filter(r => r.score >= 4).reduce((acc, r) => acc + r.count, 0) / totalRated) * 100) : 0;
 
     return (
         <div className="min-h-screen bg-bg-cream/60 dark:bg-brown-dark transition-colors duration-500 pb-24">
@@ -201,8 +240,8 @@ export default async function AnalyticsOverviewPage() {
                     </div>
                     <Link href="/admin/stats/kepuasan" prefetch={false} className="lg:col-span-1 block group/card">
                         <SentimentBreakdown
-                            percentage={Math.round(allRatings.length > 0 ? (allRatings.filter(r => r >= 4).length / allRatings.length) * 100 : 0)}
-                            total={allRatings.length}
+                            percentage={sentimentPercentage}
+                            total={totalRatings}
                             distribution={ratingDistribution}
                             showHint={true}
                         />

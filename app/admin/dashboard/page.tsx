@@ -29,10 +29,39 @@ export default async function AdminDashboardPage() {
     const session = (await getServerSession(authOptions))!;
 
     // [2] DATA FETCHING: Daftar Karya (Cached)
+    const getCachedGlobalStats = (role: string, uploaderId: string) => unstable_cache(
+        async () => {
+            const where = role === 'admin' ? {} : { uploader_id: uploaderId };
+            const [aggregates, bookmarkCount, workCount, ratingAgg] = await Promise.all([
+                prisma.karya.aggregate({
+                    where,
+                    _sum: { total_views: true }
+                }),
+                prisma.bookmark.count({
+                    where: { karya: where }
+                }),
+                prisma.karya.count({ where }),
+                prisma.rating.aggregate({
+                    where: { karya: where, score: { gt: 0 } },
+                    _avg: { score: true }
+                })
+            ]);
+            return {
+                totalViews: aggregates._sum.total_views || 0,
+                avgRating: ratingAgg._avg.score || 0,
+                totalBookmarks: bookmarkCount,
+                workCount
+            };
+        },
+        [`admin-stats-v2-${uploaderId}-${role}`],
+        { revalidate: 600, tags: role === 'admin' ? ['karya-global'] : [`karya-author-${uploaderId}`] }
+    )();
+
     const getCachedDaftarKarya = (role: string, uploaderId: string) => unstable_cache(
         async () => prisma.karya.findMany({
             where: role === 'admin' ? undefined : { uploader_id: uploaderId },
             orderBy: { title: 'asc' },
+            take: 20, // Limit to 20 for dashboard performance
             select: {
                 id: true,
                 title: true,
@@ -55,7 +84,7 @@ export default async function AdminDashboardPage() {
                 }
             }
         }),
-        [`admin-works-${uploaderId}-${role}`],
+        [`admin-works-v2-${uploaderId}-${role}`],
         { revalidate: 600, tags: role === 'admin' ? ['karya-global'] : [`karya-author-${uploaderId}`] }
     )();
 
@@ -87,19 +116,13 @@ export default async function AdminDashboardPage() {
         { revalidate: 300, tags: [`comments-author-${uploaderId}`] }
     )();
 
-    const [daftarKarya, latestComments] = await Promise.all([
+    const [daftarKarya, latestComments, stats] = await Promise.all([
         getCachedDaftarKarya(session.user.role, session.user.id),
-        getCachedLatestComments(session.user.id)
+        getCachedLatestComments(session.user.id),
+        getCachedGlobalStats(session.user.role, session.user.id)
     ]);
 
-    // [3] STATISTICAL AGGREGATION (Optimization: Done in memory after single query)
-    // Menjumlahkan views, bookmarks, dan menghitung rata-rata rating secara efisien.
-    const totalViews = daftarKarya.reduce((acc, k) => acc + k.total_views, 0);
-    const totalBookmarks = daftarKarya.reduce((acc, k) => acc + k._count.bookmarks, 0);
-    const karyaWithRating = daftarKarya.filter(k => k.avg_rating > 0);
-    const avgRating = karyaWithRating.length > 0
-        ? karyaWithRating.reduce((acc, k) => acc + k.avg_rating, 0) / karyaWithRating.length
-        : 0;
+    const { totalViews, totalBookmarks, avgRating, workCount } = stats;
 
     return (
         <div className="min-h-screen bg-bg-cream/60 dark:bg-brown-dark transition-colors duration-500 pb-24">
@@ -189,7 +212,7 @@ export default async function AdminDashboardPage() {
                             </div>
                         </div>
                         <div className="relative z-10 flex items-baseline justify-end gap-3 md:gap-4 mt-auto">
-                            <p className="text-3xl md:text-6xl font-black italic tracking-tighter">{daftarKarya.length}</p>
+                            <p className="text-3xl md:text-6xl font-black italic tracking-tighter">{workCount}</p>
                             <span className="text-[10px] md:text-[14px] font-black uppercase tracking-[0.3em] text-text-main/70 dark:text-tan-light">Karya</span>
                         </div>
                         {/* Decorative Stripe */}

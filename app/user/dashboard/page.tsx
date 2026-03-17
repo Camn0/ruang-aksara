@@ -90,13 +90,14 @@ const getCachedUserStats = (userId: string) => unstable_cache(
         }
 
         if (stats.total_chapters_read === 0) {
-            const bookmarks = await prisma.bookmark.findMany({
+            const bookmarksAggregate = await prisma.bookmark.aggregate({
                 where: { user_id: userId },
-                select: { last_chapter: true }
+                _sum: { last_chapter: true }
             });
 
-            if (bookmarks.length > 0) {
-                const totalRead = bookmarks.reduce((acc, b) => acc + b.last_chapter, 0);
+            const totalRead = bookmarksAggregate._sum.last_chapter || 0;
+
+            if (totalRead > 0) {
                 const initialPoints = totalRead * 10;
 
                 stats = await (prisma as any).userStats.update({
