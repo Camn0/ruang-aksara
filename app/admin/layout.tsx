@@ -52,8 +52,8 @@ export default async function AdminLayout({
                             />
                         </div>
                         <div className="mt-4 flex flex-col items-center">
-                            <span className="text-[10px] font-black text-white/50 dark:text-tan-light uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
-                            <span className="font-black text-xl tracking-tighter text-text-main dark:text-bg-cream italic uppercase">STUDIO</span>
+                            <span className="text-[10px] font-black text-brown-dark/50 dark:text-tan-light uppercase tracking-[0.4em] mb-1 italic">Ruang Aksara</span>
+                            <span className="font-black text-xl tracking-tighter text-text-main/80 dark:text-bg-cream/90 italic uppercase">STUDIO</span>
                         </div>
                     </Link>
                 </div>
@@ -65,12 +65,12 @@ export default async function AdminLayout({
                 <div className="p-6 mt-auto space-y-4">
                     <div className="bg-text-main/5 dark:bg-tan-primary/5 rounded-[2.5rem] p-5 border border-text-main/5 dark:border-white/5">
                         <Link href={`/profile/${session.user.id}`} prefetch={false} className="flex items-center gap-3 mb-4 group/profile">
-                            <div className="w-10 h-10 rounded-2xl bg-text-main dark:bg-brown-dark flex items-center justify-center text-bg-cream shadow-lg transition-transform group-hover/profile:scale-110">
+                            <div className="w-10 h-10 rounded-2xl bg-text-main dark:bg-brown-dark flex items-center justify-center text-text-accent shadow-lg transition-transform group-hover/profile:scale-110">
                                 <UserCircle2 className="w-6 h-6" />
                             </div>
                             <div className="flex flex-col min-w-0">
-                                <span className="text-[10px] font-black text-text-main dark:text-bg-cream truncate uppercase tracking-tight italic group-hover/profile:text-brown-dark dark:group-hover/profile:text-tan-primary transition-colors">{session.user.name}</span>
-                                <span className="text-[10px] text-text-main/50 dark:text-tan-light font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
+                                <span className="text-[10px] font-black text-text-main/80 dark:text-bg-cream/90 truncate uppercase tracking-tight italic group-hover/profile:text-brown-dark dark:group-hover/profile:text-tan-primary transition-colors">{session.user.name}</span>
+                                <span className="text-[10px] text-text-main/40 dark:text-tan-light/70 font-black uppercase tracking-[0.2em] leading-none">{session.user.role}</span>
                             </div>
                         </Link>
                         <LogoutButton />

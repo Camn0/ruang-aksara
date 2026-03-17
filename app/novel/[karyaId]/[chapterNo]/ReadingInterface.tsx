@@ -158,7 +158,7 @@ export default function ReadingInterface({
     return (
         <>
             {/* Header Sticky Atas - Minimalist & Focus Friendly */}
-            <header id="reading-header" className="px-4 h-16 bg-bg-cream/40 dark:bg-brown-dark/40 backdrop-blur-md border-b border-tan-primary/5 flex items-center justify-between sticky top-0 z-40 transition-all duration-500">
+            <header id="reading-header" className="px-4 h-16 bg-bg-cream/95 dark:bg-brown-dark/40 backdrop-blur-md border-b border-tan-primary/5 flex items-center justify-between sticky top-0 z-40 transition-all duration-500">
                 <Link href={`/novel/${karyaId}`} prefetch={false} className="p-2 -ml-2 text-brown-dark dark:text-text-accent hover:bg-tan-primary/10 rounded-full transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
@@ -334,9 +334,8 @@ export default function ReadingInterface({
                 onClose={() => setIsOpenPicker(false)}
             />
 
-            {/* Bottom Floating Navigation - Zen & Harmonious */}
             <nav id="reading-nav" className="fixed bottom-10 left-1/2 -translate-x-1/2 z-40 transition-all duration-300">
-                <div className="bg-bg-cream/60 dark:bg-brown-dark/80 backdrop-blur-3xl px-2 py-2 rounded-full flex items-center gap-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] border border-tan-primary/10 dark:border-white/5">
+                <div className="bg-bg-cream/95 dark:bg-brown-dark/80 backdrop-blur-3xl px-2 py-2 rounded-full flex items-center gap-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] border border-tan-primary/10 dark:border-white/5">
                     {/* Previous Chapter Button */}
                     {prevChapter ? (
                         <Link 

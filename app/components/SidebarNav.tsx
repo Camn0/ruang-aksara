@@ -30,9 +30,9 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
                 <Link
                     href="/user/dashboard"
                     prefetch={false}
-                    className="flex items-center gap-3 px-6 py-4 rounded-[2rem] text-text-main dark:text-bg-cream bg-tan-primary/10 hover:bg-tan-primary/20 transition-all group border border-text-main/5 dark:border-white/5"
+                    className="flex items-center gap-3 px-6 py-4 rounded-[2rem] text-text-main/60 dark:text-bg-cream/60 bg-tan-primary/10 hover:bg-tan-primary/20 transition-all group border border-text-main/5 dark:border-white/5"
                 >
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    <ArrowLeft className="w-4 h-4 opacity-50 group-hover:opacity-100 group-hover:-translate-x-1 transition-all" />
                     <span className="text-[11px] font-black uppercase tracking-[0.2em] italic">Ke Beranda</span>
                 </Link>
             </div>
@@ -48,8 +48,8 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
                         prefetch={false}
                         className={`flex items-center justify-between px-6 py-4 rounded-[2rem] transition-all duration-300 group ${
                             active 
-                                ? 'bg-text-main dark:bg-brown-dark text-[#F2EAD7] shadow-xl translate-x-1' 
-                                : 'text-text-main/60 dark:text-bg-cream/60 hover:text-text-main dark:hover:text-bg-cream hover:bg-tan-primary/10'
+                                ? 'bg-text-main/90 dark:bg-brown-dark text-[#F2EAD7] shadow-xl translate-x-1' 
+                                : 'text-text-main/50 dark:text-bg-cream/50 hover:text-text-main dark:hover:text-bg-cream hover:bg-tan-primary/10'
                         }`}
                     >
                         <span className={`text-[11px] font-black uppercase tracking-[0.2em] italic transition-all ${active ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}>

@@ -32,8 +32,10 @@ export default function imageLoader({ src, width, quality }: { src: string; widt
     const paramsString = `tr:${params.join(',')}`;
 
     // [3] OPTIMIZED IMAGEKIT HANDLING
+    const isImageKit = src.includes(IK_DOMAIN);
+
     // If it's already an ImageKit URL, we inject the transformation into the path
-    if (src.includes(IK_DOMAIN)) {
+    if (isImageKit) {
         const parts = src.split('/');
         // If it already has tr:, we skip to avoid double transformation
         if (src.includes('/tr:')) return src;
@@ -47,10 +49,11 @@ export default function imageLoader({ src, width, quality }: { src: string; widt
         }
     }
 
-    // [4] PROXY EXTERNAL IMAGES
-    // If it's a full URL (e.g., Imgur, Unsplash), we proxy it through ImageKit
-    if (src.startsWith('http')) {
-        return `${IMAGEKIT_ENDPOINT}/${paramsString}/${src}`;
+    // [4] SERVE EXTERNAL IMAGES DIRECTLY
+    // Matches any full URL (Imgur, Unsplash, etc.) that is NOT already an ImageKit URL.
+    // We serve these directly to consume ZERO quota from both Vercel and ImageKit.
+    if (src.startsWith('http') && !isImageKit) {
+        return src;
     }
 
     // Default to serving as-is if no rule matches

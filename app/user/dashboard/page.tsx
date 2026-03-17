@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart, Eye, Users, Check } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
+import ThemeToggle from "@/app/components/ThemeToggle";
 import { unstable_cache } from "next/cache";
 import DashboardStats from "./DashboardStats";
 import { formatDistanceToNow } from 'date-fns';
@@ -233,8 +234,9 @@ export default async function UserDashboardPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                    <ThemeToggle />
                     <Link href={`/profile/${session.user.id}`} prefetch={false} className="relative group">
-                        <UserCircle2 className="w-8 h-8 text-tan-primary group-hover:text-brown-dark dark:group-hover:text-text-accent transition-all group-active:scale-90" />
+                        <UserCircle2 className="w-8 h-8 text-tan-primary group-hover:text-tan-light dark:group-hover:text-text-accent transition-all group-active:scale-90" />
                     </Link>
                     <LogoutButton />
                 </div>

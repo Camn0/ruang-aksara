@@ -77,6 +77,7 @@ export default async function AdminDashboardPage() {
                 user: { select: { display_name: true, id: true } },
                 bab: {
                     select: { 
+                        chapter_no: true,
                         karya: { select: { title: true, id: true } } 
                     }
                 }
@@ -105,17 +106,17 @@ export default async function AdminDashboardPage() {
             {/* Header Dashboard */}
             <div className="px-6 pt-12 mb-10 flex flex-col sm:flex-row justify-between items-end gap-4 max-w-6xl mx-auto">
                 <div>
-                    <h1 className="text-4xl font-black text-text-main dark:text-text-accent tracking-tight leading-none uppercase italic">Dashboard</h1>
-                    <div className="w-12 h-1 bg-text-main/20 dark:bg-white/20 mt-4"></div>
+                    <h1 className="text-4xl font-black text-text-main/80 dark:text-text-accent tracking-tight leading-none uppercase italic">Dashboard</h1>
+                    <div className="w-12 h-1 bg-text-main/10 dark:bg-white/10 mt-4"></div>
                 </div>
                 <div className="flex items-center gap-4">
                     <ThemeToggle />
                     <div className="flex items-center gap-3 bg-bg-cream/40 dark:bg-brown-dark/40 px-4 py-2 rounded-2xl border border-text-main/5 dark:border-white/5">
-                        <span className="text-[10px] text-text-main dark:text-tan-primary font-black uppercase tracking-[0.2em]">
+                        <span className="text-[10px] text-text-main/80 dark:text-tan-primary font-black uppercase tracking-[0.2em]">
                             {session.user.role === 'admin' ? 'Administrator' : 'Author'}
                         </span>
                         <span className="w-1 h-1 rounded-full bg-text-main/20 dark:bg-white/20"></span>
-                        <span className="text-[10px] text-text-main/60 dark:text-tan-light font-bold uppercase tracking-widest">
+                        <span className="text-[10px] text-text-main/50 dark:text-tan-light/80 font-bold uppercase tracking-widest">
                             {session.user.name}
                         </span>
                     </div>
@@ -201,7 +202,7 @@ export default async function AdminDashboardPage() {
                     <div className="lg:col-span-8 space-y-12">
                         <section>
                             <div className="flex justify-between items-center mb-10">
-                                <h2 className="text-3xl font-black text-text-main dark:text-text-accent italic tracking-tight uppercase">Cerita Anda</h2>
+                                <h2 className="text-3xl font-black text-text-main/80 dark:text-text-accent/90 italic tracking-tight uppercase">Cerita Anda</h2>
                                 <Link href="/admin/editor/karya" prefetch={false} className="bg-text-main dark:bg-brown-mid text-bg-cream px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group border border-white/5">
                                     <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Karya Baru
                                 </Link>
@@ -217,25 +218,24 @@ export default async function AdminDashboardPage() {
                                 ) : (
                                     <>
                                         {daftarKarya.map((item) => (
-                                            <div key={item.id} className="bg-bg-cream/40 dark:bg-brown-dark/40 rounded-[2.5rem] p-5 border border-text-main/5 dark:border-white/5 flex gap-4 items-center group/card transition-all hover:bg-bg-cream/60 dark:hover:bg-brown-dark/60">
+                                            <div key={item.id} className="bg-bg-cream/40 dark:bg-brown-dark/40 rounded-[2.5rem] p-5 border border-text-main/5 dark:border-white/5 flex gap-4 items-center group/card transition-all hover:bg-bg-cream/60 dark:hover:bg-brown-dark/60 relative overflow-hidden">
+                                                {/* Stretched Link for Card Clickability */}
+                                                <Link href={`/novel/${item.id}`} target="_blank" className="absolute inset-0 z-10" aria-label={`View ${item.title}`} />
                                                 {/* Cover Thumbnail */}
-                                                <Link href={`/novel/${item.id}`} target="_blank" className="w-20 h-28 rounded-[1.2rem] overflow-hidden shrink-0 shadow-lg border-2 border-white/50 dark:border-white/10 relative block group/cover">
+                                                <div className="w-20 h-28 rounded-[1.2rem] overflow-hidden shrink-0 shadow-lg border-2 border-white/50 dark:border-white/10 relative block group/cover z-20 pointer-events-none">
                                                     {item.cover_url ? (
                                                         <Image src={item.cover_url} width={80} height={112} alt={item.title} className="w-full h-full object-cover group-hover/cover:scale-110 transition-transform duration-1000" />
                                                     ) : (
                                                         <div className="w-full h-full bg-tan-primary/20 flex items-center justify-center p-3 text-center text-[8px] text-text-main/30 dark:text-white/30 font-black uppercase leading-tight">{item.title}</div>
                                                     )}
-                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/cover:opacity-100 transition-opacity flex items-center justify-center">
-                                                        <Eye className="w-6 h-6 text-white" />
-                                                    </div>
-                                                </Link>
+                                                </div>
 
                                                 {/* Karya Details */}
                                                 <div className="flex-1 py-1 min-w-0">
-                                                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                                                        <Link href={`/novel/${item.id}`} target="_blank" className="hover:underline decoration-tan-primary decoration-2 underline-offset-4">
-                                                            <h3 className="text-sm font-black text-text-main dark:text-text-accent italic leading-tight uppercase tracking-tight truncate">{item.title}</h3>
-                                                        </Link>
+                                                    <div className="flex flex-wrap items-center gap-2 mb-2 relative z-20">
+                                                        <div className="group/title">
+                                                            <h3 className="text-sm font-black text-text-main dark:text-text-accent italic leading-tight uppercase tracking-tight truncate group-hover/title:underline decoration-tan-primary decoration-2 underline-offset-4">{item.title}</h3>
+                                                        </div>
                                                         {item.is_completed && (
                                                             <span className="bg-brown-dark/90 dark:bg-brown-mid text-text-accent text-[6px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">TAMAT</span>
                                                         )}
@@ -267,14 +267,14 @@ export default async function AdminDashboardPage() {
                                                         ))}
                                                     </div>
 
-                                                        <div className="flex items-center justify-between gap-4 mt-2">
+                                                        <div className="flex items-center justify-between gap-4 mt-2 relative z-20">
                                                             <div className="flex items-center gap-2 flex-1">
                                                                 <Link href={`/admin/editor/karya/${item.id}`} prefetch={false} className="bg-text-main dark:bg-brown-mid dark:text-text-accent text-bg-cream px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-brown-mid dark:hover:bg-tan-primary transition-all active:scale-95 group/btn flex-1 text-center">
                                                                     Edit
                                                                 </Link>
-                                                                <Link href={`/novel/${item.id}`} target="_blank" className="bg-tan-primary/20 text-tan-primary px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-tan-primary hover:text-white transition-all active:scale-95 flex-1 text-center">
+                                                                <div className="bg-tan-primary/20 text-tan-primary px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest group-hover/card:bg-tan-primary group-hover/card:text-white transition-all flex-1 text-center select-none">
                                                                     Lihat
-                                                                </Link>
+                                                                </div>
                                                                 <Link href={`/admin/stats/engagement`} prefetch={false} className="bg-text-main/5 dark:bg-white/10 text-text-main dark:text-text-accent p-2.5 rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95 group/stats border border-text-main/5 dark:border-white/10" title="View Analysis">
                                                                     <BarChart3 className="w-3.5 h-3.5 text-current" />
                                                                 </Link>
@@ -303,8 +303,8 @@ export default async function AdminDashboardPage() {
                     <div className="lg:col-span-4 space-y-12">
                         {/* Recent Comments Section */}
                         <section className="bg-bg-cream/40 dark:bg-brown-dark/40 rounded-[3rem] p-8 border border-text-main/5 dark:border-white/5">
-                            <h2 className="text-2xl font-black text-text-main dark:text-text-accent mb-8 flex items-center gap-4 italic tracking-tight uppercase">
-                                <MessageSquare className="w-6 h-6 text-text-main dark:text-tan-primary" /> Komunitas
+                            <h2 className="text-2xl font-black text-text-main/80 dark:text-text-accent/90 mb-8 flex items-center gap-4 italic tracking-tight uppercase">
+                                <MessageSquare className="w-6 h-6 text-text-main/40 dark:text-tan-primary" /> Komunitas
                             </h2>
 
                             {latestComments.length === 0 ? (
@@ -328,8 +328,8 @@ export default async function AdminDashboardPage() {
                                             <div className="bg-text-main/5 dark:bg-white/5 p-5 rounded-[2rem] border border-transparent transition-all mb-3">
                                                 <p className="text-[13px] text-text-main/80 dark:text-text-accent leading-relaxed italic font-medium">"{c.content}"</p>
                                             </div>
-                                            <Link href={`/admin/editor/karya/${c.bab.karya.id}`} prefetch={false} className="text-[9px] text-text-main/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-text-main dark:hover:text-bg-cream flex items-center gap-2 ml-2 transition-all">
-                                                <BookOpen className="w-3 h-3" strokeWidth={3} /> {c.bab.karya.title}
+                                            <Link href={`/novel/${c.bab.karya.id}/${c.bab.chapter_no}#comment-${c.id}`} prefetch={false} className="text-[9px] text-text-main/60 dark:text-tan-primary font-black uppercase tracking-[0.2em] hover:text-text-main dark:hover:text-bg-cream flex items-center gap-2 ml-2 transition-all">
+                                                <BookOpen className="w-3 h-3" strokeWidth={3} /> {c.bab.karya.title} <span className="text-text-main/20 dark:text-white/20">—</span> <span className="underline">Bab {c.bab.chapter_no}</span>
                                             </Link>
                                         </div>
                                     ))}

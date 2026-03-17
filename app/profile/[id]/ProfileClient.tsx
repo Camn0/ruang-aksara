@@ -414,7 +414,7 @@ export default function ProfileClient({
                                 <div className="space-y-6">
                                     {comments.map(comment => (
                                         <div key={comment.id} className="group flex flex-col gap-3">
-                                            <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}`} prefetch={false} className="text-[9px] font-black text-tan-primary/60 uppercase tracking-widest hover:text-brown-dark transition-all flex items-center gap-2 px-4 italic">
+                                            <Link href={`/novel/${comment.bab.karya.id}/${comment.bab.chapter_no}#comment-${comment.id}`} prefetch={false} className="text-[9px] font-black text-tan-primary/60 uppercase tracking-widest hover:text-brown-dark transition-all flex items-center gap-2 px-4 italic">
                                                 <BookOpen className="w-3 h-3 opacity-30" />
                                                 {comment.bab.karya.title} <span className="text-tan-primary/20">—</span> <span className="text-text-main dark:text-white group-hover:underline">Bab {comment.bab.chapter_no}</span>
                                             </Link>

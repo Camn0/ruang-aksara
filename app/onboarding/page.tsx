@@ -47,7 +47,7 @@ function DesktopIntroAnimation({
                     }`}
             >
                 <div className="relative flex items-center justify-center w-[220px] h-[220px]">
-                    <div className="absolute w-[140px] h-[140px] rounded-full bg-[#8a6342] shadow-2xl" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px] rounded-full bg-[#8a6342] shadow-2xl" />
                     <Image
                         src="/logoRuangAksara.webp"
                         alt="Ruang Aksara"
@@ -133,11 +133,11 @@ function DesktopIntroAnimation({
                     </div>
 
                     <div className="text-center space-y-0 mb-10">
-                        <h2 className="text-xl lg:text-3xl font-medium text-text-main font-open-sans">
+                        <h2 className="text-xl lg:text-3xl font-bold text-brown-dark font-open-sans">
                             Selamat Datang <br />
                             di
                         </h2>
-                        <h1 className="text-4xl lg:text-6xl font-black text-text-main font-lobster">
+                        <h1 className="text-4xl lg:text-7xl font-black text-brown-dark font-lobster italic">
                             Ruang Aksara
                         </h1>
                     </div>
@@ -207,10 +207,9 @@ export default function OnboardingPage() {
 
                             {/* Mobile content */}
                             <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center">
-                                {/* logo container circle - Adjusted for better centering */}
-                                <div className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 h-44 w-44 rounded-full bg-[#8a6342] -z-10" />
-
-                                <div className="relative mb-8">
+                                {/* logo container circle - Unified for better centering */}
+                                <div className="relative mb-8 flex items-center justify-center w-44 h-44">
+                                    <div className="absolute inset-0 rounded-full bg-[#8a6342] -z-10" />
                                     <Image
                                         src="/logoRuangAksara.webp"
                                         alt="Ruang Aksara"
@@ -223,11 +222,11 @@ export default function OnboardingPage() {
 
                                 {/* Text */}
                                 <div className="mb-8 space-y-1">
-                                    <h2 className="text-3xl font-medium text-text-main font-open-sans">
+                                    <h2 className="text-3xl font-bold text-brown-dark font-open-sans">
                                         Selamat Datang <br />
                                         di
                                     </h2>
-                                    <h1 className="text-5xl font-black text-text-main font-lobster">
+                                    <h1 className="text-5xl font-black text-brown-dark font-lobster italic">
                                         Ruang Aksara
                                     </h1>
                                 </div>
@@ -272,11 +271,11 @@ export default function OnboardingPage() {
 
                                 {/* Text */}
                                 <div className="text-center space-y-0 mb-10">
-                                    <h2 className="text-xl lg:text-3xl font-medium text-text-main font-open-sans">
+                                    <h2 className="text-xl lg:text-3xl font-bold text-brown-dark font-open-sans">
                                         Selamat Datang <br />
                                         di
                                     </h2>
-                                    <h1 className="text-4xl lg:text-6xl font-black text-text-main font-lobster">
+                                    <h1 className="text-4xl lg:text-7xl font-black text-brown-dark font-lobster italic">
                                         Ruang Aksara
                                     </h1>
                                 </div>
@@ -370,12 +369,12 @@ export default function OnboardingPage() {
                             <div className="space-y-6 w-full z-10">
                                 <button
                                     onClick={() => router.push("/auth/login?type=admin")}
-                                    className="w-full py-6 rounded-[2rem] border-4 border-solid border-[#3b2a22] bg-[#EFE5D6] flex flex-col items-center justify-center transition-all hover:scale-[1.03] active:scale-95 shadow-lg group hover:bg-[#3b2a22]"
+                                    className="w-full py-6 rounded-[2rem] border-4 border-solid border-[#3b2a22] bg-[#EFE5D6] flex flex-col items-center justify-center transition-all hover:scale-[1.03] active:scale-95 shadow-lg group hover:bg-[#F7F0E4]"
                                 >
-                                    <span className="text-2xl md:text-3xl text-[#3b2a22] font-semibold font-open-sans group-hover:text-bg-cream transition-colors">
+                                    <span className="text-2xl md:text-3xl text-[#3b2a22] font-semibold font-open-sans transition-colors">
                                         Mulai Menulis
                                     </span>
-                                    <span className="text-xs uppercase tracking-widest text-[#3b2a22]/60 font-bold group-hover:text-bg-cream/60">Sebagai Penulis</span>
+                                    <span className="text-xs uppercase tracking-widest text-[#3b2a22]/60 font-bold">Sebagai Penulis</span>
                                 </button>
 
                                 <button
