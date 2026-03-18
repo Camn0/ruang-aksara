@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart, Eye, Users, Check } from "lucide-react";
+import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart, Eye, Users, Check, Sparkles, MessageSquare } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import { unstable_cache } from "next/cache";
@@ -156,6 +156,41 @@ const getCachedNewWorksFromFollowed = (userId: string) => unstable_cache(
     { revalidate: 3600, tags: [`following-${userId}`] }
 )();
 
+const getCachedAuthorPosts = (userId: string) => unstable_cache(
+    async () => {
+        const following = await prisma.follow.findMany({
+            where: { follower_id: userId },
+            select: { following_id: true }
+        });
+        
+        const followingIds = following.map(f => f.following_id);
+        if (followingIds.length === 0) return [];
+        
+        return (prisma as any).authorPost.findMany({
+            where: { author_id: { in: followingIds } },
+            orderBy: { created_at: 'desc' },
+            select: {
+                id: true,
+                content: true,
+                image_url: true,
+                created_at: true,
+                author: {
+                    select: {
+                        id: true,
+                        username: true,
+                        display_name: true,
+                        avatar_url: true
+                    }
+                },
+                _count: { select: { likes: true, comments: true } }
+            },
+            take: 5
+        });
+    },
+    [`dashboard-author-posts-${userId}`],
+    { revalidate: 300, tags: [`following-${userId}`] }
+)();
+
 const getCachedFollowedAuthors = (userId: string) => unstable_cache(
     async () => {
         return prisma.follow.findMany({
@@ -198,17 +233,19 @@ export default async function UserDashboardPage() {
     const session = await getServerSession(authOptions);
     if (!session) redirect('/onboarding');
 
-    const [bookmarksRaw, trendingRaw, stats, followedAuthorsRaw, newWorksFollowedRaw] = await Promise.all([
+    const [bookmarksRaw, trendingRaw, stats, followedAuthorsRaw, newWorksFollowedRaw, authorPostsRaw] = await Promise.all([
         getCachedUserBookmarks(session.user.id),
         getCachedTrending(session.user.id),
         getCachedUserStats(session.user.id),
         getCachedFollowedAuthors(session.user.id),
-        getCachedNewWorksFromFollowed(session.user.id)
+        getCachedNewWorksFromFollowed(session.user.id),
+        getCachedAuthorPosts(session.user.id)
     ]);
 
     const bookmarks = bookmarksRaw as any[];
     const trending = (trendingRaw as any[]).slice(0, 8);
     const newWorksFollowed = newWorksFollowedRaw as any[];
+    const authorPosts = authorPostsRaw as any[];
 
     // Fetch chapter titles for ALL bookmarks
     const lookupKeys = bookmarks.map(b => `${b.karya.id}:${b.last_chapter}`);
@@ -407,6 +444,55 @@ export default async function UserDashboardPage() {
                                         </div>
                                     </div>
                                     <h3 className="text-sm font-black text-text-main dark:text-text-accent line-clamp-1 group-hover:text-tan-primary transition-colors">{f.title}</h3>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* AUTHOR POSTS: Catatan Penulis */}
+                {authorPosts.length > 0 && (
+                    <section>
+                        <div className="flex items-center justify-between mb-5">
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 bg-tan-light/50 dark:bg-brown-mid/40 rounded-xl"><Sparkles className="w-5 h-5 text-brown-dark dark:text-text-accent" /></div>
+                                <h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent">Catatan Penulis</h2>
+                            </div>
+                        </div>
+                        <div className="flex gap-5 overflow-x-auto pb-6 hide-scrollbar scrollbar-hide">
+                            {authorPosts.map((post: any) => (
+                                <Link key={post.id} href={`/profile/${post.author.username}`} prefetch={false} className="shrink-0 w-72 flex flex-col gap-3 group">
+                                    <div className="bg-bg-cream/40 dark:bg-brown-dark/40 rounded-[2rem] p-5 border border-tan-light/20 dark:border-brown-mid shadow-lg group-active:scale-[0.98] transition-all relative overflow-hidden backdrop-blur-sm h-full flex flex-col">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-8 h-8 rounded-xl overflow-hidden border border-tan-light/50 dark:border-brown-mid shrink-0">
+                                                {post.author.avatar_url ? (
+                                                    <Image src={post.author.avatar_url} width={32} height={32} className="w-full h-full object-cover" alt="" />
+                                                ) : (
+                                                    <div className="w-full h-full bg-tan-light/10 flex items-center justify-center"><UserCircle2 className="w-4 h-4 text-tan-primary" /></div>
+                                                )}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[10px] font-black text-text-main dark:text-text-accent uppercase tracking-tight truncate">{post.author.display_name}</p>
+                                                <p className="text-[8px] text-tan-primary font-bold uppercase tracking-widest">
+                                                    {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: localeID })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-[12px] text-text-main/80 dark:text-text-accent/80 line-clamp-3 italic font-medium leading-relaxed mb-4">
+                                                "{post.content}"
+                                            </p>
+                                            {post.image_url && (
+                                                <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-tan-light/20 dark:border-brown-mid/40 mb-3">
+                                                    <Image src={post.image_url} fill className="object-cover group-hover:scale-105 transition-transform duration-500" alt="" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-4 pt-3 border-t border-tan-light/20 dark:border-brown-mid/40 mt-auto">
+                                            <div className="flex items-center gap-1.5 text-tan-primary"><Heart className="w-3 h-3" /><span className="text-[9px] font-black">{post._count.likes}</span></div>
+                                            <div className="flex items-center gap-1.5 text-brown-mid/40 dark:text-text-accent/40"><MessageSquare className="w-3 h-3" /><span className="text-[9px] font-black">{post._count.comments}</span></div>
+                                        </div>
+                                    </div>
                                 </Link>
                             ))}
                         </div>

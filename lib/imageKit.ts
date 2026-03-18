@@ -25,8 +25,13 @@ export async function uploadToImageKit(file: string | Buffer, fileName: string, 
             useUniqueFileName: true,
         });
         return response.url;
-    } catch (error) {
-        console.error("ImageKit upload error:", error);
-        throw new Error("Failed to upload image to CDN.");
+    } catch (error: any) {
+        console.error("ImageKit upload error details:", {
+            message: error.message,
+            stack: error.stack,
+            fileName: fileName,
+            folder: folder
+        });
+        throw new Error(`Failed to upload image to CDN: ${error.message || 'Unknown error'}`);
     }
 }

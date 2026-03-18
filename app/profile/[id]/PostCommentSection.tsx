@@ -2,7 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { submitPostComment, deletePostComment } from '@/app/actions/post';
-import { Send, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { Send, ChevronDown, ChevronUp, Trash2, UserCircle2 } from 'lucide-react';
+import Image from 'next/image';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -14,6 +15,7 @@ interface Comment {
     user: {
         username: string;
         display_name: string;
+        avatar_url: string | null;
     };
 }
 
@@ -84,8 +86,12 @@ export default function PostCommentSection({ postId, initialComments, commentCou
                 <div className="space-y-2 mb-3">
                     {initialComments.map((c) => (
                         <div key={c.id} className="flex gap-4 items-start group bg-brown-dark/[0.02] dark:bg-brown-dark/20 p-3 rounded-2xl border border-tan-primary/10 dark:border-brown-mid/20">
-                            <div className="w-8 h-8 rounded-xl bg-tan-light/10 dark:bg-brown-mid/30 flex items-center justify-center text-[10px] font-black text-tan-primary shrink-0 border border-tan-primary/10 shadow-sm">
-                                {c.user?.display_name?.substring(0, 2).toUpperCase()}
+                            <div className="w-8 h-8 rounded-xl overflow-hidden bg-tan-light/10 dark:bg-brown-mid/30 flex items-center justify-center shrink-0 border border-tan-primary/10 shadow-sm relative">
+                                {c.user?.avatar_url ? (
+                                    <Image src={c.user.avatar_url} width={32} height={32} className="w-full h-full object-cover" alt="" />
+                                ) : (
+                                    <UserCircle2 className="w-4 h-4 text-tan-primary" />
+                                )}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-[13px] leading-relaxed">
