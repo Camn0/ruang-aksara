@@ -128,9 +128,14 @@ export default async function AdminDashboardPage() {
         <div className="min-h-screen bg-bg-cream/60 dark:bg-brown-dark transition-colors duration-500 pb-24">
             {/* Header Dashboard */}
             <div className="px-6 pt-12 mb-10 flex flex-col sm:flex-row justify-between items-end gap-4 max-w-6xl mx-auto">
-                <div>
-                    <h1 className="text-4xl font-black text-text-main/80 dark:text-text-accent tracking-tight leading-none uppercase italic">Dashboard</h1>
-                    <div className="w-12 h-1 bg-text-main/10 dark:bg-white/10 mt-4"></div>
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-brown-dark dark:bg-tan-primary rounded-2xl flex items-center justify-center shadow-lg shadow-brown-dark/20 shrink-0">
+                        <PenTool className="w-6 h-6 text-text-accent dark:text-brown-dark" />
+                    </div>
+                    <div>
+                        <h1 className="text-4xl font-black text-text-main/80 dark:text-text-accent tracking-tight leading-none uppercase italic">Studio Penulis</h1>
+                        <div className="w-12 h-1 bg-text-main/10 dark:bg-white/10 mt-2"></div>
+                    </div>
                 </div>
                 <div className="flex items-center gap-4">
                     <ThemeToggle />

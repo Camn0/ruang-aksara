@@ -109,7 +109,7 @@ export default function CreatePostForm({ userProfile }: { userProfile: any }) {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     onFocus={() => setIsFocused(true)}
-                    placeholder="Bagikan pembaruan ke penggemarmu..."
+                    placeholder="Bagikan pembaruan, kutipan, atau pemikiran terbaru ke pembacamu..."
                     className="w-full bg-transparent text-[15px] text-text-accent border-none outline-none focus:ring-0 min-h-12 resize-none font-medium italic leading-relaxed placeholder:text-white/40"
                     rows={isFocused || content ? 4 : 1}
                     required

@@ -163,7 +163,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             
                             {/* Area Cover */}
                             <div className="flex flex-col gap-4">
-                                <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sampul</label>
+                                <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Sampul (Opsional)</label>
                                 <div className="w-[183px] h-[239px] bg-white/40 dark:bg-brown-dark/40 border-2 border-dashed border-tan-primary/20 rounded-[24.75px] flex items-center justify-center relative hover:bg-tan-primary/5 transition-colors overflow-hidden group">
                                     
                                     {/* Input File (TIDAK ADA NAME agar tidak tabrakan dengan hidden input) */}
@@ -198,7 +198,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             {/* Area Input */}
                             <div className="flex-1 flex flex-col gap-10">
                                 <div className="flex flex-col gap-3">
-                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Judul Karya</label>
+                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Judul Karya (Wajib)</label>
                                     <input
                                         name="title"
                                         type="text"
@@ -209,7 +209,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                 </div>
 
                                 <div className="flex flex-col gap-3">
-                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Alias Penulis</label>
+                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Alias Penulis (Wajib)</label>
                                     <input
                                         name="penulis_alias"
                                         type="text"
@@ -220,7 +220,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                 </div>
 
                                 <div className="flex flex-col gap-3">
-                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Aliran Cerita (Genre)</label>
+                                    <label className="font-black text-brown-dark dark:text-text-accent text-xl sm:text-[25.7px] italic uppercase tracking-tighter">Aliran Cerita (Genre) - Pilih Minimal 1</label>
                                     {genres.length === 0 ? (
                                         <p className="text-brown-dark/40 italic font-bold">Belum ada genre yang tersedia.</p>
                                     ) : (
@@ -274,7 +274,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                 type="text"
                                 name="bab_title"
                                 required
-                                placeholder="Masukkan Judul Bab Pertama..."
+                                placeholder="Masukkan Judul Bab Pertama (Wajib)..."
                                 className="w-full h-full bg-transparent px-10 font-bold italic text-brown-dark dark:text-text-accent text-2xl sm:text-3xl placeholder-brown-dark/20 dark:placeholder-tan-light/20 outline-none"
                             />
                         </div>
@@ -283,7 +283,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             <textarea
                                 name="bab_content"
                                 required
-                                placeholder="Mulailah menggoreskan imajinasimu di sini..."
+                                placeholder="Mulailah menggoreskan imajinasimu di sini (Wajib)..."
                                 className="w-full h-full bg-transparent px-10 pt-8 font-medium italic text-brown-dark dark:text-tan-light text-xl sm:text-[22px] placeholder-brown-dark/20 dark:placeholder-tan-light/20 outline-none resize-none leading-relaxed"
                             />
                         </div>

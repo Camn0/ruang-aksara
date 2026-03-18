@@ -59,7 +59,7 @@ export default function SearchBar({ initialQ, filter, genreId }: { initialQ: str
                     type="text"
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
-                    placeholder="Cari karya..."
+                    placeholder="Cari judul karya atau nama author..."
                     className="w-full bg-tan-primary text-text-accent placeholder:text-text-accent/60 rounded-full py-3.5 pl-12 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-brown-mid transition-all shadow-md font-black italic uppercase tracking-tighter"
                 />
                 

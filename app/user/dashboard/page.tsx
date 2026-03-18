@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart, Eye, Users, Check, Sparkles, MessageSquare } from "lucide-react";
+import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart, Eye, Users, Check, Sparkles, MessageSquare, Library } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import { unstable_cache } from "next/cache";
@@ -267,8 +267,8 @@ export default async function UserDashboardPage() {
                         <Image src="/icon.png" alt="Ruang Aksara" width={40} height={40} className="w-full h-full object-cover" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-open-sans font-bold text-text-main dark:text-text-accent leading-none tracking-tight">Ruang Aksara</h1>
-                        <p className="text-[9px] text-tan-primary font-bold uppercase tracking-widest mt-1">Dashboard Pembaca</p>
+                        <h1 className="text-xl font-open-sans font-black text-text-main dark:text-text-accent leading-none tracking-tight italic uppercase">Beranda Pembaca</h1>
+                        <p className="text-[9px] text-tan-primary font-bold uppercase tracking-widest mt-1">Jelajahi Mahakarya</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">

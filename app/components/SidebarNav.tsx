@@ -33,12 +33,12 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
                     className="flex items-center gap-3 px-6 py-4 rounded-[2rem] text-text-main/60 dark:text-bg-cream/60 bg-tan-primary/10 hover:bg-tan-primary/20 transition-all group border border-text-main/5 dark:border-white/5"
                 >
                     <ArrowLeft className="w-4 h-4 opacity-50 group-hover:opacity-100 group-hover:-translate-x-1 transition-all" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.2em] italic">Ke Beranda</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] italic">Ke Beranda Pembaca</span>
                 </Link>
             </div>
 
             <div className="space-y-3 pb-8">
-                <p className="text-[9px] font-black text-text-main/30 dark:text-bg-cream/30 uppercase tracking-[0.3em] mb-4 pl-6">Studio Menu</p>
+                <p className="text-[9px] font-black text-text-main/30 dark:text-bg-cream/30 uppercase tracking-[0.3em] mb-4 pl-6">Menu Studio Penulis</p>
                 {navigation.map((item) => {
                 const active = pathname === item.href;
                 return (
