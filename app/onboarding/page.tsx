@@ -150,7 +150,7 @@ function DesktopIntroAnimation({
                     </div>
 
                     <button onClick={onFinish} className="bg-brown-dark text-text-accent px-12 py-3 rounded-full text-xl font-black shadow-xl shadow-brown-dark/20 hover:scale-105 hover:bg-tan-primary transition-all active:scale-95">
-                        mulai eksplorasi
+                        Mulai Eksplorasi
                     </button>
                 </div>
             </div>
@@ -348,7 +348,7 @@ export default function OnboardingPage() {
                                     onClick={handleNext}
                                     className="bg-brown-dark text-text-accent px-12 py-3 rounded-full text-xl md:text-2xl font-black hover:bg-tan-primary hover:scale-[1.05] active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                 >
-                                    selanjutnya
+                                    Selanjutnya
                                 </button>
                             </div>
                         </div>
@@ -395,7 +395,7 @@ export default function OnboardingPage() {
                                 <button onClick={() => setStep(3)} className={`w-4 h-4 rounded-full transition-all ${step === 3 ? "bg-tan-primary" : "border-2 border-tan-primary hover:bg-tan-primary/20"}`}></button>
                             </div>
 
-                            <div className="absolute w-full -bottom-24 left-1/2 -translate-x-1/2 z-0 opacity-20 pointer-events-none">
+                            <div className="lg:hidden absolute w-full -bottom-24 left-1/2 -translate-x-1/2 z-0 opacity-20 pointer-events-none">
                                 <Image
                                     src="/book2.webp"
                                     alt="Pattern Background"
