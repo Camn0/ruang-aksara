@@ -16,6 +16,7 @@
  */
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { toggleReviewUpvote, submitReviewComment } from '@/app/actions/review';
 import { ThumbsUp, MessageSquare, Send } from 'lucide-react';
 import { toast } from 'sonner';
@@ -29,6 +30,7 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
     const [replyPending, setReplyPending] = useState(false);
     const [localReplyCount, setLocalReplyCount] = useState(replyCount);
     const [replySuccess, setReplySuccess] = useState('');
+    const router = useRouter();
 
     // Ref digunakan untuk mereset form HTML secara imperatif setelah sukses
     const formRef = useRef<HTMLFormElement>(null);
@@ -84,6 +86,7 @@ export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpv
                 setReplySuccess('Balasan dikirim!');
                 setLocalReplyCount(prev => prev + 1);
                 formRef.current?.reset(); // Kosongkan input
+                router.refresh(); // Refresh server data agar komentar baru muncul di list
 
                 // Tutup form secara otomatis setelah jeda singkat
                 setTimeout(() => {

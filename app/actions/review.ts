@@ -102,18 +102,23 @@ export async function submitReviewComment(formData: FormData) {
         }
 
         // [D] Mutasi Database — simpan komentar review baru
-        await (prisma as any).reviewComment.create({
+        const newComment = await (prisma as any).reviewComment.create({
             data: {
                 user_id: session.user.id,
                 review_id,
                 content: content.trim()
+            },
+            select: {
+                review: { select: { karya_id: true } }
             }
         });
 
         // [E] Revalidate cache halaman novel detail
-        // Mengapa '/novel/[karyaId]': komentar review ditampilkan di halaman detail novel.
+        // Menggunakan karya_id spesifik agar path revalidation akurat
+        const karyaId = newComment.review.karya_id;
+        revalidateTag(`karya-${karyaId}`);
         revalidateTag(`user-reviews-${session.user.id}`);
-        revalidatePath('/novel/[karyaId]');
+        revalidatePath(`/novel/${karyaId}`);
         return { success: true };
     } catch (e) {
         console.error("[submitReviewComment] Error:", e);
