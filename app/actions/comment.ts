@@ -90,3 +90,84 @@ export async function deleteComment(commentId: string) {
         return { error: "Gagal menghapus komentar." };
     }
 }
+
+/**
+ * Server Action: Mengambil potongan komentar berikutnya untuk sebuah bab.
+ * @param babId - ID bab.
+ * @param skip - Jumlah record yang dilewati (offset untuk root comments).
+ * @param take - Jumlah record yang diambil (chunk size).
+ */
+export async function getMoreChapterComments(babId: string, skip: number, take: number = 10) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        // Ambil root comments saja (karena pagination biasanya di level ini)
+        const rootComments = await (prisma as any).comment.findMany({
+            where: { 
+                bab_id: babId,
+                parent_id: null 
+            },
+            select: {
+                id: true,
+                content: true,
+                created_at: true,
+                parent_id: true,
+                is_pinned: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        display_name: true,
+                        avatar_url: true
+                    }
+                },
+                _count: { select: { votes: true } },
+                votes: session?.user?.id ? { 
+                    where: { user_id: session.user.id },
+                    select: { type: true }
+                } : false,
+            },
+            orderBy: { created_at: 'asc' },
+            skip,
+            take
+        });
+
+        // Resolve replies for these root comments
+        const commentsWithReplies = await Promise.all(rootComments.map(async (c: any) => {
+            const replies = await (prisma as any).comment.findMany({
+                where: { parent_id: c.id },
+                select: {
+                    id: true,
+                    content: true,
+                    created_at: true,
+                    parent_id: true,
+                    user: {
+                        select: { id: true, username: true, display_name: true, avatar_url: true }
+                    },
+                    _count: { select: { votes: true } },
+                    votes: session?.user?.id ? { 
+                        where: { user_id: session.user.id },
+                        select: { type: true }
+                    } : false,
+                },
+                orderBy: { created_at: 'asc' }
+            });
+
+            return {
+                ...c,
+                score: c._count?.votes || 0,
+                userVote: c.votes?.[0]?.type || 0,
+                replies: replies.map((r: any) => ({
+                    ...r,
+                    score: r._count?.votes || 0,
+                    userVote: r.votes?.[0]?.type || 0
+                }))
+            };
+        }));
+
+        return { success: true, data: commentsWithReplies };
+    } catch (e) {
+        console.error("[getMoreChapterComments] Error:", e);
+        return { error: "Gagal memuat lebih banyak komentar." };
+    }
+}

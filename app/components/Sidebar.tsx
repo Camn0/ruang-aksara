@@ -78,7 +78,7 @@ export default function Sidebar() {
                             href={item.href}
                             prefetch={false}
                             title={!isExpanded ? item.name : ''}
-                            className={`flex items-center gap-4 transition-all duration-300 rounded-xl p-1.5 ${isExpanded ? 'justify-end pr-4' : 'justify-center'} ${isActive(item.href) ? 'text-text-main font-bold' : 'text-text-accent hover:text-white'}`}
+                            className={`flex items-center gap-4 transition-all duration-300 rounded-xl p-1.5 ${isExpanded ? 'justify-end pr-4' : 'justify-center'} ${isActive(item.href) ? 'text-text-main dark:text-text-accent font-bold' : 'text-text-accent hover:text-white'}`}
                         >
                             {isExpanded && <span className="font-open-sans text-xs whitespace-nowrap animate-in fade-in slide-in-from-right-2">{item.name}</span>}
                             <item.icon className={`shrink-0 transition-all duration-300 ${isExpanded ? 'w-4 h-4' : 'w-6 h-6'} ${isActive(item.href) ? 'text-text-accent scale-110' : 'text-text-accent'}`} />
@@ -91,11 +91,11 @@ export default function Sidebar() {
                             <Link
                                 href="/admin/dashboard"
                                 prefetch={false}
-                                className={`flex items-center gap-2 bg-brown-dark/95 text-white rounded-full hover:bg-brown-dark transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
+                                className={`flex items-center gap-2 bg-brown-dark/95 dark:bg-tan-primary text-white dark:text-brown-dark rounded-full hover:bg-brown-dark dark:hover:bg-tan-light transition-all shadow-lg group ${isExpanded ? 'p-1' : 'p-1 justify-center'}`}
                                 title={!isExpanded ? 'Studio Penulis' : ''}
                             >
-                                <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
-                                    <PenTool className="w-5 h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
+                                <div className={`bg-brown-mid dark:bg-brown-dark rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
+                                    <PenTool className="w-5 h-5 md:w-6 md:h-6 text-white dark:text-tan-primary" strokeWidth={2.5} />
                                 </div>
                                 {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Studio Penulis</span>}
                             </Link>

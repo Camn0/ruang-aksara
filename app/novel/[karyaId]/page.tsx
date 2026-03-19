@@ -221,7 +221,7 @@ async function ReviewsSection({ karyaId, sort, uploaderId, upvotedReviews }: { k
                     />
 
                     <ReviewCommentSection
-                        comments={review.comments}
+                        initialComments={review.comments}
                         karyaUploaderId={uploaderId}
                         currentUser={session?.user}
                         reviewId={review.id}

@@ -70,9 +70,9 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             <div className="grid grid-cols-3 gap-3">
                 <button
                     onClick={() => setShowStreakInfo(true)}
-                    className="bg-brown-dark rounded-3xl p-4 text-text-accent shadow-lg shadow-brown-dark/10 relative overflow-hidden group border border-white/5 text-center transition-all active:scale-[0.98] cursor-pointer"
+                    className="bg-brown-dark dark:bg-brown-mid/20 rounded-3xl p-4 text-text-accent shadow-lg shadow-brown-dark/10 relative overflow-hidden group border border-white/5 dark:border-brown-mid/30 text-center transition-all active:scale-[0.98] cursor-pointer"
                 >
-                    <Flame className="absolute -right-2 -bottom-2 w-16 h-16 opacity-10 group-hover:scale-110 transition-transform" />
+                    <Flame className="absolute -right-2 -bottom-2 w-16 h-16 opacity-10 group-hover:scale-110 transition-transform text-tan-primary" />
                     <p className="text-[8px] font-black uppercase tracking-widest opacity-60 mb-1">Streak</p>
                     <div className="flex items-baseline justify-center gap-0.5">
                         <span className="text-xl font-black">{stats.reading_streak}</span>
@@ -82,9 +82,9 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
 
                 <button
                     onClick={() => setShowPointsInfo(true)}
-                    className="bg-brown-mid rounded-3xl p-4 text-text-accent shadow-lg shadow-brown-mid/10 relative overflow-hidden group border border-white/5 text-center transition-all active:scale-[0.98] cursor-pointer"
+                    className="bg-brown-mid dark:bg-tan-primary/10 rounded-3xl p-4 text-text-accent dark:text-tan-primary shadow-lg shadow-brown-mid/10 relative overflow-hidden group border border-white/5 dark:border-tan-primary/20 text-center transition-all active:scale-[0.98] cursor-pointer"
                 >
-                    <Trophy className="absolute -right-2 -bottom-2 w-16 h-16 opacity-10 group-hover:scale-110 transition-transform" />
+                    <Trophy className="absolute -right-2 -bottom-2 w-16 h-16 opacity-10 group-hover:scale-110 transition-transform text-tan-primary" />
                     <p className="text-[8px] font-black uppercase tracking-widest opacity-60 mb-1">Poin</p>
                     <div className="flex items-baseline justify-center gap-0.5">
                         <span className="text-xl font-black">{stats.points}</span>
@@ -93,7 +93,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                 </button>
 
                 <div className="bg-bg-cream/40 dark:bg-brown-dark rounded-3xl p-4 text-text-main dark:text-text-accent shadow-lg shadow-tan-light/10 dark:shadow-none border border-tan-light/30 dark:border-brown-mid/50 text-center relative overflow-hidden">
-                    <BookOpen className="absolute -right-2 -bottom-2 w-16 h-16 opacity-5 pointer-events-none" />
+                    <BookOpen className="absolute -right-2 -bottom-2 w-16 h-16 opacity-5 dark:opacity-20 pointer-events-none text-tan-primary" />
                     <p className="text-[8px] font-black uppercase tracking-widest text-tan-primary opacity-60 mb-1">Total Baca</p>
                     <div className="flex items-baseline justify-center gap-0.5">
                         <span className="text-xl font-black">{stats.total_chapters_read}</span>

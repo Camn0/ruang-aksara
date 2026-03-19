@@ -11,30 +11,38 @@ interface CommentSectionWrapperProps {
 export default async function CommentSectionWrapper({ babId, authorId }: CommentSectionWrapperProps) {
     const session = await getServerSession(authOptions);
 
-    const allRawComments = await prisma.comment.findMany({
-        where: { bab_id: babId },
-        select: {
-            id: true,
-            content: true,
-            created_at: true,
-            parent_id: true,
-            is_pinned: true,
-            user: {
-                select: {
-                    id: true,
-                    username: true,
-                    display_name: true,
-                    avatar_url: true
-                }
+    let allRawComments: any[] = [];
+    let isError = false;
+
+    try {
+        allRawComments = await prisma.comment.findMany({
+            where: { bab_id: babId },
+            select: {
+                id: true,
+                content: true,
+                created_at: true,
+                parent_id: true,
+                is_pinned: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        display_name: true,
+                        avatar_url: true
+                    }
+                },
+                _count: { select: { votes: true } },
+                votes: session?.user?.id ? { 
+                    where: { user_id: session.user.id },
+                    select: { type: true }
+                } : false,
             },
-            _count: { select: { votes: true } },
-            votes: session?.user?.id ? { 
-                where: { user_id: session.user.id },
-                select: { type: true }
-            } : false,
-        },
-        orderBy: { created_at: 'asc' }
-    });
+            orderBy: { created_at: 'asc' }
+        });
+    } catch (error) {
+        console.error("[CommentSectionWrapper] Database error:", error);
+        isError = true;
+    }
 
     // Helper: Build recursive tree structure
     function buildCommentTree(flatComments: any[], parentId: string | null = null, limit: number = 0): any[] {
@@ -60,7 +68,7 @@ export default async function CommentSectionWrapper({ babId, authorId }: Comment
             });
     }
 
-    const comments = buildCommentTree(allRawComments, null, 50);
+    const comments = buildCommentTree(allRawComments, null, 10);
 
     return (
         <CommentSection
@@ -69,6 +77,7 @@ export default async function CommentSectionWrapper({ babId, authorId }: Comment
             currentUserId={session?.user?.id}
             currentUserRole={session?.user?.role}
             authorId={authorId}
+            isError={isError}
         />
     );
 }

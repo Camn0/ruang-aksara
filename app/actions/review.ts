@@ -205,3 +205,42 @@ export async function deleteReviewComment(commentId: string, path: string) {
         return { error: "Gagal menghapus komentar." };
     }
 }
+
+// ==============================================================================
+// 3. QUERY: AMBIL LEBIH BANYAK KOMENTAR REVIEW (PAGINATION)
+// ==============================================================================
+/**
+ * Server Action: Mengambil potongan komentar berikutnya untuk sebuah review.
+ * @param reviewId - ID review.
+ * @param skip - Jumlah record yang dilewati (offset).
+ * @param take - Jumlah record yang diambil (chunk size).
+ */
+export async function getMoreReviewComments(reviewId: string, skip: number, take: number = 10) {
+    try {
+        const comments = await (prisma as any).reviewComment.findMany({
+            where: { review_id: reviewId },
+            select: {
+                id: true,
+                content: true,
+                created_at: true,
+                user_id: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        display_name: true,
+                        avatar_url: true
+                    }
+                }
+            },
+            orderBy: { created_at: 'asc' },
+            skip,
+            take
+        });
+
+        return { success: true, data: comments };
+    } catch (e) {
+        console.error("[getMoreReviewComments] Error:", e);
+        return { error: "Gagal memuat lebih banyak komentar." };
+    }
+}

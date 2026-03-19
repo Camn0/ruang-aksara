@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, ChevronDown, Loader2 } from 'lucide-react';
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
-import { toggleCommentPin } from '@/app/actions/comment';
+import { toggleCommentPin, getMoreChapterComments } from '@/app/actions/comment';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -34,6 +34,7 @@ interface CommentSectionProps {
     currentUserId?: string;
     currentUserRole?: string;
     authorId?: string;
+    isError?: boolean;
 }
 
 export default function CommentSection({
@@ -41,17 +42,21 @@ export default function CommentSection({
     initialComments: data,
     currentUserId,
     currentUserRole,
-    authorId
+    authorId,
+    isError
 }: CommentSectionProps) {
     const router = useRouter();
     const pathname = usePathname();
     const [comments, setComments] = useState<Comment[]>(data);
     const [sortBy, setSortBy] = useState<'newest' | 'score'>('score');
     const [isPinning, setIsPinning] = useState<string | null>(null);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [hasMore, setHasMore] = useState(data.length === 10);
 
     // Sync local state when props change (from router.refresh)
     useEffect(() => {
         setComments(data);
+        setHasMore(data.length === 10);
     }, [data]);
 
     const handleUpdateComment = (id: string, updates: Partial<Comment>) => {
@@ -87,6 +92,23 @@ export default function CommentSection({
         } else {
             setComments(prev => [newComment, ...prev]);
         }
+    };
+
+    const handleLoadMore = async () => {
+        if (isLoadingMore) return;
+        setIsLoadingMore(true);
+
+        // Count root comments only for skip
+        const rootCommentCount = comments.filter(c => !c.parent_id).length;
+        const res = await getMoreChapterComments(babId, rootCommentCount, 10);
+
+        if (res.error) {
+            toast.error(res.error);
+        } else if (res.data) {
+            if (res.data.length < 10) setHasMore(false);
+            setComments(prev => [...prev, ...res.data]);
+        }
+        setIsLoadingMore(false);
     };
 
     // Sort: Pinned first, then by selection
@@ -147,7 +169,7 @@ export default function CommentSection({
             {/* Sort Filter */}
             {comments.length > 0 && (
                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{comments.length} Komentar</span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{comments.length}${hasMore ? '+' : ''} Komentar</span>
                     <div className="flex gap-2">
                         <button
                             onClick={() => setSortBy('score')}
@@ -167,7 +189,15 @@ export default function CommentSection({
 
             {/* Comments List */}
             <div className="space-y-2">
-                {sortedComments.length === 0 ? (
+                {isError ? (
+                    <div className="py-24 text-center bg-red-50/10 dark:bg-red-900/10 rounded-[3rem] border border-dashed border-red-500/20">
+                        <div className="w-20 h-20 bg-red-500/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <MessageCircle className="w-8 h-8 text-red-500/20" />
+                        </div>
+                        <p className="text-red-500/60 text-[10px] font-black uppercase tracking-[0.3em] italic">Gagal Memuat Suara (Masalah Koneksi)</p>
+                        <button onClick={() => window.location.reload()} className="mt-4 text-[9px] font-black text-tan-primary hover:underline uppercase tracking-widest">Coba Segarkan</button>
+                    </div>
+                ) : sortedComments.length === 0 ? (
                     <div className="py-24 text-center bg-bg-cream/40 dark:bg-brown-dark rounded-[3rem] border border-dashed border-tan-primary/20">
                         <div className="w-20 h-20 bg-tan-primary/5 dark:bg-brown-mid rounded-full flex items-center justify-center mx-auto mb-6">
                             <MessageCircle className="w-8 h-8 text-tan-primary/20" />
@@ -175,23 +205,47 @@ export default function CommentSection({
                         <p className="text-tan-primary/30 dark:text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] italic">Belum Ada Suara Terukir</p>
                     </div>
                 ) : (
-                    sortedComments.map((comment, index) => (
-                        <CommentItem
-                            key={comment.id}
-                            comment={comment}
-                            babId={babId}
-                            currentUserId={currentUserId}
-                            currentUserRole={currentUserRole}
-                            authorId={authorId}
-                            handleTogglePin={handleTogglePin}
-                            isPinning={isPinning}
-                            isInitiallyCollapsed={true}
-                            path={pathname}
-                            onCommentAdded={handleAddComment}
-                            onUpdateComment={handleUpdateComment}
-                            isLast={index === sortedComments.length - 1}
-                        />
-                    ))
+                    <>
+                        {sortedComments.map((comment, index) => (
+                            <CommentItem
+                                key={comment.id}
+                                comment={comment}
+                                babId={babId}
+                                currentUserId={currentUserId}
+                                currentUserRole={currentUserRole}
+                                authorId={authorId}
+                                handleTogglePin={handleTogglePin}
+                                isPinning={isPinning}
+                                isInitiallyCollapsed={true}
+                                path={pathname}
+                                onCommentAdded={handleAddComment}
+                                onUpdateComment={handleUpdateComment}
+                                isLast={index === sortedComments.length - 1}
+                            />
+                        ))}
+
+                        {hasMore && (
+                            <div className="pt-8 text-center">
+                                <button
+                                    onClick={handleLoadMore}
+                                    disabled={isLoadingMore}
+                                    className="px-8 py-3 bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:bg-brown-mid dark:hover:bg-tan-light transition-all shadow-xl shadow-brown-dark/20 active:scale-95 disabled:opacity-50 flex items-center gap-2 mx-auto"
+                                >
+                                    {isLoadingMore ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            MENGUKIR...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ChevronDown className="w-4 h-4" />
+                                            LIHAT LEBIH BANYAK GORESAN
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

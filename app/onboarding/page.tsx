@@ -182,7 +182,7 @@ export default function OnboardingPage() {
             )}
 
             <div
-                className={`flex flex-col min-h-screen transition-colors duration-1000 ease-in-out selection:bg-pine/30 ${step === 3 ? "bg-[#f2ead7]" : step === 2 ? "bg-[#3b2a22]" : "bg-[#8a6342]"
+                className={`flex flex-col min-h-screen transition-colors duration-1000 ease-in-out selection:bg-pine/30 ${step === 1 ? "bg-[#8a6342] dark:bg-brown-dark" : step === 2 ? "bg-brown-dark" : "bg-bg-cream dark:bg-brown-dark"
                     }`}
             >
                 {/* Horizontal slider container */}
@@ -193,9 +193,9 @@ export default function OnboardingPage() {
                     {/* STEP 1 */}
                     <div className="min-w-full h-full flex flex-col items-center justify-center relative overflow-hidden">
                         {/* MOBILE LAYOUT */}
-                        <div className="relative h-screen w-full overflow-hidden bg-[#f2ead7] md:hidden flex flex-col items-center justify-center">
+                        <div className="relative h-screen w-full overflow-hidden bg-bg-cream dark:bg-brown-dark md:hidden flex flex-col items-center justify-center transition-colors">
                             {/* Background pattern */}
-                            <div className="absolute -top-[15%] left-0 w-full h-[60vh] z-0">
+                            <div className="absolute -top-[15%] left-0 w-full h-[60vh] z-0 opacity-40 dark:opacity-10">
                                 <Image
                                     src="/blockpatterns.webp"
                                     alt="Pattern Background"
@@ -369,22 +369,22 @@ export default function OnboardingPage() {
                             <div className="space-y-6 w-full z-10">
                                 <button
                                     onClick={() => router.push("/auth/login?type=admin")}
-                                    className="w-full py-6 rounded-[2rem] border-4 border-solid border-[#3b2a22] bg-[#EFE5D6] flex flex-col items-center justify-center transition-all hover:scale-[1.03] active:scale-95 shadow-lg group hover:bg-[#F7F0E4]"
+                                    className="w-full py-6 rounded-[2rem] border-4 border-solid border-brown-dark dark:border-tan-primary bg-bg-cream dark:bg-brown-mid/20 flex flex-col items-center justify-center transition-all hover:scale-[1.03] active:scale-95 shadow-lg group hover:bg-white dark:hover:bg-brown-mid/30"
                                 >
-                                    <span className="text-2xl md:text-3xl text-[#3b2a22] font-semibold font-open-sans transition-colors">
+                                    <span className="text-2xl md:text-3xl text-brown-dark dark:text-text-accent font-black font-open-sans italic uppercase tracking-tighter">
                                         Mulai Menulis
                                     </span>
-                                    <span className="text-xs uppercase tracking-widest text-[#3b2a22]/60 font-bold">Sebagai Penulis</span>
+                                    <span className="text-[10px] uppercase tracking-[0.2em] text-brown-dark/50 dark:text-tan-primary/60 font-black">Sebagai Penulis</span>
                                 </button>
 
                                 <button
                                     onClick={() => router.push("/auth/login?type=reader")}
-                                    className="w-full py-6 rounded-[2rem] border-4 border-solid border-[#4A2F24] bg-[#3b2a22] flex flex-col items-center justify-center transition-all hover:scale-[1.03] active:scale-95 shadow-lg group hover:bg-[#4A2F24]"
+                                    className="w-full py-6 rounded-[2rem] border-4 border-solid border-brown-dark/40 dark:border-tan-primary bg-brown-dark dark:bg-tan-primary flex flex-col items-center justify-center transition-all hover:scale-[1.03] active:scale-95 shadow-lg group hover:bg-brown-mid dark:hover:bg-tan-light"
                                 >
-                                    <span className="text-2xl md:text-3xl text-[#f2ead7] font-semibold font-open-sans">
+                                    <span className="text-2xl md:text-3xl text-text-accent dark:text-brown-dark font-black font-open-sans italic uppercase tracking-tighter">
                                         Mulai Membaca
                                     </span>
-                                    <span className="text-xs uppercase tracking-widest text-[#f2ead7]/60 font-bold">Sebagai Pembaca</span>
+                                    <span className="text-[10px] uppercase tracking-[0.2em] text-text-accent/60 dark:text-brown-dark/60 font-black">Sebagai Pembaca</span>
                                 </button>
                             </div>
 

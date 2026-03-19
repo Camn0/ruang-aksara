@@ -46,34 +46,34 @@ function LoginForm() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#f2ead7] transition-colors duration-300">
+        <div className="flex flex-col min-h-screen bg-bg-cream dark:bg-brown-dark transition-colors duration-500">
             <div className="p-6 relative z-10">
                 <Link
                     href="/onboarding"
                     prefetch={false}
-                    className="inline-flex items-center text-[#574239] hover:text-[#3b2a22] hover:scale-[1.02] active:scale-95 transition-colors"
+                    className="inline-flex items-center text-brown-mid dark:text-text-accent hover:text-brown-dark dark:hover:text-tan-light hover:scale-[1.02] active:scale-95 transition-all"
                 >
                     <ArrowLeft className="w-6 h-6 mr-2" />
-                    <span className="text-xl">Kembali</span>
+                    <span className="text-xl font-open-sans font-bold italic">Kembali</span>
                 </Link>
             </div>
 
             <div className="flex-1 flex flex-col justify-center px-8 md:px-20 lg:px-24 -mt-10">
-                <h1 className="text-5xl md:text-7xl text-center font-semibold [font-family:'Open_Sans-SemiBold',Helvetica] text-[#3b2a22] mb-10 tracking-wide">
+                <h1 className="text-5xl md:text-7xl text-center font-black [font-family:'Open_Sans-SemiBold',Helvetica] text-text-main dark:text-text-accent mb-10 tracking-tight italic uppercase">
                     Get Started
                 </h1>
 
-                <h1 className="text-4xl md:text-6xl text-center font-semibold [font-family:'Open_Sans-SemiBold',Helvetica] text-[#3b2a22] mb-12 tracking-wide">
+                <h2 className="text-4xl md:text-6xl text-center font-black [font-family:'Open_Sans-SemiBold',Helvetica] text-tan-primary mb-12 tracking-tight italic uppercase">
                     {title}
-                </h1>
+                </h2>
 
-                <p className="mb-8 [font-family:'Open_Sans-Regular',Helvetica] font-normal text-[#3b2a22] text-xl md:text-2xl">
+                <p className="mb-8 font-medium text-text-main/60 dark:text-text-accent/60 text-xl md:text-2xl italic text-center">
                     Please fill your details to login.
                 </p>
 
-                <form onSubmit={handleSubmit} className="w-full space-y-6">
+                <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto space-y-6">
                     {error && (
-                        <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-center font-medium text-sm animate-in fade-in slide-in-from-top-2">
+                        <div className="p-4 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 rounded-2xl text-center font-black text-sm animate-in fade-in slide-in-from-top-2 uppercase tracking-widest">
                             {error}
                         </div>
                     )}
@@ -88,7 +88,7 @@ function LoginForm() {
                                 onChange={(e) => setUsername(e.target.value)}
                                 placeholder="Username"
                                 autoComplete="username"
-                                className="w-full py-5 px-7 rounded-2xl border-[3px] border-[#4a3228] bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#5a4a43] focus:outline-none transition-all text-xl"
+                                className="w-full py-5 px-7 rounded-2xl border-[3px] border-brown-dark/20 dark:border-brown-mid/30 bg-white/50 dark:bg-brown-mid/10 text-text-main dark:text-text-accent placeholder:text-brown-mid/40 focus:outline-none focus:border-tan-primary transition-all text-xl font-bold"
                                 required
                             />
                         </div>
@@ -102,13 +102,13 @@ function LoginForm() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Password"
                                 autoComplete="current-password"
-                                className="w-full py-5 px-7 pr-16 rounded-2xl bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#5a4a43] focus:outline-none transition-all text-xl border-0"
+                                className="w-full py-5 px-7 pr-16 rounded-2xl bg-white/50 dark:bg-brown-mid/10 text-text-main dark:text-text-accent placeholder:text-brown-mid/40 focus:outline-none focus:ring-2 focus:ring-tan-primary/20 transition-all text-xl font-bold border-0"
                                 required
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-6 top-1/2 -translate-y-1/2 text-[#5a4a43] hover:text-[#3b2a22] transition-colors"
+                                className="absolute right-6 top-1/2 -translate-y-1/2 text-brown-mid/40 hover:text-tan-primary transition-colors"
                                 aria-label={showPassword ? "Hide password" : "Show password"}
                             >
                                 {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
@@ -119,19 +119,19 @@ function LoginForm() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full max-w-[560px] mx-auto mt-12 py-5 bg-[#4a2f24] text-[#f2ead7] rounded-[22px] font-medium text-2xl hover:opacity-95 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 block"
+                        className="w-full py-5 bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark rounded-2xl font-black text-2xl uppercase tracking-widest hover:opacity-95 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 block shadow-xl shadow-brown-dark/10 dark:shadow-tan-primary/10"
                     >
                         {isLoading ? "Memproses..." : "Get Started"}
                     </button>
 
                     {isReader && (
                         <div className="mt-10 text-center">
-                            <p className="text-[#3b2a22] text-xl md:text-2xl">
+                            <p className="text-text-main/60 dark:text-text-accent/60 text-xl font-bold italic">
                                 New member?{" "}
                                 <Link
                                     href="/auth/register"
                                     prefetch={false}
-                                    className="font-bold hover:underline"
+                                    className="text-tan-primary hover:text-brown-dark dark:hover:text-text-accent font-black underline underline-offset-4 transition-colors"
                                 >
                                     Register
                                 </Link>

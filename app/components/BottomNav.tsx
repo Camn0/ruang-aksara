@@ -65,8 +65,8 @@ export default function BottomNav() {
                                     {isStudio ? (
                                         <div className="relative flex items-center justify-center translate-y-[-24px]">
                                             {/* Ellipse 10 */}
-                                            <div className="w-[58px] h-[58px] bg-[#3B2A22] dark:bg-tan-primary rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 border-[6px] border-bg-cream dark:border-brown-dark">
-                                                <item.icon className="w-7 h-7 text-[#F2EAD7] dark:text-brown-dark transition-all" strokeWidth={3} />
+                                            <div className="w-[58px] h-[58px] bg-brown-dark dark:bg-tan-primary rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 border-[6px] border-bg-cream dark:border-brown-dark">
+                                                <item.icon className="w-7 h-7 text-text-accent dark:text-brown-dark transition-all" strokeWidth={3} />
                                             </div>
                                         </div>
                                     ) : (

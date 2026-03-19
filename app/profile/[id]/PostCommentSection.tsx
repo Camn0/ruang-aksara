@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { submitPostComment, deletePostComment } from '@/app/actions/post';
-import { Send, ChevronDown, ChevronUp, Trash2, UserCircle2 } from 'lucide-react';
+import { submitPostComment, deletePostComment, getMorePostComments } from '@/app/actions/post';
+import { Send, ChevronDown, ChevronUp, Trash2, UserCircle2, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -29,6 +29,8 @@ export default function PostCommentSection({ postId, initialComments, commentCou
     const [comments, setComments] = useState<Comment[]>(initialComments);
     const [isOpen, setIsOpen] = useState(false);
     const [isPending, setIsPending] = useState(false);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [hasMore, setHasMore] = useState(initialComments.length < commentCount && initialComments.length >= 5);
     const [success, setSuccess] = useState('');
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const formRef = useRef<HTMLFormElement>(null);
@@ -74,6 +76,21 @@ export default function PostCommentSection({ postId, initialComments, commentCou
         }
     }
 
+    async function handleLoadMore() {
+        if (isLoadingMore) return;
+        setIsLoadingMore(true);
+
+        const res = await getMorePostComments(postId, comments.length, 10);
+
+        if (res.error) {
+            toast.error(res.error);
+        } else if (res.data) {
+            if (res.data.length < 10) setHasMore(false);
+            setComments(prev => [...prev, ...res.data]);
+        }
+        setIsLoadingMore(false);
+    }
+
     return (
         <div className="mt-4 pt-4 border-t border-tan-primary/10 dark:border-brown-mid/30">
             {/* Toggle Comment Section */}
@@ -88,7 +105,7 @@ export default function PostCommentSection({ postId, initialComments, commentCou
             )}
 
             {/* Comments List */}
-            {isOpen && comments.length > 0 && (
+            {isOpen && (
                 <div className="space-y-2 mb-3">
                     {comments.map((c) => (
                         <div key={c.id} className="flex gap-4 items-start group bg-brown-dark/[0.02] dark:bg-brown-dark/20 p-3 rounded-2xl border border-tan-primary/10 dark:border-brown-mid/20">
@@ -119,6 +136,29 @@ export default function PostCommentSection({ postId, initialComments, commentCou
                             )}
                         </div>
                     ))}
+
+                    {/* Load More Button */}
+                    {hasMore && (
+                        <div className="pt-2">
+                            <button
+                                onClick={handleLoadMore}
+                                disabled={isLoadingMore}
+                                className="flex items-center gap-2 text-[9px] font-black text-tan-primary uppercase tracking-[0.2em] hover:text-brown-dark transition-all py-2 px-1 disabled:opacity-50"
+                            >
+                                {isLoadingMore ? (
+                                    <>
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                        Memuat...
+                                    </>
+                                ) : (
+                                    <>
+                                        <ChevronDown className="w-3 h-3" />
+                                        Muat Lebih Banyak
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 

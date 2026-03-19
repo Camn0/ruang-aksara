@@ -309,3 +309,42 @@ export async function deleteAuthorPost(postId: string) {
         return { error: "Gagal menghapus postingan." };
     }
 }
+
+// ==============================================================================
+// 6. QUERY: AMBIL LEBIH BANYAK KOMENTAR POST (PAGINATION)
+// ==============================================================================
+/**
+ * Server Action: Mengambil potongan komentar berikutnya untuk sebuah postingan.
+ * @param postId - ID postingan.
+ * @param skip - Jumlah record yang dilewati (offset).
+ * @param take - Jumlah record yang diambil (chunk size).
+ */
+export async function getMorePostComments(postId: string, skip: number, take: number = 10) {
+    try {
+        const comments = await (prisma as any).postComment.findMany({
+            where: { post_id: postId },
+            select: {
+                id: true,
+                content: true,
+                created_at: true,
+                user_id: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        display_name: true,
+                        avatar_url: true
+                    }
+                }
+            },
+            orderBy: { created_at: 'asc' },
+            skip,
+            take
+        });
+
+        return { success: true, data: comments };
+    } catch (e) {
+        console.error("[getMorePostComments] Error:", e);
+        return { error: "Gagal memuat lebih banyak komentar." };
+    }
+}

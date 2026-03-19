@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { registerUser } from '@/app/actions/auth';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Link from 'next/link';
 
 
@@ -39,29 +39,40 @@ export default function RegisterPage() {
     }
 
     const borderedInputClass =
-        "w-full py-5 px-7 rounded-[24px] border-[3px] border-[#4a3228] bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#4a3228] focus:outline-none transition-all text-xl";
+        "w-full py-5 px-7 rounded-2xl border-[3px] border-brown-dark/20 dark:border-brown-mid/30 bg-white/50 dark:bg-brown-mid/10 text-text-main dark:text-text-accent placeholder:text-brown-mid/40 focus:outline-none focus:border-tan-primary transition-all text-xl font-bold";
 
     const plainInputClass =
-        "w-full py-5 px-7 rounded-[24px] bg-[#d9d9d9] text-[#3b2a22] placeholder:text-[#4a3228] focus:outline-none transition-all text-xl";
+        "w-full py-5 px-7 rounded-2xl bg-white/50 dark:bg-brown-mid/10 text-text-main dark:text-text-accent placeholder:text-brown-mid/40 focus:outline-none focus:ring-2 focus:ring-tan-primary/20 transition-all text-xl font-bold border-0";
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#f2ead7] transition-colors duration-300">
+        <div className="flex flex-col min-h-screen bg-bg-cream dark:bg-brown-dark transition-colors duration-500">
+            <div className="p-6 relative z-10">
+                <Link
+                    href="/onboarding"
+                    prefetch={false}
+                    className="inline-flex items-center text-brown-mid dark:text-text-accent hover:text-brown-dark dark:hover:text-tan-light hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                    <ArrowLeft className="w-6 h-6 mr-2" />
+                    <span className="text-xl font-open-sans font-bold italic">Kembali</span>
+                </Link>
+            </div>
+
             <div className="flex-1 flex flex-col justify-center px-8 md:px-20 lg:px-24 -mt-10">
-                <h1 className="text-5xl md:text-7xl text-center font-semibold [font-family:'Open_Sans-SemiBold',Helvetica] text-[#3b2a22] mb-14 tracking-wide">
+                <h1 className="text-5xl md:text-7xl text-center font-black [font-family:'Open_Sans-SemiBold',Helvetica] text-text-main dark:text-text-accent mb-14 tracking-tight italic uppercase">
                     Register
                 </h1>
 
-                <p className="mb-8 [font-family:'Open_Sans-Regular',Helvetica] font-normal text-[#3b2a22] text-xl md:text-2xl">
-                    Please fill your details to login.
+                <p className="mb-8 font-medium text-text-main/60 dark:text-text-accent/60 text-xl md:text-2xl italic text-center">
+                    Please fill your details to create an account.
                 </p>
 
-                <form onSubmit={handleSubmit} className="w-full space-y-6">
+                <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto space-y-6">
                     {message && (
                         <div
-                            className={`p-4 rounded-2xl text-center font-medium text-sm animate-in fade-in slide-in-from-top-2 ${
+                            className={`p-4 rounded-2xl text-center font-black text-sm animate-in fade-in slide-in-from-top-2 uppercase tracking-widest border ${
                                 message.type === 'error'
-                                    ? 'bg-red-100 text-red-700'
-                                    : 'bg-[#e2d6c3] text-[#3b2a22]'
+                                    ? 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
+                                    : 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20'
                             }`}
                         >
                             {message.text}
@@ -106,7 +117,7 @@ export default function RegisterPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-6 top-1/2 -translate-y-1/2 text-[#4a3228] hover:text-[#3b2a22] transition-colors"
+                                className="absolute right-6 top-1/2 -translate-y-1/2 text-brown-mid/40 hover:text-tan-primary transition-colors"
                                 aria-label={showPassword ? "Hide password" : "Show password"}
                             >
                                 {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
@@ -117,18 +128,18 @@ export default function RegisterPage() {
                     <button
                         type="submit"
                         disabled={isPending}
-                        className="w-full max-w-[560px] mx-auto mt-12 py-5 bg-[#4a2f24] text-[#f2ead7] rounded-[22px] font-medium text-2xl hover:opacity-95 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 block"
+                        className="w-full py-5 bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark rounded-2xl font-black text-2xl uppercase tracking-widest hover:opacity-95 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 block shadow-xl shadow-brown-dark/10 dark:shadow-tan-primary/10"
                     >
                         {isPending ? 'Mendaftar...' : 'Get Started'}
                     </button>
 
                     <div className="mt-10 text-center">
-                        <p className="text-[#3b2a22] text-xl md:text-2xl">
+                        <p className="text-text-main/60 dark:text-text-accent/60 text-xl font-bold italic">
                             Already have an account?{" "}
                             <Link
                                 href="/auth/login"
                                 prefetch={false}
-                                className="font-bold hover:underline"
+                                className="text-tan-primary hover:text-brown-dark dark:hover:text-text-accent font-black underline underline-offset-4 transition-colors"
                             >
                                 Login
                             </Link>
