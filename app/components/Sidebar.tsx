@@ -25,10 +25,10 @@ export default function Sidebar() {
     const isActive = (path: string) => pathname === path || (path !== "/" && pathname.startsWith(path));
 
     const navItems = [
-        { name: 'Profile', href: session ? `/profile/${session.user.id}` : '/auth/login', icon: User },
         { name: 'Home', href: '/user/dashboard', icon: Home },
         { name: 'Search', href: '/search', icon: Search },
         { name: 'Library', href: '/library', icon: Menu },
+        { name: 'Profile', href: session ? `/profile/${session.user.id}` : '/auth/login', icon: User },
         { name: 'Tentang Kami', href: '/about', icon: Info },
     ];
 
