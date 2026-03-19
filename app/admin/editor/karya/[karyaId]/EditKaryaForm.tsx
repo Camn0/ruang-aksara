@@ -217,7 +217,7 @@ export default function EditKaryaForm({ karya, allGenres, children }: { karya: K
                                 <span className="font-black text-brown-dark/70 dark:text-tan-light text-lg sm:text-xl italic uppercase tracking-tighter group-hover:opacity-100 transition-opacity">Tandai Cerita Telah Selesai (Tamat)</span>
                             </label>
 
-                            <button form="edit-karya-form" type="submit" disabled={isPending} className="w-full sm:w-fit px-12 h-[65px] bg-brown-dark text-text-accent rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20 disabled:opacity-50">
+                            <button form="edit-karya-form" type="submit" disabled={isPending} className="w-full sm:w-fit px-12 h-[65px] bg-brown-dark dark:bg-tan-primary text-text-accent rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20 disabled:opacity-50">
                                 {isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
                             </button>
                         </div>

@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Search, Library, User, Plus } from "lucide-react";
+import { Home, Search, Library, User, PenTool } from "lucide-react";
 import './BottomNav.css';
 
 export default function BottomNav() {
@@ -29,7 +29,7 @@ export default function BottomNav() {
     const authorMenu = [
         { name: "Home", icon: Home, path: "/user/dashboard" },
         { name: "Search", icon: Search, path: "/search" },
-        { name: "Studio", icon: Plus, path: "/admin/dashboard" },
+        { name: "Studio", icon: PenTool, path: "/admin/dashboard" },
         { name: "Library", icon: Library, path: "/library" },
         { name: "Profile", icon: User, path: `/profile/${session.user.id}` },
     ];

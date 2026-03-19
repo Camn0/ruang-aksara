@@ -51,8 +51,9 @@ export default async function CommentManagementPage() {
                     user: { select: { display_name: true, id: true } }
                 }
             },
+            score: true,
             _count: {
-                select: { votes: true }
+                select: { votes: true, replies: true }
             }
         }
     });

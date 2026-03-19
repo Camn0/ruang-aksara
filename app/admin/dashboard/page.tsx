@@ -231,7 +231,7 @@ export default async function AdminDashboardPage() {
                         <section>
                             <div className="flex justify-between items-center mb-10">
                                 <h2 className="text-3xl font-black text-text-main/80 dark:text-text-accent/90 italic tracking-tight uppercase">Cerita Anda</h2>
-                                <Link href="/admin/editor/karya" prefetch={false} className="bg-text-main dark:bg-brown-mid text-bg-cream px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group border border-white/5">
+                                <Link href="/admin/editor/karya" prefetch={false} className="bg-text-main dark:bg-tan-primary text-bg-cream px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all hover:-translate-y-1 active:scale-95 group border border-white/5">
                                     <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Karya Baru
                                 </Link>
                             </div>
@@ -297,7 +297,7 @@ export default async function AdminDashboardPage() {
 
                                                         <div className="flex items-center justify-between gap-4 mt-2 relative z-20">
                                                             <div className="flex items-center gap-2 flex-1">
-                                                                <Link href={`/admin/editor/karya/${item.id}`} prefetch={false} className="bg-text-main dark:bg-brown-mid dark:text-text-accent text-bg-cream px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-brown-mid dark:hover:bg-tan-primary transition-all active:scale-95 group/btn flex-1 text-center">
+                                                                <Link href={`/admin/editor/karya/${item.id}`} prefetch={false} className="bg-text-main dark:bg-tan-primary dark:text-text-accent text-bg-cream px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-brown-mid dark:hover:bg-tan-light transition-all active:scale-95 group/btn flex-1 text-center">
                                                                     Edit
                                                                 </Link>
                                                                 <Link href={`/novel/${item.id}`} target="_blank" className="bg-tan-primary/20 text-tan-primary px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-tan-primary hover:text-white transition-all flex-1 text-center select-none">
@@ -365,9 +365,9 @@ export default async function AdminDashboardPage() {
                         <section className="bg-text-main dark:bg-brown-mid rounded-[3rem] p-10 text-bg-cream relative overflow-hidden group shadow-2xl dark:shadow-none shadow-text-main/20">
                             <div className="relative z-10">
                                 <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6 border border-white/10 group-hover:rotate-6 transition-transform">
-                                    <Sparkles className="w-7 h-7 text-bg-cream" />
+                                    <Sparkles className="w-7 h-7 text-bg-cream/60 dark:text-text-accent" />
                                 </div>
-                                <h3 className="text-3xl font-black italic mb-3 leading-tight uppercase">Inspirasi</h3>
+                                <h3 className="text-3xl font-black italic mb-3 leading-tight uppercase text-bg-cream/60 dark:text-text-accent">Inspirasi</h3>
                                 <p className="text-[11px] text-bg-cream/60 dark:text-text-accent font-black uppercase tracking-[0.2em] mb-10 leading-relaxed">Setiap kata adalah permata bagi pembaca.</p>
                                 <Link href="/admin/editor/tips" prefetch={false} className="inline-flex items-center gap-3 bg-text-accent text-brown-dark px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-110 active:scale-95 shadow-xl">
                                     Tips Studio

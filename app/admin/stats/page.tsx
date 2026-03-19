@@ -340,38 +340,71 @@ function SaveVelocityBarChart({ data }: { data: number[] }) {
 
 function SentimentBreakdown({ percentage, total, distribution, showHint }: { percentage: number, total: number, distribution?: { score: number, count: number }[], showHint?: boolean }) {
     return (
-        <div className="w-full bg-bg-cream/40 dark:bg-brown-mid/10 rounded-[3rem] p-8 border border-white/5 shadow-inner relative group/gauge transition-all group-hover/card:bg-bg-cream/60 dark:group-hover/card:bg-brown-mid/20">
+        <div className="w-full bg-bg-cream/40 dark:bg-brown-mid/10 rounded-[3rem] p-8 border border-white/5 shadow-inner relative group/gauge transition-all group-hover/card:bg-bg-cream/60 dark:group-hover/card:bg-brown-mid/20 overflow-hidden">
             {showHint && (
-                <div className="absolute top-6 right-8 opacity-0 group-hover/card:opacity-40 transition-opacity whitespace-nowrap">
+                <div className="absolute top-6 right-8 opacity-0 group-hover/card:opacity-40 transition-opacity whitespace-nowrap z-20">
                     <span className="text-[7px] font-black uppercase tracking-[0.2em] italic">Klik untuk Detail</span>
                 </div>
             )}
-            <div className="flex justify-between items-end mb-8">
-                <div>
-                    <span className="text-5xl font-black italic tracking-tighter leading-none text-text-main dark:text-text-accent">{percentage}%</span>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-text-accent/60">Global Sentiment</p>
+            
+            <div className="relative z-10 flex flex-col items-center mb-8">
+                <div className="relative w-40 h-20 mb-4">
+                    {/* Semi-Circle Gauge SVG */}
+                    <svg viewBox="0 0 100 50" className="w-full h-full">
+                        <path
+                            d="M 10 50 A 40 40 0 0 1 90 50"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="10"
+                            className="text-text-main/5 dark:text-white/5"
+                        />
+                        <path
+                            d="M 10 50 A 40 40 0 0 1 90 50"
+                            fill="none"
+                            stroke="url(#gaugeGradientOverview)"
+                            strokeWidth="10"
+                            strokeDasharray="125.6"
+                            strokeDashoffset={125.6 - (125.6 * (percentage / 100))}
+                            className="transition-all duration-[2000ms] ease-out"
+                            style={{ strokeLinecap: 'round' }}
+                        />
+                        <defs>
+                            <linearGradient id="gaugeGradientOverview" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#D6BFA6" />
+                                <stop offset="100%" stopColor="#7A553A" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    
+                    <div className="absolute bottom-0 left-0 right-0 text-center">
+                        <span className="text-3xl font-black italic tracking-tighter leading-none text-text-main dark:text-text-accent">{percentage}%</span>
+                        <p className="text-[8px] font-black uppercase tracking-[0.2em] text-text-main/40 dark:text-text-accent/60">Sentiment</p>
+                    </div>
                 </div>
-                <div className="text-right">
-                    <p className="text-xl font-black italic text-tan-primary">{total}</p>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-text-main/50 dark:text-text-accent/80">Total Ratings</p>
+
+                <div className="flex justify-between w-full px-2">
+                    <div className="text-center">
+                        <p className="text-lg font-black italic text-tan-primary leading-none">{total}</p>
+                        <p className="text-[7px] font-black uppercase tracking-widest text-text-main/30 dark:text-text-accent/60 mt-1">Ratings</p>
+                    </div>
                 </div>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2.5 relative z-10">
                 {distribution?.slice().reverse().map(d => {
                     const p = total > 0 ? (d.count / total) * 100 : 0;
                     return (
                         <div key={d.score} className="space-y-1">
                             <div className="flex justify-between items-center px-1">
                                 <div className="flex items-center gap-1">
-                                    <span className="text-[9px] font-black tracking-tighter text-text-main/50 dark:text-text-accent">{d.score} Star</span>
-                                    <Star className={`w-2 h-2 ${d.score >= 4 ? 'text-tan-primary fill-tan-primary/80' : 'text-text-main/10 dark:text-white/10'}`} />
+                                    <span className="text-[8px] font-black tracking-tighter text-text-main/50 dark:text-text-accent">{d.score} Star</span>
+                                    <Star className="w-2 h-2 text-tan-primary fill-tan-primary/80" />
                                 </div>
-                                <span className="text-[8px] font-black text-text-main/40 dark:text-text-accent uppercase tracking-tighter">{d.count}</span>
+                                <span className="text-[7px] font-black text-text-main/40 dark:text-text-accent uppercase tracking-tighter">{d.count}</span>
                             </div>
-                            <div className="h-1.5 bg-text-main/5 dark:bg-tan-primary/5 rounded-full overflow-hidden">
+                            <div className="h-1 bg-text-main/5 dark:bg-tan-primary/5 rounded-full overflow-hidden">
                                 <div 
-                                    className={`h-full transition-all duration-1000 ease-out ${d.score >= 4 ? 'bg-tan-primary' : 'bg-text-main/20'}`} 
+                                    className="h-full transition-all duration-1000 bg-tan-primary" 
                                     style={{ width: `${p}%` }} 
                                 />
                             </div>

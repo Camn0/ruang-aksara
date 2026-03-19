@@ -239,7 +239,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                                     <button
                                         type="button"
                                         onClick={() => setStep(2)}
-                                        className="group w-[193px] h-[65px] bg-brown-dark text-text-accent rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
+                                        className="group w-[193px] h-[65px] bg-brown-dark dark:bg-tan-primary text-text-accent rounded-full flex items-center justify-center font-black text-xl uppercase tracking-[0.2em] italic cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                     >
                                         Lanjut
                                     </button>
@@ -260,7 +260,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
                             <button
                                 type="submit"
                                 disabled={isPending}
-                                className="h-[65px] px-10 bg-brown-dark hover:bg-brown-mid text-text-accent rounded-full flex items-center justify-center gap-4 cursor-pointer disabled:opacity-50 transition-all shadow-xl shadow-brown-dark/20 group active:scale-95"
+                                className="h-[65px] px-10 bg-brown-dark dark:bg-tan-primary hover:bg-brown-mid dark:hover:bg-tan-light text-text-accent rounded-full flex items-center justify-center gap-4 cursor-pointer disabled:opacity-50 transition-all shadow-xl shadow-brown-dark/20 group active:scale-95"
                             >
                                 <span className="font-black text-xl uppercase tracking-[0.2em] italic">
                                     {isPending ? 'Mengukir...' : 'Unggah Karya'}

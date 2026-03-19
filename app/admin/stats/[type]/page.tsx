@@ -645,33 +645,75 @@ function ActivityBarChart({ data }: { data: number[] }) {
 
 function SentimentBreakdown({ percentage, total, distribution }: { percentage: number, total: number, distribution?: { score: number, count: number }[] }) {
     return (
-        <div className="w-full group/gauge bg-white/40 dark:bg-brown-mid/10 rounded-[2rem] p-8 border border-white/5 shadow-inner">
-            <div className="flex justify-between items-end mb-8">
-                <div>
-                    <span className="text-5xl font-black italic tracking-tighter leading-none text-text-main dark:text-text-accent">{percentage}%</span>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-main/50 dark:text-text-accent mt-2">Positive Sentiment Index</p>
+        <div className="w-full bg-white/40 dark:bg-brown-mid/10 rounded-[3rem] p-10 border border-white/5 shadow-inner relative overflow-hidden group/gauge transition-all">
+            {/* Background Decorative Sparkles */}
+            <div className="absolute top-0 right-0 p-8 opacity-5">
+                <Sparkles className="w-24 h-24 text-tan-primary group-hover/gauge:rotate-12 transition-transform duration-1000" />
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center mb-10">
+                <div className="relative w-48 h-24 mb-6">
+                    {/* Semi-Circle Gauge SVG */}
+                    <svg viewBox="0 0 100 50" className="w-full h-full">
+                        <path
+                            d="M 10 50 A 40 40 0 0 1 90 50"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="8"
+                            className="text-text-main/5 dark:text-white/5"
+                        />
+                        <path
+                            d="M 10 50 A 40 40 0 0 1 90 50"
+                            fill="none"
+                            stroke="url(#gaugeGradient)"
+                            strokeWidth="8"
+                            strokeDasharray="125.6"
+                            strokeDashoffset={125.6 - (125.6 * (percentage / 100))}
+                            className="transition-all duration-[2000ms] ease-out-expo"
+                            style={{ strokeLinecap: 'round' }}
+                        />
+                        <defs>
+                            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#D6BFA6" />
+                                <stop offset="100%" stopColor="#7A553A" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    
+                    {/* Percentage Display Center */}
+                    <div className="absolute bottom-0 left-0 right-0 text-center">
+                        <span className="text-4xl font-black italic tracking-tighter leading-none text-text-main dark:text-text-accent">{percentage}%</span>
+                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-main/40 dark:text-text-accent/60 mt-1">Sentiment Index</p>
+                    </div>
                 </div>
-                <div className="text-right">
-                    <p className="text-xl font-black italic text-tan-primary">{total}</p>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-text-main/50 dark:text-text-accent">Total Ratings</p>
+
+                <div className="flex justify-between w-full px-4 mb-2">
+                    <div className="text-center">
+                        <p className="text-xl font-black italic text-tan-primary leading-none">{total}</p>
+                        <p className="text-[8px] font-black uppercase tracking-widest text-text-main/40 dark:text-text-accent/60 mt-1">Total Ratings</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-[10px] font-black uppercase text-tan-primary leading-none">Positive Choice</p>
+                        <p className="text-[8px] font-black uppercase tracking-widest text-text-main/30 dark:text-text-accent/40 mt-1 italic">*Ratings 4-5 Stars</p>
+                    </div>
                 </div>
             </div>
             
-            <div className="space-y-4">
-                {distribution?.slice().reverse().map(d => {
+            <div className="space-y-4 relative z-10 px-2">
+                {distribution?.slice().reverse().map((d, index) => {
                     const p = total > 0 ? (d.count / total) * 100 : 0;
                     return (
-                        <div key={d.score} className="space-y-1.5">
+                        <div key={d.score} className="space-y-1.5 animate-in fade-in slide-in-from-bottom-2 duration-700" style={{ animationDelay: `${index * 100}ms` }}>
                             <div className="flex justify-between items-center px-1">
                                 <div className="flex items-center gap-1.5">
-                                    <span className="text-[10px] font-black tracking-tighter">{d.score} Bintang</span>
-                                    <Star className={`w-2 h-2 ${d.score >= 4 ? 'text-tan-primary fill-tan-primary' : 'text-text-main/20 dark:text-white/20'}`} />
+                                    <span className="text-[9px] font-black tracking-tighter text-text-main/60 dark:text-text-accent/80">{d.score} Bintang</span>
+                                    <Star className="w-2.5 h-2.5 text-tan-primary fill-tan-primary" />
                                 </div>
-                                <span className="text-[9px] font-black text-text-main/60 dark:text-text-accent uppercase tracking-tighter">{d.count} ulasan</span>
+                                <span className="text-[8px] font-black text-text-main/40 dark:text-text-accent/60 uppercase tracking-tighter">{d.count} ulasan</span>
                             </div>
-                            <div className="h-2 bg-text-main/5 dark:bg-white/5 rounded-full overflow-hidden border border-white/5">
+                            <div className="h-1.5 bg-text-main/5 dark:bg-white/5 rounded-full overflow-hidden">
                                 <div 
-                                    className={`h-full transition-all duration-1000 ease-out ${d.score >= 4 ? 'bg-gradient-to-r from-tan-primary to-brown-mid' : 'bg-text-main/20'}`} 
+                                    className="h-full transition-all duration-[1500ms] bg-gradient-to-r from-tan-primary to-brown-mid shadow-[0_0_8px_rgba(214,191,166,0.2)]" 
                                     style={{ width: `${p}%` }} 
                                 />
                             </div>
@@ -679,9 +721,6 @@ function SentimentBreakdown({ percentage, total, distribution }: { percentage: n
                     );
                 })}
             </div>
-            <p className="text-[9px] font-black text-text-main/50 dark:text-text-accent uppercase tracking-[0.2em] text-center mt-8 italic border-t border-white/5 pt-4">
-                *Indeks sentimen dihitung dari persentase rating bintang 4 & 5.
-            </p>
         </div>
     );
 }

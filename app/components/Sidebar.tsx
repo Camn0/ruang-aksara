@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Home, Search, Library, Menu, Info, User, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Home, Search, Library, Menu, Info, User, ChevronLeft, ChevronRight, PenTool } from 'lucide-react';
 import Image from 'next/image';
 import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
@@ -95,7 +95,7 @@ export default function Sidebar() {
                                 title={!isExpanded ? 'Studio Penulis' : ''}
                             >
                                 <div className={`bg-[#7A553A] rounded-full flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105 ${isExpanded ? 'w-10 h-10' : 'w-12 h-12'}`}>
-                                    <Plus className="w-6 h-6 md:w-7 md:h-7 text-white" strokeWidth={2.5} />
+                                    <PenTool className="w-5 h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
                                 </div>
                                 {isExpanded && <span className="font-open-sans text-[11px] font-bold uppercase tracking-wider whitespace-nowrap animate-in fade-in flex-grow text-center pr-3">Studio Penulis</span>}
                             </Link>

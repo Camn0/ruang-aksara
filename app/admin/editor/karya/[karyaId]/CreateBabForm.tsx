@@ -75,7 +75,7 @@ export default function CreateBabForm({ karyaId }: { karyaId: string }) {
                             <button type="button" onClick={() => setIsOpen(false)} className="hover:scale-105 transition-transform text-brown-dark dark:text-tan-primary">
                                 <ArrowLeft className="w-12 h-12" strokeWidth={2.5} />
                             </button>
-                            <button type="submit" disabled={isPending} className="h-[60px] px-10 bg-brown-dark hover:bg-brown-mid text-text-accent rounded-full flex items-center justify-center gap-4 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-brown-dark/20 group">
+                            <button type="submit" disabled={isPending} className="h-[60px] px-10 bg-brown-dark dark:bg-tan-primary hover:bg-brown-mid dark:hover:bg-tan-light text-text-accent rounded-full flex items-center justify-center gap-4 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-brown-dark/20 group">
                                 <span className="font-black text-lg uppercase tracking-[0.2em] italic">{isPending ? 'Mengukir...' : 'Unggah Bab'}</span>
                                 {!isPending && <Upload className="w-5 h-5 group-hover:-translate-y-1 transition-transform" strokeWidth={2.5} />}
                             </button>
