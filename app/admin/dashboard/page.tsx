@@ -316,11 +316,6 @@ export default async function AdminDashboardPage() {
                                                     </div>
                                                 </div>
                                             ))}
-                                        {/* Pagination Dots Placeholder as seen in mockup */}
-                                        <div className="col-span-full flex justify-center gap-2 mt-8">
-                                            <div className="w-8 h-2 bg-text-main dark:bg-bg-cream rounded-full"></div>
-                                            <div className="w-2 h-2 bg-text-main/20 dark:bg-bg-cream/20 rounded-full"></div>
-                                        </div>
                                     </>
                                 )}
                             </div>

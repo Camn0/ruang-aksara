@@ -53,6 +53,16 @@ export async function submitComment(formData: FormData) {
                 bab_id,
                 content,
                 parent_id: parent_id || null
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        display_name: true,
+                        avatar_url: true
+                    }
+                }
             }
         });
 

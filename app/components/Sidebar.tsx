@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Home, Search, Menu, Info, User, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Home, Search, Library, Menu, Info, User, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import Image from 'next/image';
 import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
@@ -27,7 +27,7 @@ export default function Sidebar() {
     const navItems = [
         { name: 'Home', href: '/user/dashboard', icon: Home },
         { name: 'Search', href: '/search', icon: Search },
-        { name: 'Library', href: '/library', icon: Menu },
+        { name: 'Library', href: '/library', icon: Library },
         { name: 'Profile', href: session ? `/profile/${session.user.id}` : '/auth/login', icon: User },
         { name: 'Tentang Kami', href: '/about', icon: Info },
     ];
@@ -108,13 +108,6 @@ export default function Sidebar() {
 
                     {/* Utils */}
                     <div className={`pt-6 border-t border-text-accent/20 space-y-4`}>
-                        <div className={`flex items-center transition-all duration-500 ${isExpanded ? 'justify-between px-2' : 'justify-center'}`}>
-                            {isExpanded && <span className="text-[10px] font-bold uppercase tracking-widest text-text-accent opacity-60 animate-in fade-in">Tema</span>}
-                            <ThemeToggle />
-                        </div>
-                        <div className={`transition-all duration-500 ${isExpanded ? 'px-2' : 'flex justify-center'}`}>
-                            <LogoutButton expanded={isExpanded} />
-                        </div>
                     </div>
                 </div>
             </aside>

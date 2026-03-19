@@ -74,9 +74,12 @@ export default function CommentModerationClient({ initialComments }: { initialCo
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
                                             <p className="text-[11px] font-black text-text-main dark:text-text-accent uppercase truncate">{comment.user.display_name}</p>
+                                            <span className={`text-[7px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-tighter ${comment.parent ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20' : 'bg-blue-500/10 text-blue-600 border border-blue-500/20'}`}>
+                                                {comment.parent ? 'Kategori B: Balasan' : 'Kategori A: Utama'}
+                                            </span>
                                             {comment.parent && (
-                                                <span className="text-[8px] font-bold text-tan-primary bg-tan-primary/5 px-1.5 py-0.5 rounded-md uppercase tracking-tighter">
-                                                    Membalas @{comment.parent.user.display_name}
+                                                <span className="text-[8px] font-bold text-tan-primary bg-tan-primary/5 px-1.5 py-0.5 rounded-md uppercase tracking-tighter truncate max-w-[80px]">
+                                                    @{comment.parent.user.display_name}
                                                 </span>
                                             )}
                                         </div>
@@ -85,7 +88,7 @@ export default function CommentModerationClient({ initialComments }: { initialCo
                                                 {new Date(comment.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                             </p>
                                             <span className="w-1 h-1 rounded-full bg-text-main/10 dark:bg-white/10" />
-                                            <p className="text-[8px] text-tan-primary font-black uppercase tracking-widest">
+                                            <p className={`text-[8px] font-black uppercase tracking-widest ${comment.score < 0 ? 'text-red-500' : 'text-tan-primary'}`}>
                                                 {comment.score} Poin
                                             </p>
                                         </div>

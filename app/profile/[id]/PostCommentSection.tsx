@@ -26,6 +26,7 @@ export default function PostCommentSection({ postId, initialComments, commentCou
     currentUserId?: string;
     currentUserRole?: string;
 }) {
+    const [comments, setComments] = useState<Comment[]>(initialComments);
     const [isOpen, setIsOpen] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [success, setSuccess] = useState('');
@@ -42,9 +43,11 @@ export default function PostCommentSection({ postId, initialComments, commentCou
             const res = await submitPostComment(formData);
             if (res.error) {
                 toast.error(res.error);
-            } else {
+            } else if (res.data) {
                 toast.success('Komentar dikirim!');
+                setComments(prev => [res.data as any, ...prev]);
                 formRef.current?.reset();
+                setIsOpen(true);
             }
         } catch (error) {
             toast.error("Terjadi kesalahan.");
@@ -60,7 +63,10 @@ export default function PostCommentSection({ postId, initialComments, commentCou
         try {
             const res = await deletePostComment(commentId);
             if (res.error) toast.error(res.error);
-            else toast.success("Komentar dihapus!");
+            else {
+                toast.success("Komentar dihapus!");
+                setComments(prev => prev.filter(c => c.id !== commentId));
+            }
         } catch {
             toast.error("Gagal menghapus.");
         } finally {
@@ -82,9 +88,9 @@ export default function PostCommentSection({ postId, initialComments, commentCou
             )}
 
             {/* Comments List */}
-            {isOpen && initialComments.length > 0 && (
+            {isOpen && comments.length > 0 && (
                 <div className="space-y-2 mb-3">
-                    {initialComments.map((c) => (
+                    {comments.map((c) => (
                         <div key={c.id} className="flex gap-4 items-start group bg-brown-dark/[0.02] dark:bg-brown-dark/20 p-3 rounded-2xl border border-tan-primary/10 dark:border-brown-mid/20">
                             <div className="w-8 h-8 rounded-xl overflow-hidden bg-tan-light/10 dark:bg-brown-mid/30 flex items-center justify-center shrink-0 border border-tan-primary/10 shadow-sm relative">
                                 {c.user?.avatar_url ? (

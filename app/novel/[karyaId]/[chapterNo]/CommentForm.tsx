@@ -10,6 +10,7 @@ export default function CommentForm({
     isReply = false,
     replyToUsername,
     onSuccess,
+    onCommentAdded,
     autoFocus = false
 }: {
     babId: string,
@@ -17,6 +18,7 @@ export default function CommentForm({
     isReply?: boolean,
     replyToUsername?: string,
     onSuccess?: () => void,
+    onCommentAdded?: (comment: any) => void,
     autoFocus?: boolean
 }) {
     const [isPending, setIsPending] = useState(false);
@@ -66,6 +68,12 @@ export default function CommentForm({
                 // Tutup form jika ini adalah balasan
                 if (isReply) {
                     setTimeout(() => setIsOpen(false), 800);
+                }
+
+                if (result.data) {
+                    if (onCommentAdded) {
+                        onCommentAdded(result.data);
+                    }
                 }
 
                 // Background refresh for fresh data

@@ -168,8 +168,8 @@ export default function ReadingInterface({
                         className="w-full group focus:outline-none"
                     >
                         <div className="flex flex-col items-center">
-                            <h1 className="font-black text-[13px] text-brown-dark/90 dark:text-text-accent leading-none group-hover:text-tan-primary transition-colors uppercase tracking-tight">Bab {chapterNo}</h1>
-                            <p className="text-[9px] text-tan-primary/40 dark:text-tan-light/40 truncate max-w-[150px] mx-auto font-black uppercase tracking-widest mt-1.5">{chapterTitle || novelTitle}</p>
+                            <h1 className="font-black text-[16px] text-brown-dark/90 dark:text-text-accent leading-none group-hover:text-tan-primary transition-colors uppercase tracking-tight">Bab {chapterNo}</h1>
+                            <p className="text-[11px] text-tan-primary/40 dark:text-tan-light/40 truncate max-w-[200px] mx-auto font-black uppercase tracking-widest mt-1.5">{chapterTitle || novelTitle}</p>
                         </div>
                     </button>
                 </div>

@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookMarked, Settings, Star, Search, Home } from "lucide-react";
+import { Library, Settings, Star, Search, Home } from "lucide-react";
 import RemoveBookmarkButton from './RemoveBookmarkButton';
 
 import { prisma } from '@/lib/prisma';
@@ -98,7 +98,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: { ta
     const renderEmptyState = (message: string, subMessage: string) => (
         <div className="text-center py-24 px-8 border border-dashed border-tan-light dark:border-brown-mid/50 rounded-3xl bg-bg-cream dark:bg-brown-dark/30 transition-colors duration-300">
             <div className="w-16 h-16 bg-tan-light/40 dark:bg-brown-mid rounded-full flex items-center justify-center mb-4 mx-auto">
-                <BookMarked className="w-8 h-8 text-tan-primary dark:text-text-accent" />
+                <Library className="w-8 h-8 text-tan-primary dark:text-text-accent" />
             </div>
             <h2 className="font-bold text-text-main dark:text-text-accent mb-2">{message}</h2>
             <p className="text-sm text-brown-mid dark:text-tan-light mb-6 leading-relaxed">{subMessage}</p>

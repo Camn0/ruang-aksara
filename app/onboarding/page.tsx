@@ -242,7 +242,7 @@ export default function OnboardingPage() {
                                     onClick={handleNext}
                                     className="bg-brown-dark text-text-accent px-10 py-3 rounded-full text-2xl font-black hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                 >
-                                    mulai eksplorasi
+                                    Mulai eksplorasi
                                 </button>
                             </div>
                         </div>
@@ -291,7 +291,7 @@ export default function OnboardingPage() {
                                     onClick={handleNext}
                                     className="bg-brown-dark text-text-accent px-12 py-3 rounded-full text-xl font-black hover:scale-105 hover:bg-tan-primary active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                 >
-                                    mulai eksplorasi
+                                    Mulai eksplorasi
                                 </button>
                             </div>
 

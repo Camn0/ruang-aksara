@@ -28,15 +28,20 @@ import Image from "next/image";
 
 // [NEW] Static Generation for Top 50 Books
 export async function generateStaticParams() {
-    const popularKarya = await prisma.karya.findMany({
-        orderBy: { total_views: 'desc' },
-        select: { id: true },
-        take: 50
-    });
+    try {
+        const popularKarya = await prisma.karya.findMany({
+            orderBy: { total_views: 'desc' },
+            select: { id: true },
+            take: 50
+        });
 
-    return popularKarya.map((k) => ({
-        karyaId: k.id,
-    }));
+        return popularKarya.map((k) => ({
+            karyaId: k.id,
+        }));
+    } catch (error) {
+        console.error("[generateStaticParams] Build-time connectivity error:", error);
+        return []; // Fallback for local build environments without DB access
+    }
 }
 
 // Optimization: Separate core data from list data for streaming

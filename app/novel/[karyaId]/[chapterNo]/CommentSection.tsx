@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MessageCircle } from 'lucide-react';
 import CommentForm from './CommentForm';
 import CommentItem from './CommentItem';
@@ -23,6 +23,7 @@ interface Comment {
     user: User;
     score: number;
     userVote?: number;
+    parent_id?: string | null;
     is_pinned?: boolean | null;
     replies?: Comment[];
 }
@@ -37,18 +38,59 @@ interface CommentSectionProps {
 
 export default function CommentSection({
     babId,
-    initialComments,
+    initialComments: data,
     currentUserId,
     currentUserRole,
     authorId
 }: CommentSectionProps) {
     const router = useRouter();
     const pathname = usePathname();
+    const [comments, setComments] = useState<Comment[]>(data);
     const [sortBy, setSortBy] = useState<'newest' | 'score'>('score');
     const [isPinning, setIsPinning] = useState<string | null>(null);
 
+    // Sync local state when props change (from router.refresh)
+    useEffect(() => {
+        setComments(data);
+    }, [data]);
+
+    const handleUpdateComment = (id: string, updates: Partial<Comment>) => {
+        setComments(prev => {
+            const updateInList = (list: Comment[]): Comment[] => {
+                return list.map(c => {
+                    if (c.id === id) return { ...c, ...updates };
+                    if (c.replies) return { ...c, replies: updateInList(c.replies) };
+                    return c;
+                });
+            };
+            return updateInList(prev);
+        });
+    };
+
+    const handleAddComment = (newComment: any) => {
+        if (newComment.parent_id) {
+            // Find parent and add to replies
+            setComments(prev => {
+                const updateReplies = (list: Comment[]): Comment[] => {
+                    return list.map(c => {
+                        if (c.id === newComment.parent_id) {
+                            return { ...c, replies: [newComment, ...(c.replies || [])] };
+                        }
+                        if (c.replies) {
+                            return { ...c, replies: updateReplies(c.replies) };
+                        }
+                        return c;
+                    });
+                };
+                return updateReplies(prev);
+            });
+        } else {
+            setComments(prev => [newComment, ...prev]);
+        }
+    };
+
     // Sort: Pinned first, then by selection
-    const sortedComments = [...initialComments].sort((a, b) => {
+    const sortedComments = [...comments].sort((a, b) => {
         if (a.is_pinned && !b.is_pinned) return -1;
         if (!a.is_pinned && b.is_pinned) return 1;
 
@@ -62,10 +104,33 @@ export default function CommentSection({
 
     const handleTogglePin = async (id: string) => {
         setIsPinning(id);
-        const res = await toggleCommentPin(id);
-        setIsPinning(null);
-        if (res.error) toast.error(res.error);
-        else router.refresh();
+        
+        // Optimistic Update
+        const oldComments = [...comments];
+        const targetComment = comments.find(c => c.id === id);
+        const newPinnedStatus = !targetComment?.is_pinned;
+
+        setComments(prev => prev.map(c => {
+            if (c.id === id) return { ...c, is_pinned: newPinnedStatus };
+            // Optional: If you only want one pinned comment at a time, unpin others
+            // return { ...c, is_pinned: false }; 
+            return c;
+        }));
+
+        try {
+            const res = await toggleCommentPin(id);
+            if (res.error) {
+                setComments(oldComments);
+                toast.error(res.error);
+            } else {
+                router.refresh(); // Sync with server data
+            }
+        } catch (error) {
+            setComments(oldComments);
+            toast.error("Gagal memproses sematan.");
+        } finally {
+            setIsPinning(null);
+        }
     };
 
     return (
@@ -76,13 +141,13 @@ export default function CommentSection({
                     <MessageCircle className="w-5 h-5 text-tan-primary" />
                     Diskusi Goresan
                 </h3>
-                <CommentForm babId={babId} />
+                <CommentForm babId={babId} onCommentAdded={handleAddComment} />
             </div>
 
             {/* Sort Filter */}
-            {initialComments.length > 0 && (
+            {comments.length > 0 && (
                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{initialComments.length} Komentar</span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{comments.length} Komentar</span>
                     <div className="flex gap-2">
                         <button
                             onClick={() => setSortBy('score')}
@@ -122,6 +187,8 @@ export default function CommentSection({
                             isPinning={isPinning}
                             isInitiallyCollapsed={true}
                             path={pathname}
+                            onCommentAdded={handleAddComment}
+                            onUpdateComment={handleUpdateComment}
                             isLast={index === sortedComments.length - 1}
                         />
                     ))

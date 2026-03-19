@@ -224,7 +224,7 @@ export default function ProfileClient({
                                                     <Link href={`/admin/editor/karya/${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-brown-mid dark:hover:bg-tan-light shadow-lg shadow-brown-dark/10 dark:shadow-tan-primary/10 transition-all active:scale-95 group/btn">
                                                         <PenTool className="w-3 h-3 group-hover/btn:rotate-12 transition-transform" /> Kelola
                                                     </Link>
-                                                    <Link href={`/admin/editor/upload?karyaId=${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95">
+                                                    <Link href={`/admin/editor/karya/${karya.id}`} prefetch={false} className="flex items-center gap-2 px-4 py-2 bg-tan-primary/10 text-tan-primary text-[8px] font-black uppercase tracking-widest rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95">
                                                         <Plus className="w-3 h-3" /> Tambah Bab
                                                     </Link>
                                                 </div>

@@ -124,9 +124,19 @@ export async function togglePostLike(postId: string) {
         });
 
         // [C] Toggle Logic: sudah like → unlike (delete), belum like → like (create)
+        let author_id = existingLike?.post.author_id;
+
         if (existingLike) {
             await (prisma as any).postLike.delete({ where: { id: existingLike.id } });
         } else {
+            // If it's a new like, we need to know the author_id for revalidation
+            const post = await (prisma as any).authorPost.findUnique({
+                where: { id: postId },
+                select: { author_id: true }
+            });
+            if (!post) return { error: "Postingan tidak ditemukan." };
+            author_id = post.author_id;
+
             await (prisma as any).postLike.create({
                 data: {
                     user_id: session.user.id,
@@ -136,7 +146,9 @@ export async function togglePostLike(postId: string) {
         }
 
         // [D] Revalidate cache agar jumlah like ter-update di UI
-        revalidateTag(`posts-author-${existingLike.post.author_id}`);
+        if (author_id) {
+            revalidateTag(`posts-author-${author_id}`);
+        }
         revalidatePath('/profile/[id]', 'page');
         return { success: true };
     } catch (e) {

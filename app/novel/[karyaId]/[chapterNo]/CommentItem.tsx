@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { UserCircle2, CornerDownRight, Trash2, Pin, PinOff, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import DeleteCommentButton from './DeleteCommentButton';
 import CommentForm from './CommentForm';
+import { toast } from 'sonner';
 
 interface User {
     id: string;
@@ -37,6 +38,8 @@ interface CommentItemProps {
     isInitiallyCollapsed?: boolean;
     path: string;
     isLast?: boolean;
+    onCommentAdded?: (comment: any) => void;
+    onUpdateComment?: (id: string, updates: any) => void;
 }
 
 export default function CommentItem({
@@ -50,23 +53,79 @@ export default function CommentItem({
     isPinning,
     isInitiallyCollapsed = false,
     path,
-    isLast = false
+    isLast = false,
+    onCommentAdded,
+    onUpdateComment
 }: CommentItemProps) {
     const [isCollapsed, setIsCollapsed] = useState(isInitiallyCollapsed);
     const [isReplying, setIsReplying] = useState(false);
     const [isVoting, setIsVoting] = useState(false);
+    const [localScore, setLocalScore] = useState(comment.score);
+    const [localUserVote, setLocalUserVote] = useState<number>(comment.userVote || 0);
     const [isTargeted, setIsTargeted] = useState(false);
 
-    const isAuthor = comment.user.id === authorId;
+    // Sync local state if parent prop changes
+    useEffect(() => {
+        setLocalScore(comment.score);
+        setLocalUserVote(comment.userVote || 0);
+    }, [comment.score, comment.userVote]);
+
+    const isAuthor = comment.user?.id === authorId;
     const canPin = (currentUserId === authorId || currentUserRole === 'admin') && depth === 0;
-    const canDelete = currentUserId === comment.user.id || currentUserRole === 'admin';
+    const canDelete = currentUserId === comment.user?.id || currentUserRole === 'admin';
 
     const handleVote = async (type: 1 | -1) => {
         if (!currentUserId || isVoting) return;
         setIsVoting(true);
-        const { voteComment } = await import('@/app/actions/vote');
-        await voteComment(comment.id, type, path);
-        setIsVoting(false);
+
+        const oldVote = localUserVote;
+        const oldScore = localScore;
+
+        // Optimistic Update
+        let newScore = localScore;
+        let newVote: number = type;
+
+        if (localUserVote === type) {
+            // Un-voting
+            newScore = localScore - type;
+            newVote = 0;
+        } else if (localUserVote !== 0) {
+            // Changing vote (-1 to 1 or vice versa)
+            newScore = localScore + (type * 2);
+            newVote = type;
+        } else {
+            // First time voting
+            newScore = localScore + type;
+            newVote = type;
+        }
+
+        setLocalScore(newScore);
+        setLocalUserVote(newVote);
+        if (onUpdateComment) {
+            onUpdateComment(comment.id, { score: newScore, userVote: newVote });
+        }
+
+        try {
+            const { voteComment } = await import('@/app/actions/vote');
+            const res = await voteComment(comment.id, type, path);
+            if (res.error) {
+                setLocalScore(oldScore);
+                setLocalUserVote(oldVote);
+                if (onUpdateComment) {
+                    onUpdateComment(comment.id, { score: oldScore, userVote: oldVote });
+                }
+                toast.error(res.error);
+            }
+        } catch (error) {
+            setLocalScore(oldScore);
+            setLocalUserVote(oldVote);
+            if (onUpdateComment) {
+                onUpdateComment(comment.id, { score: oldScore, userVote: oldVote });
+            }
+            toast.error("Gagal memproses vote.");
+        } finally {
+            setIsVoting(false);
+        }
     };
 
     // Cap visual depth at 2 for "Double Tree" look
@@ -157,26 +216,26 @@ export default function CommentItem({
                 <div className="flex flex-col items-center gap-0.5 min-w-[28px] pt-1.5 sticky top-24">
                     <button
                         onClick={() => handleVote(1)}
-                        className={`p-0.5 rounded-md transition-all active:scale-110 ${comment.userVote === 1 ? 'text-tan-primary bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/20 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary hover:bg-tan-primary/5'}`}
+                        className={`p-0.5 rounded-md transition-all active:scale-110 ${localUserVote === 1 ? 'text-tan-primary bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/20 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary hover:bg-tan-primary/5'}`}
                     >
-                        <ChevronUp className={`w-5 h-5 ${comment.userVote === 1 ? 'stroke-[3]' : ''}`} />
+                        <ChevronUp className={`w-5 h-5 ${localUserVote === 1 ? 'stroke-[3]' : ''}`} />
                     </button>
-                    <span className={`text-[10px] font-black ${comment.userVote === 1 ? 'text-tan-primary' : comment.userVote === -1 ? 'text-tan-primary/60' : 'text-tan-primary/40 dark:text-gray-500'}`}>
-                        {comment.score}
+                    <span className={`text-[10px] font-black ${localUserVote === 1 ? 'text-tan-primary' : localUserVote === -1 ? 'text-tan-primary/60' : 'text-tan-primary/40 dark:text-gray-500'}`}>
+                        {localScore}
                     </span>
                     <button
                         onClick={() => handleVote(-1)}
-                        className={`p-0.5 rounded-md transition-all active:scale-110 ${comment.userVote === -1 ? 'text-tan-primary/60 bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/10 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary/60 hover:bg-tan-primary/5'}`}
+                        className={`p-0.5 rounded-md transition-all active:scale-110 ${localUserVote === -1 ? 'text-tan-primary/60 bg-tan-primary/5 dark:bg-brown-mid ring-1 ring-tan-primary/10 shadow-sm' : 'text-tan-primary/30 hover:text-tan-primary/60 hover:bg-tan-primary/5'}`}
                     >
-                        <ChevronDown className={`w-5 h-5 ${comment.userVote === -1 ? 'stroke-[3]' : ''}`} />
+                        <ChevronDown className={`w-5 h-5 ${localUserVote === -1 ? 'stroke-[3]' : ''}`} />
                     </button>
                 </div>
 
                 <div className="flex-1 min-w-0 flex gap-3 items-start">
                     {/* Avatar */}
-                    <Link href={`/profile/${comment.user.username}`} prefetch={false} className="shrink-0 relative z-10 pt-1">
+                    <Link href={`/profile/${comment.user?.username || '#'}`} prefetch={false} className="shrink-0 relative z-10 pt-1">
                         <div className={`rounded-xl overflow-hidden bg-bg-cream dark:bg-brown-mid border-2 border-tan-primary/5 dark:border-brown-mid group-hover:border-tan-primary transition-all shadow-sm ${depth === 0 ? 'w-10 h-10' : 'w-8 h-8'}`}>
-                                {comment.user.avatar_url ? (
+                                {comment.user?.avatar_url ? (
                                     <Image src={comment.user.avatar_url} width={40} height={40} alt={comment.user.display_name} className="w-full h-full object-cover" />
                                 ) : (
                                 <UserCircle2 className="w-full h-full text-gray-300" />
@@ -187,8 +246,8 @@ export default function CommentItem({
                     <div className="flex-1 min-w-0">
                         {/* Header */}
                         <div className="flex items-center gap-2 mb-1 flex-wrap pt-1">
-                            <Link href={`/profile/${comment.user.username}`} prefetch={false} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight italic">
-                                {comment.user.display_name}
+                            <Link href={`/profile/${comment.user?.username || '#'}`} prefetch={false} className="text-xs font-black text-brown-dark dark:text-text-accent hover:text-tan-primary transition-colors uppercase tracking-tight italic">
+                                {comment.user?.display_name || 'Anonim'}
                             </Link>
                             {isAuthor && (
                                 <span className="text-[7px] font-black bg-brown-dark text-text-accent px-2 py-0.5 rounded-sm uppercase tracking-tighter shadow-sm italic">Penulis</span>
@@ -228,7 +287,10 @@ export default function CommentItem({
                         {/* Actions - ALWAYS VISIBLE */}
                         <div className="flex items-center gap-5">
                             <button
-                                onClick={() => setIsReplying(!isReplying)}
+                                onClick={() => {
+                                    setIsReplying(!isReplying);
+                                    if (!isReplying) setIsCollapsed(false); // Auto-expand when opening reply form
+                                }}
                                 className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 italic ${isReplying ? 'text-brown-dark bg-tan-primary/10 px-2.5 py-1 rounded-lg' : 'text-tan-primary/40 hover:text-brown-dark'}`}
                             >
                                 <MessageCircle className="w-3.5 h-3.5" />
@@ -269,7 +331,8 @@ export default function CommentItem({
                                             }}
                                             autoFocus
                                             isReply
-                                            replyToUsername={comment.user.username}
+                                            replyToUsername={comment.user?.username}
+                                            onCommentAdded={onCommentAdded}
                                         />
                                     </div>
                                 )}
@@ -290,6 +353,8 @@ export default function CommentItem({
                                                 isPinning={isPinning}
                                                 isInitiallyCollapsed={false}
                                                 path={path}
+                                                onCommentAdded={onCommentAdded}
+                                                onUpdateComment={onUpdateComment}
                                                 isLast={index === comment.replies!.length - 1}
                                             />
                                         ))}

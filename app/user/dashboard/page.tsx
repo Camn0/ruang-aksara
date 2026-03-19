@@ -538,31 +538,6 @@ export default async function UserDashboardPage() {
                     </div>
                 </section>
 
-                {/* PERPUSTAKAAN */}
-                <section className="bg-tan-light/20 dark:bg-brown-mid/20 rounded-[3rem] p-6 border border-tan-light dark:border-brown-mid shadow-xl mb-12">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-2">
-                            <BookOpen className="w-5 h-5 text-tan-primary" /><h2 className="text-lg font-open-sans font-bold text-text-main dark:text-text-accent italic">Perpustakaan</h2>
-                        </div>
-                        <Link href="/library" prefetch={false} className="w-9 h-9 rounded-full bg-tan-light/30 dark:bg-brown-mid/30 flex items-center justify-center text-tan-primary hover:bg-tan-primary hover:text-text-accent transition-all border border-tan-light"><History className="w-4 h-4" /></Link>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                        {bookmarks.slice(0, 8).map(b => (
-                            <Link key={b.id} href={`/novel/${b.karya.id}`} prefetch={false} className="flex items-center gap-3 p-3 bg-bg-cream/50 dark:bg-brown-dark/20 rounded-2xl hover:bg-bg-cream dark:hover:bg-brown-mid/40 border border-tan-light/30 dark:border-brown-mid transition-all group overflow-hidden relative shadow-sm hover:shadow-md border-l-4 border-l-tan-primary">
-                                <div className="w-12 h-16 rounded-xl overflow-hidden shrink-0 shadow-sm border border-tan-light/50 dark:border-brown-mid">{b.karya.cover_url ? <Image src={b.karya.cover_url} width={48} height={64} sizes="48px" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="" /> : <div className="w-full h-full bg-tan-light/10" />}</div>
-                                <div className="min-w-0 flex-1">
-                                    <div className="flex justify-between items-start mb-0.5"><h4 className="text-[11px] font-black text-text-main dark:text-text-accent line-clamp-1 group-hover:text-tan-primary transition-colors">{b.karya.title}</h4><div className="flex items-center gap-0.5 text-tan-primary shrink-0 ml-2"><Star className="w-2 h-2 fill-tan-primary" /><span className="text-[7px] font-black">{b.karya.avg_rating.toFixed(1)}</span></div></div>
-                                    <p className="text-[7px] font-bold text-brown-mid/40 dark:text-text-accent/80 uppercase tracking-widest mb-1 truncate">{b.karya.penulis_alias}</p>
-                                    <p className="text-[9px] font-black text-tan-primary truncate mb-1">{getChapterTitle(b.karya.id, b.last_chapter)}</p>
-                                    <div className="flex items-center justify-between"><div className="flex items-center gap-1.5"><p className="text-[8px] font-black text-brown-mid dark:text-text-accent/60 italic opacity-60">{b.last_chapter} / {b.karya._count.bab}</p>{b.karya._count.bab === b.last_chapter && <div className="bg-green-500/10 text-green-600 rounded-full p-0.5"><Check className="w-2 h-2" /></div>}</div><div className="flex items-center gap-1 text-[7px] font-black uppercase tracking-tighter text-brown-mid/40"><Eye className="w-2 h-2" /><span>{b.karya.total_views > 1000 ? `${(b.karya.total_views/1000).toFixed(1)}k` : b.karya.total_views}</span></div></div>
-                                </div>
-                            </Link>
-                        ))}
-                        {(bookmarks.length === 0 || bookmarks.length < 8) && (
-                            <Link href="/search" prefetch={false} className="flex items-center justify-center gap-2 py-4 border-2 border-dashed border-tan-light dark:border-brown-mid rounded-3xl text-tan-primary hover:bg-tan-light/20 dark:hover:bg-brown-mid/20 transition-all group"><BookOpen className="w-4 h-4" /><span className="text-[10px] font-black uppercase tracking-tighter">Cari Baru</span></Link>
-                        )}
-                    </div>
-                </section>
             </div>
         </div>
     );
