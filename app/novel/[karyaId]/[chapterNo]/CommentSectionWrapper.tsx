@@ -31,7 +31,7 @@ export default async function CommentSectionWrapper({ babId, authorId }: Comment
                         avatar_url: true
                     }
                 },
-                _count: { select: { votes: true } },
+                score: true,
                 votes: session?.user?.id ? { 
                     where: { user_id: session.user.id },
                     select: { type: true }
@@ -56,7 +56,7 @@ export default async function CommentSectionWrapper({ babId, authorId }: Comment
         return roots
             .map(c => ({
                 ...c,
-                score: c._count?.votes || 0,
+                score: c.score || 0,
                 userVote: c.votes?.[0]?.type || 0,
                 replies: buildCommentTree(flatComments, c.id)
             }))

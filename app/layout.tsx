@@ -8,6 +8,10 @@ import { SidebarProvider } from "./components/SidebarContext";
 import LayoutContent from "./components/LayoutContent";
 import { ThemeProvider } from "./components/ThemeProvider";
 import InstantLoadingBar from "./components/InstantLoadingBar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import RealTimeNotificationListener from "./components/RealTimeNotificationListener";
+import PushManager from "./components/PushManager";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
 
@@ -17,8 +21,13 @@ const openSans = Open_Sans({ subsets: ["latin"], variable: '--font-open-sans' })
 
 export const metadata: Metadata = {
     title: "Ruang Aksara",
-    description: "Platform Publikasi Sastra Digital",
+    description: "Sanctuari Literasi Digital: Tempat di mana setiap kata bernafas dan setiap cerita menemukan rumahnya.",
     manifest: "/manifest.json",
+    appleWebApp: {
+        title: "Ruang Aksara",
+        statusBarStyle: "default",
+        capable: true,
+    },
 };
 
 export const viewport = {
@@ -28,11 +37,12 @@ export const viewport = {
     maximumScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const session = await getServerSession(authOptions);
     return (
         <html lang="id" className={`${inter.variable} ${lobster.variable} ${openSans.variable}`}>
             <body className={`${inter.className} bg-bg-cream dark:bg-bg-dark min-h-screen flex text-text-main dark:text-text-accent`}>
@@ -46,6 +56,8 @@ export default function RootLayout({
                         </LayoutContent>
                     </SidebarProvider>
                     <Toaster position="top-center" richColors />
+                    <RealTimeNotificationListener currentUserId={session?.user?.id} />
+                    <PushManager />
                 </ThemeProvider>
             </body>
         </html >

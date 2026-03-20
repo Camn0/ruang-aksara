@@ -1,21 +1,56 @@
 {
     "name": "Ruang Aksara",
     "short_name": "Ruang Aksara",
-    "description": "Platform Baca Digital",
+    "description": "Sanctuari Literasi Digital: Tempat di mana setiap kata bernafas dan setiap cerita menemukan rumahnya.",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#f2ead7",
+    "background_color": "#F2EAD7",
     "theme_color": "#AF8F6F",
+    "orientation": "portrait-primary",
+    "categories": [
+        "books",
+        "social",
+        "entertainment"
+    ],
     "icons": [
         {
             "src": "/icon.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         },
         {
             "src": "/icon.webp",
             "sizes": "512x512",
             "type": "image/webp"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Perpustakaan",
+            "url": "/library",
+            "icons": [
+                {
+                    "src": "/icon.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Tulis Karya",
+            "url": "/admin/dashboard",
+            "icons": [
+                {
+                    "src": "/icon.png",
+                    "sizes": "192x192"
+                }
+            ]
         }
     ]
 }

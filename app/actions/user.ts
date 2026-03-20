@@ -80,7 +80,7 @@ export async function submitComment(formData: FormData) {
                         userId: parentComment.user_id,
                         actorId: session.user.id,
                         type: 'REPLY',
-                        category: 'DIRECT',
+                        category: 'SOCIAL',
                         content: content,
                         link: `/novel/${parentComment.bab.karya_id}/${parentComment.bab.chapter_no}`
                     });

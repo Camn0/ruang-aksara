@@ -15,7 +15,8 @@ export async function createNotification({
     type,
     category = 'UPDATE',
     content,
-    link
+    link,
+    clusteringKey
 }: {
     userId: string;
     actorId?: string;
@@ -23,11 +24,45 @@ export async function createNotification({
     category?: 'DIRECT' | 'IMPORTANT' | 'UPDATE' | 'SOCIAL';
     content?: string;
     link: string;
+    clusteringKey?: string;
 }) {
     // Avoid notifying yourself
     if (userId === actorId) return null;
 
     try {
+        // [CLUSTERING LOGIC]
+        // Group similar notifications (LIKE, FOLLOW, NEW_CHAPTER) to avoid spam
+        if (type === 'LIKE' || type === 'FOLLOW' || type === 'NEW_CHAPTER') {
+            const existing = await (prisma as any).notification.findFirst({
+                where: { 
+                    userId, 
+                    type, 
+                    isRead: false,
+                    // Use clusteringKey for precise grouping if available, otherwise fallback to link
+                    // For NEW_CHAPTER, clusteringKey is always the karya_id
+                    ...(clusteringKey ? { link: { contains: clusteringKey } } : { link })
+                },
+                orderBy: { created_at: 'desc' }
+            });
+
+            if (existing) {
+                let count = 2;
+                if (existing.content && existing.content.startsWith('CLUSTER:')) {
+                    const prevCount = parseInt(existing.content.split(':')[1]) || 1;
+                    count = prevCount + 1;
+                }
+
+                return await (prisma as any).notification.update({
+                    where: { id: existing.id },
+                    data: {
+                        actorId, // Update to the most recent actor
+                        content: `CLUSTER:${count}`,
+                        created_at: new Date() // Bring to top
+                    }
+                });
+            }
+        }
+
         const notif = await (prisma as any).notification.create({
             data: {
                 userId,
@@ -38,10 +73,38 @@ export async function createNotification({
                 link
             }
         });
-
         // Trigger cache revalidation for the receiver
         revalidateTag(`notifications-${userId}`);
         
+        // --- LAYER 3: TRIGGER WEB PUSH (PERSISTENT ALERTS) ---
+        // We do this asynchronously to avoid blocking the main server action response
+        (async () => {
+            try {
+                const pushSubscriptions = await (prisma as any).pushSubscription.findMany({
+                    where: { userId }
+                });
+
+                if (pushSubscriptions.length > 0) {
+                    const { sendPushNotification } = await import('@/lib/push');
+                    const payload = {
+                        title: "Ruang Aksara",
+                        body: content || `Anda menerima kabar baru: ${type}`,
+                        url: link,
+                        icon: "/icon.png"
+                    };
+
+                    await Promise.all(pushSubscriptions.map(async (sub: any) => {
+                        const res = await sendPushNotification(sub, payload);
+                        if (res.error === 'GONE') {
+                            await (prisma as any).pushSubscription.delete({ where: { endpoint: sub.endpoint } });
+                        }
+                    }));
+                }
+            } catch (pErr) {
+                console.error("[createNotification] Push Error:", pErr);
+            }
+        })();
+
         return notif;
     } catch (error) {
         console.error("[createNotification] Error:", error);
@@ -119,10 +182,26 @@ export async function markAllAsRead() {
     }
 }
 
+export async function deleteNotification(id: string) {
+    const session = await getServerSession(authOptions);
+    if (!session) return { error: "Unauthorized" };
+
+    try {
+        await (prisma as any).notification.delete({
+            where: { id, userId: session.user.id }
+        });
+
+        revalidateTag(`notifications-${session.user.id}`);
+        return { success: true };
+    } catch (error) {
+        return { error: "Failed to delete notification" };
+    }
+}
+
 /**
  * Scans content for @username and triggers MENTION notifications.
  */
-export async function notifyMentions(content: string, actorId: string, link: string) {
+export async function notifyMentions(content: string, actorId: string, link: string, category: 'DIRECT' | 'SOCIAL' = 'SOCIAL') {
     const mentionRegex = /@(\w+)/g;
     const usernames: string[] = [];
     let match;
@@ -146,7 +225,7 @@ export async function notifyMentions(content: string, actorId: string, link: str
                 userId: u.id,
                 actorId,
                 type: 'MENTION',
-                category: 'DIRECT',
+                category,
                 content: content,
                 link
             })

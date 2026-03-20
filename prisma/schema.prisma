@@ -30,6 +30,7 @@ model User {
   review_upvotes ReviewUpvote[]
   review_comments ReviewComment[]
   author_posts   AuthorPost[]
+  push_subscriptions PushSubscription[]
   post_likes     PostLike[]
   post_comments  PostComment[]
   
@@ -55,7 +56,7 @@ model Follow {
   
   following_id String  // ID user yang di-follow (Author/Admin)
   following    User    @relation("FollowingUser", fields: [following_id], references: [id], onDelete: Cascade)
-
+  
   created_at  DateTime @default(now())
 
   @@unique([follower_id, following_id]) // Tidak boleh follow 2 kali
@@ -310,4 +311,16 @@ model Notification {
 
   @@index([userId])
   @@index([created_at(sort: Desc)])
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  created_at DateTime @default(now())
+
+  @@index([userId])
 }

@@ -121,8 +121,8 @@ export async function getMoreChapterComments(babId: string, skip: number, take: 
                         avatar_url: true
                     }
                 },
-                _count: { select: { votes: true } },
-                votes: session?.user?.id ? { 
+                score: true,
+                userVote: session?.user?.id ? { 
                     where: { user_id: session.user.id },
                     select: { type: true }
                 } : false,
@@ -144,8 +144,8 @@ export async function getMoreChapterComments(babId: string, skip: number, take: 
                     user: {
                         select: { id: true, username: true, display_name: true, avatar_url: true }
                     },
-                    _count: { select: { votes: true } },
-                    votes: session?.user?.id ? { 
+                    score: true,
+                    userVote: session?.user?.id ? { 
                         where: { user_id: session.user.id },
                         select: { type: true }
                     } : false,
@@ -155,12 +155,12 @@ export async function getMoreChapterComments(babId: string, skip: number, take: 
 
             return {
                 ...c,
-                score: c._count?.votes || 0,
-                userVote: c.votes?.[0]?.type || 0,
+                score: c.score || 0,
+                userVote: c.userVote?.[0]?.type || 0,
                 replies: replies.map((r: any) => ({
                     ...r,
-                    score: r._count?.votes || 0,
-                    userVote: r.votes?.[0]?.type || 0
+                    score: r.score || 0,
+                    userVote: r.userVote?.[0]?.type || 0
                 }))
             };
         }));

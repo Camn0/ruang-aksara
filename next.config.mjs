@@ -2,9 +2,10 @@ import withPWAInit from "next-pwa";
 
 const withPWA = withPWAInit({
     dest: "public",
-    disable: process.env.NODE_ENV === "development",
+    disable: process.env.NODE_ENV === "development" && process.env.ENABLE_PWA_DEV !== "true",
     register: true,
     skipWaiting: true,
+    customWorkerDir: "worker",
 });
 
 /** @type {import('next').NextConfig} */

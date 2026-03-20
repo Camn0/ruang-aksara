@@ -89,7 +89,7 @@ export async function createAuthorPost(formData: FormData) {
                     userId: f.follower_id,
                     actorId: author_id,
                     type: 'AUTHOR_POST',
-                    category: 'UPDATE',
+                    category: 'IMPORTANT',
                     content: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
                     link: `/profile/${author_id}`
                 })
@@ -257,7 +257,7 @@ export async function submitPostComment(formData: FormData) {
                     userId: newComment.post.author_id,
                     actorId: session.user.id,
                     type: 'REPLY',
-                    category: 'DIRECT',
+                    category: 'SOCIAL',
                     content: content,
                     link: `/profile/${newComment.post.author_id}`
                 });

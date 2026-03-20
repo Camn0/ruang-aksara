@@ -46,12 +46,15 @@ export async function voteComment(commentId: string, type: 1 | -1, path: string)
             }
         } else {
             // New vote
-            await prisma.$transaction([
+            const [newVote] = await prisma.$transaction([
                 prisma.commentVote.create({
                     data: {
                         user_id: session.user.id,
                         comment_id: commentId,
                         type
+                    },
+                    include: {
+                        comment: { select: { user_id: true, bab: { select: { karya_id: true, chapter_no: true } } } }
                     }
                 }),
                 prisma.comment.update({
@@ -59,6 +62,23 @@ export async function voteComment(commentId: string, type: 1 | -1, path: string)
                     data: { score: { increment: type } }
                 })
             ]);
+
+            // Trigger Notification for UPVOTE only
+            if (type === 1) {
+                const { createNotification } = await import("./notification");
+                try {
+                    await createNotification({
+                        userId: (newVote as any).comment.user_id,
+                        actorId: session.user.id,
+                        type: 'LIKE',
+                        category: 'SOCIAL',
+                        link: `/novel/${(newVote as any).comment.bab.karya_id}/${(newVote as any).comment.bab.chapter_no}#comment-${commentId}`,
+                        clusteringKey: commentId
+                    });
+                } catch (err) {
+                    console.error("Failed to trigger comment vote notification:", err);
+                }
+            }
         }
 
         revalidatePath(path);

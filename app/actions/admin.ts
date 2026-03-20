@@ -220,7 +220,8 @@ export async function createBab(formData: FormData) {
                     type: 'NEW_CHAPTER',
                     category: 'UPDATE',
                     content: `Bab ${chapter_no}${chapterTitle} has been uploaded to "${karya?.title}"`,
-                    link: `/novel/${karya_id}/${chapter_no}`
+                    link: `/novel/${karya_id}/${chapter_no}`,
+                    clusteringKey: karya_id
                 })
             ));
         } catch (err) {

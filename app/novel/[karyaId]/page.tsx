@@ -176,7 +176,9 @@ async function ReviewsSection({ karyaId, sort, uploaderId, upvotedReviews }: { k
                                 )}
                             </div>
                             <div>
-                                <p className="text-sm font-black text-brown-dark dark:text-text-accent tracking-tight">{review.user.display_name}</p>
+                                <Link href={`/profile/${review.user.username}`} prefetch={false} className="text-sm font-black text-brown-dark dark:text-text-accent tracking-tight hover:text-tan-primary transition-colors">
+                                    {review.user.display_name}
+                                </Link>
                                 <p className="text-[10px] font-black text-tan-primary/60 uppercase tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                             </div>
                         </div>

@@ -57,14 +57,15 @@ export async function toggleReviewUpvote(reviewId: string, path: string) {
                 }
             });
 
-            // Trigger Notification (SOCIAL Category)
+            // Trigger Notification (SOCIAL Category with Clustering)
             try {
                 await createNotification({
                     userId: newUpvote.review.user_id,
                     actorId: session.user.id,
                     type: 'LIKE',
                     category: 'SOCIAL',
-                    link: `/novel/${newUpvote.review.karya_id}`
+                    link: `/novel/${newUpvote.review.karya_id}`,
+                    clusteringKey: reviewId,
                 });
             } catch (err) {
                 console.error("Failed to trigger review upvote notification:", err);
@@ -137,7 +138,7 @@ export async function submitReviewComment(formData: FormData) {
                     userId: newComment.review.user_id,
                     actorId: session.user.id,
                     type: 'REPLY',
-                    category: 'DIRECT',
+                    category: 'SOCIAL',
                     content: content,
                     link: `/novel/${newComment.review.karya_id}`
                 });
@@ -148,7 +149,7 @@ export async function submitReviewComment(formData: FormData) {
 
         // [F] Trigger Mentions
         try {
-            await notifyMentions(content, session.user.id, `/novel/${newComment.review.karya_id}`);
+            await notifyMentions(content, session.user.id, `/novel/${newComment.review.karya_id}`, 'SOCIAL');
         } catch (err) {
             console.error("Failed to trigger review mention notification:", err);
         }
