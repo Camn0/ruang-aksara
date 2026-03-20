@@ -273,9 +273,6 @@ export default async function UserDashboardPage() {
                 </div>
                 <div className="flex items-center gap-3">
                     <ThemeToggle />
-                    <Link href={`/profile/${session.user.id}`} prefetch={false} className="relative group">
-                        <UserCircle2 className="w-8 h-8 text-tan-primary group-hover:text-tan-light dark:group-hover:text-text-accent transition-all group-active:scale-90" />
-                    </Link>
                     <LogoutButton />
                 </div>
             </header>
