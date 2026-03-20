@@ -33,7 +33,10 @@ export default async function NotificationsPage() {
             </div>
 
             {/* Notification List Wrapper (to handle interactive marking) */}
-            <NotificationListWrapper initialNotifications={notifications as any[]} />
+            <NotificationListWrapper 
+                initialNotifications={notifications as any[]} 
+                currentUserId={session.user.id} 
+            />
             
             {/* Aesthetic Background Decoration */}
             <div className="fixed -bottom-20 -right-20 w-80 h-80 bg-tan-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
