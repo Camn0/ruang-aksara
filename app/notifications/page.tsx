@@ -18,21 +18,8 @@ export default async function NotificationsPage() {
     const notifications = res.success ? res.data : [];
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-12 md:py-20 animate-in fade-in duration-700">
-            {/* Header Area */}
-            <div className="flex items-center justify-between mb-10">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-tan-primary/20 rounded-2xl flex items-center justify-center text-brown-dark border border-tan-primary/20">
-                        <Bell className="w-6 h-6 animate-bounce" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-lobster text-brown-dark dark:text-text-accent">Pusat Notifikasi</h1>
-                        <p className="text-sm text-gray-500 font-open-sans">Pantau aktivitas terbaru Anda di Ruang Aksara</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Notification List Wrapper (to handle interactive marking) */}
+        <div className="min-h-screen bg-bg-paper">
+            {/* Notification List Wrapper handles the unified header and layout */}
             <NotificationListWrapper 
                 initialNotifications={notifications as any[]} 
                 currentUserId={session.user.id} 
