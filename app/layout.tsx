@@ -12,6 +12,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import RealTimeNotificationListener from "./components/RealTimeNotificationListener";
 import PushManager from "./components/PushManager";
+import PwaRegistration from "./components/PwaRegistration";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
 
@@ -58,6 +59,7 @@ export default async function RootLayout({
                     <Toaster position="top-center" richColors />
                     <RealTimeNotificationListener currentUserId={session?.user?.id} />
                     <PushManager />
+                    <PwaRegistration />
                 </ThemeProvider>
             </body>
         </html >
