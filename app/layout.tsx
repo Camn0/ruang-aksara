@@ -45,6 +45,22 @@ export default async function RootLayout({
     const session = await getServerSession(authOptions);
     return (
         <html lang="id" className={`${inter.variable} ${lobster.variable} ${openSans.variable}`}>
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            if ('serviceWorker' in navigator) {
+                                window.addEventListener('load', function() {
+                                    navigator.serviceWorker.register('/sw.js').then(
+                                        function(reg) { console.log('SW registered:', reg.scope); },
+                                        function(err) { console.log('SW failed:', err); }
+                                    );
+                                });
+                            }
+                        `,
+                    }}
+                />
+            </head>
             <body className={`${inter.className} bg-bg-cream dark:bg-bg-dark min-h-screen flex text-text-main dark:text-text-accent`}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                     <Suspense fallback={null}>
