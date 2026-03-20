@@ -17,6 +17,7 @@ import ThemeToggle from '@/app/components/ThemeToggle';
 import CreatePostForm from './CreatePostForm';
 import PostLikeButton from './PostLikeButton';
 import PostCommentSection from './PostCommentSection';
+import StaticNotificationBell from '@/app/components/StaticNotificationBell';
 
 interface ProfileClientProps {
     userProfile: any;
@@ -511,6 +512,7 @@ export default function ProfileClient({
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <div className="flex items-center gap-2">
+                    {isOwnProfile && <StaticNotificationBell />}
                     <ThemeToggle />
                     {isOwnProfile && (
                         <Link href="/profile/settings" prefetch={false} className="p-2 -mr-2 text-white/70 hover:text-white transition-colors">

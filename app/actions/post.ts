@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { uploadToImageKit } from "@/lib/imageKit";
+import { createNotification, notifyMentions } from "./notification";
 
 // ==============================================================================
 // 1. MUTASI AUTHOR: MEMBUAT POSTINGAN / PENGUMUMAN BARU
@@ -75,6 +76,28 @@ export async function createAuthorPost(formData: FormData) {
         // Pattern '[id]' berarti semua halaman profil dinamis akan di-revalidate.
         revalidateTag(`posts-author-${author_id}`);
         revalidatePath('/profile/[id]', 'page');
+
+        // Trigger Notification for all followers
+        try {
+            const followers = await prisma.follow.findMany({
+                where: { following_id: author_id },
+                select: { follower_id: true }
+            });
+
+            await Promise.all(followers.map(f => 
+                createNotification({
+                    userId: f.follower_id,
+                    actorId: author_id,
+                    type: 'AUTHOR_POST',
+                    category: 'UPDATE',
+                    content: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
+                    link: `/profile/${author_id}`
+                })
+            ));
+        } catch (err) {
+            console.error("Failed to trigger author post notifications:", err);
+        }
+
         return { success: true };
     } catch (e) {
         // DEBUG: Periksa error di terminal server (bukan di browser console)
@@ -143,6 +166,19 @@ export async function togglePostLike(postId: string) {
                     post_id: postId
                 }
             });
+
+            // Trigger Notification
+            try {
+                await createNotification({
+                    userId: author_id!,
+                    actorId: session.user.id,
+                    type: 'LIKE',
+                    category: 'SOCIAL',
+                    link: `/profile/${author_id}`
+                });
+            } catch (err) {
+                console.error("Failed to trigger post like notification:", err);
+            }
         }
 
         // [D] Revalidate cache agar jumlah like ter-update di UI
@@ -213,6 +249,30 @@ export async function submitPostComment(formData: FormData) {
         // [E] Revalidate cache
         revalidateTag(`posts-author-${newComment.post.author_id}`);
         revalidatePath('/profile/[id]', 'page');
+
+        // Trigger Notification
+        try {
+            if (newComment.post.author_id !== session.user.id) {
+                await createNotification({
+                    userId: newComment.post.author_id,
+                    actorId: session.user.id,
+                    type: 'REPLY',
+                    category: 'DIRECT',
+                    content: content,
+                    link: `/profile/${newComment.post.author_id}`
+                });
+            }
+        } catch (err) {
+            console.error("Failed to trigger post comment notification:", err);
+        }
+
+        // Trigger Mentions
+        try {
+            await notifyMentions(content, session.user.id, `/profile/${newComment.post.author_id}`);
+        } catch (err) {
+            console.error("Failed to trigger mention notification:", err);
+        }
+
         return { success: true, data: newComment };
     } catch (e) {
         console.error("[submitPostComment] Error:", e);

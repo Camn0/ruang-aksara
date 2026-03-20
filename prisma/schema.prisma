@@ -41,6 +41,10 @@ model User {
   // Epic 12: Sistem Follow (Relasi Self-referential Many-to-Many lewat model join explicit)
   followers     Follow[]   @relation("FollowingUser") // Orang-orang yang mengikuti user ini
   following     Follow[]   @relation("FollowerUser")  // Orang-orang yang diikuti oleh user ini
+  
+  // Notification Relations
+  notifications           Notification[] @relation("receiver")
+  triggered_notifications Notification[] @relation("actor")
 }
 
 // Epic 12: Tabel relasional untuk sistem Follow
@@ -270,4 +274,40 @@ model PostComment {
   post       AuthorPost @relation(fields: [post_id], references: [id], onDelete: Cascade)
   content    String     @db.Text
   created_at DateTime   @default(now())
+}
+
+// Epic 23: Notification System
+enum NotificationType {
+  REPLY
+  MENTION
+  LIKE
+  NEW_CHAPTER
+  FOLLOW
+  AUTHOR_POST
+  NEW_WORK
+}
+
+enum NotificationCategory {
+  DIRECT
+  IMPORTANT
+  UPDATE
+  SOCIAL
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  userId      String           // Receiver of the notification
+  actorId     String?          // The one who triggered it (User)
+  type        NotificationType
+  category    NotificationCategory @default(UPDATE)
+  content     String?          // Optional snippet (e.g., the reply text)
+  link        String           // Where to go when clicked (/novel/id/bab-no)
+  isRead      Boolean          @default(false)
+  created_at  DateTime         @default(now())
+
+  user        User             @relation("receiver", fields: [userId], references: [id], onDelete: Cascade)
+  actor       User?            @relation("actor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([created_at(sort: Desc)])
 }

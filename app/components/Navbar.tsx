@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { User } from 'lucide-react';
 import Image from 'next/image';
 import ThemeToggle from './ThemeToggle';
+import NotificationBell from './NotificationBell';
 
 // Mengapa: Navbar ini adalah Client Component agar bisa mendeteksi state user 
 // secara real-time via `useSession()` dan mengeksekusi aksi interaktif seperti `signOut()`.
@@ -27,6 +28,7 @@ export default function Navbar() {
 
                     {/* Utils */}
                     <div className="flex items-center gap-3">
+                        <NotificationBell />
                         <ThemeToggle />
                         {status === 'authenticated' && session ? (
                             <Link 

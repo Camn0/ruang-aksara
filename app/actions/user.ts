@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { revalidateTag } from 'next/cache';
 import { uploadToImageKit } from '@/lib/imageKit';
+import { createNotification, notifyMentions } from './notification';
 
 // ==============================================================================
 // 1. MUTASI USER (READER): MENGUNGGAH KOMENTAR PADA BAB
@@ -65,6 +66,42 @@ export async function submitComment(formData: FormData) {
                 }
             }
         });
+
+        // [E] Trigger Notification if it's a reply
+        if (parent_id) {
+            try {
+                const parentComment = await (prisma as any).comment.findUnique({
+                    where: { id: parent_id },
+                    select: { user_id: true, bab: { select: { karya_id: true, chapter_no: true } } }
+                });
+
+                if (parentComment && parentComment.user_id !== session.user.id) {
+                    await createNotification({
+                        userId: parentComment.user_id,
+                        actorId: session.user.id,
+                        type: 'REPLY',
+                        category: 'DIRECT',
+                        content: content,
+                        link: `/novel/${parentComment.bab.karya_id}/${parentComment.bab.chapter_no}`
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to trigger reply notification:", err);
+            }
+        }
+
+        // [F] Trigger Mentions
+        try {
+            const bab = await (prisma as any).bab.findUnique({
+                where: { id: bab_id },
+                select: { karya_id: true, chapter_no: true }
+            });
+            if (bab) {
+                await notifyMentions(content, session.user.id, `/novel/${bab.karya_id}/${bab.chapter_no}`);
+            }
+        } catch (err) {
+            console.error("Failed to trigger mention notification:", err);
+        }
 
         // Mengembalikan object murni bagi sinkronisasi state React
         return { success: true, data: newComment };
@@ -493,6 +530,19 @@ export async function toggleFollow(targetUserId: string, revalidatePathStr?: str
                 following_id: targetUserId
             }
         });
+
+        // Trigger Notification
+        try {
+            await createNotification({
+                userId: targetUserId,
+                actorId: followerId,
+                type: 'FOLLOW',
+                category: 'SOCIAL',
+                link: `/profile/${followerId}`
+            });
+        } catch (err) {
+            console.error("Failed to trigger follow notification:", err);
+        }
     }
 
     if (revalidatePathStr) {

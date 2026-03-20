@@ -7,6 +7,7 @@ import Image from "next/image";
 import { UserCircle2, History, Star, BookOpen, Flame, ChevronRight, Heart, Eye, Users, Check, Sparkles, MessageSquare, Library } from "lucide-react";
 import LogoutButton from "@/app/components/LogoutButton";
 import ThemeToggle from "@/app/components/ThemeToggle";
+import StaticNotificationBell from "@/app/components/StaticNotificationBell";
 import { unstable_cache } from "next/cache";
 import DashboardStats from "./DashboardStats";
 import { formatDistanceToNow } from 'date-fns';
@@ -272,6 +273,7 @@ export default async function UserDashboardPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                    <StaticNotificationBell />
                     <ThemeToggle />
                     <LogoutButton />
                 </div>

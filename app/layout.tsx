@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Lobster, Open_Sans } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./components/AuthProvider";
-import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 import Sidebar from "./components/Sidebar";
 import { SidebarProvider } from "./components/SidebarContext";

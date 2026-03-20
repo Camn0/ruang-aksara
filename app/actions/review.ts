@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { createNotification, notifyMentions } from "./notification";
 
 // ==============================================================================
 // 1. MUTASI USER: TOGGLE UPVOTE PADA REVIEW
@@ -46,12 +47,28 @@ export async function toggleReviewUpvote(reviewId: string, path: string) {
         if (existingUpvote) {
             await (prisma as any).reviewUpvote.delete({ where: { id: existingUpvote.id } });
         } else {
-            await (prisma as any).reviewUpvote.create({
+            const newUpvote = await (prisma as any).reviewUpvote.create({
                 data: {
                     user_id: session.user.id,
                     review_id: reviewId
+                },
+                include: {
+                    review: { select: { user_id: true, karya_id: true } }
                 }
             });
+
+            // Trigger Notification (SOCIAL Category)
+            try {
+                await createNotification({
+                    userId: newUpvote.review.user_id,
+                    actorId: session.user.id,
+                    type: 'LIKE',
+                    category: 'SOCIAL',
+                    link: `/novel/${newUpvote.review.karya_id}`
+                });
+            } catch (err) {
+                console.error("Failed to trigger review upvote notification:", err);
+            }
         }
 
         // [D] Revalidate cache di path spesifik (halaman novel detail)
@@ -108,12 +125,35 @@ export async function submitReviewComment(formData: FormData) {
                 review_id,
                 content: content.trim()
             },
-            select: {
-                review: { select: { karya_id: true } }
+            include: {
+                review: { select: { user_id: true, karya_id: true } }
             }
         });
 
-        // [E] Revalidate cache halaman novel detail
+        // [E] Trigger Notification (DIRECT Category)
+        try {
+            if (newComment.review.user_id !== session.user.id) {
+                await createNotification({
+                    userId: newComment.review.user_id,
+                    actorId: session.user.id,
+                    type: 'REPLY',
+                    category: 'DIRECT',
+                    content: content,
+                    link: `/novel/${newComment.review.karya_id}`
+                });
+            }
+        } catch (err) {
+            console.error("Failed to trigger review comment notification:", err);
+        }
+
+        // [F] Trigger Mentions
+        try {
+            await notifyMentions(content, session.user.id, `/novel/${newComment.review.karya_id}`);
+        } catch (err) {
+            console.error("Failed to trigger review mention notification:", err);
+        }
+
+        // [G] Revalidate cache halaman novel detail
         // Menggunakan karya_id spesifik agar path revalidation akurat
         const karyaId = newComment.review.karya_id;
         revalidateTag(`karya-${karyaId}`);

@@ -3,6 +3,7 @@
 import { useSidebar } from "./SidebarContext";
 import Sidebar from "./Sidebar";
 import BottomNav from "./BottomNav";
+import Navbar from "./Navbar";
 import AuthProvider from "./AuthProvider";
 import { usePathname } from "next/navigation";
 

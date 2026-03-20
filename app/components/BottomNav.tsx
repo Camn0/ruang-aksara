@@ -1,14 +1,31 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home, Search, Library, User, PenTool } from "lucide-react";
+import { getMyNotifications } from "@/app/actions/notification";
 import './BottomNav.css';
 
 export default function BottomNav() {
     const { data: session } = useSession();
     const pathname = usePathname();
+    const [hasUnread, setHasUnread] = useState(false);
+
+    // Fetch Unread Check
+    useEffect(() => {
+        if (!session) return;
+        const checkUnread = async () => {
+            const res = await getMyNotifications();
+            if (res.success && res.data) {
+                setHasUnread(res.data.some((n: any) => !n.read));
+            }
+        };
+        checkUnread();
+        const interval = setInterval(checkUnread, 60000); // Check every minute
+        return () => clearInterval(interval);
+    }, [session]);
 
     if (!session?.user) return null;
 
@@ -35,43 +52,45 @@ export default function BottomNav() {
     ];
 
     const menu = isAuthor ? authorMenu : readerMenu;
-    const activeIndex = menu.findIndex(item => 
+    const activeIndex = menu.findIndex(item =>
         pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path))
     );
 
-    // Default to 0 if not found
-    const currentActiveIndex = activeIndex === -1 ? 0 : activeIndex;
+    // Neutral state: Only show indicator if we have a match
+    const currentActiveIndex = activeIndex;
 
     return (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[400px] md:hidden">
-            <div className={`navigation relative ${isAuthor ? 'nav-author' : 'nav-reader'} active-${currentActiveIndex}-${menu.length}`}>
-                {/* 1. Cutout Wings (Inside clipping container that matches bar perfectly) */}
+            <div className={`navigation relative ${isAuthor ? 'nav-author' : 'nav-reader'} ${currentActiveIndex !== -1 ? `active-${currentActiveIndex}-${menu.length}` : 'nav-neutral'} shadow-2xl transition-all duration-300`}>
                 <div className="absolute inset-0 overflow-hidden rounded-[30px] pointer-events-none">
                     <div className="indicator-cutout"></div>
                 </div>
 
-                {/* 2. Floating Circle (Above everything, not clipped) */}
-                <div className="indicator-circle flex items-center justify-center"></div>
+                {currentActiveIndex !== -1 && (
+                    <div className="indicator-circle flex items-center justify-center"></div>
+                )}
 
-                {/* 3. Navigation Items */}
                 <ul className="flex w-full h-full relative z-10 translate-y-[-1px]">
                     {menu.map((item, index) => {
-                        const isStudio = isAuthor && index === 2; // Middle item
+                        const isStudio = isAuthor && index === 2;
+                        const isProfile = item.name === "Profile";
                         const isActive = currentActiveIndex === index;
-                        
+
                         return (
-                             <li key={index} className={`flex-1 ${isActive ? 'active' : ''}`}>
+                            <li key={index} className={`flex-1 ${isActive ? 'active' : ''}`}>
                                 <Link href={item.path} prefetch={false} className="flex justify-center items-center h-full w-full relative">
                                     {isStudio ? (
                                         <div className="relative flex items-center justify-center translate-y-[-24px]">
-                                            {/* Ellipse 10 */}
                                             <div className="w-[58px] h-[58px] bg-brown-dark dark:bg-tan-primary rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 border-[6px] border-bg-cream dark:border-brown-dark">
-                                                <item.icon className="w-7 h-7 text-text-accent dark:text-brown-dark transition-all" strokeWidth={3} />
+                                                <item.icon className={`w-7 h-7 transition-all ${isActive ? 'text-text-accent dark:text-brown-dark' : 'text-text-accent/60 dark:text-brown-dark/60'}`} strokeWidth={3} />
                                             </div>
                                         </div>
                                     ) : (
-                                        <span className="icon flex items-center justify-center h-full">
+                                        <span className="icon flex items-center justify-center h-full relative">
                                             <item.icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} />
+                                            {isProfile && hasUnread && (
+                                                <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-tan-primary dark:border-brown-dark rounded-full"></span>
+                                            )}
                                         </span>
                                     )}
                                 </Link>

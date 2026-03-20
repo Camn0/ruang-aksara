@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Home, Search, Library, Menu, Info, User, ChevronLeft, ChevronRight, PenTool } from 'lucide-react';
+import { Home, Search, Library, Menu, Info, User, ChevronLeft, ChevronRight, PenTool, Bell } from 'lucide-react';
 import Image from 'next/image';
 import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
@@ -28,6 +28,7 @@ export default function Sidebar() {
         { name: 'Home', href: '/user/dashboard', icon: Home },
         { name: 'Search', href: '/search', icon: Search },
         { name: 'Library', href: '/library', icon: Library },
+        { name: 'Notifications', href: '/notifications', icon: Bell },
         { name: 'Profile', href: session ? `/profile/${session.user.id}` : '/auth/login', icon: User },
         { name: 'Tentang Kami', href: '/about', icon: Info },
     ];

@@ -1,14 +1,28 @@
 .navigation {
   position: relative;
-  height: 60px; /* Adjusted based on Figma ratios */
+  height: 60px;
+  /* Adjusted based on Figma ratios */
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 30px; /* Rectangle 223 */
+  border-radius: 30px;
+  /* Rectangle 223 */
   padding: 0;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transition: all 0.5s ease;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 50;
+}
+
+.navigation.hidden-nav {
+  transform: translateY(150%) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-neutral .indicator-circle,
+.nav-neutral .indicator-cutout {
+  transform: scale(0);
+  opacity: 0;
 }
 
 .navigation ul {
@@ -39,37 +53,42 @@
 
 /* Themes */
 .nav-reader {
-  --nav-bg: #3B2A22; /* Rectangle 223 for Reader */
+  --nav-bg: #3B2A22;
+  /* Rectangle 223 for Reader */
   --nav-icon-color: #F8F4E1;
   --nav-active-icon-color: #3B2A22;
-  --nav-indicator-bg: #F2EAD7; /* Ellipse 33 */
-  --page-bg-color: #F3E9D7; /* Match bg-cream */
+  --nav-indicator-bg: #F2EAD7;
+  /* Ellipse 33 */
+  --page-bg-color: #F3E9D7;
+  /* Match bg-cream */
   background: var(--nav-bg);
 }
 
-.dark .nav-reader { 
-  --nav-bg: #1A120E; 
+.dark .nav-reader {
+  --nav-bg: #1A120E;
   --nav-icon-color: #D6BFA6;
   --nav-active-icon-color: #F3E9D7;
   --nav-indicator-bg: #3B2A22;
-  --page-bg-color: #3B2A22; 
+  --page-bg-color: #3B2A22;
 }
 
 .nav-author {
-  --nav-bg: #D7BFA7; /* Rectangle 223 for Author */
+  --nav-bg: #D7BFA7;
+  /* Rectangle 223 for Author */
   --nav-icon-color: #3B2A22;
   --nav-active-icon-color: #3B2A22;
-  --nav-indicator-bg: #F2EAD7; /* Ellipse 32 */
+  --nav-indicator-bg: #F2EAD7;
+  /* Ellipse 32 */
   --page-bg-color: #F3E9D7;
   background: var(--nav-bg);
 }
 
-.dark .nav-author { 
-  --nav-bg: #2A1D17; 
+.dark .nav-author {
+  --nav-bg: #2A1D17;
   --nav-icon-color: #D6BFA6;
   --nav-active-icon-color: #F3E9D7;
   --nav-indicator-bg: #7A553A;
-  --page-bg-color: #3B2A22; 
+  --page-bg-color: #3B2A22;
 }
 
 .navigation ul li a .icon {
@@ -83,7 +102,8 @@
 }
 
 .navigation ul li.active a .icon {
-  transform: translateY(-34px); /* Nudged up slightly from -32px to center better in circle */
+  transform: translateY(-34px);
+  /* Nudged up slightly from -32px to center better in circle */
   color: var(--nav-active-icon-color);
   opacity: 1;
 }
@@ -99,7 +119,8 @@
   border: 6px solid var(--page-bg-color);
   transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-sizing: border-box;
-  z-index: 1; /* Behind icons */
+  z-index: 1;
+  /* Behind icons */
 }
 
 /* The cutout wings (concave effect) */
@@ -121,7 +142,8 @@
   height: 20px;
   background: transparent;
   border-top-right-radius: 20px;
-  box-shadow: 1px -10px 0 0 var(--page-bg-color); /* Restored for sharper curve if needed, but matched user's hider logic */
+  box-shadow: 1px -10px 0 0 var(--page-bg-color);
+  /* Restored for sharper curve if needed, but matched user's hider logic */
 }
 
 .indicator-cutout::after {
@@ -138,21 +160,51 @@
 
 /* Centering Logic */
 /* Reader (4 items) */
-.active-0-4 .indicator-circle, .active-0-4 .indicator-cutout { left: calc(12.5% - 30px); }
-.active-1-4 .indicator-circle, .active-1-4 .indicator-cutout { left: calc(37.5% - 30px); }
-.active-2-4 .indicator-circle, .active-2-4 .indicator-cutout { left: calc(62.5% - 30px); }
-.active-3-4 .indicator-circle, .active-3-4 .indicator-cutout { left: calc(87.5% - 30px); }
-
-/* Author (5 items) */
-.active-0-5 .indicator-circle, .active-0-5 .indicator-cutout { left: calc(10% - 30px); }
-.active-1-5 .indicator-circle, .active-1-5 .indicator-cutout { left: calc(30% - 30px); }
-
-/* Center (Plus) - Hide EVERYTHING as Plus has its own circle & pops out */
-.active-2-5 .indicator-circle, .active-2-5 .indicator-cutout { 
-    transform: scale(0); 
-    opacity: 0; 
-    left: calc(50% - 30px); 
+.active-0-4 .indicator-circle,
+.active-0-4 .indicator-cutout {
+  left: calc(12.5% - 30px);
 }
 
-.active-3-5 .indicator-circle, .active-3-5 .indicator-cutout { left: calc(70% - 30px); }
-.active-4-5 .indicator-circle, .active-4-5 .indicator-cutout { left: calc(90% - 30px); }
+.active-1-4 .indicator-circle,
+.active-1-4 .indicator-cutout {
+  left: calc(37.5% - 30px);
+}
+
+.active-2-4 .indicator-circle,
+.active-2-4 .indicator-cutout {
+  left: calc(62.5% - 30px);
+}
+
+.active-3-4 .indicator-circle,
+.active-3-4 .indicator-cutout {
+  left: calc(87.5% - 30px);
+}
+
+/* Author (5 items) */
+.active-0-5 .indicator-circle,
+.active-0-5 .indicator-cutout {
+  left: calc(10% - 30px);
+}
+
+.active-1-5 .indicator-circle,
+.active-1-5 .indicator-cutout {
+  left: calc(30% - 30px);
+}
+
+/* Center (Plus) - Hide EVERYTHING as Plus has its own circle & pops out */
+.active-2-5 .indicator-circle,
+.active-2-5 .indicator-cutout {
+  transform: scale(0);
+  opacity: 0;
+  left: calc(50% - 30px);
+}
+
+.active-3-5 .indicator-circle,
+.active-3-5 .indicator-cutout {
+  left: calc(70% - 30px);
+}
+
+.active-4-5 .indicator-circle,
+.active-4-5 .indicator-cutout {
+  left: calc(90% - 30px);
+}

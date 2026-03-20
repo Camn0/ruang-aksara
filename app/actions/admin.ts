@@ -8,6 +8,7 @@ import { revalidateTag, revalidatePath } from 'next/cache';
 import { marked } from 'marked';
 import { z } from 'zod';
 import { uploadToImageKit } from '@/lib/imageKit';
+import { createNotification } from './notification';
 
 const BabSchema = z.object({
     karya_id: z.string().uuid(),
@@ -111,6 +112,27 @@ export async function createKarya(formData: FormData) {
         // Invalidate global list (Home/Dashboard)
         revalidateTag('karya-global');
 
+        // Trigger Notification for all followers (IMPORTANT Category)
+        try {
+            const followers = await prisma.follow.findMany({
+                where: { following_id: session.user.id },
+                select: { follower_id: true }
+            });
+
+            await Promise.all(followers.map(f => 
+                createNotification({
+                    userId: f.follower_id,
+                    actorId: session.user.id,
+                    type: 'NEW_WORK',
+                    category: 'IMPORTANT',
+                    content: `Telah menerbitkan karya baru: "${title}"`,
+                    link: `/novel/${karyaBaru.id}`
+                })
+            ));
+        } catch (err) {
+            console.error("Failed to trigger new work notifications:", err);
+        }
+
         return { success: true, data: karyaBaru };
 
     } catch (error) {
@@ -180,6 +202,30 @@ export async function createBab(formData: FormData) {
 
         // Invalidate cache detail karya agar daftar bab terbaru muncul instan
         revalidateTag(`karya-${karya_id}`);
+
+        // Trigger Notification for Bookmarkers (UPDATE Category)
+        try {
+            const bookmarkers = await prisma.bookmark.findMany({
+                where: { karya_id: karya_id },
+                select: { user_id: true }
+            });
+
+            const karya = await prisma.karya.findUnique({ where: { id: karya_id }, select: { title: true } });
+            const chapterTitle = title ? `: ${title}` : '';
+
+            await Promise.all(bookmarkers.map(b => 
+                createNotification({
+                    userId: b.user_id,
+                    actorId: session.user.id,
+                    type: 'NEW_CHAPTER',
+                    category: 'UPDATE',
+                    content: `Bab ${chapter_no}${chapterTitle} has been uploaded to "${karya?.title}"`,
+                    link: `/novel/${karya_id}/${chapter_no}`
+                })
+            ));
+        } catch (err) {
+            console.error("Failed to trigger new chapter notifications:", err);
+        }
 
         return { success: true, data: babBaru };
 
