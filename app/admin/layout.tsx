@@ -48,6 +48,7 @@ export default async function AdminLayout({
                                 width={96}
                                 height={80}
                                 alt="Ruang Aksara Logo"
+                                unoptimized
                                 className="w-full h-full object-cover rounded-2xl"
                             />
                         </div>

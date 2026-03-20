@@ -23,7 +23,7 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
     }
 
     return (
-        <nav className="flex-1 px-4 mt-4 space-y-3 overflow-y-auto max-h-[calc(100vh-320px)] lg:max-h-none">
+        <nav className="flex-1 px-4 mt-4 space-y-3 overflow-y-auto min-h-0">
             {/* Back to Reader Mode Section */}
             <div className="mb-8 px-2">
                 <p className="text-[9px] font-black text-text-main/30 dark:text-bg-cream/30 uppercase tracking-[0.3em] mb-4 pl-4">Navigasi Utama</p>

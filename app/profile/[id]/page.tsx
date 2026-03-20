@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import ProfileClient from "./ProfileClient";
+import { revalidatePath } from "next/cache";
+
+export const dynamic = 'force-dynamic';
 
 /**
  * Halaman Profil Pengguna (Server Component).

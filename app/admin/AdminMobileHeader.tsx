@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Menu, X, UserCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import SidebarNav from '@/app/components/SidebarNav';
+import LogoutButton from '@/app/components/LogoutButton';
 
 interface AdminMobileHeaderProps {
     session: any;
@@ -25,7 +26,7 @@ export default function AdminMobileHeader({ session }: AdminMobileHeaderProps) {
                     </button>
                     <Link href="/admin/dashboard" prefetch={false} className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center p-0.5 shadow-inner">
-                            <Image src="/logoRuangAksara.webp" width={40} height={40} alt="Logo" className="w-full h-full object-cover rounded-lg" />
+                            <Image src="/logoRuangAksara.webp" width={40} height={40} alt="Logo" unoptimized className="w-full h-full object-cover rounded-lg" />
                         </div>
                         <span className="font-black text-sm tracking-[0.2em] uppercase italic text-text-main/80 dark:text-bg-cream/90">Studio</span>
                     </Link>
@@ -64,8 +65,9 @@ export default function AdminMobileHeader({ session }: AdminMobileHeaderProps) {
                     <SidebarNav userRole={session.user.role} />
                 </div>
 
-                <div className="p-6 mt-auto border-t border-text-main/5 dark:border-white/5">
-                     <p className="text-[10px] font-black text-text-main/40 dark:text-bg-cream/40 uppercase tracking-[0.5em] text-center italic">Ruang Aksara — 2024</p>
+                <div className="p-6 mt-auto border-t border-text-main/5 dark:border-white/5 space-y-4">
+                     <LogoutButton />
+                     <p className="text-[10px] font-black text-text-main/40 dark:text-bg-cream/40 uppercase tracking-[0.5em] text-center italic mt-4">Ruang Aksara — 2024</p>
                 </div>
             </div>
         </>
