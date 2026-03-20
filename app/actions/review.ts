@@ -53,20 +53,33 @@ export async function toggleReviewUpvote(reviewId: string, path: string) {
                     review_id: reviewId
                 },
                 include: {
-                    review: { select: { user_id: true, karya_id: true } }
+                    review: { 
+                        select: { 
+                            user_id: true, 
+                            karya_id: true,
+                            content: true,
+                            karya: { select: { title: true } }
+                        } 
+                    }
                 }
             });
 
             // Trigger Notification (SOCIAL Category with Clustering)
             try {
-                await createNotification({
-                    userId: newUpvote.review.user_id,
-                    actorId: session.user.id,
-                    type: 'LIKE',
-                    category: 'SOCIAL',
-                    link: `/novel/${newUpvote.review.karya_id}`,
-                    clusteringKey: reviewId,
-                });
+                if (newUpvote.review.user_id !== session.user.id) {
+                    const workTitle = newUpvote.review.karya.title;
+                    const reviewSnippet = newUpvote.review.content;
+                    
+                    await createNotification({
+                        userId: newUpvote.review.user_id,
+                        actorId: session.user.id,
+                        type: 'LIKE',
+                        category: 'SOCIAL',
+                        content: `${workTitle}|${reviewSnippet}`,
+                        link: `/novel/${newUpvote.review.karya_id}`,
+                        clusteringKey: reviewId,
+                    });
+                }
             } catch (err) {
                 console.error("Failed to trigger review upvote notification:", err);
             }
@@ -127,20 +140,32 @@ export async function submitReviewComment(formData: FormData) {
                 content: content.trim()
             },
             include: {
-                review: { select: { user_id: true, karya_id: true } }
+                review: { 
+                    select: { 
+                        user_id: true, 
+                        karya_id: true,
+                        content: true,
+                        karya: { select: { title: true } }
+                    } 
+                }
             }
         });
 
         // [E] Trigger Notification (DIRECT Category)
         try {
             if (newComment.review.user_id !== session.user.id) {
+                const workTitle = newComment.review.karya.title;
+                const reviewSnippet = (newComment.review as any).content?.length > 30 
+                    ? (newComment.review as any).content.substring(0, 30) + "..." 
+                    : (newComment.review as any).content || "Ulasan";
+                
                 await createNotification({
                     userId: newComment.review.user_id,
                     actorId: session.user.id,
                     type: 'REPLY',
                     category: 'SOCIAL',
-                    content: content,
-                    link: `/novel/${newComment.review.karya_id}`
+                    content: `${workTitle} (Ulasan Anda: "${reviewSnippet}")|${content}`,
+                    link: `/novel/${newComment.review.karya_id}#rev-comment-${newComment.id}`
                 });
             }
         } catch (err) {
@@ -149,7 +174,13 @@ export async function submitReviewComment(formData: FormData) {
 
         // [F] Trigger Mentions
         try {
-            await notifyMentions(content, session.user.id, `/novel/${newComment.review.karya_id}`, 'SOCIAL');
+            await notifyMentions(
+                content, 
+                session.user.id, 
+                `/novel/${newComment.review.karya_id}#rev-comment-${newComment.id}`, 
+                'SOCIAL',
+                newComment.review.karya.title
+            );
         } catch (err) {
             console.error("Failed to trigger review mention notification:", err);
         }

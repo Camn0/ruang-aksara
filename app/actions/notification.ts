@@ -7,7 +7,13 @@ import { revalidateTag } from "next/cache";
 
 /**
  * [INTERNAL] Helper function to trigger a notification.
- * This is used inside other server actions (e.g., submitComment).
+ * This is used inside other server actions (e.g., submitComment, likeWork).
+ * 
+ * Logic Flow:
+ * 1. [ANTI-SPAM] Checks if a similar unread notification exists for clustering (LIKES, FOLLOWS, NEW_CHAPTERS).
+ * 2. [DATABASE] Creates a new notification or updates an existing cluster.
+ * 3. [CACHE] Triggers Next.js tag revalidation so the UI stays fresh.
+ * 4. [LAYER 3] Asynchronously pushes alerts to registered devices (Web Push).
  */
 export async function createNotification({
     userId,
@@ -26,20 +32,22 @@ export async function createNotification({
     link: string;
     clusteringKey?: string;
 }) {
-    // Avoid notifying yourself
+    // [GUARD] Don't notify the user if they are the actor of the action (e.g. liking their own post)
     if (userId === actorId) return null;
 
     try {
-        // [CLUSTERING LOGIC]
-        // Group similar notifications (LIKE, FOLLOW, NEW_CHAPTER) to avoid spam
+        /**
+         * [CLUSTERING LOGIC]
+         * Prevents notification fatigue by grouping repeated actions into a single unread item.
+         * Mode: Recursive Clustering.
+         */
         if (type === 'LIKE' || type === 'FOLLOW' || type === 'NEW_CHAPTER') {
             const existing = await (prisma as any).notification.findFirst({
                 where: { 
                     userId, 
                     type, 
                     isRead: false,
-                    // Use clusteringKey for precise grouping if available, otherwise fallback to link
-                    // For NEW_CHAPTER, clusteringKey is always the karya_id
+                    // Group by clusteringKey (if provided) or fallback to the exact link
                     ...(clusteringKey ? { link: { contains: clusteringKey } } : { link })
                 },
                 orderBy: { created_at: 'desc' }
@@ -48,38 +56,49 @@ export async function createNotification({
             if (existing) {
                 let count = 2;
                 if (existing.content && existing.content.startsWith('CLUSTER:')) {
+                    // Extract previous count from the hidden CLUSTER:N string
                     const prevCount = parseInt(existing.content.split(':')[1]) || 1;
                     count = prevCount + 1;
                 }
 
+                // Maintain context if it exists (Title|Snippet|CLUSTER:N)
+                const parts = existing.content?.split('|') || [];
+                const baseContent = parts.length >= 2 ? `${parts[0]}|${parts[1]}` : existing.content;
+
+                // Instead of a new row, we update the existing unread notification
                 return await (prisma as any).notification.update({
                     where: { id: existing.id },
                     data: {
-                        actorId, // Update to the most recent actor
-                        content: `CLUSTER:${count}`,
-                        created_at: new Date() // Bring to top
+                        actorId, // Display the most recent reactor in the UI
+                        content: baseContent?.includes('|') ? `${baseContent}|CLUSTER:${count}` : `CLUSTER:${count}`,
+                        created_at: new Date() // Bring the item to the top of the 'Semua' feed
                     }
                 });
             }
         }
 
+        // Standard Creation: No cluster found, so create a fresh record
         const notif = await (prisma as any).notification.create({
             data: {
                 userId,
                 actorId,
                 type,
                 category,
-                content: content?.substring(0, 500), // Safety cap
+                content: content?.substring(0, 500), // Cap length for DB safety
                 link
             }
         });
-        // Trigger cache revalidation for the receiver
+
+        // Trigger cache revalidation so the 'Bell' dot and list stay in sync
         revalidateTag(`notifications-${userId}`);
         
-        // --- LAYER 3: TRIGGER WEB PUSH (PERSISTENT ALERTS) ---
-        // We do this asynchronously to avoid blocking the main server action response
+        /**
+         * [LAYER 3: WEB PUSH NOTIFICATIONS]
+         * Non-blocking background task to send persistent device alerts.
+         */
         (async () => {
             try {
+                // Find all sub-endpoints registered for this user
                 const pushSubscriptions = await (prisma as any).pushSubscription.findMany({
                     where: { userId }
                 });
@@ -93,8 +112,10 @@ export async function createNotification({
                         icon: "/icon.png"
                     };
 
+                    // Broadcast to all devices
                     await Promise.all(pushSubscriptions.map(async (sub: any) => {
                         const res = await sendPushNotification(sub, payload);
+                        // [CLEANUP] If the device endpoint is 'GONE', delete the stale record
                         if (res.error === 'GONE') {
                             await (prisma as any).pushSubscription.delete({ where: { endpoint: sub.endpoint } });
                         }
@@ -113,7 +134,9 @@ export async function createNotification({
 }
 
 /**
- * Fetches all notifications for the current logged-in user.
+ * getMyNotifications:
+ * Fetches the user's latest notifications, including actor details.
+ * Limit: 50 items for performance.
  */
 export async function getMyNotifications() {
     const session = await getServerSession(authOptions);
@@ -143,7 +166,8 @@ export async function getMyNotifications() {
 }
 
 /**
- * Marks a specific notification as read.
+ * markAsRead:
+ * Marks a specific notification as 'Read' and refreshes the cache.
  */
 export async function markAsRead(notificationId: string) {
     const session = await getServerSession(authOptions);
@@ -163,7 +187,8 @@ export async function markAsRead(notificationId: string) {
 }
 
 /**
- * Marks all notifications as read for the current user.
+ * markAllAsRead:
+ * Mark ALL unread notifications for a user as Read (Mass Action).
  */
 export async function markAllAsRead() {
     const session = await getServerSession(authOptions);
@@ -182,6 +207,10 @@ export async function markAllAsRead() {
     }
 }
 
+/**
+ * deleteNotification:
+ * Permanently removes a notification from the user's history.
+ */
 export async function deleteNotification(id: string) {
     const session = await getServerSession(authOptions);
     if (!session) return { error: "Unauthorized" };
@@ -199,34 +228,39 @@ export async function deleteNotification(id: string) {
 }
 
 /**
- * Scans content for @username and triggers MENTION notifications.
+ * notifyMentions Utility:
+ * Scans a message for @username mentions and sends notifications to those users.
  */
-export async function notifyMentions(content: string, actorId: string, link: string, category: 'DIRECT' | 'SOCIAL' = 'SOCIAL') {
-    const mentionRegex = /@(\w+)/g;
-    const usernames: string[] = [];
-    let match;
-    
-    while ((match = mentionRegex.exec(content)) !== null) {
-        if (match[1] && !usernames.includes(match[1])) {
-            usernames.push(match[1]);
-        }
-    }
-
-    if (usernames.length === 0) return;
-
+export async function notifyMentions(content: string, actorId: string, link: string, category: 'DIRECT' | 'SOCIAL' = 'SOCIAL', workTitle?: string) {
     try {
+        // Regex for uncovering @handles
+        const mentionRegex = /@(\w+)/g;
+        const usernames: string[] = [];
+        let match;
+        
+        // Aggregate unique mentions
+        while ((match = mentionRegex.exec(content)) !== null) {
+            if (match[1] && !usernames.includes(match[1])) {
+                usernames.push(match[1]);
+            }
+        }
+
+        if (usernames.length === 0) return;
+
+        // Resolve User IDs for the mentions
         const users = await prisma.user.findMany({
             where: { username: { in: usernames } },
             select: { id: true, username: true }
         });
 
+        // Trigger individual notifications
         await Promise.all(users.map(u => 
             createNotification({
                 userId: u.id,
                 actorId,
                 type: 'MENTION',
                 category,
-                content: content,
+                content: workTitle ? `${workTitle}|${content}` : content,
                 link
             })
         ));

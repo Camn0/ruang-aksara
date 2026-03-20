@@ -54,7 +54,19 @@ export async function voteComment(commentId: string, type: 1 | -1, path: string)
                         type
                     },
                     include: {
-                        comment: { select: { user_id: true, bab: { select: { karya_id: true, chapter_no: true } } } }
+                        comment: { 
+                            select: { 
+                                content: true,
+                                user_id: true, 
+                                bab: { 
+                                    select: { 
+                                        karya_id: true, 
+                                        chapter_no: true,
+                                        karya: { select: { title: true } }
+                                    } 
+                                } 
+                            } 
+                        }
                     }
                 }),
                 prisma.comment.update({
@@ -67,12 +79,17 @@ export async function voteComment(commentId: string, type: 1 | -1, path: string)
             if (type === 1) {
                 const { createNotification } = await import("./notification");
                 try {
+                    const comment = (newVote as any).comment;
+                    const workTitle = comment.bab.karya.title;
+                    const commentSnippet = comment.content;
+                    
                     await createNotification({
-                        userId: (newVote as any).comment.user_id,
+                        userId: comment.user_id,
                         actorId: session.user.id,
                         type: 'LIKE',
                         category: 'SOCIAL',
-                        link: `/novel/${(newVote as any).comment.bab.karya_id}/${(newVote as any).comment.bab.chapter_no}#comment-${commentId}`,
+                        content: `${workTitle}|${commentSnippet}`,
+                        link: `/novel/${comment.bab.karya_id}/${comment.bab.chapter_no}#comment-${commentId}`,
                         clusteringKey: commentId
                     });
                 } catch (err) {

@@ -24,8 +24,12 @@ import { createNotification, notifyMentions } from './notification';
  *   - Jika komentar tidak muncul, pastikan `bab_id` valid dan bukan ID karya.
  *   - Jika `parent_id` tidak null, komentar akan dianggap sebagai balasan.
  */
+import { appendFileSync } from 'fs';
+
 export async function submitComment(formData: FormData) {
     try {
+        const bab_id = formData.get('bab_id') as string;
+        const parent_id = formData.get('parent_id') as string | null;
         // [A] Validasi Autentikasi Level Server
         // Mengapa: Kita menggunakan server action agar session dibaca langsung dari kuki terenkripsi.
         const session = await getServerSession(authOptions);
@@ -35,9 +39,7 @@ export async function submitComment(formData: FormData) {
         }
 
         // [B] Ekstraksi & Validasi Input
-        const bab_id = formData.get('bab_id') as string;
         let content = formData.get('content') as string;
-        const parent_id = formData.get('parent_id') as string | null;
         const rating = formData.get('rating') ? parseInt(formData.get('rating') as string, 10) : null;
 
         if (!bab_id || !content || content.trim() === '') {
@@ -72,17 +74,32 @@ export async function submitComment(formData: FormData) {
             try {
                 const parentComment = await (prisma as any).comment.findUnique({
                     where: { id: parent_id },
-                    select: { user_id: true, bab: { select: { karya_id: true, chapter_no: true } } }
+                    select: { 
+                        user_id: true, 
+                        content: true,
+                        bab: { 
+                            select: { 
+                                karya_id: true, 
+                                chapter_no: true,
+                                title: true,
+                                karya: { select: { title: true } }
+                            } 
+                        } 
+                    }
                 });
 
                 if (parentComment && parentComment.user_id !== session.user.id) {
+                    const karyatitle = parentComment.bab.karya.title;
+                    const babTitle = parentComment.bab.title || `Bab ${parentComment.bab.chapter_no}`;
+                    const parentSnippet = parentComment.content.length > 30 ? parentComment.content.substring(0, 30) + "..." : parentComment.content;
+                    
                     await createNotification({
                         userId: parentComment.user_id,
                         actorId: session.user.id,
                         type: 'REPLY',
                         category: 'SOCIAL',
-                        content: content,
-                        link: `/novel/${parentComment.bab.karya_id}/${parentComment.bab.chapter_no}`
+                        content: `${karyatitle} - ${babTitle} (Komentar Anda: "${parentSnippet}")|${content}`,
+                        link: `/novel/${parentComment.bab.karya_id}/${parentComment.bab.chapter_no}#comment-${newComment.id}`
                     });
                 }
             } catch (err) {
@@ -94,10 +111,20 @@ export async function submitComment(formData: FormData) {
         try {
             const bab = await (prisma as any).bab.findUnique({
                 where: { id: bab_id },
-                select: { karya_id: true, chapter_no: true }
+                select: { 
+                    karya_id: true, 
+                    chapter_no: true,
+                    karya: { select: { title: true } }
+                }
             });
             if (bab) {
-                await notifyMentions(content, session.user.id, `/novel/${bab.karya_id}/${bab.chapter_no}`);
+                await notifyMentions(
+                    content, 
+                    session.user.id, 
+                    `/novel/${bab.karya_id}/${bab.chapter_no}#comment-${newComment.id}`,
+                    'SOCIAL',
+                    bab.karya.title
+                );
             }
         } catch (err) {
             console.error("Failed to trigger mention notification:", err);
@@ -315,10 +342,13 @@ export async function deleteComment(id: string) {
 // 5. MUTASI USER: UPDATE PROGRES MEMBACA (BOOKMARK)
 // ==============================================================================
 /**
- * Server Action: Mencatat progres membaca terakhir pembaca.
+ * Server Action: updateReadingProgress
+ * Incremental synchronization of user reading state and gamification stats.
  * 
- * Mengapa: Dipisahkan dari request GET halaman agar tidak memicu write DB
- * yang berlebihan saat sistem melakukan "prefetch" (automasi link).
+ * Logic Highlights:
+ * 1. Redundancy Filter: Skips DB write if the user is revisiting an older/same chapter.
+ * 2. Upsert Transaction: Updates 'Bookmark' and 'UserStats' atomically.
+ * 3. Anti-Cheat: Measures time since last read to prevent 'fast-flipping' for point farming.
  * 
  * @param karyaId - ID Karya yang sedang dibaca.
  * @param chapterNo - Nomor bab yang sedang dibaca.
@@ -330,7 +360,8 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
 
         const userId = session.user.id;
 
-        // [1] Optimisasi: Cek apakah data sudah sama sebelum update berat
+        // [1] REDUNDANCY CHECK: Prevent excessive writes during rapid navigation
+        // Optimization: We only update if the current progress is strictly further than the saved progress.
         const existing = await prisma.bookmark.findUnique({
             where: {
                 user_id_karya_id: {
@@ -341,13 +372,13 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
         });
 
         if (existing && existing.last_chapter >= chapterNo) {
-            // Jika sudah di bab yang sama atau lebih tinggi, tidak perlu update DB (Hemat Request)
+            // Already at or beyond this chapter; no write needed.
             return { success: true, cached: true };
         }
 
-        // [2] Lakukan Update (Upsert) dalam Transaksi bersama UserStats
+        // [2] ATOMIC SYNCHRONIZATION via DB Transaction
         await prisma.$transaction(async (tx) => {
-            // [A] Update/Create Bookmark - Selalu simpan progres agar user tidak kehilangan posisi
+            // A. Update Position: Ensuring the user can resume reading from this exact spot.
             await tx.bookmark.upsert({
                 where: {
                     user_id_karya_id: {
@@ -366,16 +397,16 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
                 }
             });
 
-            // [B] Update UserStats (Gamification) + Anti-Cheat Speed
+            // B. GAMIFICATION & ANALYTICS: Update reading streak and points
             const stats = await (tx as any).userStats.findUnique({ where: { user_id: userId } });
-            const MIN_READ_TIME = 30 * 1000; // 30 Detik threshold anti-cheat
+            const MIN_READ_TIME = 30 * 1000; // 30-second threshold for valid chapter consumption (anti-cheat)
             const now = new Date();
             
             if (stats) {
                 const lastRead = stats.last_read_at ? new Date(stats.last_read_at) : null;
                 const timeDiff = lastRead ? now.getTime() - lastRead.getTime() : Infinity;
 
-                // Cek Kecepatan: Jika terlalu cepat (< 30s), skip poin & total baca
+                // Anti-Cheat Phase: Only reward valid, intentional reading (not rapid scrolling/botting)
                 const isFastFlip = timeDiff < MIN_READ_TIME;
 
                 if (!isFastFlip) {
@@ -383,6 +414,7 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
                     if (lastRead) {
                         const diffDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
                         
+                        // Streak Logic: Increment if exactly 1 day gap, reset if > 1 day gap.
                         if (diffDays === 1) {
                             newStreak += 1;
                         } else if (diffDays > 1) {
@@ -402,9 +434,8 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
                         }
                     });
                 }
-                // Jika Fast Flip: Bookmark tetap terupdate (di step [A]), tapi stats User (Poin/Count) tidak berubah.
             } else {
-                // Initial creation stats (First time use)
+                // Initialize profile stats for first-time readers.
                 await (tx as any).userStats.create({
                     data: {
                         user_id: userId,
@@ -417,7 +448,8 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
             }
         });
 
-        // [3] Revalidate library & dashboard agar history ter-update
+        // [3] CACHE INVALIDATION
+        // Invalidates library views and stats across the site.
         revalidateTag(`library-${userId}`);
         revalidateTag(`stats-${userId}`);
 
@@ -427,10 +459,15 @@ export async function updateReadingProgress(karyaId: string, chapterNo: number) 
         return { success: false, error: "Database Error" };
     }
 }
-// = [6] MUTASI USER: UPDATE PROFIL (DISPLAY NAME & BIO)
-// ==============================================================================
 /**
- * Server Action: Melakukan update profil dasar pengguna.
+ * Server Action: updateUserProfile
+ * Orchestrates the complex lifecycle of identity management, including CDN asset synchronization.
+ * 
+ * Flow Logic:
+ * 1. Auth Guard: Validates session presence via 'getServerSession'.
+ * 2. CDN Migration: Identifies Base64 strings (new uploads) and pushes them to ImageKit.
+ * 3. Database Sync: Updates display name, bio, and social links.
+ * 4. Cache Invalidation: Triggers 'revalidateTag' for consistent cross-device UI.
  */
 export async function updateUserProfile(formData: FormData) {
     try {
@@ -453,6 +490,7 @@ export async function updateUserProfile(formData: FormData) {
         }
 
         // [CDN Migration] Handle Avatar Upload
+        // If 'avatarUrl' is a Base64 string from the client, we must persist it to the CDN.
         let finalAvatarUrl = avatarUrl;
         if (avatarUrl && avatarUrl.startsWith('data:image')) {
             try {
@@ -482,6 +520,7 @@ export async function updateUserProfile(formData: FormData) {
             }
         }
 
+        // Persist the changes to the 'User' model.
         const updatedUser = await (prisma as any).user.update({
             where: { id: session.user.id },
             data: {
@@ -494,8 +533,9 @@ export async function updateUserProfile(formData: FormData) {
             select: { username: true }
         });
 
+        // Flush caches to show updated profile data immediately.
         revalidateTag(`profile-${session.user.id}`);
-        // Canonical revalidation by username
+        // Support lookup by username for static page generation.
         if (updatedUser.username) {
             revalidateTag(`profile-${updatedUser.username}`);
         }
@@ -505,8 +545,16 @@ export async function updateUserProfile(formData: FormData) {
         return { error: "Gagal memperbarui profil." };
     }
 }
-// = [7] MUTASI USER: FOLLOW / UNFOLLOW
-// ==============================================================================
+
+/**
+ * Server Action: toggleFollow
+ * Manages the social graph between users (Following relationship).
+ * 
+ * Business Logic:
+ * 1. Relationship Check: Determines if a link already exists.
+ * 2. Mutation Logic: Deletes (Unfollow) or Creates (Follow) the edge.
+ * 3. Notification Hub: Dispatches a 'FOLLOW' notification to the target user on new connections.
+ */
 export async function toggleFollow(targetUserId: string, revalidatePathStr?: string) {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) throw new Error("Unauthorized");
@@ -514,6 +562,7 @@ export async function toggleFollow(targetUserId: string, revalidatePathStr?: str
     const followerId = session.user.id;
     if (followerId === targetUserId) throw new Error("Cannot follow yourself");
 
+    // Fetch the current state of the relationship.
     const existing = await prisma.follow.findFirst({
         where: {
             follower_id: followerId,
@@ -522,8 +571,10 @@ export async function toggleFollow(targetUserId: string, revalidatePathStr?: str
     });
 
     if (existing) {
+        // UNFOLLOW: Destroy the directed edge in the social graph.
         await prisma.follow.delete({ where: { id: existing.id } });
     } else {
+        // FOLLOW: Create a new relationship record.
         await prisma.follow.create({
             data: {
                 follower_id: followerId,
@@ -531,7 +582,7 @@ export async function toggleFollow(targetUserId: string, revalidatePathStr?: str
             }
         });
 
-        // Trigger Notification
+        // Engagement Signal: Notify the following_id about their new follower.
         try {
             await createNotification({
                 userId: targetUserId,
@@ -545,10 +596,10 @@ export async function toggleFollow(targetUserId: string, revalidatePathStr?: str
         }
     }
 
+    // Invalidate profile and following tags to sync UI counters.
     if (revalidatePathStr) {
         revalidateTag(revalidatePathStr);
     }
-    // Revalidate target user profile anyway
     revalidateTag(`profile-${targetUserId}`);
     revalidateTag(`following-${followerId}`);
 }

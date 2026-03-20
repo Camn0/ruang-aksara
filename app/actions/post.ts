@@ -164,21 +164,25 @@ export async function togglePostLike(postId: string) {
                 data: {
                     user_id: session.user.id,
                     post_id: postId
+                },
+                include: {
+                    post: { select: { content: true } }
+                }
+            }).then(async (newLike: any) => {
+                // Trigger Notification
+                try {
+                    await createNotification({
+                        userId: author_id!,
+                        actorId: session.user.id,
+                        type: 'LIKE',
+                        category: 'SOCIAL',
+                        content: newLike.post.content,
+                        link: `/profile/${author_id}`
+                    });
+                } catch (err) {
+                    console.error("Failed to trigger post like notification:", err);
                 }
             });
-
-            // Trigger Notification
-            try {
-                await createNotification({
-                    userId: author_id!,
-                    actorId: session.user.id,
-                    type: 'LIKE',
-                    category: 'SOCIAL',
-                    link: `/profile/${author_id}`
-                });
-            } catch (err) {
-                console.error("Failed to trigger post like notification:", err);
-            }
         }
 
         // [D] Revalidate cache agar jumlah like ter-update di UI
@@ -253,12 +257,18 @@ export async function submitPostComment(formData: FormData) {
         // Trigger Notification
         try {
             if (newComment.post.author_id !== session.user.id) {
+                const post = await (prisma as any).authorPost.findUnique({
+                    where: { id: post_id },
+                    select: { content: true }
+                });
+                const postSnippet = post?.content || "";
+                
                 await createNotification({
                     userId: newComment.post.author_id,
                     actorId: session.user.id,
                     type: 'REPLY',
                     category: 'SOCIAL',
-                    content: content,
+                    content: `${postSnippet}|${content}`,
                     link: `/profile/${newComment.post.author_id}`
                 });
             }
