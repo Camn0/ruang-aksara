@@ -1,31 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home, Search, Library, User, PenTool } from "lucide-react";
-import { getMyNotifications } from "@/app/actions/notification";
 import './BottomNav.css';
 
 export default function BottomNav() {
     const { data: session } = useSession();
     const pathname = usePathname();
-    const [hasUnread, setHasUnread] = useState(false);
 
-    // Fetch Unread Check
-    useEffect(() => {
-        if (!session) return;
-        const checkUnread = async () => {
-            const res = await getMyNotifications();
-            if (res.success && res.data) {
-                setHasUnread(res.data.some((n: any) => !n.read));
-            }
-        };
-        checkUnread();
-        const interval = setInterval(checkUnread, 60000); // Check every minute
-        return () => clearInterval(interval);
-    }, [session]);
 
     if (!session?.user) return null;
 
@@ -81,16 +65,13 @@ export default function BottomNav() {
                                 <Link href={item.path} prefetch={false} className="flex justify-center items-center h-full w-full relative">
                                     {isStudio ? (
                                         <div className="relative flex items-center justify-center translate-y-[-24px]">
-                                            <div className="w-[58px] h-[58px] bg-brown-dark dark:bg-tan-primary rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 border-[6px] border-bg-cream dark:border-brown-dark">
-                                                <item.icon className={`w-7 h-7 transition-all ${isActive ? 'text-text-accent dark:text-brown-dark' : 'text-text-accent/60 dark:text-brown-dark/60'}`} strokeWidth={3} />
+                                            <div className="w-[58px] h-[58px] bg-brown-dark dark:bg-tan-primary rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 border-[6px] border-bg-cream dark:border-brown-dark transform-gpu will-change-transform">
+                                                <item.icon className={`w-7 h-7 transition-all transform-gpu ${isActive ? 'text-text-accent dark:text-brown-dark' : 'text-text-accent/60 dark:text-brown-dark/60'}`} strokeWidth={2} />
                                             </div>
                                         </div>
                                     ) : (
                                         <span className="icon flex items-center justify-center h-full relative">
                                             <item.icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} />
-                                            {isProfile && hasUnread && (
-                                                <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-tan-primary dark:border-brown-dark rounded-full"></span>
-                                            )}
                                         </span>
                                     )}
                                 </Link>

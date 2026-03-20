@@ -9,7 +9,23 @@ import { revalidatePath } from "next/cache";
 export const dynamic = 'force-dynamic';
 
 /**
- * Halaman Profil Pengguna (Server Component).
+ * ProfilePage (Server Component):
+ * The central hub for user identity, social interactions, and author portfolio.
+ * 
+ * Architecture Patterns:
+ * 1. Intelligent Caching: Uses 'unstable_cache' with specific tags (`profile-${id}`, `following-${id}`) 
+ *    to allow granular revalidation via Server Actions.
+ * 2. Parallel Data Fetching: Aggregates multiple Prisma queries into 'Promise.all' within a cached 
+ *    wrapper to minimize Time-to-First-Byte (TTFB).
+ * 3. Identity Resolution: Supports both UUID and Username-based routing for SEO-friendly URLs.
+ */
+
+// --- CACHED DATA FETCHERS ---
+
+/**
+ * getCachedUserProfile:
+ * Fetches the core identity of a user.
+ * Tags: `profile-${id}` allows 'updateUserProfile' to flush this cache upon metadata changes.
  */
 const getCachedUserProfile = (id: string) => unstable_cache(
     async () => {
@@ -39,6 +55,11 @@ const getCachedUserProfile = (id: string) => unstable_cache(
     { revalidate: 3600, tags: [`profile-${id}`] }
 )();
 
+/**
+ * getCachedFollowStatus:
+ * Determines the 'friendship' edge between the viewer and the profile owner.
+ * Tags: `following-${followerId}` allows 'toggleFollow' to flush this specifically.
+ */
 const getCachedFollowStatus = (followerId: string, followingId: string) =>
     unstable_cache(
         async () => (prisma as any).follow.findUnique({
@@ -53,10 +74,17 @@ const getCachedFollowStatus = (followerId: string, followingId: string) =>
         { revalidate: 3600, tags: [`following-${followerId}`] }
     )();
 
+/**
+ * getCachedProfileData:
+ * A mega-aggregator for profile-specific content (Works, Posts, Comments, Reviews).
+ * Logic:
+ * - Aggregates 7 distinct queries into a single cacheable unit.
+ * - Handles conditional 'like' status for the current viewer in author posts.
+ */
 const getCachedProfileData = (profileId: string, currentUserId?: string) => unstable_cache(
     async () => {
         return Promise.all([
-            // 1. Followers
+            // 1. Followers List: The community backbone.
             prisma.follow.findMany({
                 where: { following_id: profileId },
                 select: {
@@ -66,7 +94,7 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
                 },
                 orderBy: { created_at: 'desc' }
             }),
-            // 2. Following
+            // 2. Following List: The user's interests.
             prisma.follow.findMany({
                 where: { follower_id: profileId },
                 select: {
@@ -76,7 +104,7 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
                 },
                 orderBy: { created_at: 'desc' }
             }),
-            // 3. Karya (If Author)
+            // 3. Story Portfolio: Displays the author's published works with performance stats.
             prisma.karya.findMany({
                 where: { uploader_id: profileId },
                 orderBy: { total_views: 'desc' },
@@ -93,10 +121,15 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
                     genres: { 
                         take: 3,
                         select: { id: true, name: true }
+                    },
+                    bab: {
+                        orderBy: { created_at: 'desc' },
+                        take: 1,
+                        select: { created_at: true }
                     }
                 }
             }),
-            // 4. Postingan (If Author)
+            // 4. Author Ephemera: Social posts shared by the author.
             (prisma as any).authorPost.findMany({
                 where: { author_id: profileId },
                 orderBy: { created_at: 'desc' },
@@ -106,6 +139,7 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
                     image_url: true,
                     created_at: true,
                     _count: { select: { likes: true, comments: true } },
+                    // Conditional join to check if the viewer has already liked the post.
                     ...(currentUserId ? { likes: { where: { user_id: currentUserId } } } : {}),
                     comments: { 
                         select: {
@@ -121,7 +155,7 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
                     }
                 }
             }),
-            // 5. Recent Comments
+            // 5. Community Trace (Comments): Where the user has been active.
             prisma.comment.findMany({
                 where: { user_id: profileId },
                 select: {
@@ -141,7 +175,7 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
                 orderBy: { created_at: 'desc' },
                 take: 15
             }),
-            // 6. User Reviews
+            // 6. Literary Criticality (Reviews): Formal reviews written by the user.
             prisma.review.findMany({
                 where: { user_id: profileId },
                 select: {
@@ -154,7 +188,7 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
                 orderBy: { created_at: 'desc' },
                 take: 10
             }),
-            // 7. Bookmark Count for Stats
+            // 7. Library Breadth: Total bookmarks across the platform.
             prisma.bookmark.count({ where: { user_id: profileId } })
         ]);
     },
@@ -163,14 +197,20 @@ const getCachedProfileData = (profileId: string, currentUserId?: string) => unst
 )();
 
 /**
- * Halaman Profil Pengguna (Server Component).
+ * ProfilePage Entry Point:
+ * Logic:
+ * 1. Session Retrieval: Identifies the 'viewer' for ACL and follow status.
+ * 2. Identity Resolution: Fetches the 'owner' profile (checks if it exists).
+ * 3. Aggregated Data Load: Pulls social graph and content trace via cache.
+ * 4. Client Delegation: Hands over processed props to 'ProfileClient' for interactive UI.
  */
 export default async function ProfilePage({ params }: { params: { id: string } }) {
     const session = await getServerSession(authOptions);
 
-    // [A] Resolving Identity (Cached)
+    // [Step 1] Resolve Profile Identity
     const userProfileRaw = await getCachedUserProfile(params.id);
 
+    // Handle Edge Case: Profile not found or session mismatch
     if (!userProfileRaw) {
         if (session?.user?.id === params.id || session?.user?.role === 'admin') {
             return (
@@ -185,27 +225,25 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         return notFound();
     }
 
+    // Type Assertion for complex Prisma select
     const userProfile = userProfileRaw as (typeof userProfileRaw & {
         avatar_url: string | null;
         banner_url: string | null;
         _count: { followers: number; following: number; };
         bio?: string | null;
-        twitter_link?: string | null;
-        website_link?: string | null;
-        instagram_link?: string | null;
+        social_links?: any;
     });
 
     const isOwnProfile = session?.user?.id === userProfile.id;
 
-    // [D] Fetching Follow Status (Cached)
+    // [Step 2] Resolve Social Relationship (Cached)
     let isFollowing = false;
     if (session?.user && !isOwnProfile) {
         const followRecord = await getCachedFollowStatus(session.user.id, userProfile.id);
         isFollowing = !!followRecord;
     }
 
-
-
+    // [Step 3] Fetch Aggregated Statistics and Content
     const [
         followersList,
         followingList,
@@ -222,6 +260,7 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         comments: recentComments.length
     };
 
+    // [Step 4] Handover to interactive Client Layer
     return (
         <ProfileClient
             userProfile={userProfile}

@@ -22,6 +22,20 @@ interface ReadingInterfaceProps {
     reactionStats?: { reaction_type: string; _count: { _all: number } }[];
 }
 
+/**
+ * ReadingInterface (Client Component):
+ * The core engine for content consumption. It manages text appearance, 
+ * immersive UI behaviors, and reading progress persistence.
+ * 
+ * Logic Highlights:
+ * 1. Appearance Persistence: Font sizes and families are stored in 'localStorage' 
+ *    to maintain a consistent user preference across sessions.
+ * 2. Immersive Scroll: Dynamically hides/shows the navigation bars based on 
+ *    scroll direction (Hide on Scroll Down, Show on Scroll Up).
+ * 3. Progress Tracking: Automatically saves the current scroll position for 
+ *    the specific chapter, allowing users to "pick up where they left off".
+ * 4. Optimistic Reactions: Instant feedback for chapter-level reactions (Like, Love, etc.).
+ */
 export default function ReadingInterface({
     karyaId,
     babId,
@@ -34,7 +48,8 @@ export default function ReadingInterface({
     userReaction: initialUserReaction,
     reactionStats
 }: ReadingInterfaceProps) {
-    const [fontSize, setFontSize] = useState(18); // default 18px
+    // [STATE] Appearance & Visibility Settings
+    const [fontSize, setFontSize] = useState(18); 
     const [fontFamily, setFontFamily] = useState('serif'); 
     const [lineHeight, setLineHeight] = useState(1.8);
     const [showSettings, setShowSettings] = useState(false);
@@ -51,19 +66,27 @@ export default function ReadingInterface({
         { type: 'WOW', emoji: '😮', label: 'Wih' },
     ];
 
+    /**
+     * handleReaction:
+     * Dispatches a social interaction to the server. 
+     * Uses Dynamic Import for the action to reduce initial bundle size.
+     */
     const handleReaction = async (type: string) => {
         const prev = userReaction;
         const next = type === userReaction ? undefined : type;
         setUserReaction(next);
         const { submitChapterReaction } = await import('@/app/actions/chapter');
-        // @ts-ignore - Temporary until types sync
+        // @ts-ignore - Type synchronization check
         const res = await submitChapterReaction(babId, type, karyaId);
         if (res.error) {
             setUserReaction(prev);
         }
     };
 
-    // Keyboard Navigation
+    /**
+     * useEffect: Keyboard Navigation
+     * Listens for Arrow keys to facilitate "Next/Prev" page turning.
+     */
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'ArrowRight' && nextChapter) {
@@ -77,7 +100,10 @@ export default function ReadingInterface({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [karyaId, nextChapter, prevChapter, router]);
 
-    // Load from local storage and handle mounting function for theme
+    /**
+     * useEffect: Preference Hydration
+     * Restores the user's preferred font settings from localStorage.
+     */
     useEffect(() => {
         const savedSize = localStorage.getItem('ruangaksara_fontsize');
         const savedFont = localStorage.getItem('ruangaksara_fontfamily');
@@ -90,7 +116,12 @@ export default function ReadingInterface({
         setMounted(true);
     }, []);
 
-    // Scroll Tracking & Immersive UI Restore
+    /**
+     * useEffect: Scroll Tracking & Immersive UI
+     * 1. Restores vertical scroll position for this specific chapter.
+     * 2. Toggles navbar visibility based on scroll delta.
+     * 3. Debounces 'localStorage' updates for performance.
+     */
     useEffect(() => {
         const scrollKey = `ruangaksara_scroll_${karyaId}_${chapterNo}`;
         const savedScroll = localStorage.getItem(scrollKey);
@@ -112,6 +143,7 @@ export default function ReadingInterface({
             const header = document.getElementById('reading-header');
             const nav = document.getElementById('reading-nav');
 
+            // [LOGIC] Directional Visibility Toggle
             if (currentScrollY > lastScrollY && currentScrollY > 100) {
                 header?.classList.add('-translate-y-full');
                 nav?.classList.add('translate-y-40');
@@ -121,6 +153,7 @@ export default function ReadingInterface({
             }
             lastScrollY = currentScrollY;
 
+            // [SYNC] Persist position every 1s of inactivity
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
                 localStorage.setItem(scrollKey, window.scrollY.toString());
@@ -181,20 +214,21 @@ export default function ReadingInterface({
                         <Settings className="w-5 h-5" />
                     </button>
 
-                    {/* Dropdown Settings */}
+                    {/* APPEARANCE CONTROLS */}
                     {showSettings && (
-                        <div className="absolute top-full right-0 mt-3 w-72 bg-bg-cream/95 dark:bg-brown-dark/95 backdrop-blur-xl border border-tan-primary/10 rounded-[2rem] shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2 overflow-y-auto max-h-[80vh]">
+                        <div className="absolute top-full right-0 mt-3 w-72 bg-white/95 dark:bg-brown-dark/95 backdrop-blur-xl border border-tan-primary/20 dark:border-white/10 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] p-6 z-50 animate-in fade-in slide-in-from-top-2 overflow-y-auto max-h-[80vh]">
                             <div className="flex items-center justify-between mb-6">
-                                <span className="text-[10px] font-black text-tan-primary/40 uppercase tracking-[0.2em]">Pengaturan</span>
-                                <button onClick={() => setShowSettings(false)} className="text-tan-primary/40 hover:text-tan-primary rounded-full p-1.5 bg-tan-primary/5 transition-colors">
+                                <span className="text-[10px] font-black text-tan-primary uppercase tracking-[0.2em] italic">Preferebsi Baca</span>
+                                <button onClick={() => setShowSettings(false)} className="text-tan-primary hover:text-white hover:bg-tan-primary rounded-full p-2 bg-tan-primary/10 transition-all">
                                     <X className="w-3.5 h-3.5" />
                                 </button>
                             </div>
 
                             <div className="space-y-6">
+                                {/* Font Size Logic */}
                                 <div>
-                                    <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Teropong Aksara</label>
-                                    <div className="flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-1.5 shadow-inner">
+                                    <label className="text-[9px] text-tan-primary dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Ukuran Aksara</label>
+                                    <div className="flex items-center justify-between bg-tan-primary/10 dark:bg-brown-mid border border-tan-primary/10 rounded-[1.5rem] p-1.5 shadow-inner">
                                         <button
                                             onClick={() => handleSetFontSize(fontSize - 2)}
                                             className="p-2.5 hover:bg-bg-cream dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm"
@@ -213,8 +247,9 @@ export default function ReadingInterface({
                                     </div>
                                 </div>
 
+                                {/* Font Family Switcher */}
                                 <div>
-                                    <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Gaya Aksara</label>
+                                    <label className="text-[9px] text-tan-primary dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Gaya Aksara</label>
                                     <div className="grid grid-cols-3 gap-2">
                                         {[
                                             { id: 'serif', label: 'Klasik', class: 'font-serif' },
@@ -227,7 +262,7 @@ export default function ReadingInterface({
                                                 className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                                                     fontFamily === f.id 
                                                     ? 'bg-tan-primary text-text-accent shadow-md' 
-                                                    : 'bg-tan-primary/5 text-brown-dark dark:text-tan-light hover:bg-tan-primary/10'
+                                                    : 'bg-tan-primary/10 text-brown-dark dark:text-tan-light hover:bg-tan-primary/20'
                                                 } ${f.class}`}
                                             >
                                                 {f.label}
@@ -236,9 +271,10 @@ export default function ReadingInterface({
                                     </div>
                                 </div>
 
+                                {/* Line Height Control */}
                                 <div>
-                                    <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Jarak Nafas (Baris)</label>
-                                    <div className="flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-1.5 shadow-inner">
+                                    <label className="text-[9px] text-tan-primary dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Jarak Baris</label>
+                                    <div className="flex items-center justify-between bg-tan-primary/10 dark:bg-brown-mid border border-tan-primary/10 rounded-[1.5rem] p-1.5 shadow-inner">
                                         <button
                                             onClick={() => handleSetLineHeight(lineHeight - 0.2)}
                                             className="p-2.5 hover:bg-bg-cream dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95 text-brown-dark dark:text-gray-300 shadow-sm"
@@ -255,11 +291,12 @@ export default function ReadingInterface({
                                     </div>
                                 </div>
 
+                                {/* Theme Mode Toggle */}
                                 <div>
-                                    <label className="text-[9px] text-tan-primary/60 dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Suasana Jelajah</label>
+                                    <label className="text-[9px] text-tan-primary dark:text-gray-500 uppercase font-black tracking-[0.2em] mb-3 block italic">Suasana Jelajah</label>
                                     <button
                                         onClick={toggleTheme}
-                                        className="w-full flex items-center justify-between bg-tan-primary/5 dark:bg-brown-mid border border-tan-primary/5 rounded-[1.25rem] p-4 hover:bg-bg-cream dark:hover:bg-slate-700 transition-all active:scale-95 text-brown-dark dark:text-gray-200 shadow-sm group"
+                                        className="w-full flex items-center justify-between bg-tan-primary/10 dark:bg-brown-mid border border-tan-primary/10 rounded-[1.5rem] p-4 hover:bg-bg-cream dark:hover:bg-slate-700 transition-all active:scale-95 text-brown-dark dark:text-gray-200 shadow-sm group"
                                     >
                                         <span className="text-xs font-black uppercase tracking-widest italic">{mounted && theme === 'dark' ? 'Hening Terang' : 'Hening Gelap'}</span>
                                         {mounted && theme === 'dark' ? (
@@ -275,11 +312,12 @@ export default function ReadingInterface({
                 </div>
             </header>
 
-            {/* Overlays to close dropdown */}
+            {/* Backdrop for closing dropdown */}
             {showSettings && (
                 <div className="fixed inset-0 z-30" onClick={() => setShowSettings(false)} />
             )}
 
+            {/* MAIN CONTENT AREA */}
             <main className="px-6 py-8 sm:px-12 md:max-w-2xl md:mx-auto min-h-[70vh]">
                 <article
                     className={`prose dark:prose-invert mx-auto text-justify whitespace-pre-wrap text-brown-dark dark:text-tan-light/90 max-w-none transition-all duration-200 ${
@@ -291,7 +329,7 @@ export default function ReadingInterface({
                     {content}
                 </article>
 
-                {/* Reaction System */}
+                {/* END-OF-CHAPTER SOCIAL HUB */}
                 <div className="mt-20 pt-12 border-t border-tan-primary/10 text-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
                     <div className="inline-block px-4 py-1.5 rounded-full bg-tan-primary/10 text-tan-primary text-[10px] font-black uppercase tracking-[0.2em] mb-6">
                         Hore! Goresan Terakhir Selesai
@@ -334,6 +372,7 @@ export default function ReadingInterface({
                 onClose={() => setIsOpenPicker(false)}
             />
 
+            {/* BOTTOM NAV: "Floating" Navigation Anchor */}
             <nav id="reading-nav" className="fixed bottom-10 left-1/2 -translate-x-1/2 z-40 transition-all duration-300">
                 <div className="bg-bg-cream/95 dark:bg-brown-dark/80 backdrop-blur-3xl px-2 py-2 rounded-full flex items-center gap-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] border border-tan-primary/10 dark:border-white/5">
                     {/* Previous Chapter Button */}

@@ -77,7 +77,11 @@ export default function ProfileClient({
                     .sort((a, b) => {
                         if (sortBy === 'popular') return b.total_views - a.total_views;
                         if (sortBy === 'rating') return (b.avg_rating || 0) - (a.avg_rating || 0);
-                        return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
+                        
+                        // Sort by latest chapter's creation date (Recently Updated)
+                        const dateA = a.bab?.[0]?.created_at ? new Date(a.bab[0].created_at).getTime() : 0;
+                        const dateB = b.bab?.[0]?.created_at ? new Date(b.bab[0].created_at).getTime() : 0;
+                        return dateB - dateA;
                     });
 
                 return (
