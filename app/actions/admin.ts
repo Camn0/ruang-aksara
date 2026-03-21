@@ -121,13 +121,12 @@ export async function createKarya(formData: FormData) {
 
         const { karya: karyaBaru, chapterCreated } = result;
 
-        // Invalidate global list (Home/Discovery)
-        revalidateTag('karya-global');
-        
-        // [New] Invalidate Author Dashboard immediately
+        // [Local Snappiness] Invalidate Author Dashboard immediately
         revalidateTag(`karya-author-${session.user.id}`);
 
-        // [NOTIFICATION & FEED REVALIDATION]
+        // [NOTIFICATION & FEED]
+        // Note: Global and Author dashboards are revalidated immediately.
+        // Follower feeds are eventually consistent (refreshed every hour) to maintain performance.
         try {
             const followers = await prisma.follow.findMany({
                 where: { following_id: session.user.id },
@@ -144,9 +143,6 @@ export async function createKarya(formData: FormData) {
                     content: `Telah menerbitkan karya baru: "${title}"`,
                     link: `/novel/${karyaBaru.id}`
                 });
-
-                // 2. Invalidate Follower's Dashboard "New Works" feed
-                revalidateTag(`following-${f.follower_id}`);
             }));
 
             // Jika bab 1 dibuat, kirim notifikasi UPDATE juga
@@ -449,6 +445,7 @@ export async function editKarya(formData: FormData) {
         });
 
         revalidateTag(`karya-${id}`);
+        revalidateTag(`karya-author-${session.user.id}`);
 
         return { success: true };
     } catch (error) {
@@ -479,6 +476,7 @@ export async function deleteKarya(id: string) {
         await prisma.karya.delete({ where: { id } });
 
         revalidateTag(`karya-${id}`);
+        revalidateTag(`karya-author-${session.user.id}`);
 
         return { success: true };
     } catch (error) {

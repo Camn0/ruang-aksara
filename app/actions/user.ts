@@ -3,7 +3,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
 import { uploadToImageKit } from '@/lib/imageKit';
 import { createNotification, notifyMentions } from './notification';
 
@@ -129,6 +129,10 @@ export async function submitComment(formData: FormData) {
         } catch (err) {
             console.error("Failed to trigger mention notification:", err);
         }
+
+        // [Local Snappiness] Refresh user-specific tags for "activity" feeds
+        revalidateTag(`user-comments-${session.user.id}`);
+        // Note: Chapter-level revalidation retracted for scalability; updates appear eventually.
 
         // Mengembalikan object murni bagi sinkronisasi state React
         return { success: true, data: newComment };
@@ -331,6 +335,11 @@ export async function deleteComment(id: string) {
         }
 
         await prisma.comment.delete({ where: { id } });
+
+        // [Security Check Success] -> Local Refresh
+        revalidateTag(`user-comments-${session.user.id}`);
+        // Note: Chapter-level revalidation retracted for scalability.
+
         return { success: true };
     } catch (error) {
         console.error("[deleteComment] Error:", error);
