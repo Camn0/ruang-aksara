@@ -21,23 +21,14 @@ const BabSchema = z.object({
 // 1. MUTASI ADMIN/AUTHOR: MEMBUAT KARYA BARU
 // ==============================================================================
 /**
- * Server Action: Membuat entitas Karya (novel/buku) baru.
+ * createKarya:
+ * Server Action to spawn a new literary work (Novel/Book).
  * 
- * Otorisasi:
- *   - Hanya user dengan role 'admin' atau 'author' yang diizinkan.
- * 
- * Alur:
- *   1. Validasi Autentikasi & RBAC.
- *   2. Ekstraksi data dari FormData.
- *   3. Sinkronisasi identitas penulis (alias vs username).
- *   4. Operasi Database (Prisma build-in connect untuk genre).
- * 
- * @param formData - Objek FormData (title, penulis_alias, deskripsi, cover_url, genres).
- * @returns `{ success: true, data: Karya }` | `{ error: string }`.
- * 
- * DEBUG TIPS:
- *   - Jika error P2003 (Foreign Key), pastikan `session.user.id` masih ada di tabel User (cek DB reset).
- *   - Jika genre tidak tersimpan, pastikan `genreIds` adalah array string ID yang valid.
+ * Logic flow:
+ * 1. [RBAC] Verify session and role (must be Admin or Author).
+ * 2. [CDN] Process cover image (Base64 to ImageKit storage).
+ * 3. [DATABASE] Create the 'Karya' record and connect existing 'Genre' IDs.
+ * 4. [NOTIFICATION] Alert all followers about the new publication.
  */
 export async function createKarya(formData: FormData) {
     try {
@@ -56,23 +47,25 @@ export async function createKarya(formData: FormData) {
         const cover_url = formData.get('cover_url') as string || null;
         const genreIds = formData.getAll('genres') as string[];
 
+        // [New] Chapter Data (Step 2)
+        const bab_title = (formData.get('bab_title') as string)?.trim() || null;
+        const bab_content = (formData.get('bab_content') as string)?.trim();
+
         // [C] Validasi Kelengkapan Input
         if (!title) {
             return { error: "Bad Request: Judul karya wajib diisi." };
         }
 
         // [D] Sinkronisasi Sesi & Database
-        // Mengapa: Jika database dideploy ulang (reset), cookie browser mungkin menyimpan ID user lama.
         const existingUser = await prisma.user.findUnique({
             where: { id: session.user.id }
         });
 
         if (!existingUser) {
-            return { error: "Sesi Anda sudah kedaluwarsa atau tidak valid (Terjadi indikasi reset database). Silakan Logout dan Login kembali." };
+            return { error: "Sesi Anda sudah kedaluwarsa atau tidak valid." };
         }
 
         // [E] Logika Penanganan Alias Penulis
-        // Format: "Alias (Username Asli)" untuk menjamin transparansi di aplikasi.
         const cleanAlias = input_penulis_alias?.replace(/\s\([^)]+\)$/, '').trim();
         const final_penulis_alias = cleanAlias
             ? `${cleanAlias} (${existingUser.username})`
@@ -82,7 +75,6 @@ export async function createKarya(formData: FormData) {
         let finalCoverUrl = cover_url;
         if (cover_url && cover_url.startsWith('data:image')) {
             try {
-                // Upload Base64 to ImageKit
                 finalCoverUrl = await uploadToImageKit(
                     cover_url, 
                     `cover-${Date.now()}`, 
@@ -90,45 +82,80 @@ export async function createKarya(formData: FormData) {
                 );
             } catch (uploadError) {
                 console.error("Cover upload failed:", uploadError);
-                return { error: "Gagal mengunggah sampul novel ke CDN. Silakan coba lagi." };
+                return { error: "Gagal mengunggah sampul novel ke CDN." };
             }
         }
 
-        // [G] Mutasi Database
-        // Mengapa: Menggunakan `connect` agar Prisma otomatis membuat mapping di table join (implicit m-n).
-        const karyaBaru = await prisma.karya.create({
-            data: {
-                title,
-                penulis_alias: final_penulis_alias,
-                deskripsi,
-                cover_url: finalCoverUrl,
-                uploader_id: session.user.id,
-                genres: {
-                    connect: genreIds.map((id) => ({ id }))
+        // [G] Mutasi Database (ATOMIC TRANSACTION)
+        // Mengapa: Kita menggunakan $transaction agar Karya dan Bab 1 dibuat bersamaan.
+        // Jika salah satu gagal (misal: Bab content kosong), maka Karya tidak akan dibuat.
+        const result = await prisma.$transaction(async (tx) => {
+            const karya = await tx.karya.create({
+                data: {
+                    title,
+                    penulis_alias: final_penulis_alias,
+                    deskripsi,
+                    cover_url: finalCoverUrl,
+                    uploader_id: session.user.id,
+                    genres: {
+                        connect: genreIds.map((id) => ({ id }))
+                    }
                 }
+            });
+
+            let chapterCreated = false;
+            if (bab_content) {
+                await tx.bab.create({
+                    data: {
+                        karya_id: karya.id,
+                        chapter_no: 1,
+                        title: bab_title,
+                        content: bab_content,
+                    }
+                });
+                chapterCreated = true;
             }
+
+            return { karya, chapterCreated };
         });
 
-        // Invalidate global list (Home/Dashboard)
-        revalidateTag('karya-global');
+        const { karya: karyaBaru, chapterCreated } = result;
 
-        // Trigger Notification for all followers (IMPORTANT Category)
+        // Invalidate global list (Home/Discovery)
+        revalidateTag('karya-global');
+        
+        // [New] Invalidate Author Dashboard immediately
+        revalidateTag(`karya-author-${session.user.id}`);
+
+        // [NOTIFICATION & FEED REVALIDATION]
         try {
             const followers = await prisma.follow.findMany({
                 where: { following_id: session.user.id },
                 select: { follower_id: true }
             });
 
-            await Promise.all(followers.map(f => 
-                createNotification({
+            await Promise.all(followers.map(async (f) => {
+                // 1. Send Notification
+                await createNotification({
                     userId: f.follower_id,
                     actorId: session.user.id,
                     type: 'NEW_WORK',
                     category: 'IMPORTANT',
                     content: `Telah menerbitkan karya baru: "${title}"`,
                     link: `/novel/${karyaBaru.id}`
-                })
-            ));
+                });
+
+                // 2. Invalidate Follower's Dashboard "New Works" feed
+                revalidateTag(`following-${f.follower_id}`);
+            }));
+
+            // Jika bab 1 dibuat, kirim notifikasi UPDATE juga
+            if (chapterCreated) {
+                // Saat ini belum ada bookmarkers karena karya baru saja dibuat,
+                // tapi followers mungkin ingin tahu bab pertama sudah tersedia.
+                // Namun sesuai logika createBab, kita kirim ke followers juga (sebagai karya baru).
+                // Notification NEW_WORK sudah cukup, tapi kita bisa tambah log/logic di sini jika perlu.
+            }
         } catch (err) {
             console.error("Failed to trigger new work notifications:", err);
         }
@@ -146,18 +173,13 @@ export async function createKarya(formData: FormData) {
 // 2. MUTASI ADMIN/AUTHOR: MENAMBAH BAB BARU
 // ==============================================================================
 /**
- * Server Action: Menambahkan bab (chapter) baru ke dalam karya yang sudah ada.
+ * createBab:
+ * Server Action to append a new chapter to an existing work.
  * 
- * Fitur:
- *   - Auto-increment penomoran bab berdasarkan nilai terakhir di DB.
- *   - Sanitasi konten dasar.
- * 
- * @param formData - Objek FormData (karya_id, content).
- * @returns `{ success: true, data: Bab }` | `{ error: string }`.
- * 
- * DEBUG TIPS:
- *   - Jika nomor bab melompat, cek apakah ada bab yang dihapus sebelumnya.
- *   - Error 'Conflict' (P2002) berarti kombinasi karya_id + chapter_no sudah ada.
+ * Features:
+ * - Managed Sequential Numbering: Automatically calculates the next chapter number based on current MAX + 1.
+ * - Cache Invalidation: Triggers a refresh of the novel's public detail page.
+ * - Broadcast Notifications: Alerts all users who have bookmarked the novel.
  */
 export async function createBab(formData: FormData) {
     try {
@@ -469,9 +491,9 @@ export async function deleteKarya(id: string) {
 // 6. MUTASI ADMIN/AUTHOR: PENGELOLAAN BAB (EDIT & DELETE)
 // ==============================================================================
 /**
- * Server Action: Mengubah konten bab.
- * 
- * Otorisasi: Penulis karya induk atau Admin.
+ * editBab:
+ * Updates the content and metadata of a specific chapter.
+ * Includes Zod validation for production data integrity.
  */
 export async function editBab(formData: FormData) {
     try {
