@@ -4,7 +4,13 @@
     "short_name": "Ruang Aksara",
     "description": "Sanctuari Literasi Digital: Tempat di mana setiap kata bernafas dan setiap cerita menemukan rumahnya.",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
+    "display_override": [
+        "standalone",
+        "minimal-ui",
+        "browser"
+    ],
     "background_color": "#F2EAD7",
     "theme_color": "#AF8F6F",
     "orientation": "portrait-primary",
