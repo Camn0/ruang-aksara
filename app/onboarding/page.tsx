@@ -194,13 +194,13 @@ export default function OnboardingPage() {
                     <div className="min-w-full h-full flex flex-col items-center justify-center relative overflow-hidden">
                         {/* MOBILE LAYOUT */}
                         <div className="relative h-screen w-full overflow-hidden bg-bg-cream dark:bg-brown-dark md:hidden flex flex-col items-center justify-center transition-colors">
-                            {/* Background pattern */}
-                            <div className="absolute -top-[15%] left-0 w-full h-[60vh] z-0 opacity-40 dark:opacity-10">
+                            {/* Background pattern - Expanded to ensure no visible edges */}
+                            <div className="absolute inset-0 z-0 opacity-40 dark:opacity-10">
                                 <Image
                                     src="/blockpatterns.webp"
                                     alt="Pattern Background"
                                     fill
-                                    className="object-contain object-top"
+                                    className="object-cover"
                                     priority
                                 />
                             </div>
@@ -242,7 +242,7 @@ export default function OnboardingPage() {
                                     onClick={handleNext}
                                     className="bg-brown-dark text-text-accent px-10 py-3 rounded-full text-2xl font-black hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                 >
-                                    Mulai eksplorasi
+                                    Mulai Eksplorasi
                                 </button>
                             </div>
                         </div>

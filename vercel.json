@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/keep-alive",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/sync-views",
+      "schedule": "0 */4 * * *"
+    }
+  ]
+}

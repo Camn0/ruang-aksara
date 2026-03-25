@@ -142,6 +142,11 @@ The project is built for **Vercel Deployment**.
     - **Offline Fallbacks**: Users can access their previously read chapters even without an internet connection.
     - **Manifest Configuration**: Includes customized icons and theme colors to ensure the app looks premium when installed as a "Native Web App."
 4. **Push Integration**: Utilizes the **Web Push API** and VAPID keys to send real-time alerts to users' desktops and mobile devices (via `PushSubscription`).
+5. **Maintenance & Keep-Alive**:
+    - **Endpoint**: `/api/cron/keep-alive`
+    - **Purpose**: Prevents Supabase pausing (7-day rule) and keeps Redis/Vercel functions warm.
+    - **Security**: Requires a `CRON_SECRET` environment variable.
+    - **Configuration**: Scheduled daily via `vercel.json`.
 
 ---
 

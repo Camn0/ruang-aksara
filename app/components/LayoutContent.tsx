@@ -27,7 +27,7 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
                 )}
 
                 <div className="flex-1 flex flex-col relative min-h-screen overflow-x-hidden">
-                    <main className={`flex-grow flex flex-col relative ${isAdmin ? '' : 'pb-20 md:pb-0'}`}>
+                    <main className={`flex-grow flex flex-col relative ${isAdmin || pathname.startsWith('/onboarding') ? '' : 'pb-20 md:pb-0'}`}>
                         {children}
                     </main>
                     <BottomNav />
