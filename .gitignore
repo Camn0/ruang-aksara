@@ -50,7 +50,6 @@ tmp/
 .env.development
 *.log
 .eslintcache
-APK_RELEASE_GUIDE.md
 
 # PWA Generated Files
 public/sw.js

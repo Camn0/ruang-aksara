@@ -5,7 +5,7 @@
 ![Next JS](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)                                        
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-Database-green?style=for-the-badge&logo=supabase&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-Upstash-red?style=for-the-badge&logo=redis&logoColor=white)
 
-Next.js and Prisma digital reading PWA with a multi-role CMS. This project integrates a markdown author studio, analytical dashboards, gamified reading streaks, and high-performance layered caching.
+A digital reading PWA and multi-role CMS with an integrated markdown author studio. Features analytical dashboards, gamified reading streaks, and layered caching. Built with Next.js and Prisma.
 
 ## Tech Stack
 - Framework: Next.js 14 (App Router)
@@ -81,6 +81,7 @@ Note: Requires CRON_SECRET environment variable.
 - [API and Actions](docs/API_AND_ACTIONS.md): Overview of Server Action patterns and internal endpoints.
 - [Social Engine](docs/SOCIAL_ENGINE.md): Technical logic for nested comments, reviews, and notifications.
 - [Maintenance](docs/MAINTENANCE.md): Deployment, environment setup, and monitoring guide.
+- [APK Release Guide](docs/APK_RELEASE_GUIDE.md): Instructions for building and releasing the Android application.
 
 ## License
 MIT License.
