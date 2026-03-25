@@ -81,7 +81,6 @@ Note: Requires CRON_SECRET environment variable.
 - [API and Actions](docs/API_AND_ACTIONS.md): Overview of Server Action patterns and internal endpoints.
 - [Social Engine](docs/SOCIAL_ENGINE.md): Technical logic for nested comments, reviews, and notifications.
 - [Maintenance](docs/MAINTENANCE.md): Deployment, environment setup, and monitoring guide.
-- [APK Release Guide](docs/APK_RELEASE_GUIDE.md): Instructions for building and releasing the Android application.
 
 ## License
 MIT License.
