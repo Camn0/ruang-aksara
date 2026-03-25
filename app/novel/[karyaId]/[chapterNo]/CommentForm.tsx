@@ -1,9 +1,18 @@
+/**
+ * @file CommentForm.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { submitComment } from '@/app/actions/user';
 import { useRouter } from 'next/navigation';
 
+/**
+ * CommentForm: Client-side submission interface for writing new comments or replying to existing threads.
+ */
 export default function CommentForm({
     babId,
     parentId,

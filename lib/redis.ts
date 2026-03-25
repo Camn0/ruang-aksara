@@ -1,4 +1,10 @@
 /**
+ * @file redis.ts
+ * @description Headless logical module executing transactional dataflows or caching parameters within the Platform Infrastructure.
+ * @author Ruang Aksara Engineering Team
+ */
+
+/**
  * Redis client wrapper — dirancang untuk performa dan portabilitas (Edge compatibility).
  * 
  * Mengapa custom wrapper?:

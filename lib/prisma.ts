@@ -1,3 +1,9 @@
+/**
+ * @file prisma.ts
+ * @description Headless logical module executing transactional dataflows or caching parameters within the Platform Infrastructure.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import { PrismaClient } from '@prisma/client';
 
 /**

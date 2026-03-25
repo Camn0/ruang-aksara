@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';

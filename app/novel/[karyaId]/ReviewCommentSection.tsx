@@ -1,3 +1,9 @@
+/**
+ * @file ReviewCommentSection.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -15,6 +21,9 @@ interface ReviewCommentSectionProps {
     reviewId: string;
 }
 
+/**
+ * ReviewCommentSection: Specialized commenting interface handling replies specifically attached to user Reviews.
+ */
 export default function ReviewCommentSection({
     initialComments,
     karyaUploaderId,

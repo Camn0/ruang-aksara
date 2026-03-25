@@ -1,3 +1,9 @@
+/**
+ * @file CreateKaryaForm.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -9,6 +15,9 @@ interface Genre {
     name: string;
 }
 
+/**
+ * CreateKaryaForm: Administrative form for drafting and publishing new Novels (Karya) to the platform database.
+ */
 export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
     // Mengapa: Mengelola state loading pada tombol agar user tidak melakukan double-submit
     const [isPending, setIsPending] = useState(false);
@@ -39,7 +48,7 @@ export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
     }
 
     return (
-        <form action={handeSubmitAction} className="p-6 mb-8 border border-tan-primary/20 rounded-lg bg-bg-cream/50 dark:bg-brown-dark/50 flex flex-col gap-4 shadow-sm backdrop-blur-sm">
+        <form onSubmit={(e) => { e.preventDefault(); handeSubmitAction(new FormData(e.currentTarget)); }} className="p-6 mb-8 border border-tan-primary/20 rounded-lg bg-bg-cream/50 dark:bg-brown-dark/50 flex flex-col gap-4 shadow-sm backdrop-blur-sm">
             <h2 className="font-semibold text-lg text-text-main border-b border-tan-primary/10 pb-2 mb-2">Tambah Karya Baru</h2>
 
             <label className="flex flex-col">

@@ -1,9 +1,18 @@
+/**
+ * @file BookmarkButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
 import { Plus, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+/**
+ * BookmarkButton: Interactive toggle appending or removing a Novel from the user`s personal Library.
+ */
 export default function BookmarkButton({ karyaId, isBookmarkedInitial }: { karyaId: string, isBookmarkedInitial: boolean }) {
     const [isBookmarked, setIsBookmarked] = useState(isBookmarkedInitial);
     const [loading, setLoading] = useState(false);

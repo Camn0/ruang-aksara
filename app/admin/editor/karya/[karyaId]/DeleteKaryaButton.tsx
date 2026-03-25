@@ -1,3 +1,9 @@
+/**
+ * @file DeleteKaryaButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -5,6 +11,9 @@ import { deleteKarya } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
+/**
+ * DeleteKaryaButton: Destructive action component requiring confirmation to permanently remove an entire Novel.
+ */
 export default function DeleteKaryaButton({ karyaId }: { karyaId: string }) {
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();

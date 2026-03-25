@@ -1,3 +1,9 @@
+/**
+ * @file EditKaryaForm.tsx
+ * @description Administrative interface expressly built for retroactively modifying existing Novel metadata without disrupting readers.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -23,6 +29,9 @@ const FiRrPlus = ({ className }: { className?: string }) => (
     </div>
 );
 
+/**
+ * EditKaryaForm: Administrative interface for modifying existing Novel metadata, covers, and synopses.
+ */
 export default function EditKaryaForm({ karya, allGenres, children }: { karya: Karya, allGenres: Genre[], children: React.ReactNode }) {
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();

@@ -1,3 +1,9 @@
+/**
+ * @file ProfileSettingsForm.tsx
+ * @description Secured configuration zone granting users deep control over their identity, security, and alert preferences.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -16,6 +22,9 @@ interface ProfileSettingsFormProps {
     initialSocialLinks: SocialLinks | null;
 }
 
+/**
+ * ProfileSettingsForm: Configuration interface for managing account security, email, and notification preferences.
+ */
 export default function ProfileSettingsForm({ initialDisplayName, initialBio, initialSocialLinks }: ProfileSettingsFormProps) {
     const [displayName, setDisplayName] = useState(initialDisplayName);
     const [bio, setBio] = useState(initialBio || '');

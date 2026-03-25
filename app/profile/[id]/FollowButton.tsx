@@ -1,9 +1,18 @@
+/**
+ * @file FollowButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 "use client";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { toggleFollow } from "./actions";
 
+/**
+ * FollowButton: Social engagement toggle allowing readers to subscribe to Author or User activity feeds.
+ */
 export default function FollowButton({ targetUserId, initialIsFollowing }: { targetUserId: string, initialIsFollowing: boolean }) {
     const [isPending, startTransition] = useTransition();
     const [isFollowing, setIsFollowing] = useState(initialIsFollowing);

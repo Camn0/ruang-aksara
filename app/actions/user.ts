@@ -1,3 +1,9 @@
+/**
+ * @file user.ts
+ * @description Reader-facing mutations including library bookmarking, profile updates, and social interaction handling.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use server';
 
 import { getServerSession } from 'next-auth';
@@ -28,28 +34,33 @@ import { appendFileSync } from 'fs';
 
 export async function submitComment(formData: FormData) {
     try {
-        const bab_id = formData.get('bab_id') as string;
-        const parent_id = formData.get('parent_id') as string | null;
-        // [A] Validasi Autentikasi Level Server
-        // Mengapa: Kita menggunakan server action agar session dibaca langsung dari kuki terenkripsi.
+        // [1] Payload Extraction: Grab the Raw ID strings directly from the multipart form
+        const bab_id = formData.get('bab_id') as string; 
+        const parent_id = formData.get('parent_id') as string | null; // Optional: If present, this comment is a threaded reply.
+
+        // [2] Secure Server-Side Gate: We never trust the client's assertion of identity. 
+        // We crack open the encrypted NextAuth JWT cookie to find the true user ID.
         const session = await getServerSession(authOptions);
 
+        // [3] Hard Bounce: If the JWT signature is missing or faked, block the DB write immediately.
         if (!session || !session.user?.id) {
             return { error: "Unauthorized: Anda harus login untuk memberikan komentar." };
         }
 
-        // [B] Ekstraksi & Validasi Input
+        // [4] Content Parsing: Extract the actual comment text and optional rating.
         let content = formData.get('content') as string;
         const rating = formData.get('rating') ? parseInt(formData.get('rating') as string, 10) : null;
 
+        // [5] Strict Validation: Prevent "ghost comments" caused by spacebar spam or null form data.
         if (!bab_id || !content || content.trim() === '') {
             return { error: "Bad Request: Komentar kosong tidak diizinkan." };
         }
 
-        // [C] Sanitasi Konten
+        // [6] Sanitization: Trim leading/trailing whitespace to save database bytes and keep UI clean.
         content = content.trim();
 
-        // [D] Mutasi Database
+        // [7] DB Transaction: Create the primary comment record in PostgreSQL.
+
         const newComment = await (prisma.comment as any).create({
             data: {
                 user_id: session.user.id,

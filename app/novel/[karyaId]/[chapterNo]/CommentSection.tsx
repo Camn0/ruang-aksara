@@ -1,3 +1,9 @@
+/**
+ * @file CommentSection.tsx
+ * @description Deeply responsive, hierarchical chat module engineered to parse and display infinite nested comment replies.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -37,6 +43,9 @@ interface CommentSectionProps {
     isError?: boolean;
 }
 
+/**
+ * CommentSection: Hierarchical comment rendering engine supporting nested replies and real-time pagination.
+ */
 export default function CommentSection({
     babId,
     initialComments: data,

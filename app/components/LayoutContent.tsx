@@ -1,3 +1,9 @@
+/**
+ * @file LayoutContent.tsx
+ * @description Primary structural wrapper ensuring the main content area correctly offsets from the Sidebar and Topbar.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useSidebar } from "./SidebarContext";
@@ -7,6 +13,9 @@ import Navbar from "./Navbar";
 import AuthProvider from "./AuthProvider";
 import { usePathname } from "next/navigation";
 
+/**
+ * LayoutContent: Primary structural wrapper ensuring the main content area correctly offsets from the Sidebar and Topbar.
+ */
 export default function LayoutContent({ children }: { children: React.ReactNode }) {
     const { isExpanded, setIsExpanded } = useSidebar();
     const pathname = usePathname();

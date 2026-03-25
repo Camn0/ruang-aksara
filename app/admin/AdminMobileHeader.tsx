@@ -1,3 +1,9 @@
+/**
+ * @file AdminMobileHeader.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -11,6 +17,9 @@ interface AdminMobileHeaderProps {
     session: any;
 }
 
+/**
+ * AdminMobileHeader: Responsive mobile navigation header exclusively for the protective Admin/Author dashboard.
+ */
 export default function AdminMobileHeader({ session }: AdminMobileHeaderProps) {
     const [isOpen, setIsOpen] = useState(false);
 

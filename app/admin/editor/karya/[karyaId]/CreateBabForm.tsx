@@ -1,3 +1,9 @@
+/**
+ * @file CreateBabForm.tsx
+ * @description Immersive rich-text or markdown editor allowing Authors to draft, format, and push new Chapters.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -5,6 +11,9 @@ import { createBab } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { Save, Plus, ArrowLeft, Upload } from 'lucide-react';
 
+/**
+ * CreateBabForm: Editor interface for authors to write, format, and publish new Chapters (Bab) for a specific Novel.
+ */
 export default function CreateBabForm({ karyaId }: { karyaId: string }) {
     const [isPending, setIsPending] = useState(false);
     const [isOpen, setIsOpen] = useState(false);

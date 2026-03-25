@@ -1,3 +1,9 @@
+/**
+ * @file SidebarNav.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import Link from 'next/link';
@@ -8,6 +14,9 @@ interface SidebarNavProps {
     userRole: string;
 }
 
+/**
+ * SidebarNav: Internal routing construct defining the hierarchical links within the Sidebar.
+ */
 export default function SidebarNav({ userRole }: SidebarNavProps) {
     const pathname = usePathname();
 

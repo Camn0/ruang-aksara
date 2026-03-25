@@ -1,3 +1,9 @@
+/**
+ * @file FollowButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useTransition } from "react";
@@ -9,6 +15,9 @@ interface FollowButtonProps {
     karyaId: string;
 }
 
+/**
+ * FollowButton: Social engagement toggle allowing readers to subscribe to Author or User activity feeds.
+ */
 export default function FollowButton({ targetUserId, initialIsFollowing, karyaId }: FollowButtonProps) {
     const [isPending, startTransition] = useTransition();
 

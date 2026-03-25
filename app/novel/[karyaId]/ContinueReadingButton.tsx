@@ -1,3 +1,9 @@
+/**
+ * @file ContinueReadingButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -9,6 +15,9 @@ import { BookOpen, ArrowLeft } from 'lucide-react';
  * 
  * Mengapa: Membaca progres dari localStorage secara aman di sisi client.
  * Komponen ini hanya muncul jika ada riwayat baca untuk karya ini.
+ */
+/**
+ * ContinueReadingButton: Encapsulates the explicit React DOM lifecycle and state-management for the continue reading button interactive workflow.
  */
 export default function ContinueReadingButton({ karyaId }: { karyaId: string }) {
     const [lastChapter, setLastChapter] = useState<number | null>(null);

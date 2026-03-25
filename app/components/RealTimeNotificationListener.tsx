@@ -1,3 +1,9 @@
+/**
+ * @file RealTimeNotificationListener.tsx
+ * @description Invisible client-side provider listening for broadcasted database triggers over WebSocket connections.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,6 +17,9 @@ import Link from 'next/link';
  * 
  * A "Layer 2" background listener that monitors for new unread notifications 
  * and displays them as "Ancient Parchment" toasts while the user is browsing.
+ */
+/**
+ * RealTimeNotificationListener: Invisible client-side provider listening for broadcasted WebSocket events across the platform.
  */
 export default function RealTimeNotificationListener({ currentUserId }: { currentUserId?: string }) {
     // track the ID of the last notification shown to prevent duplicate toasts in the same session

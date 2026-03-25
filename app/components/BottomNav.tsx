@@ -1,3 +1,9 @@
+/**
+ * @file BottomNav.tsx
+ * @description Responsive mobile navigation bar, automatically hiding the desktop sidebar to preserve screen real estate.
+ * @author Ruang Aksara Engineering Team
+ */
+
 "use client";
 
 import { useSession } from "next-auth/react";
@@ -6,6 +12,9 @@ import Link from "next/link";
 import { Home, Search, Library, User, PenTool } from "lucide-react";
 import './BottomNav.css';
 
+/**
+ * BottomNav: Encapsulates the explicit React DOM lifecycle and state-management for the bottom nav interactive workflow.
+ */
 export default function BottomNav() {
     const { data: session } = useSession();
     const pathname = usePathname();

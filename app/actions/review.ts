@@ -1,3 +1,9 @@
+/**
+ * @file review.ts
+ * @description Logic governing massive narrative critiques, upvote tallying, and average rating math recalculations.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use server';
 
 import { getServerSession } from "next-auth";

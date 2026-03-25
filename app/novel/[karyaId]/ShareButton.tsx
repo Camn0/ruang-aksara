@@ -1,3 +1,9 @@
+/**
+ * @file ShareButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { Share2, Check, Copy } from "lucide-react";
@@ -8,6 +14,9 @@ interface ShareButtonProps {
     karyaId: string;
 }
 
+/**
+ * ShareButton: Invokes native navigator.share APIs or fallback clipboard mechanisms to virally distribute chapters.
+ */
 export default function ShareButton({ title, karyaId }: ShareButtonProps) {
     const [copied, setCopied] = useState(false);
 

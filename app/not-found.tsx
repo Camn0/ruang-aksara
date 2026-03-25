@@ -1,6 +1,15 @@
+/**
+ * @file not-found.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
+/**
+ * NotFound: Graceful 404 client boundary capturing bad routes and preventing application crash loops.
+ */
 export default function NotFound() {
     return (
         <div className="min-h-screen bg-bg-cream flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">

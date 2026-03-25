@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -7,6 +13,9 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Link from 'next/link';
 
 
+/**
+ * RegisterPage: Primary Next.js Server Component route entry point orchestrating asynchronous data-fetching lifecycles.
+ */
 export default function RegisterPage() {
     const [isPending, setIsPending] = useState(false);
     const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);

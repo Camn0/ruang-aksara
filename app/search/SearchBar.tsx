@@ -1,3 +1,9 @@
+/**
+ * @file SearchBar.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, FormEvent, useEffect } from 'react';
@@ -8,6 +14,9 @@ import Link from 'next/link';
 /**
  * Redesigned SearchBar (Client Component)
  * Implementation matches the high-end "Library" aesthetic for consistency.
+ */
+/**
+ * SearchBar: Globally available input component triggering debounce queries against the Novel database.
  */
 export default function SearchBar({ initialQ, filter, genreId }: { initialQ: string, filter: string, genreId: string }) {
     const [q, setQ] = useState(initialQ);

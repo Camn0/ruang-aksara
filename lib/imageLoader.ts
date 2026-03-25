@@ -1,10 +1,19 @@
 /**
+ * @file imageLoader.ts
+ * @description Headless logical module executing transactional dataflows or caching parameters within the Platform Infrastructure.
+ * @author Ruang Aksara Engineering Team
+ */
+
+/**
  * CUSTOM IMAGE LOADER
  * -------------------
  * This loader bypasses Vercel's Image Optimization to save bandwidth and stay under the 1,000 source image limit.
  * It transforms URLs to use an external Image CDN (like ImageKit or Cloudinary) or serves them directly if preferred.
  */
 
+/**
+ * imageLoader: Executes asynchronous logical transactions strictly bound to the image loader operational pipeline.
+ */
 export default function imageLoader({ src, width, quality }: { src: string; width: number; quality?: number }) {
     // [1] HANDLE LOCAL IMAGES
     // If the image is local (starts with /), let Next.js handle it (unlikely for covers)

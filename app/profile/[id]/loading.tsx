@@ -1,3 +1,12 @@
+/**
+ * @file loading.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
+/**
+ * Loading: Suspense boundary fallback rendering intelligent skeleton states while complex data resolves.
+ */
 export default function Loading() {
     return (
         <div className="min-h-screen bg-bg-cream dark:bg-brown-dark animate-pulse transition-colors duration-500 pb-20">

@@ -1,3 +1,9 @@
+/**
+ * @file StaticNotificationBell.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -5,6 +11,9 @@ import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import { getMyNotifications } from '@/app/actions/notification';
 
+/**
+ * StaticNotificationBell: Fallback server-rendered notification indicator for environments where WebSockets are unavailable.
+ */
 export default function StaticNotificationBell() {
     const [unreadCount, setUnreadCount] = useState(0);
 

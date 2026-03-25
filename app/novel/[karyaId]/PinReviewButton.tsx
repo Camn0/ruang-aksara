@@ -1,3 +1,9 @@
+/**
+ * @file PinReviewButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useTransition } from "react";
@@ -11,6 +17,9 @@ interface PinReviewButtonProps {
     initialIsPinned: boolean;
 }
 
+/**
+ * PinReviewButton: Dispatches server actions strictly authorized for Authors to pin profound critiques globally.
+ */
 export default function PinReviewButton({ reviewId, karyaId, initialIsPinned }: PinReviewButtonProps) {
     const [isPending, startTransition] = useTransition();
 

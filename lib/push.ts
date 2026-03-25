@@ -1,3 +1,9 @@
+/**
+ * @file push.ts
+ * @description Headless logical module executing transactional dataflows or caching parameters within the Platform Infrastructure.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import webpush from 'web-push';
 
 const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';

@@ -1,3 +1,9 @@
+/**
+ * @file ReviewInteraction.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 /**
@@ -21,6 +27,9 @@ import { toggleReviewUpvote, submitReviewComment } from '@/app/actions/review';
 import { ThumbsUp, MessageSquare, Send } from 'lucide-react';
 import { toast } from 'sonner';
 
+/**
+ * ReviewInteraction: Encapsulates the explicit React DOM lifecycle and state-management for the review interaction interactive workflow.
+ */
 export default function ReviewInteraction({ reviewId, initialUpvotes, initialUpvoted, replyCount, currentPath }: { reviewId: string, initialUpvotes: number, initialUpvoted: boolean, replyCount: number, currentPath: string }) {
     // [STATE MANAGEMENT]
     const [upvotes, setUpvotes] = useState(initialUpvotes);

@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReviewForm from "./ReviewForm";

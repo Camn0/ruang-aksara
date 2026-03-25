@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -158,6 +164,9 @@ function DesktopIntroAnimation({
     );
 }
 
+/**
+ * OnboardingPage: Primary Next.js Server Component route entry point orchestrating asynchronous data-fetching lifecycles.
+ */
 export default function OnboardingPage() {
     const [step, setStep] = useState(1);
     const [showIntro, setShowIntro] = useState(true);

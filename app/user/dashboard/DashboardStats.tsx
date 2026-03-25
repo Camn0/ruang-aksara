@@ -1,3 +1,9 @@
+/**
+ * @file DashboardStats.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { Flame, Trophy, Star, ChevronRight, X, Info, BookOpen } from "lucide-react";
@@ -11,6 +17,9 @@ interface DashboardStatsProps {
     };
 }
 
+/**
+ * DashboardStats: Statistical aggregation component rendering reader metrics and platform health for authors.
+ */
 export default function DashboardStats({ stats }: DashboardStatsProps) {
     const [showLevelInfo, setShowLevelInfo] = useState(false);
     const [showStreakInfo, setShowStreakInfo] = useState(false);

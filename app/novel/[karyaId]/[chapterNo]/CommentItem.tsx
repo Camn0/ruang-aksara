@@ -1,3 +1,9 @@
+/**
+ * @file CommentItem.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -42,6 +48,9 @@ interface CommentItemProps {
     onUpdateComment?: (id: string, updates: any) => void;
 }
 
+/**
+ * CommentItem: Atomic UI component rendering a single comment, its metadata, and recursive child replies.
+ */
 export default function CommentItem({
     comment,
     babId,

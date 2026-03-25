@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";

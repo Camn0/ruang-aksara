@@ -1,8 +1,17 @@
+/**
+ * @file ReviewSortToggle.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { TrendingUp, Clock } from 'lucide-react';
 
+/**
+ * ReviewSortToggle: Manipulates the client-side query parameters to reorganize review rendering thresholds.
+ */
 export default function ReviewSortToggle({ karyaId }: { karyaId: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();

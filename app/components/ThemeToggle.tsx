@@ -1,9 +1,18 @@
+/**
+ * @file ThemeToggle.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 "use client";
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
+/**
+ * ThemeToggle: Encapsulates the explicit React DOM lifecycle and state-management for the theme toggle interactive workflow.
+ */
 export default function ThemeToggle() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);

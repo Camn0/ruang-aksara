@@ -1,3 +1,9 @@
+/**
+ * @file CommentModerationClient.tsx
+ * @description High-density administrative datatable exclusively built to filter, review, and purge toxic community comments.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -7,6 +13,9 @@ import DeleteCommentButton from './DeleteCommentButton';
 
 type SortOption = 'newest' | 'popular' | 'unpopular' | 'controversial';
 
+/**
+ * CommentModerationClient: Administrative datatable for filtering, reviewing, and deleting toxic community comments.
+ */
 export default function CommentModerationClient({ initialComments }: { initialComments: any[] }) {
     const [sortBy, setSortBy] = useState<SortOption>('newest');
 

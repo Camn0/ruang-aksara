@@ -1,3 +1,9 @@
+/**
+ * @file DeleteCommentButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -5,6 +11,9 @@ import { deleteComment } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { Trash2 } from 'lucide-react';
 
+/**
+ * DeleteCommentButton: Encapsulates the explicit React DOM lifecycle and state-management for the delete comment button interactive workflow.
+ */
 export default function DeleteCommentButton({ commentId }: { commentId: string }) {
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();

@@ -1,3 +1,9 @@
+/**
+ * @file PostCommentForm.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -5,6 +11,9 @@ import { submitPostComment } from '@/app/actions/post';
 import { Send } from 'lucide-react';
 import { toast } from 'sonner';
 
+/**
+ * PostCommentForm: Encapsulates the explicit React DOM lifecycle and state-management for the post comment form interactive workflow.
+ */
 export default function PostCommentForm({ postId }: { postId: string }) {
     const [showForm, setShowForm] = useState(false);
     const [isPending, setIsPending] = useState(false);

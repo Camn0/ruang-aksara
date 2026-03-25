@@ -1,3 +1,9 @@
+/**
+ * @file vote.ts
+ * @description Headless logical module executing transactional dataflows or caching parameters within the Server Logic Backend.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use server';
 
 import { getServerSession } from "next-auth";

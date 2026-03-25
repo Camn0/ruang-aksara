@@ -1,3 +1,9 @@
+/**
+ * @file comment.ts
+ * @description Recursive logic engine controlling the deeply threaded community discussion architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use server';
 
 import { getServerSession } from "next-auth";

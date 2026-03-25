@@ -11,23 +11,24 @@ import { withAuth } from "next-auth/middleware";
  * menggunakan `next-auth/middleware` untuk memeriksa keberadaan JWT/Session.
  */
 
+export const middlewareConfig = {
+    callbacks: {
+        /**
+         * Kontrol akses utama.
+         * @returns `true` jika diizinkan, `false` akan mere-direct ke login page.
+         */
+        authorized: ({ token }: { token: any }) => {
+            // Rule: Hanya user dengan role 'admin' atau 'author' yang boleh masuk rute matcher.
+            return token?.role === "admin" || token?.role === "author";
+        },
+    },
+};
+
 export default withAuth(
-    // Fungsi ini dipanggil hanya jika checkbox 'authorized' mengembalikan true
     function middleware(req) {
         // Bisa digunakan untuk logging audit request admin di sini
     },
-    {
-        callbacks: {
-            /**
-             * Kontrol akses utama.
-             * @returns `true` jika diizinkan, `false` akan mere-direct ke login page.
-             */
-            authorized: ({ token }) => {
-                // Rule: Hanya user dengan role 'admin' atau 'author' yang boleh masuk rute matcher.
-                return token?.role === "admin" || token?.role === "author";
-            },
-        },
-    }
+    middlewareConfig
 );
 
 /**

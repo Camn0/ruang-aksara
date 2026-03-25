@@ -1,3 +1,9 @@
+/**
+ * @file EditBabForm.tsx
+ * @description Revision-focused editor layer for fixing typos or altering narrative outcomes in previously published Chapters.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,6 +13,9 @@ import { Save, Pencil, ArrowLeft, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import DeleteBabButton from './DeleteBabButton';
 
+/**
+ * EditBabForm: Editor interface for authors to revise and update existing Chapter content.
+ */
 export default function EditBabForm({ babId, initialContent, title }: { babId: string, initialContent: string, title?: string }) {
     const [isPending, setIsPending] = useState(false);
     const [isOpen, setIsOpen] = useState(false);

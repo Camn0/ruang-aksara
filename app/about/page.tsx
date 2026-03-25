@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -5,6 +11,9 @@ import Link from 'next/link';
 import { ArrowLeft, Sparkles, BookOpen, Target, Heart } from 'lucide-react';
 import NextImage from 'next/image';
 
+/**
+ * AboutPage: Primary Next.js Server Component route entry point orchestrating asynchronous data-fetching lifecycles.
+ */
 export default function AboutPage() {
     const [activeTab, setActiveTab] = useState<'visi' | 'misi'>('visi');
 

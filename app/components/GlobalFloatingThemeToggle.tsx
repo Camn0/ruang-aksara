@@ -1,3 +1,9 @@
+/**
+ * @file GlobalFloatingThemeToggle.tsx
+ * @description Absolutely positioned accessibility tool allowing users to switch themes from any page.
+ * @author Ruang Aksara Engineering Team
+ */
+
 "use client";
 
 import { useTheme } from "next-themes";
@@ -5,6 +11,9 @@ import { useEffect, useState } from "react";
 import { Moon, Sun, Palette, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
+/**
+ * GlobalFloatingThemeToggle: Absolutely positioned accessibility tool allowing users to switch themes on any route.
+ */
 export default function GlobalFloatingThemeToggle() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);

@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 "use client";
 
 import { signIn } from "next-auth/react";
@@ -144,6 +150,9 @@ function LoginForm() {
     );
 }
 
+/**
+ * LoginPage: Primary Next.js Server Component route entry point orchestrating asynchronous data-fetching lifecycles.
+ */
 export default function LoginPage() {
     return (
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Memuat...</div>}>

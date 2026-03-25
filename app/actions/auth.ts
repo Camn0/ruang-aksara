@@ -1,8 +1,14 @@
-'use server';
+/**
+ * @file auth.ts
+ * @description Core Server Action Proxy handling extreme-security operations (Registration & Identity).
+ * @author Ruang Aksara Engineering Team
+ */
 
-import bcrypt from 'bcryptjs';
+'use server'; // Directive: Locks this module to the Node.js backend. Prevents bcrypt from leaking to the browser.
 
-import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs'; // Required for hashing. Never import this in a Client Component.
+
+import { prisma } from '@/lib/prisma'; // The singleton DB client connection.
 
 // ==============================================================================
 // 1. MUTASI PUBLIK: REGISTRASI USER BARU (READER)
@@ -11,71 +17,65 @@ import { prisma } from '@/lib/prisma';
  * Server Action: Mendaftarkan user baru dengan role 'user' (Reader).
  *
  * Alur:
- *   1. Ekstraksi `username`, `password`, `display_name` dari FormData.
- *   2. Validasi kelengkapan field dan panjang password minimal 6 karakter.
- *   3. Cek duplikasi username di database.
- *   4. Hash password menggunakan bcrypt (cost factor 10).
- *   5. Simpan user baru ke tabel `User` dengan role default 'user'.
- *
- * Mengapa bcrypt salt round 10:
- *   - Angka 10 menyeimbangkan keamanan vs performa. Semakin tinggi, semakin lambat hash
- *     tetapi semakin sulit di-brute-force. 10 adalah standar industri yang aman.
- *
- * @param formData - FormData berisi field: username, password, display_name.
- * @returns `{ success: true, data: { username } }` | `{ error: string }`.
- *
- * DEBUG TIPS:
- *   - Jika registrasi gagal tanpa error message, periksa koneksi database (`DATABASE_URL` di .env).
- *   - Jika error P2002 (unique constraint violation), username sudah terdaftar.
- *   - Password hash disimpan di kolom `password_hash`, BUKAN `password`. Jangan bingung.
+ *   1. Ekstraksi data form secara eksplisit (mencegah payload injection).
+ *   2. Validasi panjang sandi untuk mitigasi script kiddie.
+ *   3. Pengecekan `findUnique` untuk mencegah bentrok P2002 Unique Constraint.
+ *   4. Penguncian sandi via Bcrypt (Cost 10).
+ *   5. Penulisan ke DB dengan role 'user' yang hardcoded.
  */
 export async function registerUser(formData: FormData) {
-    try {
-        // [A] Ekstraksi field dari FormData
-        const username = formData.get('username') as string;
-        const password = formData.get('password') as string;
-        const display_name = formData.get('display_name') as string;
+    try { // [1] Error Boundary: Catch DB disconnects or bcrypt panic errors.
+        
+        // [2] Payload parsing: We specifically cast to string to avoid Next.js FormData typing issues.
+        const username = formData.get('username') as string; // The selected unique username.
+        const password = formData.get('password') as string; // The raw unhashed password from the form.
+        const display_name = formData.get('display_name') as string; // The public-facing name.
 
-        // [B] Validasi Kelengkapan — semua field wajib diisi
+        // [3] Strict Null Check: If a form field was manipulated by devtools to be null, we block it here.
         if (!username || !password || !display_name) {
+            // [4] Validation Rejection: Return safely to trigger client-side error toast.
             return { error: "Semua field (Username, Password, Display Name) wajib diisi." };
         }
 
-        // [C] Validasi Panjang Password — minimal 6 karakter
+        // [5] Security Rule: Enforce minimal entropy for passwords.
         if (password.length < 6) {
-            return { error: "Password minimal 6 karakter." };
+            // [6] Reject short passwords, matching the client-side Zod/React-Hook-Form rules.
+            return { error: "Password minimal 6 karakter." }; 
         }
 
-        // [D] Cek Duplikasi Username di Database
-        // Mengapa findUnique: username memiliki unique constraint di schema,
-        // sehingga findUnique lebih optimal daripada findFirst.
+        // [7] Pre-flight Check: Does the username already exist in the database?
+        // We do this BEFORE hashing because hashing is CPU intensive. If the username is taken, fail fast.
         const existingUser = await prisma.user.findUnique({
-            where: { username }
+            where: { username } // We query the unique B-Tree index on the 'username' column.
         });
 
+        // [8] Conflict Resolution: If `existingUser` is not null, the username is already owned.
         if (existingUser) {
+            // [9] Return a graceful UX error rather than crashing the Next.js server with a Prisma Client Known Engine Error.
             return { error: "Username sudah terdaftar. Silakan pilih username lain." };
         }
 
-        // [E] Hash Password — bcrypt dengan salt round 10
-        const password_hash = await bcrypt.hash(password, 10);
+        // [10] Cryptographic Hasher: We hash the raw password. 
+        // 10 salt rounds takes about ~80ms on standard Vercel serverless limits.
+        const password_hash = await bcrypt.hash(password, 10); 
 
-        // [F] Mutasi Database — simpan user baru
+        // [11] DB Transaction: Actually instantiate the user in the PostgreSQL instance.
         const newUser = await prisma.user.create({
             data: {
-                username,
-                password_hash,
-                display_name,
-                role: 'user', // Default role: Reader (bukan admin atau author)
+                username, // Pass the chosen username.
+                password_hash, // CRITICAL: Only save the bcrypt hash, never the raw string.
+                display_name, // Pass the chosen display name.
+                role: 'user', // Hardcoded safeguard: Prevents a malicious form payload from injecting role: 'admin'.
             }
         });
 
-        // Mengembalikan username saja (bukan seluruh objek user) untuk keamanan
+        // [12] Success Payload: Only send back harmless data (the username) for the welcome toast UI.
         return { success: true, data: { username: newUser.username } };
 
     } catch (error) {
-        // DEBUG: Error ini muncul di terminal server, bukan di browser console
+        // [13] System Failure: If Prisma cannot connect, or bcrypt fails (memory limits), log the trace.
         console.error("[registerUser] Error:", error);
+        // [14] Generic Masking: Return a standard string to avoid leaking OS or Database paths to the public client.
         return { error: "Terjadi kesalahan sistem saat mendaftar." };
     }
 }

@@ -1,3 +1,9 @@
+/**
+ * @file route.ts
+ * @description Vercel Cron endpoint ensuring the Supabase PostgreSQL database connection pool never enters cold-start sleep.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import { redis } from '@/lib/redis';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';

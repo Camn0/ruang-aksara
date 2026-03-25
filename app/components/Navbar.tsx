@@ -1,3 +1,9 @@
+/**
+ * @file Navbar.tsx
+ * @description Persistent top-edge navigation bar providing quick access to search, notifications, and profile menus.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import Link from 'next/link';
@@ -9,6 +15,9 @@ import NotificationBell from './NotificationBell';
 
 // Mengapa: Navbar ini adalah Client Component agar bisa mendeteksi state user 
 // secara real-time via `useSession()` dan mengeksekusi aksi interaktif seperti `signOut()`.
+/**
+ * Navbar: Encapsulates the explicit React DOM lifecycle and state-management for the navbar interactive workflow.
+ */
 export default function Navbar() {
     const { data: session, status } = useSession();
 

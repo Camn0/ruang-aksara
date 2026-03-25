@@ -1,3 +1,9 @@
+/**
+ * @file CreateKaryaFormModern.tsx
+ * @description Highly interactive, ImageKit-enabled metadata creator for publishing entirely new Novels (Karya).
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -37,6 +43,9 @@ const FiRrUpload = ({ className }: { className?: string }) => (
     </div>
 );
 
+/**
+ * CreateKaryaForm: Upgraded, highly-interactive administrative form for publishing new Novels with modern UI constraints.
+ */
 export default function CreateKaryaForm({ genres }: { genres: Genre[] }) {
     const [isPending, setIsPending] = useState(false);
     const [step, setStep] = useState(1);

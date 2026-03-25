@@ -1,3 +1,9 @@
+/**
+ * @file notification.ts
+ * @description Centralized dispatch proxy processing the clustering algorithm for new activity alerts.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use server';
 
 import { prisma } from "@/lib/prisma";

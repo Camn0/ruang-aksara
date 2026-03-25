@@ -1,3 +1,9 @@
+/**
+ * @file admin.ts
+ * @description High-security Server Actions locked behind RBAC, governing Novel/Author creation, deletion, and moderation.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use server';
 
 import { prisma } from '@/lib/prisma';

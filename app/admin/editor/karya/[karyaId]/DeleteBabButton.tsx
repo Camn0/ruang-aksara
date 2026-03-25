@@ -1,3 +1,9 @@
+/**
+ * @file DeleteBabButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -5,6 +11,9 @@ import { deleteBab } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
+/**
+ * DeleteBabButton: Destructive action component requiring confirmation to permanently remove a Chapter from the database.
+ */
 export default function DeleteBabButton({ babId }: { babId: string }) {
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();

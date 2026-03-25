@@ -1,3 +1,9 @@
+/**
+ * @file route.ts
+ * @description Vercel Cron endpoint explicitly designed to batch-sync Upstash Redis volatile view counts into permanent Postgres storage.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import { redis } from '@/lib/redis';
 import { NextResponse } from 'next/server';
 

@@ -1,3 +1,9 @@
+/**
+ * @file ReadingInterface.tsx
+ * @description The apex immersive UI layer executing typography scaling, theme persistence, and chapter layout formatting.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -35,6 +41,9 @@ interface ReadingInterfaceProps {
  * 3. Progress Tracking: Automatically saves the current scroll position for 
  *    the specific chapter, allowing users to "pick up where they left off".
  * 4. Optimistic Reactions: Instant feedback for chapter-level reactions (Like, Love, etc.).
+ */
+/**
+ * ReadingInterface: The core immersive reading engine, handling typography scaling, theme persistence, and chapter layout.
  */
 export default function ReadingInterface({
     karyaId,

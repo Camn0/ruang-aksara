@@ -1,3 +1,9 @@
+/**
+ * @file layout.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import type { Metadata } from "next";
 import { Inter, Lobster, Open_Sans } from "next/font/google";
 import "./globals.css";

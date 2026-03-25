@@ -1,8 +1,17 @@
+/**
+ * @file LogoutButton.tsx
+ * @description Interactive UI trigger dedicated to terminating the active NextAuth session gracefully.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { LogOut } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
+/**
+ * LogoutButton: Encapsulates the explicit React DOM lifecycle and state-management for the logout button interactive workflow.
+ */
 export default function LogoutButton({ expanded = true }: { expanded?: boolean }) {
     return (
         <button

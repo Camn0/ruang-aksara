@@ -1,3 +1,9 @@
+/**
+ * @file PushManager.tsx
+ * @description Provider module governing Service Worker registration and Web Push notification handshakes.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -6,6 +12,9 @@ import { toast } from 'sonner';
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
+/**
+ * PushManager: Global provider managing Service Worker registration and Web Push notification subscriptions.
+ */
 export default function PushManager() {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);

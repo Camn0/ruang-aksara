@@ -1,3 +1,9 @@
+/**
+ * @file InstantLoadingBar.tsx
+ * @description Top-level routing indicator providing visual feedback utilizing Next.js top-loading algorithms.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
@@ -9,6 +15,9 @@ import { usePathname, useSearchParams } from 'next/navigation';
  * Memberikan feedback visual instan saat navigasi dimulai.
  * Karena Next.js App Router tidak memiliki event router.events, 
  * kita menggunakan kombinasi pathname tracking.
+ */
+/**
+ * InstantLoadingBar: Top-level routing indicator providing visual feedback during Next.js chunk transitions.
  */
 export default function InstantLoadingBar() {
     const pathname = usePathname();

@@ -1,9 +1,18 @@
+/**
+ * @file ReviewForm.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
 import { submitReview, submitRating } from '@/app/actions/user';
 import { toast } from 'sonner';
 
+/**
+ * ReviewForm: Client-side submission form allowing readers to rate and write a public review for a Novel.
+ */
 export default function ReviewForm({ karyaId, existingReview, defaultScore = 0 }: { karyaId: string, existingReview?: any, defaultScore?: number }) {
     const [isPending, setIsPending] = useState(false);
     const [score, setScore] = useState(existingReview?.rating || defaultScore || 0);

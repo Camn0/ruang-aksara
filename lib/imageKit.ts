@@ -1,3 +1,9 @@
+/**
+ * @file imageKit.ts
+ * @description Headless logical module executing transactional dataflows or caching parameters within the Platform Infrastructure.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import ImageKit from "imagekit";
 
 if (!process.env.IMAGEKIT_PUBLIC_KEY || !process.env.IMAGEKIT_PRIVATE_KEY || !process.env.IMAGEKIT_URL_ENDPOINT) {

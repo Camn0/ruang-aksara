@@ -1,3 +1,9 @@
+/**
+ * @file Sidebar.tsx
+ * @description Main collapsible navigation component bridging user discovery and persistent library management.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import Link from 'next/link';
@@ -9,6 +15,9 @@ import ThemeToggle from './ThemeToggle';
 import LogoutButton from './LogoutButton';
 import { useSidebar } from './SidebarContext';
 
+/**
+ * Sidebar: Main collapsible navigation component bridging user discovery and library management.
+ */
 export default function Sidebar() {
     const pathname = usePathname();
     const { data: session } = useSession();

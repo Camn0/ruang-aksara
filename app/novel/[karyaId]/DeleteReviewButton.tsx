@@ -1,3 +1,9 @@
+/**
+ * @file DeleteReviewButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -12,6 +18,9 @@ interface DeleteReviewButtonProps {
     isSmall?: boolean;
 }
 
+/**
+ * DeleteReviewButton: Triggers the secure, optimistic-UI deletion sequence for a designated user review.
+ */
 export default function DeleteReviewButton({ reviewId, path, isSmall = false }: DeleteReviewButtonProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();

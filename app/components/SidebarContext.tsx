@@ -1,3 +1,9 @@
+/**
+ * @file SidebarContext.tsx
+ * @description React Context API registry managing the cross-component expand/collapse state of the navigation menu.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';

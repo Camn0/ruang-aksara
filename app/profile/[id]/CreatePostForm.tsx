@@ -1,3 +1,9 @@
+/**
+ * @file CreatePostForm.tsx
+ * @description Status broadcasting UI accepting text arrays and firing them directly to the timeline ecosystem.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -6,6 +12,9 @@ import { UserCircle2, Image as ImageIcon, X, Send, Sparkles } from 'lucide-react
 import Image from 'next/image';
 import { toast } from 'sonner';
 
+/**
+ * CreatePostForm: Input interface for authors and users to broadcast social updates to their followers.
+ */
 export default function CreatePostForm({ userProfile }: { userProfile: any }) {
     const [isPending, setIsPending] = useState(false);
     const [isFocused, setIsFocused] = useState(false);

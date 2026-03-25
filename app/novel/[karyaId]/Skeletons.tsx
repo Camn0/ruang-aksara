@@ -1,3 +1,9 @@
+/**
+ * @file Skeletons.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 "use client";
 
 import { MessageSquareQuote } from "lucide-react";

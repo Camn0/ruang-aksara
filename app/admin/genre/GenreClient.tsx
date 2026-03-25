@@ -1,3 +1,9 @@
+/**
+ * @file GenreClient.tsx
+ * @description Dashboard interface specializing in the global taxonomy map of available Novel genres.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';

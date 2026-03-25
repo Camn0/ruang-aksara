@@ -1,3 +1,9 @@
+/**
+ * @file route.ts
+ * @description Headless logical module executing transactional dataflows or caching parameters within the REST Architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';

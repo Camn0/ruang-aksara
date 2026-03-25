@@ -1,9 +1,18 @@
+/**
+ * @file CreateAuthorForm.tsx
+ * @description Dedicated form component allowing server administrators to elevate regular users to Author Tier.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
 import { registerAuthor } from '@/app/actions/admin';
 import { useRouter } from 'next/navigation';
 
+/**
+ * CreateAuthorForm: Client-side form interface for administrators to register and onboard new Platform Authors.
+ */
 export default function CreateAuthorForm() {
     const [isPending, setIsPending] = useState(false);
     const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);

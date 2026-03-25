@@ -1,3 +1,9 @@
+/**
+ * @file RemoveBookmarkButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -6,6 +12,9 @@ import { toast } from 'sonner';
 
 // Mengapa: Tombol ✕ kecil di kartu bookmark library.
 // Menggunakan API route yang sudah ada (toggle bookmark).
+/**
+ * RemoveBookmarkButton: Encapsulates the explicit React DOM lifecycle and state-management for the remove bookmark button interactive workflow.
+ */
 export default function RemoveBookmarkButton({ karyaId, onRemoved }: { karyaId: string, onRemoved?: () => void }) {
     const [removing, setRemoving] = useState(false);
 

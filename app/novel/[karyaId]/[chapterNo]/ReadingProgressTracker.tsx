@@ -1,3 +1,9 @@
+/**
+ * @file ReadingProgressTracker.tsx
+ * @description Background heuristic utility tracking viewport scroll depth and polling internal Read-Receipt APIs.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useEffect } from 'react';
@@ -16,6 +22,9 @@ interface ReadingProgressTrackerProps {
  * 1. Menghindari Write DB saat Prefetch: Komponen ini hanya dieksekusi saat bab benar-benar
  *    dirender di browser user (mounted).
  * 2. Instancy: Update localStorage secara instan untuk UI, lalu sync ke DB di background.
+ */
+/**
+ * ReadingProgressTracker: Background client utility tracking reader scroll depth and updating their library progress asynchronously.
  */
 export default function ReadingProgressTracker({ karyaId, chapterNo, userId }: ReadingProgressTrackerProps) {
     useEffect(() => {

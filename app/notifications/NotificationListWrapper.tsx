@@ -1,3 +1,9 @@
+/**
+ * @file NotificationListWrapper.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -22,6 +28,9 @@ interface NotificationListWrapperProps {
  * - Anti-spam clustering logic for Likes, Follows, and New Chapters.
  * - Premium visual cues (unread glows, static themed icons, overlapping avatars).
  * - Interactive actions (Mark Read, Delete, Bulk Clear).
+ */
+/**
+ * NotificationListWrapper: Encapsulates the explicit React DOM lifecycle and state-management for the notification list wrapper interactive workflow.
  */
 export default function NotificationListWrapper({ initialNotifications, currentUserId }: NotificationListWrapperProps) {
     // local state for notifications to allow instant UI updates without full page reloads

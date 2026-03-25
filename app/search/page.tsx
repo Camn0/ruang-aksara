@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 import Link from "next/link";
 import Image from "next/image";
 import { Star, TrendingUp, BookOpen, PlusCircle, ArrowUp, Flame, CheckCircle, Library, Search as SearchIcon, Eye, Users, MessageSquare } from "lucide-react";

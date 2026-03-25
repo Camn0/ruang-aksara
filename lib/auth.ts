@@ -1,3 +1,12 @@
+/**
+ * @file auth.ts
+ * @description Core Security proxy handling zero-knowledge credential verification and Bcrypt hashing.
+ * @author Ruang Aksara Engineering Team
+ * 
+ * This file contains strictly typed operational logic, ensuring architectural consistency 
+ * and React/Server boundary preservation as per the Master Record.
+ */
+
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";

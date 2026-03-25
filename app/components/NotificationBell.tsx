@@ -1,3 +1,9 @@
+/**
+ * @file NotificationBell.tsx
+ * @description Real-time WebSocket/Polling header component alerting users to new chapters, replies, or mentions.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -8,6 +14,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
 import Link from 'next/link';
 
+/**
+ * NotificationBell: Real-time WebSocket/Polling header component alerting users to new chapters, replies, or mentions.
+ */
 export default function NotificationBell() {
     const { data: session } = useSession();
     const [notifications, setNotifications] = useState<any[]>([]);

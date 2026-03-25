@@ -1,3 +1,9 @@
+/**
+ * @file PostCommentSection.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -19,6 +25,9 @@ interface Comment {
     };
 }
 
+/**
+ * PostCommentSection: Encapsulates the explicit React DOM lifecycle and state-management for the post comment section interactive workflow.
+ */
 export default function PostCommentSection({ postId, initialComments, commentCount, currentUserId, currentUserRole }: {
     postId: string;
     initialComments: Comment[];

@@ -1,4 +1,10 @@
 /**
+ * @file layout.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
+/**
  * ADMIN LAYOUT (AUTHOR STUDIO)
  * ----------------------------
  * Ini adalah layout utama untuk seluruh area /admin (Author Studio).

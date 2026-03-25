@@ -1,3 +1,9 @@
+/**
+ * @file CollapsibleReviewSection.tsx
+ * @description Expandable bottom-sheet UI rendering dense user critiques without terminating the reading immersion experience.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -8,6 +14,9 @@ interface CollapsibleReviewSectionProps {
     count: number;
 }
 
+/**
+ * CollapsibleReviewSection: Expandable bottom-sheet UI component rendering user reviews without breaking reader immersion.
+ */
 export default function CollapsibleReviewSection({ children, count }: CollapsibleReviewSectionProps) {
     const [isOpen, setIsOpen] = useState(false);
 

@@ -1,9 +1,18 @@
+/**
+ * @file DeleteCommentButton.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Reader Exploration architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState } from 'react';
 import { deleteComment } from '@/app/actions/user';
 import { useRouter } from 'next/navigation';
 
+/**
+ * DeleteCommentButton: Encapsulates the explicit React DOM lifecycle and state-management for the delete comment button interactive workflow.
+ */
 export default function DeleteCommentButton({ commentId, isSmall = false }: { commentId: string, isSmall?: boolean }) {
     const [isPending, setIsPending] = useState(false);
     const router = useRouter();

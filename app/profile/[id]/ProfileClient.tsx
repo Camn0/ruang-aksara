@@ -1,3 +1,9 @@
+/**
+ * @file ProfileClient.tsx
+ * @description Public-facing user hub assembling their timeline activity, followed novels, and social achievements.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useEffect, useState, useRef, useTransition } from 'react';
@@ -37,6 +43,9 @@ interface ProfileClientProps {
     session: any;
 }
 
+/**
+ * ProfileClient: Public-facing user profile rendering activity feeds, followed novels, and social stats.
+ */
 export default function ProfileClient({
     userProfile,
     isOwnProfile,

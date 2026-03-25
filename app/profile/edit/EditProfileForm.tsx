@@ -1,3 +1,9 @@
+/**
+ * @file EditProfileForm.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Platform Infrastructure architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -20,6 +26,9 @@ interface EditProfileFormProps {
     initialBannerUrl: string | null;
 }
 
+/**
+ * EditProfileForm: Secure client form allowing users to update their bio, avatar, and display name.
+ */
 export default function EditProfileForm({ initialDisplayName, initialBio, initialSocialLinks, initialAvatarUrl, initialBannerUrl }: EditProfileFormProps) {
     const [displayName, setDisplayName] = useState(initialDisplayName);
     const [bio, setBio] = useState(initialBio || '');

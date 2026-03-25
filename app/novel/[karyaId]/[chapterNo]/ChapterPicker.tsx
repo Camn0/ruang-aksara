@@ -1,3 +1,9 @@
+/**
+ * @file ChapterPicker.tsx
+ * @description Interactive sidebar navigation tree empowering readers to instantly warp between available narrative milestones.
+ * @author Ruang Aksara Engineering Team
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -12,6 +18,9 @@ interface ChapterPickerProps {
     onClose?: () => void;
 }
 
+/**
+ * ChapterPicker: Interactive sidebar navigation component allowing readers to quickly jump between available chapters.
+ */
 export default function ChapterPicker({
     karyaId,
     currentChapterNo,

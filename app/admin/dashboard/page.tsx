@@ -1,4 +1,10 @@
 /**
+ * @file page.tsx
+ * @description Client or Server Document rendering scoped UI boundaries specific to the Administrator Dashboard architecture.
+ * @author Ruang Aksara Engineering Team
+ */
+
+/**
  * ADMIN DASHBOARD PAGE
  * --------------------
  * Pusat kendali untuk Author dan Admin.
