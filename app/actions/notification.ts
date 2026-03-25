@@ -154,6 +154,7 @@ export async function getMyNotifications() {
             include: {
                 actor: {
                     select: {
+                        id: true,
                         display_name: true,
                         username: true,
                         avatar_url: true

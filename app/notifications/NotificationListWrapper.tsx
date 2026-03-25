@@ -29,9 +29,6 @@ interface NotificationListWrapperProps {
  * - Premium visual cues (unread glows, static themed icons, overlapping avatars).
  * - Interactive actions (Mark Read, Delete, Bulk Clear).
  */
-/**
- * NotificationListWrapper: Encapsulates the explicit React DOM lifecycle and state-management for the notification list wrapper interactive workflow.
- */
 export default function NotificationListWrapper({ initialNotifications, currentUserId }: NotificationListWrapperProps) {
     // local state for notifications to allow instant UI updates without full page reloads
     const [notifications, setNotifications] = useState(initialNotifications);
@@ -225,31 +222,53 @@ export default function NotificationListWrapper({ initialNotifications, currentU
                                         <div className="flex-1 min-w-0">
                                             {/* Identity Row: Shows the actor avatar and name */}
                                             <div className="flex items-center gap-4 mb-3">
-                                                <Link
-                                                    href={`/profile/${n.actor?.id}`}
-                                                    className="shrink-0 group/avatar relative"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                >
-                                                    {/* Avatar frame */}
-                                                    <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-sep/20 group-hover/avatar:border-tan-primary transition-all shadow-sm bg-bg-paper">
-                                                        <img
-                                                            src={n.actor?.avatar_url || '/default-avatar.png'}
-                                                            alt={n.actor?.display_name}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    </div>
-                                                    {/* Cluster badge: displayed if multiple users triggered this (e.g., Many Likes) */}
-                                                    {isClustered && (
-                                                        <div className="absolute -right-2 -bottom-2 w-8 h-8 rounded-xl bg-tan-primary border-4 border-bg-paper text-xs font-black text-white flex items-center justify-center shadow-lg">
-                                                            +{clusterCount - 1}
+                                                {n.actor?.id ? (
+                                                    <Link
+                                                        href={`/profile/${n.actor.id}`}
+                                                        className="shrink-0 group/avatar relative"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        {/* Avatar frame */}
+                                                        <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-sep/20 group-hover/avatar:border-tan-primary transition-all shadow-sm bg-bg-paper">
+                                                            <img
+                                                                src={n.actor?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(n.actor?.display_name || 'S')}&background=b08968&color=fff`}
+                                                                alt={n.actor?.display_name}
+                                                                className="w-full h-full object-cover"
+                                                            />
                                                         </div>
-                                                    )}
-                                                </Link>
+                                                        {/* Cluster badge: displayed if multiple users triggered this (e.g., Many Likes) */}
+                                                        {isClustered && (
+                                                            <div className="absolute -right-2 -bottom-2 w-8 h-8 rounded-xl bg-tan-primary border-4 border-bg-paper text-xs font-black text-white flex items-center justify-center shadow-lg">
+                                                                +{clusterCount - 1}
+                                                            </div>
+                                                        )}
+                                                    </Link>
+                                                ) : (
+                                                    <div className="shrink-0 relative">
+                                                        <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-sep/20 shadow-sm bg-bg-paper">
+                                                            <img
+                                                                src={`https://ui-avatars.com/api/?name=Sistem&background=5a4b3d&color=fff`}
+                                                                alt="Sistem"
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                )}
                                                 
                                                 <div className="min-w-0">
-                                                    <h4 className="text-base font-black text-text-main truncate hover:underline underline-offset-4 decoration-tan-primary/40">
-                                                        {n.actor?.display_name || 'Penulis Misterius'}
-                                                    </h4>
+                                                    {n.actor?.id ? (
+                                                        <Link
+                                                            href={`/profile/${n.actor.id}`}
+                                                            className="text-base font-black text-text-main truncate hover:underline underline-offset-4 decoration-tan-primary/40 block"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            {n.actor.display_name}
+                                                        </Link>
+                                                    ) : (
+                                                        <h4 className="text-base font-black text-text-main truncate">
+                                                            {n.actor?.display_name || 'Penulis Misterius'}
+                                                        </h4>
+                                                    )}
                                                     <p className="text-[11px] font-black text-text-muted/50 uppercase tracking-[0.15em] mt-0.5">
                                                         {/* Human-readable relative time (e.g. 2 minutes ago) */}
                                                         {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: localeId })}
@@ -264,7 +283,6 @@ export default function NotificationListWrapper({ initialNotifications, currentU
                                                         if (n.type === 'REPLY') {
                                                             const isChapterComment = n.link.includes('/novel/') && n.link.split('/').length > 3;
                                                             const isReviewComment = n.link.includes('/novel/') && !isChapterComment;
-                                                            const isPostComment = n.link.includes('/profile/');
 
                                                             return (
                                                                 <>

@@ -98,21 +98,44 @@ export default function NotificationBell() {
                                     onClick={() => setIsOpen(false)}
                                     className={`p-4 border-b border-tan-primary/5 hover:bg-tan-primary/5 transition-colors flex gap-3 ${!n.read ? 'bg-tan-primary/[0.03]' : ''}`}
                                 >
-                                    {/* Category Icon */}
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1 ${n.category === 'DIRECT' ? 'bg-red-500/10 text-red-500' :
-                                            n.category === 'IMPORTANT' ? 'bg-amber-500/10 text-amber-500' :
-                                                n.category === 'UPDATE' ? 'bg-blue-500/10 text-blue-500' :
-                                                    'bg-gray-500/10 text-gray-500'
+                                    {/* Actor Identity with Category Badge Overlay */}
+                                    <div className="relative shrink-0 mt-0.5">
+                                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-tan-primary/5 border border-tan-primary/10">
+                                            <img 
+                                                src={n.actor?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(n.actor?.display_name || 'S')}&background=b08968&color=fff`}
+                                                alt={n.actor?.display_name}
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=Sistem&background=5a4b3d&color=fff`;
+                                                }}
+                                            />
+                                        </div>
+                                        {/* Symbolic Category Badge Overlay */}
+                                        <div className={`absolute -right-1.5 -bottom-1.5 w-5 h-5 rounded-lg flex items-center justify-center text-[8px] font-black border-2 border-white dark:border-brown-dark shadow-md ${
+                                            n.category === 'DIRECT' ? 'bg-red-500 text-white' :
+                                            n.category === 'IMPORTANT' ? 'bg-amber-500 text-white' :
+                                            n.category === 'UPDATE' ? 'bg-blue-500 text-white' :
+                                            'bg-tan-primary text-white'
                                         }`}>
-                                        {n.type === 'REPLY' || n.type === 'MENTION' ? <span className="text-xs font-bold">@</span> :
-                                            n.type === 'NEW_CHAPTER' || n.type === 'NEW_WORK' ? <span className="text-xs font-bold">!</span> :
-                                                n.type === 'LIKE' ? <span className="text-xs font-bold">♥</span> :
-                                                    <span className="text-xs font-bold">#</span>}
+                                            {n.type === 'REPLY' || n.type === 'MENTION' ? '@' :
+                                                n.type === 'NEW_CHAPTER' || n.type === 'NEW_WORK' ? '!' :
+                                                n.type === 'LIKE' ? '♥' : '#'}
+                                        </div>
                                     </div>
 
                                     <div className="flex-1">
                                         <p className="text-sm text-brown-dark dark:text-text-accent">
-                                            <span className="font-bold">{n.actor?.display_name || 'Seseorang'}</span>{' '}
+                                            {n.actor?.id ? (
+                                                <Link 
+                                                    href={`/profile/${n.actor.id}`}
+                                                    className="font-bold hover:underline decoration-tan-primary/30"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    {n.actor.display_name}
+                                                </Link>
+                                            ) : (
+                                                <span className="font-bold">{n.actor?.display_name || 'Seseorang'}</span>
+                                            )}{' '}
                                             {n.type === 'REPLY' && 'membalas komentar Anda'}
                                             {n.type === 'MENTION' && 'menyebut Anda dalam komentar'}
                                             {n.type === 'LIKE' && 'menyukai postingan Anda'}
