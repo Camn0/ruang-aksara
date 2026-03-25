@@ -23,6 +23,8 @@ A digital reading PWA and multi-role CMS with an integrated markdown author stud
 - [API and Actions](docs/API_AND_ACTIONS.md): Overview of Server Action patterns and internal endpoints.
 - [Social Engine](docs/SOCIAL_ENGINE.md): Technical logic for nested comments, reviews, and notifications.
 - [Maintenance and Setup](docs/MAINTENANCE.md): Technical requirements, installation, and deployment guide.
+- [Security and RBAC](docs/SECURITY_AND_ROLES.md): Deep-dive into edge-based authorization logic.
+- [Asset Management](docs/ASSET_MANAGEMENT.md): Media pipeline and ImageKit.io integration details.
 
 ## License
 Proprietary. All rights reserved by the authors. 
