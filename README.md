@@ -77,13 +77,13 @@ To avoid Supabase inactivity pauses and maintain cache currency, the following j
 Note: Requires CRON_SECRET environment variable.
 
 ## Docs
-- [Absolute Encyclopedia](file:///d:/Codes/ruang-aksara/ABSOLUTE_ENCYCLOPEDIA.md): A comprehensive technical record and roadmap.
-- [Architecture](file:///d:/Codes/ruang-aksara/docs/ARCHITECTURE.md): Deep-dive into Next.js rendering and caching.
-- [Features](file:///d:/Codes/ruang-aksara/docs/FEATURES.md): Detailed breakdown of reader and author studio capabilities.
-- [Database Schema](file:///d:/Codes/ruang-aksara/docs/DATABASE_SCHEMA.md): Summary of the Prisma data models and relationships.
-- [API and Actions](file:///d:/Codes/ruang-aksara/docs/API_AND_ACTIONS.md): Overview of Server Action patterns and internal endpoints.
-- [Social Engine](file:///d:/Codes/ruang-aksara/docs/SOCIAL_ENGINE.md): Technical logic for nested comments, reviews, and notifications.
-- [Maintenance](file:///d:/Codes/ruang-aksara/docs/MAINTENANCE.md): Deployment, environment setup, and monitoring guide.
+- [Absolute Encyclopedia](ABSOLUTE_ENCYCLOPEDIA.md): A comprehensive technical record and roadmap.
+- [Architecture](docs/ARCHITECTURE.md): Deep-dive into Next.js rendering and caching.
+- [Features](docs/FEATURES.md): Detailed breakdown of reader and author studio capabilities.
+- [Database Schema](docs/DATABASE_SCHEMA.md): Summary of the Prisma data models and relationships.
+- [API and Actions](docs/API_AND_ACTIONS.md): Overview of Server Action patterns and internal endpoints.
+- [Social Engine](docs/SOCIAL_ENGINE.md): Technical logic for nested comments, reviews, and notifications.
+- [Maintenance](docs/MAINTENANCE.md): Deployment, environment setup, and monitoring guide.
 
 ## License
 MIT License.
