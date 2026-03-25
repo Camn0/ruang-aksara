@@ -83,4 +83,4 @@ Note: Requires CRON_SECRET environment variable.
 - [Maintenance](docs/MAINTENANCE.md): Deployment, environment setup, and monitoring guide.
 
 ## License
-MIT License.
+GNU Affero General Public License v3.0 (AGPL v3.0). See [LICENSE](LICENSE) for details.
