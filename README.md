@@ -7,71 +7,13 @@
 
 A digital reading PWA and multi-role CMS with an integrated markdown author studio. Features analytical dashboards, gamified reading streaks, and layered caching. Built with Next.js and Prisma.
 
-## Tech Stack
-- Framework: Next.js 14 (App Router)
-- Database: PostgreSQL (Supabase)
-- ORM: Prisma
-- Cache: Redis (Upstash)
-- Media: ImageKit.io
-- Auth: NextAuth.js
-
-## Requirements
-- Node.js 20+
-- Supabase Project (PostgreSQL)
-- Upstash Redis instance
-- ImageKit Account
-
-## Getting Started
-
-1. Clone and Install
-   ```bash
-   git clone https://github.com/Camn0/ruang-aksara.git
-   cd ruang-aksara
-   npm install
-   ```
-
-2. Environment Setup
-   Create a .env file in the root directory:
-   ```env
-   DATABASE_URL="your-supabase-url"
-   DIRECT_URL="your-direct-url"
-   NEXTAUTH_SECRET="your-secret"
-   UPSTASH_REDIS_REST_URL="your-redist-rest-url"
-   UPSTASH_REDIS_REST_TOKEN="your-token"
-   IMAGEKIT_PUBLIC_KEY="..."
-   IMAGEKIT_PRIVATE_KEY="..."
-   IMAGEKIT_URL_ENDPOINT="..."
-   CRON_SECRET="..."
-   ```
-
-3. Database Setup
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
-
-4. Run Development Server
-   ```bash
-   npm run dev
-   ```
-
 ## Key Features
-- Multi-Role CMS: Separate interfaces for Readers, Authors, and Admins.
-- Markdown Studio: Authoring suite with markdown to HTML conversion.
-- Analytical Dashboards: Activity maps and growth tracking for works.
-- Reading Interface: Distraction-free reader with customizable typography and themes.
-- Engagement Tools: Notification system, comment voting, and chapter reactions.
-- Gamification: Persistence tracking via reading streaks and XP logic.
-
-## Deployment and Maintenance
-This project is optimized for Vercel. 
-
-### Cron Jobs
-To avoid Supabase inactivity pauses and maintain cache currency, the following jobs are configured in vercel.json:
-- /api/cron/keep-alive: Runs daily at 00:00 to keep Supabase and Redis active.
-- /api/cron/sync-views: Runs daily at 01:00 to sync Redis view counters to the database.
-
-Note: Requires CRON_SECRET environment variable.
+- **Multi-Role CMS**: Separate interfaces for Readers, Authors, and Admins.
+- **Markdown Studio**: Authoring suite with markdown to HTML conversion.
+- **Analytical Dashboards**: Activity maps and growth tracking for works.
+- **Reading Interface**: Distraction-free reader with customizable typography and themes.
+- **Engagement Tools**: Notification system, comment voting, and chapter reactions.
+- **Gamification**: Persistence tracking via reading streaks and XP logic.
 
 ## Docs
 - [Absolute Encyclopedia](ABSOLUTE_ENCYCLOPEDIA.md): A comprehensive technical record and roadmap.
@@ -80,7 +22,7 @@ Note: Requires CRON_SECRET environment variable.
 - [Database Schema](docs/DATABASE_SCHEMA.md): Summary of the Prisma data models and relationships.
 - [API and Actions](docs/API_AND_ACTIONS.md): Overview of Server Action patterns and internal endpoints.
 - [Social Engine](docs/SOCIAL_ENGINE.md): Technical logic for nested comments, reviews, and notifications.
-- [Maintenance](docs/MAINTENANCE.md): Deployment, environment setup, and monitoring guide.
+- [Maintenance and Setup](docs/MAINTENANCE.md): Technical requirements, installation, and deployment guide.
 
 ## License
 Proprietary. All rights reserved by the authors. 
