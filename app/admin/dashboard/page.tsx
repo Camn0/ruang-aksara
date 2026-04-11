@@ -309,7 +309,7 @@ export default async function AdminDashboardPage() {
                                                                 <Link href={`/novel/${item.id}`} target="_blank" className="bg-tan-primary/20 text-tan-primary px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-tan-primary hover:text-white transition-all flex-1 text-center select-none">
                                                                     Lihat
                                                                 </Link>
-                                                                <Link href={`/admin/stats/engagement`} prefetch={false} className="bg-text-main/5 dark:bg-white/10 text-text-main dark:text-text-accent p-2.5 rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95 group/stats border border-text-main/5 dark:border-white/10" title="View Analysis">
+                                                                <Link href={`/admin/stats/engagement/${item.id}`} prefetch={false} className="bg-text-main/5 dark:bg-white/10 text-text-main dark:text-text-accent p-2.5 rounded-xl hover:bg-tan-primary/20 transition-all active:scale-95 group/stats border border-text-main/5 dark:border-white/10" title="View Analysis">
                                                                     <BarChart3 className="w-3.5 h-3.5 text-current" />
                                                                 </Link>
                                                             </div>

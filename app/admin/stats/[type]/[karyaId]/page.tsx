@@ -319,7 +319,7 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                             <span className="text-[10px] font-black text-text-main/70 dark:text-text-accent uppercase tracking-[0.4em] italic">{work.title}</span>
                         </div>
 
-                        <div className="flex items-center gap-6 mb-4">
+                        <div className="flex items-center gap-6 mb-6">
                             <div className={`w-12 h-12 ${config.color} text-white rounded-2xl flex items-center justify-center shadow-lg border border-white/10`}>
                                 <config.icon className="w-6 h-6" />
                             </div>
@@ -327,6 +327,21 @@ export default async function PerWorkStatsPage({ params }: { params: { type: str
                                 <h1 className="text-5xl font-black italic tracking-tighter uppercase leading-none">{config.title}</h1>
                                 <p className="text-[10px] font-bold text-text-main/50 dark:text-text-accent uppercase tracking-[0.4em] mt-2 italic">{config.description}</p>
                             </div>
+                        </div>
+                        
+                        {/* Instant Navigation Tabs */}
+                        <div className="flex flex-wrap items-center gap-2 relative z-20">
+                            {Object.entries(STATS_CONFIG).map(([key, c]) => (
+                                <Link 
+                                    key={key}
+                                    href={`/admin/stats/${key}/${work.id}`}
+                                    prefetch={false}
+                                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.15em] transition-all border shadow-sm ${type === key ? `${c.color} text-white border-transparent scale-105` : 'bg-white/60 dark:bg-brown-mid/30 text-text-main/70 dark:text-text-accent border-text-main/10 dark:border-white/5 hover:bg-white dark:hover:bg-brown-mid/50 hover:text-text-main hover:border-text-main/20 dark:hover:border-white/10'}`}
+                                >
+                                    <c.icon className="w-3.5 h-3.5" />
+                                    {c.title.replace('Analisis ', '')}
+                                </Link>
+                            ))}
                         </div>
                     </div>
 
