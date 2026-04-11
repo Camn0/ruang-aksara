@@ -60,3 +60,15 @@ public/worker-*.js
 public/worker-*.js.map
 public/fallback-*.js
 public/fallback-*.js.map
+
+# Next.js Agents
+_agent/
+_agents/
+.agents/
+
+# Old / Backup Files
+auth_old*.ts
+check-admin.js
+
+# TypeScript Build Info
+*.tsbuildinfo
