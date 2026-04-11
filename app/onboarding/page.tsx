@@ -231,11 +231,11 @@ export default function OnboardingPage() {
 
                                 {/* Text */}
                                 <div className="mb-8 space-y-1">
-                                    <h2 className="text-3xl font-bold text-brown-dark font-open-sans">
+                                    <h2 className="text-3xl font-bold text-brown-dark dark:text-text-accent font-open-sans">
                                         Selamat Datang <br />
                                         di
                                     </h2>
-                                    <h1 className="text-5xl font-black text-brown-dark font-lobster italic">
+                                    <h1 className="text-5xl font-black text-brown-dark dark:text-tan-primary font-lobster italic">
                                         Ruang Aksara
                                     </h1>
                                 </div>
@@ -249,7 +249,7 @@ export default function OnboardingPage() {
 
                                 <button
                                     onClick={handleNext}
-                                    className="bg-brown-dark text-text-accent px-10 py-3 rounded-full text-2xl font-black hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
+                                    className="bg-brown-dark dark:bg-tan-primary text-text-accent dark:text-brown-dark px-10 py-3 rounded-full text-2xl font-black hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brown-dark/20"
                                 >
                                     Mulai Eksplorasi
                                 </button>
