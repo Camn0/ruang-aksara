@@ -230,6 +230,11 @@ export async function createBab(formData: FormData) {
 
         // Invalidate cache detail karya agar daftar bab terbaru muncul instan
         revalidateTag(`karya-${karya_id}`);
+        revalidateTag(`karya-author-${session.user.id}`);
+        if (session.user.role === 'admin') {
+            revalidateTag('karya-global');
+        }
+        revalidatePath('/admin/dashboard');
 
         // Trigger Notification for Bookmarkers (UPDATE Category)
         try {
@@ -456,6 +461,10 @@ export async function editKarya(formData: FormData) {
 
         revalidateTag(`karya-${id}`);
         revalidateTag(`karya-author-${session.user.id}`);
+        if (session.user.role === 'admin') {
+            revalidateTag('karya-global');
+        }
+        revalidatePath('/admin/dashboard');
 
         return { success: true };
     } catch (error) {
@@ -487,6 +496,10 @@ export async function deleteKarya(id: string) {
 
         revalidateTag(`karya-${id}`);
         revalidateTag(`karya-author-${session.user.id}`);
+        if (session.user.role === 'admin') {
+            revalidateTag('karya-global');
+        }
+        revalidatePath('/admin/dashboard');
 
         return { success: true };
     } catch (error) {
@@ -556,6 +569,11 @@ export async function editBab(formData: FormData) {
         if (bab) {
             revalidateTag(`chapter-${bab.karya_id}-${bab.chapter_no}`);
             revalidateTag(`karya-${bab.karya_id}`);
+            revalidateTag(`karya-author-${session.user.id}`);
+            if (session.user.role === 'admin') {
+                revalidateTag('karya-global');
+            }
+            revalidatePath('/admin/dashboard');
         }
 
         return { success: true };
@@ -591,6 +609,11 @@ export async function deleteBab(id: string) {
         if (existingBab) {
             revalidateTag(`chapter-${existingBab.karya.uploader_id}-${(existingBab as any).chapter_no}`);
             revalidateTag(`karya-${existingBab.karya.uploader_id}`);
+            revalidateTag(`karya-author-${session.user.id}`);
+            if (session.user.role === 'admin') {
+                revalidateTag('karya-global');
+            }
+            revalidatePath('/admin/dashboard');
         }
 
         await prisma.bab.delete({ where: { id } });
