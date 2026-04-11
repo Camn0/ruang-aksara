@@ -77,7 +77,7 @@ export default async function RootLayout({
                             {children}
                         </LayoutContent>
                     </SidebarProvider>
-                    <Toaster position="top-center" richColors />
+                    <Toaster position="top-center" richColors toastOptions={{ style: { border: 'none' } }} />
                     <RealTimeNotificationListener currentUserId={session?.user?.id} />
                     <PushManager />
                 </ThemeProvider>
