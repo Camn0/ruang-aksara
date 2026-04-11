@@ -129,6 +129,10 @@ export async function createKarya(formData: FormData) {
 
         // [Local Snappiness] Invalidate Author Dashboard immediately
         revalidateTag(`karya-author-${session.user.id}`);
+        if (session.user.role === 'admin') {
+            revalidateTag('karya-global');
+        }
+        revalidatePath('/admin/dashboard');
 
         // [NOTIFICATION & FEED]
         // Note: Global and Author dashboards are revalidated immediately.
